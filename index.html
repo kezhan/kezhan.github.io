@@ -182,16 +182,39 @@ $(document).ready(function () {
     Accueil
   </a>
 </li>
-<li>
-  <a href="about.html">
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     <span class="fa fa-info"></span>
      
     Contact
+     
+    <span class="caret"></span>
   </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://fr.linkedin.com/in/kezhanshi">
+        <span class="fa fa-linkedin-square"></span>
+         
+        Linkedin
+      </a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/kezhan">
+        <span class="fa fa-facebook-square"></span>
+         
+        Facebook
+      </a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a>
+    <span class="fa fa-language"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -206,16 +229,11 @@ $(document).ready(function () {
 </div>
 
 
-<p>Comme dit un proverbe chinois : la meilleure manière d’apprendre quelque chose, c’est de l’expliquer. Voici quelques petites choses que je suis en train d’apprendre. N’hésitez pas à commenter.</p>
+<p>Article organisé selon les thèmes</p>
 <div id="generalites-sur-lanalyse-des-donnees" class="section level4">
 <h4>Généralités sur l’analyse des données</h4>
 <ul>
 <li><a href="analyse_donnees_iris.html">Analyse de la base iris</a></li>
-</ul>
-</div>
-<div id="analyse-des-series-temporelles" class="section level4">
-<h4>Analyse des séries temporelles</h4>
-<ul>
 <li><a href="pluie_paris.html">Analyse du risque de pluie à Paris pendant Roland Garros</a></li>
 <li><a href="https://fr.linkedin.com/in/kezhanshi">Analyse des températures à Paris</a></li>
 </ul>
@@ -231,6 +249,7 @@ $(document).ready(function () {
 <div id="etude-geospatiale" class="section level4">
 <h4>Etude géospatiale</h4>
 <ul>
+<li><a href="geolocalisation_accidents_auto.html">Géolocation des accidents auto corporels en France</a></li>
 <li><a href="implantation_geographique_quick.html">Analyse l’implantation géographique de Quick en France</a></li>
 <li><a href="cercle_carre_sur_terre.html">Comment tracer un cercle et un carré sur la surface de la Terre</a></li>
 </ul>
@@ -238,6 +257,8 @@ $(document).ready(function () {
 <div id="text-mining" class="section level4">
 <h4>Text-mining</h4>
 <ul>
+<li><a href="avis_assurance.html">Analyse des avis sur des produits d’assurance</a></li>
+<li><a href="twitter_text_mining_argus_assurance.html">Analyse des tweets de l’argus de l’assurance</a></li>
 <li><a href="https://kezhanshi.shinyapps.io/discours_fh">Analyse des discours de François Hollande</a></li>
 <li><a href="analyse_parfums_1.html">Une analyse qui sent bon ! (1) ou étude des ingrédients dans les parfums</a></li>
 <li><a href="analyse_parfums_2.html">Une analyse qui sent bon ! (2) ou étude des notes des parfums</a></li>
@@ -248,10 +269,20 @@ $(document).ready(function () {
 <ul>
 <li><a href="chocs_accidents_auto.html">Sankey network : chocs pendant les accidents auto</a></li>
 <li><a href="sunburst_accidents_auto.html">Sunburst : lieux, type de collision et gravité d’accidents</a></li>
+<li><a href="en/finance_complaints_sunburst.html">Sunburst : des plaintes dans les banques</a></li>
 </ul>
 </div>
 <div id="web-scraping" class="section level4">
 <h4>Web scraping</h4>
+<ul>
+<li><a href="web_scraping.html">Technique de base du web-scraping</a></li>
+</ul>
+</div>
+<div id="actuariat" class="section level4">
+<h4>Actuariat</h4>
+<ul>
+<li><a href="sinistre_graves_par_tranche.html">Analyse de la sinistralité</a></li>
+</ul>
 </div>
 
 <div id="disqus_thread"></div>
