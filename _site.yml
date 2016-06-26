@@ -1,0 +1,24 @@
+name: "Blog de Kezhan SHI"
+navbar:
+  title: "Blog de Kezhan SHI"
+  left:
+    - text: "Accueil"
+      icon: fa-home
+      href: index.html
+    - text: "Contact"
+      icon: fa-info
+      menu:
+        - text: "Linkedin"
+          icon: fa-linkedin-square
+          href: https://fr.linkedin.com/in/kezhanshi
+        - text: "Facebook"
+          icon: fa-facebook-square
+          href: https://www.facebook.com/kezhan
+  right:
+    - icon: fa-language
+      href: 
+output:
+  html_document:
+    highlight: textmate
+    include:
+      after_body: footer.html
