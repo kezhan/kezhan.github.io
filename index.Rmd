@@ -30,7 +30,7 @@ output:
 
 **Analyse des images**
 
-- [Compression d'image à l'aide des valeurs singulières](valeurs_singulières_compression_image.html)
+- [Compression d'image à l'aide des valeurs singulières](machine_learning_r/valeurs_singulières_compression_image.html)
 - [Traitement d'image avec la transformée de Fourrier](fft_traitement_image.html)
 - [Visualisation des couleurs en 3D](couleurs_3d.html)
 - [Analyse de la tendance des robes](https://fr.linkedin.com/in/kezhanshi)
