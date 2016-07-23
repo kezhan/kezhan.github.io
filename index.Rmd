@@ -65,6 +65,7 @@ output:
 - [Analyse de la sinistralité](actuariat/sinistre_graves_par_tranche.html)
 - Exemple d'application de la théorie des valeurs extrêmes [Partie1](actuariat/sp500_1_presentation.html) [Partie 2](actuariat/sp500_2_calibration_valeurs_extremes.html)
 
+- [Lissage des coefficients de développement Chain-Ladder d'un triangle](lissage_coeff_chainladder.html)
 
 ```{r eval=FALSE, echo=FALSE}
 rmarkdown::render_site()
