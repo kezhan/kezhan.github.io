@@ -1,6 +1,5 @@
-name: "Blog de K SHI"
+name: "Blog de Kezhan SHI: actuaire et data scientist"
 navbar:
-  title: "Blog de K SHI"
   left:
     - text: "Accueil"
       icon: fa-home

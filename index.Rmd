@@ -1,5 +1,4 @@
 ---
-title: "Accueil"
 output:
     html_document:
       toc: false
@@ -10,6 +9,7 @@ output:
 ---
 
 #Articles{.tabset}
+
 ## Data Science avec R
 
 **Algorithmes pour les débutants**
@@ -20,6 +20,7 @@ output:
 
 **Exemples d'application**
 
+- [Comparaison des algorithmes sur quelques bases de données types](machine_learning_r/comparatif_visualise_machine_learning.html)
 - [Analyse de la base iris](machine_learning_r/analyse_donnees_iris.html)
 - [Détection de spams](machine_learning_r/detection_spams.html)
 
@@ -32,7 +33,6 @@ output:
 - [Traitement d'image avec la transformée de Fourrier](fft_traitement_image.html)
 - [Visualisation des couleurs en 3D](couleurs_3d.html)
 - [Analyse de la tendance des robes](https://fr.linkedin.com/in/kezhanshi)
-
 
 **Etude géospatiale**
 
@@ -50,9 +50,21 @@ output:
 
 ## Visualisation
 
+**Pour mieux comprendre**
+
+- [Comparaison des algorithmes sur quelques bases de données types](machine_learning_r/comparatif_visualise_machine_learning.html)
+
+**Pour mieux communiquer**
+
 - [Sankey network : chocs pendant les accidents auto](chocs_accidents_auto.html)
 - [Sunburst : lieux, type de collision et gravité d'accidents](sunburst_accidents_auto.html)
 - [Sunburst : des plaintes dans les banques](en/finance_complaints_sunburst.html)
+
+**Etude géospatiale**
+
+- [Géolocation des accidents auto corporels en France](geolocalisation_accidents_auto.html)
+- [Analyse l'implantation géographique de Quick en France](implantation_geographique_quick.html)
+- [Comment tracer un cercle et un carré sur la surface de la Terre](cercle_carre_sur_terre.html)
 
 ## Web scraping
 
