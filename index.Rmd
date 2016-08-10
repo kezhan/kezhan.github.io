@@ -2,17 +2,15 @@
 title: "Accueil"
 output:
     html_document:
-      toc: true
-      toc_float: true
+      toc: false
+      toc_float: false
       number_sections: false
       theme: journal
       highlight: textmate
-      code_folding: hide
 ---
 
-
-
-# Data Science avec R
+#Articles{.tabset}
+## Data Science avec R
 
 **Algorithmes pour les débutants**
 
@@ -50,17 +48,17 @@ output:
 - [Une analyse qui sent bon ! (1) ou étude des ingrédients dans les parfums ](analyse_parfums_1.html)
 - [Une analyse qui sent bon ! (2) ou étude des notes des parfums ](analyse_parfums_2.html)
 
-# Visualisation
+## Visualisation
 
 - [Sankey network : chocs pendant les accidents auto](chocs_accidents_auto.html)
 - [Sunburst : lieux, type de collision et gravité d'accidents](sunburst_accidents_auto.html)
 - [Sunburst : des plaintes dans les banques](en/finance_complaints_sunburst.html)
 
-# Web scraping
+## Web scraping
 
 - [Technique de base du web-scraping](web_scraping.html)
 
-# Actuariat
+## Actuariat
 
 - [Analyse de la sinistralité](actuariat/sinistre_graves_par_tranche.html)
 - Exemple d'application de la théorie des valeurs extrêmes [Partie1](actuariat/sp500_1_presentation.html) [Partie 2](actuariat/sp500_2_calibration_valeurs_extremes.html)

@@ -1,10 +1,22 @@
-name: "Blog de K SHI"
+name: "Blog de Kezhan SHI"
 navbar:
-  title: "Blog de K SHI"
+  title: "Blog de Kezhan SHI"
   left:
     - text: "Accueil"
       icon: fa-home
       href: http://kezhan.github.io
+    - text: "Articles"
+      icon: fa-pencil
+      menu:
+        - text: "Data Science"
+          icon: fa-flask
+          href: http://kezhan.github.io
+        - text: "Data Visualisation"
+          icon: fa-line-chart
+          href: http://kezhan.github.io
+        - text: "Actuariat"
+          icon: fa-table
+          href: http://kezhan.github.io
     - text: "Contact"
       icon: fa-info
       menu:
