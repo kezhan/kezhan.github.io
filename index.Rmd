@@ -23,6 +23,7 @@ output:
 - [Comparaison des algorithmes sur quelques bases de données types](machine_learning_r/comparatif_visualise_machine_learning.html)
 - [Analyse de la base iris](machine_learning_r/analyse_donnees_iris.html)
 - [Détection de spams](machine_learning_r/detection_spams.html)
+- [Reconstruction d'image avec machine learning](machine_learning_r/reconstruction_image.html)
 
 - [Analyse du risque de pluie à Paris pendant Roland Garros](pluie_paris.html)
 - [Analyse des températures à Paris](https://fr.linkedin.com/in/kezhanshi)
