@@ -166,6 +166,12 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 
@@ -302,17 +308,17 @@ div.tocify {
       </a>
     </li>
     <li>
-      <a href="0_exploration.html">
-        <span class="fa fa-binoculars"></span>
-         
-        Exploration des données
-      </a>
-    </li>
-    <li>
       <a href="0_manipulation.html">
         <span class="fa fa-table"></span>
          
         Manipulation des données
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
       </a>
     </li>
   </ul>
@@ -398,6 +404,14 @@ div.tocify {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Exemples de visualisation non techniques</h1>
@@ -438,7 +452,7 @@ treemap(Ins,
         vSize=&quot;Holders&quot;,
         vColor=&quot;Freq&quot;,
         type=&quot;value&quot;)</code></pre>
-<p><img src="2_non_technique_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
+<p><img src="2_non_technique_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="sunburst" class="section level2">
 <h2><span class="header-section-number">2.2</span> Sunburst</h2>
@@ -455,7 +469,7 @@ d1$label=paste(d1$District,d1$Group,d1$Age,sep=&quot;-&quot;)
 agg=aggregate(Holders~label,data=d1,sum)
 sb=sunburst(agg,legend = list(w=200,h=20))
 sb</code></pre>
-<div class="sunburst html-widget" id="htmlwidget-ac57966d6fa915fe2e5d" style="width:768px;height:768px; position:relative;">
+<div class="sunburst html-widget" id="htmlwidget-4d5cf56b90cc7adfb320" style="width:672px;height:480px; position:relative;">
 <div>
 <div class="sunburst-main">
 <div class="sunburst-sequence"></div>
@@ -469,7 +483,7 @@ sb</code></pre>
 </div>
 </div>
 </div>
-<script type="application/json" data-for="htmlwidget-ac57966d6fa915fe2e5d">{"x":{"csvdata":{"label":["1-<1l-<25","1-<1l->35","1-<1l-25_29","1-<1l-30_35","1->2l-<25","1->2l->35","1->2l-25_29","1->2l-30_35","1-1_1.5l-<25","1-1_1.5l->35","1-1_1.5l-25_29","1-1_1.5l-30_35","1-1.5_2l-<25","1-1.5_2l->35","1-1.5_2l-25_29","1-1.5_2l-30_35","2-<1l-<25","2-<1l->35","2-<1l-25_29","2-<1l-30_35","2->2l-<25","2->2l->35","2->2l-25_29","2->2l-30_35","2-1_1.5l-<25","2-1_1.5l->35","2-1_1.5l-25_29","2-1_1.5l-30_35","2-1.5_2l-<25","2-1.5_2l->35","2-1.5_2l-25_29","2-1.5_2l-30_35","3-<1l-<25","3-<1l->35","3-<1l-25_29","3-<1l-30_35","3->2l-<25","3->2l->35","3->2l-25_29","3->2l-30_35","3-1_1.5l-<25","3-1_1.5l->35","3-1_1.5l-25_29","3-1_1.5l-30_35","3-1.5_2l-<25","3-1.5_2l->35","3-1.5_2l-25_29","3-1.5_2l-30_35","4-<1l-<25","4-<1l->35","4-<1l-25_29","4-<1l-30_35","4->2l-<25","4->2l->35","4->2l-25_29","4->2l-30_35","4-1_1.5l-<25","4-1_1.5l->35","4-1_1.5l-25_29","4-1_1.5l-30_35","4-1.5_2l-<25","4-1.5_2l->35","4-1.5_2l-25_29","4-1.5_2l-30_35"],"Holders":[197,1680,264,246,24,452,71,99,284,3582,536,696,133,1640,286,355,85,931,139,151,9,322,48,72,149,2443,313,419,66,1110,175,221,35,648,73,89,7,245,29,43,53,1635,155,240,24,692,78,121,20,316,33,40,3,114,16,25,31,724,81,122,18,344,39,68]},"jsondata":null,"options":{"legendOrder":null,"colors":null,"percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":{"w":200,"h":20},"sortFunction":null}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-4d5cf56b90cc7adfb320">{"x":{"csvdata":{"label":["1-<1l-<25","1-<1l->35","1-<1l-25_29","1-<1l-30_35","1->2l-<25","1->2l->35","1->2l-25_29","1->2l-30_35","1-1_1.5l-<25","1-1_1.5l->35","1-1_1.5l-25_29","1-1_1.5l-30_35","1-1.5_2l-<25","1-1.5_2l->35","1-1.5_2l-25_29","1-1.5_2l-30_35","2-<1l-<25","2-<1l->35","2-<1l-25_29","2-<1l-30_35","2->2l-<25","2->2l->35","2->2l-25_29","2->2l-30_35","2-1_1.5l-<25","2-1_1.5l->35","2-1_1.5l-25_29","2-1_1.5l-30_35","2-1.5_2l-<25","2-1.5_2l->35","2-1.5_2l-25_29","2-1.5_2l-30_35","3-<1l-<25","3-<1l->35","3-<1l-25_29","3-<1l-30_35","3->2l-<25","3->2l->35","3->2l-25_29","3->2l-30_35","3-1_1.5l-<25","3-1_1.5l->35","3-1_1.5l-25_29","3-1_1.5l-30_35","3-1.5_2l-<25","3-1.5_2l->35","3-1.5_2l-25_29","3-1.5_2l-30_35","4-<1l-<25","4-<1l->35","4-<1l-25_29","4-<1l-30_35","4->2l-<25","4->2l->35","4->2l-25_29","4->2l-30_35","4-1_1.5l-<25","4-1_1.5l->35","4-1_1.5l-25_29","4-1_1.5l-30_35","4-1.5_2l-<25","4-1.5_2l->35","4-1.5_2l-25_29","4-1.5_2l-30_35"],"Holders":[197,1680,264,246,24,452,71,99,284,3582,536,696,133,1640,286,355,85,931,139,151,9,322,48,72,149,2443,313,419,66,1110,175,221,35,648,73,89,7,245,29,43,53,1635,155,240,24,692,78,121,20,316,33,40,3,114,16,25,31,724,81,122,18,344,39,68]},"jsondata":null,"options":{"legendOrder":null,"colors":null,"percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":{"w":200,"h":20},"sortFunction":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="prix-des-voitures" class="section level1">

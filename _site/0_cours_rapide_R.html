@@ -162,6 +162,12 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 
@@ -298,17 +304,17 @@ div.tocify {
       </a>
     </li>
     <li>
-      <a href="0_exploration.html">
-        <span class="fa fa-binoculars"></span>
-         
-        Exploration des données
-      </a>
-    </li>
-    <li>
       <a href="0_manipulation.html">
         <span class="fa fa-table"></span>
          
         Manipulation des données
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
       </a>
     </li>
   </ul>
@@ -394,6 +400,14 @@ div.tocify {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Bases de R</h1>
@@ -420,39 +434,39 @@ div.tocify {
 ls()                                   # list the objects in the Workspace</code></pre>
 <pre><code>##   [1] &quot;a&quot;                &quot;agg&quot;              &quot;arry&quot;            
 ##   [4] &quot;bgg&quot;              &quot;bool&quot;             &quot;bubbles&quot;         
-##   [7] &quot;c&quot;                &quot;caracteristiques&quot; &quot;centres&quot;         
-##  [10] &quot;char&quot;             &quot;chorogg&quot;          &quot;choropleth&quot;      
-##  [13] &quot;cities&quot;           &quot;co&quot;               &quot;col&quot;             
-##  [16] &quot;color&quot;            &quot;county_df&quot;        &quot;CP&quot;              
-##  [19] &quot;CP2&quot;              &quot;cpc&quot;              &quot;cpcn&quot;            
-##  [22] &quot;cpcn.co&quot;          &quot;cpcn.model&quot;       &quot;d&quot;               
-##  [25] &quot;d1&quot;               &quot;d2&quot;               &quot;danish&quot;          
-##  [28] &quot;data&quot;             &quot;data2&quot;            &quot;datawc&quot;          
-##  [31] &quot;dep&quot;              &quot;dev&quot;              &quot;df&quot;              
-##  [34] &quot;dict&quot;             &quot;dt&quot;               &quot;DT&quot;              
-##  [37] &quot;DT2&quot;              &quot;f&quot;                &quot;f.complet&quot;       
-##  [40] &quot;f.tail&quot;           &quot;factr&quot;            &quot;france&quot;          
-##  [43] &quot;fullRAA&quot;          &quot;g&quot;                &quot;geoloc&quot;          
-##  [46] &quot;ggMMplot&quot;         &quot;i&quot;                &quot;info&quot;            
-##  [49] &quot;Ins&quot;              &quot;k&quot;                &quot;l&quot;               
-##  [52] &quot;Line&quot;             &quot;lst&quot;              &quot;m&quot;               
-##  [55] &quot;mack&quot;             &quot;match&quot;            &quot;matrx&quot;           
-##  [58] &quot;maxy&quot;             &quot;mcor&quot;             &quot;mid_range&quot;       
-##  [61] &quot;miny&quot;             &quot;Motion&quot;           &quot;multiply&quot;        
-##  [64] &quot;mydata&quot;           &quot;n&quot;                &quot;newrow&quot;          
-##  [67] &quot;newVar&quot;           &quot;num&quot;              &quot;op&quot;              
-##  [70] &quot;p&quot;                &quot;PP&quot;               &quot;RAAnc&quot;           
-##  [73] &quot;res&quot;              &quot;rho&quot;              &quot;rp&quot;              
-##  [76] &quot;RR&quot;               &quot;sb&quot;               &quot;sigma&quot;           
-##  [79] &quot;sp&quot;               &quot;sp500&quot;            &quot;sp500.monthly&quot;   
-##  [82] &quot;state_df&quot;         &quot;sumInsects&quot;       &quot;sumWB&quot;           
-##  [85] &quot;tail&quot;             &quot;tail.model&quot;       &quot;TG&quot;              
-##  [88] &quot;TN&quot;               &quot;tri&quot;              &quot;tri1&quot;            
-##  [91] &quot;tri2&quot;             &quot;tri3&quot;             &quot;tri4&quot;            
-##  [94] &quot;ts&quot;               &quot;TX&quot;               &quot;unemp&quot;           
-##  [97] &quot;vec&quot;              &quot;warpbreaks&quot;       &quot;wc&quot;              
-## [100] &quot;x&quot;                &quot;xat&quot;              &quot;y&quot;               
-## [103] &quot;z&quot;</code></pre>
+##   [7] &quot;caracteristiques&quot; &quot;centres&quot;          &quot;char&quot;            
+##  [10] &quot;chorogg&quot;          &quot;choropleth&quot;       &quot;cities&quot;          
+##  [13] &quot;co&quot;               &quot;col&quot;              &quot;color&quot;           
+##  [16] &quot;county_df&quot;        &quot;CP&quot;               &quot;CP2&quot;             
+##  [19] &quot;cpc&quot;              &quot;cpcn&quot;             &quot;cpcn.co&quot;         
+##  [22] &quot;cpcn.model&quot;       &quot;d&quot;                &quot;d1&quot;              
+##  [25] &quot;d2&quot;               &quot;danish&quot;           &quot;data&quot;            
+##  [28] &quot;data2&quot;            &quot;dens&quot;             &quot;dep&quot;             
+##  [31] &quot;dev&quot;              &quot;df&quot;               &quot;dict&quot;            
+##  [34] &quot;dt&quot;               &quot;DT&quot;               &quot;DT2&quot;             
+##  [37] &quot;f&quot;                &quot;f.complet&quot;        &quot;f.tail&quot;          
+##  [40] &quot;factr&quot;            &quot;ff&quot;               &quot;fr&quot;              
+##  [43] &quot;france&quot;           &quot;frank&quot;            &quot;fullRAA&quot;         
+##  [46] &quot;fullratio&quot;        &quot;g&quot;                &quot;geoloc&quot;          
+##  [49] &quot;ggMplot&quot;          &quot;h&quot;                &quot;i&quot;               
+##  [52] &quot;info&quot;             &quot;Ins&quot;              &quot;k&quot;               
+##  [55] &quot;KernelEst&quot;        &quot;l&quot;                &quot;lst&quot;             
+##  [58] &quot;m&quot;                &quot;mack&quot;             &quot;match&quot;           
+##  [61] &quot;matrx&quot;            &quot;mcor&quot;             &quot;mid_range&quot;       
+##  [64] &quot;Motion&quot;           &quot;multiply&quot;         &quot;mydata&quot;          
+##  [67] &quot;n&quot;                &quot;newrow&quot;           &quot;newVar&quot;          
+##  [70] &quot;num&quot;              &quot;obs&quot;              &quot;op&quot;              
+##  [73] &quot;p&quot;                &quot;PP&quot;               &quot;probs&quot;           
+##  [76] &quot;qqd&quot;              &quot;RAAnc&quot;            &quot;repar&quot;           
+##  [79] &quot;res&quot;              &quot;rho&quot;              &quot;rp&quot;              
+##  [82] &quot;RR&quot;               &quot;s&quot;                &quot;sb&quot;              
+##  [85] &quot;sigma&quot;            &quot;sp&quot;               &quot;sp500&quot;           
+##  [88] &quot;sp500.monthly&quot;    &quot;state_df&quot;         &quot;sumInsects&quot;      
+##  [91] &quot;sumWB&quot;            &quot;tail&quot;             &quot;tail.model&quot;      
+##  [94] &quot;TG&quot;               &quot;TN&quot;               &quot;ts&quot;              
+##  [97] &quot;TX&quot;               &quot;unemp&quot;            &quot;vec&quot;             
+## [100] &quot;warpbreaks&quot;       &quot;wc&quot;               &quot;x&quot;               
+## [103] &quot;xat&quot;              &quot;y&quot;                &quot;z&quot;</code></pre>
 <pre class="r"><code>print(y)                               # print information to R &#39;Console&#39;</code></pre>
 <pre><code>## [1] &quot;hello world&quot;</code></pre>
 <pre class="r"><code>rm(y)                                  # remove an object
@@ -969,10 +983,9 @@ print(df)</code></pre>
 ## R3 Jacquie    32
 ## R4   Simon    35
 ## R5    Nita    39</code></pre>
-<pre class="r"><code>df$person[1] &lt;- &#39;Matthew&#39;</code></pre>
-<pre><code>## Warning in `[&lt;-.factor`(`*tmp*`, 1, value = structure(c(NA, 2L, 1L, 5L, :
-## invalid factor level, NA generated</code></pre>
-<pre class="r"><code># instead convert to character or numeric etc
+<pre class="r"><code>df$person[1] &lt;- &#39;Matthew&#39;
+
+# instead convert to character or numeric etc
 df$person &lt;- as.character(df$person)
 df$person[1] &lt;- &#39;Matthew&#39;
 df$person &lt;- as.factor(df$person)   # coerce back to factor if necessary
@@ -1101,16 +1114,16 @@ seq(-2, 2, by=.2)                 # sequence of equal difference</code></pre>
 <pre class="r"><code>seq(length=10, from=-5, by=.2)    # with range defined by vector length</code></pre>
 <pre><code>##  [1] -5.0 -4.8 -4.6 -4.4 -4.2 -4.0 -3.8 -3.6 -3.4 -3.2</code></pre>
 <pre class="r"><code>rnorm(20, mean = 0, sd = 1)       # random normal distribution</code></pre>
-<pre><code>##  [1] -0.04572296 -1.00412058 -0.82843324 -0.34835173 -1.53829340
-##  [6] -0.25556525 -1.14994503  0.01232697 -0.22296954  0.88777165
-## [11] -0.59215528 -0.65571812 -0.68251762 -0.01585819 -0.44260479
-## [16]  0.35255750  0.07317058  0.00715880 -0.18760011 -0.76570065</code></pre>
+<pre><code>##  [1]  0.03515480 -0.66678643 -0.81568682  0.12187737  0.06535406
+##  [6] -1.72635252 -0.93558663  1.29865430 -0.58998365  0.55529298
+## [11] -0.19494348 -0.68812544  0.08269864  0.16814683  0.80554673
+## [16] -0.21220087 -0.85242940 -1.29667481 -2.54466095  0.53625801</code></pre>
 <pre class="r"><code>runif(20, min=0, max=100)         # array of random numbers</code></pre>
-<pre><code>##  [1] 41.252409 81.570256 16.265892 59.698339 13.473497 75.236334 17.408361
-##  [8] 57.983314 75.131201 18.279755  5.734051 49.848769 19.216702 61.973514
-## [15] 68.604728 42.554840 42.620172 20.451183 93.889393 53.572897</code></pre>
+<pre><code>##  [1] 50.936058 73.191303 85.243430 32.045487 30.628624  9.902127 74.149522
+##  [8] 78.382458 68.641672 71.339082 11.371578 73.102555 49.881506 45.334151
+## [15] 94.372780 48.076615 16.030034 43.926385 52.393116 57.003309</code></pre>
 <pre class="r"><code>sample(0:100, 20, replace=TRUE)   # array of random integers</code></pre>
-<pre><code>##  [1] 27 33 36 22  5 50 51 23 82 42 19 65 82 22 36 77  1 48 81 24</code></pre>
+<pre><code>##  [1] 75 83 41 62 77 66 71 13 20 28 55 63 39 69 68 36 13 37 46 39</code></pre>
 <pre class="r"><code>table(warpbreaks[,2:3])           # array summary stats (powerful summary tool)</code></pre>
 <pre><code>##     tension
 ## wool  L  M  H
@@ -1133,7 +1146,7 @@ seq(-2, 2, by=.2)                 # sequence of equal difference</code></pre>
 <pre class="r"><code>abs(-5)                                # magnitude</code></pre>
 <pre><code>## [1] 5</code></pre>
 <pre class="r"><code>sd(rnorm(10))                          # standard deviation</code></pre>
-<pre><code>## [1] 0.4983614</code></pre>
+<pre><code>## [1] 0.942443</code></pre>
 <pre class="r"><code>4^2                                    # square</code></pre>
 <pre><code>## [1] 16</code></pre>
 <pre class="r"><code>sqrt(16)                               # square root</code></pre>
@@ -1163,25 +1176,25 @@ seq(-2, 2, by=.2)                 # sequence of equal difference</code></pre>
 
 # some basic functionality
 plot(1:10)</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <pre class="r"><code>plot(sort(rnorm(100)), pch=16, cex=0.5)                 # specifying point and size respectively</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-2.png" width="672" /></p>
 <pre class="r"><code>plot(x=1:25, y=25:1, pch=1:25)                          # x &amp; y inputs, and showing the available point symbols</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-3.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-3.png" width="672" /></p>
 <pre class="r"><code>plot(sin, -pi, 2*pi)</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-4.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-4.png" width="672" /></p>
 <pre class="r"><code>hist(rnorm(1000), breaks=50)</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-5.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-5.png" width="672" /></p>
 <pre class="r"><code>barplot(sumInsects$sum, names.arg = sumInsects$group)</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-6.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-6.png" width="672" /></p>
 <pre class="r"><code>pie(sumInsects$sum, labels = sumInsects$group)</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-7.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-7.png" width="672" /></p>
 <pre class="r"><code># plots with more visual components are built up incrementally
 x &lt;- sample(0:100, 25, replace=TRUE)
 plot(x, pch=17)
 lines(x, col=&#39;#00FF00&#39;)
 points(x+5, pch=16, col=&#39;red&#39;)</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-8.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-8.png" width="672" /></p>
 <pre class="r"><code># stacking charts
 warpbreaks</code></pre>
 <pre><code>##    breaks wool tension
@@ -1257,10 +1270,10 @@ sumWB</code></pre>
 ## [3,] 24.55556 18.77778</code></pre>
 <pre class="r"><code>barplot(data, names.arg=c(&#39;Group A&#39;,&#39;Group B&#39;), 
         legend.text=c(&#39;L&#39;,&#39;M&#39;,&#39;H&#39;), args.legend = list(x = &quot;right&quot;))</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-9.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-9.png" width="672" /></p>
 <pre class="r"><code>barplot(data, names.arg=c(&#39;Group A&#39;,&#39;Group B&#39;), beside=T,
         legend.text=c(&#39;L&#39;,&#39;M&#39;,&#39;H&#39;), args.legend = list(x = &quot;topright&quot;))</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-10.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-10.png" width="672" /></p>
 <pre class="r"><code># &#39;symbols()&#39; is a good way to represent a 3rd data dimension (use square root for area proportionality)
 (cities &lt;- data.frame(city=c(&#39;London&#39;,&#39;Bristol&#39;,&#39;Manchester&#39;,&#39;Leeds&#39;), 
                       lon=c(-0.1,-2.6,-2.2,-1.5), lat=c(51.5,51.4,53.5,53.8), pop=c(8,1,2.7,0.8)))</code></pre>
@@ -1274,7 +1287,7 @@ sumWB</code></pre>
 abline(h=(seq(51,53,1)), col=&quot;lightgray&quot;, lty=1)
 abline(v=(seq(-4,1,1)), col=&quot;lightgray&quot;, lty=1)
 text(x=cities$lon, y=cities$lat+0.2, labels=cities$city)</code></pre>
-<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-18-11.png" width="672" /></p>
+<p><img src="0_cours_rapide_R_files/figure-html/unnamed-chunk-19-11.png" width="672" /></p>
 <pre class="r"><code># But for much easier and more elegant data visualisation use GGPLOT2
 
 # END OF SCRIPT</code></pre>
