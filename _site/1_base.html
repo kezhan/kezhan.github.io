@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Graphiques de base</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/htmlwidgets-0.7/htmlwidgets.js"></script>
+<script src="site_libs/threejs-70/three.min.js"></script>
+<script src="site_libs/threejs-70/Detector.js"></script>
+<script src="site_libs/threejs-70/Projector.js"></script>
+<script src="site_libs/threejs-70/CanvasRenderer.js"></script>
+<script src="site_libs/scatterplotThree-binding-0.2.2/scatterplotThree.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Accueil
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Bases de R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="0_cours_rapide_R.html">
+        <span class="fa fa-anchor"></span>
+         
+        Bases de R
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
+      </a>
+    </li>
+    <li>
+      <a href="0_manipulation.html">
+        <span class="fa fa-table"></span>
+         
+        Manipulation des données
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Data Visualisation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_base.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        Graphiques de base
+      </a>
+    </li>
+    <li>
+      <a href="1_avance.html">
+        <span class="fa fa-cogs"></span>
+         
+        Graphiques avancés
+      </a>
+    </li>
+    <li>
+      <a href="2_non_technique.html">
+        <span class="fa fa-industry"></span>
+         
+        Exemples non techniques
+      </a>
+    </li>
+    <li>
+      <a href="2_technique.html">
+        <span class="fa fa-flask"></span>
+         
+        Notions techniques
+      </a>
+    </li>
+    <li>
+      <a href="3_geo.html">
+        <span class="fa fa-map"></span>
+         
+        Données géographiques
+      </a>
+    </li>
+    <li>
+      <a href="4_machine_learning.html">
+        <span class="fa fa-rocket"></span>
+         
+        Machine learning
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info"></span>
+     
+    Contact
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://fr.linkedin.com/in/kezhanshi">
+        <span class="fa fa-linkedin-square"></span>
+         
+        Linkedin
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Graphiques de base</h1>
+
+</div>
+
+
+<p><img src="images/logo.png" style="position:absolute;top:0px;right:0px;" /></p>
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="objectif" class="section level2">
+<h2><span class="header-section-number">1.1</span> Objectif</h2>
+<p>L’objectif de cette partie est de se familiariser avec les graphiques de base. En fonction des données, et de l’objectif de la visualisation, créer un graphique à l’aide de différents packages R.</p>
+<p>Le document final pourra vous servir de mémo pour le choix des grpahiques.</p>
+</div>
+<div id="guide" class="section level2">
+<h2><span class="header-section-number">1.2</span> Guide</h2>
+<p><strong>Approche types de graphiques</strong></p>
+<ul>
+<li>Graphique d’une variable (continue ou discrète)
+<ul>
+<li>Histogramme</li>
+<li>Densité</li>
+<li>Combinaison d’un histogramme et d’une densité</li>
+<li>Dot plot</li>
+<li>Fonction de répartition</li>
+<li>QQ plot</li>
+<li>Bar plot des comptages</li>
+<li>Camembert</li>
+</ul></li>
+<li>Graphique de deux variables continues
+<ul>
+<li>Nuages de points</li>
+<li>Distribution bivariée</li>
+</ul></li>
+<li>Graphique de deux variables (l’une continue et l’autre discrète)
+<ul>
+<li>Box plot</li>
+<li>Violin plot</li>
+<li>Dot plot</li>
+<li>Stripcharts</li>
+<li>Line plot</li>
+<li>Bar plot</li>
+<li>Visualisation des erreurs</li>
+</ul></li>
+<li>Paramètres graphiques
+<ul>
+<li>Titre principal et titres des axes</li>
+<li>Légende</li>
+<li>Couleurs</li>
+<li>Thème</li>
+</ul></li>
+</ul>
+<p><strong>Approche fonctionnelle</strong></p>
+<ul>
+<li>Comparaison</li>
+<li>Distribution</li>
+<li>Relation</li>
+<li>Composition ou proportion</li>
+</ul>
+<p>L’image ci-dessous vous donne une vision globale des différents types de graphiques qui existent en fonction des objectifs.</p>
+<div class="figure">
+<img src="images/choose_graphic.jpg" alt="" />
+
+</div>
+</div>
+<div id="packages-utilises" class="section level2">
+<h2><span class="header-section-number">1.3</span> Packages utilisés</h2>
+<pre class="r"><code>library(data.table)
+library(ggplot2)
+library(DT)
+library(xts)
+library(plotly)
+library(MASS)
+library(beanplot)</code></pre>
+</div>
+<div id="donnees" class="section level2">
+<h2><span class="header-section-number">1.4</span> Données</h2>
+<p>Dans un premier temps, on va utiliser des séries de données bien structurées.</p>
+<div id="donnees-diverses" class="section level3">
+<h3><span class="header-section-number">1.4.1</span> Données diverses</h3>
+<p>Dans les packages de base, plusieurs bases de données sont incluses dans R.</p>
+<pre class="r"><code>head(mtcars)</code></pre>
+<pre><code>##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+<pre class="r"><code>head(diamonds)</code></pre>
+<pre><code>## # A tibble: 6 × 10
+##   carat       cut color clarity depth table price     x     y     z
+##   &lt;dbl&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;ord&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  0.23     Ideal     E     SI2  61.5    55   326  3.95  3.98  2.43
+## 2  0.21   Premium     E     SI1  59.8    61   326  3.89  3.84  2.31
+## 3  0.23      Good     E     VS1  56.9    65   327  4.05  4.07  2.31
+## 4  0.29   Premium     I     VS2  62.4    58   334  4.20  4.23  2.63
+## 5  0.31      Good     J     SI2  63.3    58   335  4.34  4.35  2.75
+## 6  0.24 Very Good     J    VVS2  62.8    57   336  3.94  3.96  2.48</code></pre>
+<pre class="r"><code>head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p>Dans le package <code>ggplot2</code>, vous trouvez plusieurs autres séries de données:</p>
+<pre class="r"><code>str(midwest)
+str(economics)
+str(movies)
+str(mpg)
+str(msleep)
+str(presidential)
+str(seals)</code></pre>
+<p>Pour avoir plus de données, vous pouvez également consulter <a href="https://vincentarelbundock.github.io/Rdatasets/datasets.html">Rdatasets</a>.</p>
+</div>
+<div id="donnees-assurance" class="section level3">
+<h3><span class="header-section-number">1.4.2</span> Données assurance</h3>
+<pre class="r"><code>str(Insurance)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    64 obs. of  5 variables:
+##  $ District: Factor w/ 4 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Group   : Ord.factor w/ 4 levels &quot;&lt;1l&quot;&lt;&quot;1-1.5l&quot;&lt;..: 1 1 1 1 2 2 2 2 3 3 ...
+##  $ Age     : Ord.factor w/ 4 levels &quot;&lt;25&quot;&lt;&quot;25-29&quot;&lt;..: 1 2 3 4 1 2 3 4 1 2 ...
+##  $ Holders : int  197 264 246 1680 284 536 696 3582 133 286 ...
+##  $ Claims  : int  38 35 20 156 63 84 89 400 19 52 ...</code></pre>
+</div>
+</div>
+</div>
+<div id="comparison" class="section level1">
+<h1><span class="header-section-number">2</span> Comparison</h1>
+<p>La comparaison de plusieurs valeurs est très souvent utilisée. En fonction des besoins, on peut utiliser plusieurs types de graphiques pour la visualiser.</p>
+<div id="bar-plot" class="section level2">
+<h2><span class="header-section-number">2.1</span> Bar plot</h2>
+<p><strong>Comptage</strong></p>
+<pre class="r"><code>g &lt;- ggplot(data=diamonds, aes(x=cut))
+g + geom_bar()</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><strong>Valeurs</strong></p>
+<p>Pour une comparaison simple, on peut utiliser un grpahique à barres.</p>
+<pre class="r"><code>data=data.table(Insurance)
+res=data[,.(H=sum(Holders),C=sum(Claims)),by=Age]
+res$Freq=res$C/res$H
+
+barplot(res$Freq,names.arg=res$Age,
+        main=&quot;Fréquence de sinistres en fonction des tranches d&#39;âges&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>En utilisant ggplot</p>
+<pre class="r"><code>ggplot(res,aes(Age,Freq))+geom_bar(stat = &quot;identity&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>data=data.table(iris)
+res=data[,.(m=mean(Sepal.Length)),by=Species]
+barplot(res$m,names.arg=res$Species,
+        main=&quot;Longueurs moyennes des sépales en fonction des espèces&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<ul>
+<li>Changer les axes x et y à l’aide de ggplot.</li>
+</ul>
+<p>A fin de visualiser plus d’informations sur le graphique.</p>
+<ul>
+<li>Ajouter les volatilités de part et d’autre des moyennes</li>
+<li>Ajouter quelques quantiles</li>
+</ul>
+<p>On obtient ainsi des graphiques à barres d’erreur.</p>
+<p>S’il y a plusieurs variables, il est possible de les afficher afin de visualiser la comparaison de toutes les variables en fonction des groupes.</p>
+<ul>
+<li>Afficher plusieurs variables</li>
+</ul>
+</div>
+<div id="boxplot" class="section level2">
+<h2><span class="header-section-number">2.2</span> Boxplot</h2>
+<p>Le boxplot permet d’afficher quelques statistiques simples des variables.</p>
+<pre class="r"><code>p &lt;- ggplot(iris, aes(Species, Sepal.Length))+ geom_boxplot()
+p</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<ul>
+<li>Identifier les valeurs qui correspondent aux traits épais au milieu des boîtes, les limites supérieure et inférieure des boîtes, ainsi que les limites des traits verticaux.</li>
+<li>À partir de quand les points isolés sont affichés ?</li>
+</ul>
+</div>
+<div id="violin-plot" class="section level2">
+<h2><span class="header-section-number">2.3</span> Violin plot</h2>
+<p>Le violin plot permet de donner la forme des densités.</p>
+<pre class="r"><code>p &lt;- ggplot(iris, aes(Species, Sepal.Length))
+p + geom_violin()</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<ul>
+<li>Rajouter les les statistiques de bases (moyenne, volatilité, quantiles) sur le violin plot.</li>
+<li>Changer les axes x et y.</li>
+</ul>
+<p><strong>Combinaison des geom dans ggplot</strong></p>
+<pre class="r"><code>p &lt;- ggplot(iris, aes(Species, Sepal.Length))
+p + geom_violin()+geom_boxplot()</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>ou</p>
+<pre class="r"><code>p + geom_violin()+stat_summary(fun.data=mean_sdl,geom = &quot;crossbar&quot;,width=0.2)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="beanplot" class="section level2">
+<h2><span class="header-section-number">2.4</span> Beanplot</h2>
+<p>Sur la base de grpahiques en violin, il est possible de faire mieux avec un <a href="Mieux%20encore%20https://cran.r-project.org/web/packages/beanplot/vignettes/beanplot.pdf">beanplot</a></p>
+<pre class="r"><code>beanplot(Petal.Width~Species,
+         data = iris,
+         col = list(&quot;red&quot;,&quot;blue&quot;,&quot;black&quot;),
+         border = NA,
+         ll=0.2)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="tabplot" class="section level2">
+<h2><span class="header-section-number">2.5</span> Tabplot</h2>
+<p>Pour ce graphique, utilisez le package <code>tabplot</code>.</p>
+<pre class="r"><code>library(tabplot)</code></pre>
+<pre><code>## Loading required package: bit</code></pre>
+<pre><code>## Attaching package bit</code></pre>
+<pre><code>## package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)</code></pre>
+<pre><code>## creators: bit bitwhich</code></pre>
+<pre><code>## coercion: as.logical as.integer as.bit as.bitwhich which</code></pre>
+<pre><code>## operator: ! &amp; | xor != ==</code></pre>
+<pre><code>## querying: print length any all min max range sum summary</code></pre>
+<pre><code>## bit access: length&lt;- [ [&lt;- [[ [[&lt;-</code></pre>
+<pre><code>## for more help type ?bit</code></pre>
+<pre><code>## 
+## Attaching package: &#39;bit&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:data.table&#39;:
+## 
+##     setattr</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     xor</code></pre>
+<pre><code>## Loading required package: ff</code></pre>
+<pre><code>## Attaching package ff</code></pre>
+<pre><code>## - getOption(&quot;fftempdir&quot;)==&quot;/var/folders/9f/f7jyvvys30qgjkk3px1_ssh80000gn/T//RtmpAVvVRD&quot;</code></pre>
+<pre><code>## - getOption(&quot;ffextension&quot;)==&quot;ff&quot;</code></pre>
+<pre><code>## - getOption(&quot;ffdrop&quot;)==TRUE</code></pre>
+<pre><code>## - getOption(&quot;fffinonexit&quot;)==TRUE</code></pre>
+<pre><code>## - getOption(&quot;ffpagesize&quot;)==65536</code></pre>
+<pre><code>## - getOption(&quot;ffcaching&quot;)==&quot;mmnoflush&quot;  -- consider &quot;ffeachflush&quot; if your system stalls on large writes</code></pre>
+<pre><code>## - getOption(&quot;ffbatchbytes&quot;)==16777216 -- consider a different value for tuning your system</code></pre>
+<pre><code>## - getOption(&quot;ffmaxbytes&quot;)==536870912 -- consider a different value for tuning your system</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ff&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:bit&#39;:
+## 
+##     clone, clone.default, clone.list</code></pre>
+<pre><code>## The following objects are masked from &#39;package:utils&#39;:
+## 
+##     write.csv, write.csv2</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     is.factor, is.ordered</code></pre>
+<pre><code>## Loading required package: ffbase</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ffbase&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:ff&#39;:
+## 
+##     [.ff, [.ffdf, [&lt;-.ff, [&lt;-.ffdf</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     %in%, table</code></pre>
+<pre><code>## Standard deviations are plot by default. See argument numMode of plot.tabplot.</code></pre>
+<pre class="r"><code>tableplot(iris, sortCol=&quot;Species&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="conclusion" class="section level2">
+<h2><span class="header-section-number">2.6</span> Conclusion</h2>
+<p>Comme vous avez pu remarquer, les graphiques de comparaison contiennent de plus en plus d’informations:</p>
+<ul>
+<li>Moyennes</li>
+<li>Moyennes avec les écarts-types</li>
+<li>Moyennes avec les quantiles</li>
+<li>Forme des densités</li>
+<li>Densités (qui sera vue dans la partie histogrammes et densités)</li>
+<li>Données brutes</li>
+</ul>
+<p>En fonction de vos besoins, ces différents types de graphiques permettent de comparer les données avec plus ou moins de détails.</p>
+</div>
+</div>
+<div id="evolultion-temporelle" class="section level1">
+<h1><span class="header-section-number">3</span> Evolultion temporelle</h1>
+<div id="plot-de-base" class="section level2">
+<h2><span class="header-section-number">3.1</span> Plot de base</h2>
+<pre class="r"><code>data=economics
+plot(
+  x = data$date,
+  y = data$unemploy,
+  type = &quot;p&quot;,
+  xlab = &quot;Date&quot;,
+  ylab = &quot;Chômeurs&quot;
+)</code></pre>
+<p><img src="1_base_files/figure-html/plotbase-1.png" width="672" /></p>
+</div>
+<div id="ts-plot" class="section level2">
+<h2><span class="header-section-number">3.2</span> TS plot</h2>
+<pre class="r"><code>ts=xts(data$unemploy,order.by=data$date,frequency=365.25)
+colnames(ts)=c(&quot;C&quot;)
+ts.plot(ts)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+<div id="lattice-et-grid" class="section level2">
+<h2><span class="header-section-number">3.3</span> lattice et grid</h2>
+<p><img src="1_base_files/figure-html/pressure-1.png" width="672" /></p>
+</div>
+<div id="zoo" class="section level2">
+<h2><span class="header-section-number">3.4</span> Zoo</h2>
+<pre class="r"><code>zoo::plot.zoo(
+  x=data$date,y=data$unemploy
+)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+<div id="ggplot" class="section level2">
+<h2><span class="header-section-number">3.5</span> ggplot</h2>
+<pre class="r"><code>a &lt;- ggplot(data = economics, aes(x = date, y = unemploy))
+a &lt;- a + geom_line(linetype = &quot;dotdash&quot;,colour=&quot;red&quot;)
+a</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code>a &lt;- ggplot(data = economics)
+a &lt;- a + geom_line(aes(x = date, y = uempmed),linetype = &quot;dotdash&quot;,colour=&quot;red&quot;)+
+  geom_line(aes(x = date, y = psavert),colour=&quot;black&quot;)
+a</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+</div>
+<div id="composition" class="section level1">
+<h1><span class="header-section-number">4</span> Composition</h1>
+<p>Dans une série de données, on doit parfois étudier la composition, ou la proportion de certaines catégories.</p>
+<div id="pie-chart" class="section level2">
+<h2><span class="header-section-number">4.1</span> Pie chart</h2>
+<pre class="r"><code>pie(table(diamonds$cut))</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<ul>
+<li>Créer un camembert à l’aide du package ggplot2</li>
+<li>Indiquer des informations dans les différentes parts : valeurs ou pourcentages</li>
+</ul>
+</div>
+<div id="waffle" class="section level2">
+<h2><span class="header-section-number">4.2</span> Waffle</h2>
+<p>Dans certains cas, il pourrait être intéressant d’utiliser un <em>camembert carré</em> ou graphique en gaufre à l’aide du package <a href="https://github.com/hrbrmstr/waffle">waffle</a>.</p>
+<pre class="r"><code># install.packages(&quot;waffle&quot;)
+library(waffle)
+waffle(table(diamonds$cut)/100,rows=20,size=2)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>Un exemple réel est la <a href="https://ig.ft.com/us-elections/florida-polls">représentation des électeurs US par Etat</a></p>
+<div class="figure">
+<img src="images/waffle_us.png" alt="" />
+
+</div>
+</div>
+<div id="barres-empilees" class="section level2">
+<h2><span class="header-section-number">4.3</span> Barres empilées</h2>
+<p>Lorsqu’il s’agit de comparer plusieurs catégories, on peut utiliser les graphiques à barres empilées.</p>
+<p>Pour visualiser les volumes, on peut utiliser la fonction suivante:</p>
+<pre class="r"><code>ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar()</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>Pour visualiser les pourcentages:</p>
+<pre class="r"><code>ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar(position = &quot;fill&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<ul>
+<li>Qu’est-ce qui est mis en évidence grâce à ce graphique ?</li>
+<li>Quelles informations sont moins visibles ?</li>
+</ul>
+<p>Pour intégrer à la fois la proportion et le volume, on peut calibrer les largeurs des barres en fonction des volumes.</p>
+<ul>
+<li>Réaliser un mosaic chart pour visualiser à la fois les volumes et la proportion, à l’aide de <a href="https://learnr.wordpress.com/2009/03/29/ggplot2_marimekko_mosaic_chart/">Marimekko/Mosaic Chart</a>.</li>
+</ul>
+<pre class="r"><code>ggMplot &lt;- function(var1, var2){
+  levVar1 &lt;- length(levels(var1))
+  levVar2 &lt;- length(levels(var2))
+
+  jointTable &lt;- prop.table(table(var1, var2))
+  plotData &lt;- as.data.frame(jointTable)
+  plotData$marginVar1 &lt;- prop.table(table(var1))
+  plotData$var2Height &lt;- plotData$Freq / plotData$marginVar1
+  plotData$var1Center &lt;- c(0, cumsum(plotData$marginVar1)[1:levVar1 -1]) +
+    plotData$marginVar1 / 2
+
+  ggplot(plotData, aes(var1Center, var2Height)) +
+    geom_bar(stat = &quot;identity&quot;, aes(width = marginVar1, fill = var2), col = &quot;Black&quot;) +
+    geom_text(aes(label = as.character(var1), x = var1Center, y = 1.05)) 
+  }
+
+ggMplot(diamonds$cut, diamonds$clarity)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><a href="http://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2">Source</a></p>
+</div>
+<div id="waterfall-chart" class="section level2">
+<h2><span class="header-section-number">4.4</span> Waterfall chart</h2>
+<p>Le waterfall chart est très couramment utilisé pour montrer l’évolution d’une série de montants.</p>
+<pre class="r"><code>set.seed(11)
+data=data.frame(label=paste0(&quot;s&quot;,seq(1,8,1)),
+                x=rnorm(8,10,3))
+data</code></pre>
+<pre><code>##   label         x
+## 1    s1  8.226907
+## 2    s2 10.079783
+## 3    s3  5.450341
+## 4    s4  5.912040
+## 5    s5 13.535467
+## 6    s6  7.197546
+## 7    s7 13.970817
+## 8    s8 11.874753</code></pre>
+<p>Avant de créer un waterfall chart, visualisons simplement cette série de données avec un barplot</p>
+<pre class="r"><code>ggplot(data,aes(as.factor(label),x))+geom_bar(stat = &quot;identity&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<pre class="r"><code>df=data.frame(montant=c(data$x[1],diff(data$x),data$x[nrow(data)]))
+df$s=c(&quot;Début&quot;,sign(df$montant)[2:(nrow(df)-1)],&quot;Fin&quot;)
+df$s[df$s==-1]=&quot;Diminution&quot;
+df$s[df$s==1]=&quot;Augmentation&quot;
+
+df$end=cumsum(df$montant)
+df$end[nrow(df)]=0
+df$start=c(0,df$end[-nrow(df)])
+df$label=c(as.character(data$label),&quot;final&quot;)
+df$id=seq_along(df$montant)
+
+ggplot(df, aes(fill = as.factor(s))) + 
+  geom_rect(aes(x = as.factor(id), xmin = id - 0.475, xmax = id + 0.475, ymin = end, ymax = start)) +
+  scale_fill_manual(values = c(&quot;green&quot;,&quot;blue&quot;,&quot;red&quot;,&quot;pink&quot;))+
+  scale_x_discrete(labels=df$label)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(df, aes(fill = as.factor(s))) + 
+  geom_rect(aes(x = as.factor(id), xmin = id - 0.475, xmax = id + 0.475, ymin = end, ymax = start)) +
+  scale_fill_manual(values = c(&quot;green&quot;,&quot;blue&quot;,&quot;red&quot;,&quot;pink&quot;))+
+  geom_text(aes(x=as.factor(id),y=(df$end+df$start)/2,label=round(df$montant,2)))+
+  geom_text(aes(x=as.factor(id),y=max(df$end)+0.2,label=round(c(df$end[-nrow(df)],NA),2)))+
+  scale_x_discrete(labels=df$label)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text).</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<pre class="r"><code>wc=function(data,n){
+  datawc=data.frame(label=as.character(c(as.character(data[1:n,1]),
+                                         &quot;int&quot;,
+                                         as.character(data[(n+1):nrow(data),1]),
+                                         &quot;final&quot;)))
+  datawc$end=c(data[1:n,2],0,data[(n+1):nrow(data),2],0)
+  datawc$start=c(0,data[1:n,2],data[n,2],data[(n+1):nrow(data),2])
+  
+  datawc$s=c(&quot;Début&quot;,sign(diff(data[,2]))[1:(n-1)],&quot;Inter&quot;,sign(diff(data[,2]))[(n):c(nrow(data)-1)],&quot;Fin&quot;)
+  datawc$s[datawc$s==-1]=&quot;Diminution&quot;
+  datawc$s[datawc$s==1]=&quot;Augmentation&quot;
+  datawc$id=1:nrow(datawc)
+  datawc$montant=datawc$end-datawc$start
+  
+  ggplot(datawc, aes(as.factor(id), fill = as.factor(s))) + 
+    geom_rect(aes(x = as.factor(id), xmin = id - 0.475, xmax = id + 0.475, ymin = end, ymax = start)) +
+    scale_fill_manual(values = c(&quot;green&quot;,&quot;blue&quot;,&quot;red&quot;,&quot;pink&quot;,&quot;yellow&quot;))+
+  scale_x_discrete(labels=datawc$label)+
+  geom_text(aes(x=as.factor(id),y=(datawc$end+datawc$start)/2,label=round(datawc$montant,2)))+
+  geom_text(aes(x=as.factor(id),y=max(datawc$end)+0.2,label=round(c(datawc$end[-nrow(datawc)],NA),2)))
+  
+}
+
+wc(data,4)</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_text).</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+</div>
+</div>
+<div id="histogramme-et-densite" class="section level1">
+<h1><span class="header-section-number">5</span> Histogramme et densité</h1>
+<div id="histogramme-simple" class="section level2">
+<h2><span class="header-section-number">5.1</span> Histogramme simple</h2>
+<pre class="r"><code>hist(iris[,1])</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+</div>
+<div id="density-avec-les-points" class="section level2">
+<h2><span class="header-section-number">5.2</span> Density avec les points</h2>
+<pre class="r"><code>d &lt;- density(iris[,1])
+plot(d, type=&quot;n&quot;, main=&quot;Densité&quot;)
+polygon(d, col=&quot;lightgray&quot;, border=&quot;gray&quot;)
+rug(iris[,1], col=&quot;red&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+</div>
+<div id="histogramme-avec-beeswarm" class="section level2">
+<h2><span class="header-section-number">5.3</span> Histogramme avec beeswarm</h2>
+<p>Vous pouvez mettre des couleurs</p>
+<pre class="r"><code>library(&quot;beeswarm&quot;)
+beeswarm(iris[,1:4])</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+</div>
+<div id="histogramme-avec-ggplot2" class="section level2">
+<h2><span class="header-section-number">5.4</span> Histogramme avec ggplot2</h2>
+<pre class="r"><code>ggplot(diamonds, aes(price, fill = cut)) +
+  geom_histogram(binwidth = 500)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+</div>
+<div id="densite" class="section level2">
+<h2><span class="header-section-number">5.5</span> Densité</h2>
+<pre class="r"><code>ggplot(diamonds, aes(depth, fill = cut, colour = cut)) +
+  geom_density(alpha = 0.1) +
+  xlim(55, 70)</code></pre>
+<pre><code>## Warning: Removed 45 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p>Faire varier la paramètre de lissage.</p>
+</div>
+<div id="densite-des-compositions" class="section level2">
+<h2><span class="header-section-number">5.6</span> Densité des compositions</h2>
+<pre class="r"><code>ggplot(diamonds, aes(carat, ..count.., fill = cut)) +
+  geom_density(position = &quot;fill&quot;)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+</div>
+<div id="histogramme-et-densite-2d" class="section level2">
+<h2><span class="header-section-number">5.7</span> Histogramme et densité 2D</h2>
+<p>Vous pouvez consulter cet article <a href="http://www.everydayanalytics.ca/2014/09/5-ways-to-do-2d-histograms-in-r.html">5 Ways to Do 2D Histograms in R</a> pour apprendre à réaliser les histogrammes 2D.</p>
+<p>En pratique, on peut utiliser un tel histogramme pour repérer les points de concentration sur un plan. Par exemple, vous pouvez explorer la <a href="https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-circulation/">base de données sur les accidents automobiles corporels</a>, et avec les coordonnées GPS des accidents, analyser les concentrations géographiques des accidents.</p>
+</div>
+</div>
+<div id="relation" class="section level1">
+<h1><span class="header-section-number">6</span> Relation</h1>
+<div id="bubble-chart" class="section level2">
+<h2><span class="header-section-number">6.1</span> Bubble chart</h2>
+<p>Les bubble charts sont très courant utilisés. Les différents paramètres permettent de représenter plusieurs variables:</p>
+<ul>
+<li>les axes x et y</li>
+<li>la taille des symboles</li>
+<li>le type des symboles</li>
+<li>la couleur des symboles</li>
+<li>le degré de transparence des symboles</li>
+<li>etc.</li>
+</ul>
+<pre class="r"><code>library(ggplot2)
+ggplot(iris, aes(Sepal.Length, Petal.Length, fill = Petal.Width)) + geom_point()</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<pre class="r"><code>p=ggplot(iris, aes(Sepal.Length, Petal.Length, fill = Petal.Width)) + geom_tile()
+p</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p>Utilisation des facettes de ggplot2</p>
+<pre class="r"><code>p+ facet_wrap(~ Species)</code></pre>
+<p><img src="1_base_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+</div>
+<div id="graphiques-3d" class="section level2">
+<h2><span class="header-section-number">6.2</span> Graphiques 3D</h2>
+<p>Les graphiques 3D permettent de rajouter un axe en plus, pour visualiser les données dans l’espace.</p>
+<p>Les packages <code>threejs</code>, <code>plotly</code> permettent de réaliser des graphiques interactifs en 3D.</p>
+<pre class="r"><code>library(threejs)
+scatterplot3js(iris$Petal.Width, iris$Sepal.Length, iris$Sepal.Width,color=c(&quot;black&quot;,&quot;steelblue&quot;,&quot;red&quot;)[unclass(iris$Species)])</code></pre>
+<div id="htmlwidget-9ea3ce8ee88f9c47463f" style="width:672px;height:480px;" class="scatterplotThree html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9ea3ce8ee88f9c47463f">{"x":{"data":[0.041666667,0.625,0.77777778,0.041666667,0.41666667,0.83333333,0.041666667,0.5,0.88888889,0.041666667,0.45833333,0.91666667,0.041666667,0.66666667,0.80555556,0.125,0.79166667,0.69444444,0.083333333,0.58333333,0.91666667,0.041666667,0.58333333,0.80555556,0.041666667,0.375,0.97222222,0,0.45833333,0.83333333,0.041666667,0.70833333,0.69444444,0.041666667,0.58333333,0.86111111,0,0.41666667,0.86111111,0,0.41666667,1,0.041666667,0.83333333,0.58333333,0.125,1,0.61111111,0.125,0.79166667,0.69444444,0.083333333,0.625,0.77777778,0.083333333,0.75,0.61111111,0.083333333,0.75,0.77777778,0.041666667,0.58333333,0.69444444,0.125,0.70833333,0.77777778,0.041666667,0.66666667,0.91666667,0.16666667,0.54166667,0.77777778,0.041666667,0.58333333,0.86111111,0.041666667,0.41666667,0.80555556,0.125,0.58333333,0.80555556,0.041666667,0.625,0.75,0.041666667,0.58333333,0.75,0.041666667,0.5,0.88888889,0.041666667,0.45833333,0.86111111,0.125,0.58333333,0.69444444,0,0.875,0.75,0.041666667,0.91666667,0.66666667,0.041666667,0.45833333,0.83333333,0.041666667,0.5,0.80555556,0.041666667,0.625,0.66666667,0,0.66666667,0.83333333,0.041666667,0.41666667,0.97222222,0.041666667,0.58333333,0.77777778,0.083333333,0.625,0.80555556,0.083333333,0.125,0.94444444,0.041666667,0.5,0.97222222,0.20833333,0.625,0.80555556,0.125,0.75,0.77777778,0.083333333,0.41666667,0.86111111,0.041666667,0.75,0.77777778,0.041666667,0.5,0.91666667,0.041666667,0.70833333,0.72222222,0.041666667,0.54166667,0.80555556,0.54166667,0.5,0.25,0.58333333,0.5,0.41666667,0.58333333,0.45833333,0.27777778,0.5,0.125,0.66666667,0.58333333,0.33333333,0.38888889,0.5,0.33333333,0.61111111,0.625,0.54166667,0.44444444,0.375,0.16666667,0.83333333,0.5,0.375,0.36111111,0.54166667,0.29166667,0.75,0.375,0,0.80555556,0.58333333,0.41666667,0.55555556,0.375,0.083333333,0.52777778,0.54166667,0.375,0.5,0.5,0.375,0.63888889,0.54166667,0.45833333,0.33333333,0.58333333,0.41666667,0.63888889,0.375,0.29166667,0.58333333,0.58333333,0.083333333,0.47222222,0.41666667,0.20833333,0.63888889,0.70833333,0.5,0.55555556,0.5,0.33333333,0.5,0.58333333,0.20833333,0.44444444,0.45833333,0.33333333,0.5,0.5,0.375,0.41666667,0.54166667,0.41666667,0.36111111,0.54166667,0.33333333,0.30555556,0.66666667,0.41666667,0.33333333,0.58333333,0.375,0.52777778,0.375,0.25,0.61111111,0.41666667,0.16666667,0.66666667,0.375,0.16666667,0.66666667,0.45833333,0.29166667,0.58333333,0.625,0.29166667,0.52777778,0.58333333,0.41666667,0.69444444,0.625,0.58333333,0.52777778,0.58333333,0.45833333,0.33333333,0.5,0.125,0.44444444,0.5,0.41666667,0.63888889,0.5,0.20833333,0.66666667,0.45833333,0.25,0.66666667,0.54166667,0.41666667,0.5,0.45833333,0.25,0.58333333,0.375,0.125,0.80555556,0.5,0.29166667,0.63888889,0.45833333,0.41666667,0.61111111,0.5,0.375,0.61111111,0.5,0.375,0.47222222,0.41666667,0.20833333,0.77777778,0.5,0.33333333,0.61111111,1,0.54166667,0.44444444,0.75,0.29166667,0.58333333,0.83333333,0.41666667,0.22222222,0.70833333,0.375,0.44444444,0.875,0.41666667,0.38888889,0.83333333,0.41666667,0.083333333,0.66666667,0.20833333,0.83333333,0.70833333,0.375,0.16666667,0.70833333,0.20833333,0.33333333,1,0.66666667,0.19444444,0.79166667,0.5,0.38888889,0.75,0.29166667,0.41666667,0.83333333,0.41666667,0.30555556,0.79166667,0.20833333,0.61111111,0.95833333,0.33333333,0.58333333,0.91666667,0.5,0.41666667,0.70833333,0.41666667,0.38888889,0.875,0.75,0.055555556,0.91666667,0.25,0.055555556,0.58333333,0.083333333,0.52777778,0.91666667,0.5,0.27777778,0.79166667,0.33333333,0.63888889,0.79166667,0.33333333,0.055555556,0.70833333,0.29166667,0.44444444,0.83333333,0.54166667,0.33333333,0.70833333,0.5,0.19444444,0.70833333,0.33333333,0.47222222,0.70833333,0.41666667,0.5,0.83333333,0.33333333,0.41666667,0.625,0.41666667,0.19444444,0.75,0.33333333,0.13888889,0.79166667,0.75,0,0.875,0.33333333,0.41666667,0.58333333,0.33333333,0.44444444,0.54166667,0.25,0.5,0.91666667,0.41666667,0.055555556,0.95833333,0.58333333,0.44444444,0.70833333,0.45833333,0.41666667,0.70833333,0.41666667,0.52777778,0.83333333,0.45833333,0.27777778,0.95833333,0.45833333,0.33333333,0.91666667,0.45833333,0.27777778,0.75,0.29166667,0.58333333,0.91666667,0.5,0.30555556,1,0.54166667,0.33333333,0.91666667,0.41666667,0.33333333,0.75,0.20833333,0.44444444,0.79166667,0.41666667,0.38888889,0.91666667,0.58333333,0.47222222,0.70833333,0.41666667,0.55555556],"options":{"height":null,"width":null,"axis":true,"numticks":[6,6,6],"xticklabs":null,"yticklabs":null,"zticklabs":null,"color":["black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","steelblue","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red","red"],"size":1,"labels":null,"labelmargin":"10px","stroke":"black","flipy":true,"grid":true,"renderer":"auto","signif":8,"bg":"#ffffff","xlim":{},"ylim":{},"zlim":{},"pch":null,"axisLabels":["x","z","y"],"mn":[0.1,2,4.3],"mx":[2.5,4.4,7.9],"xticklab":["0.10","0.58","1.06","1.54","2.02","2.50"],"yticklab":["2.00","2.48","2.96","3.44","3.92","4.40"],"zticklab":["7.90","7.18","6.46","5.74","5.02","4.30"],"xtick":[0,0.2,0.4,0.6,0.8,1],"ytick":[0,0.2,0.4,0.6,0.8,1],"ztick":[0,0.2,0.4,0.6,0.8,1]},"pch":null,"bg":"#ffffff"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="parametres-graphiques" class="section level1">
+<h1><span class="header-section-number">7</span> Paramètres graphiques</h1>
+<p>Vous devez également prêter attention aux différents éléments suivants:</p>
+<ul>
+<li>Titre principal</li>
+<li>Titres des axes x et y</li>
+<li>Couleurs, formes des symboles</li>
+<li>Couleur de l’arrière-plan</li>
+<li>Polices des caractères</li>
+<li>Légende (position et textes)</li>
+</ul>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'kezhan'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-79158649-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<p>Copyright &copy; 2016 DatavISUP</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

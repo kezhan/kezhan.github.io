@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Visualisation des notions techniques</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/htmlwidgets-0.7/htmlwidgets.js"></script>
+<link href="site_libs/plotlyjs-1.16.3/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotlyjs-1.16.3/plotly-latest.min.js"></script>
+<script src="site_libs/plotly-binding-4.5.2/plotly.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Accueil
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Bases de R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="0_cours_rapide_R.html">
+        <span class="fa fa-anchor"></span>
+         
+        Bases de R
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
+      </a>
+    </li>
+    <li>
+      <a href="0_manipulation.html">
+        <span class="fa fa-table"></span>
+         
+        Manipulation des données
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Data Visualisation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_base.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        Graphiques de base
+      </a>
+    </li>
+    <li>
+      <a href="1_avance.html">
+        <span class="fa fa-cogs"></span>
+         
+        Graphiques avancés
+      </a>
+    </li>
+    <li>
+      <a href="2_non_technique.html">
+        <span class="fa fa-industry"></span>
+         
+        Exemples non techniques
+      </a>
+    </li>
+    <li>
+      <a href="2_technique.html">
+        <span class="fa fa-flask"></span>
+         
+        Notions techniques
+      </a>
+    </li>
+    <li>
+      <a href="3_geo.html">
+        <span class="fa fa-map"></span>
+         
+        Données géographiques
+      </a>
+    </li>
+    <li>
+      <a href="4_machine_learning.html">
+        <span class="fa fa-rocket"></span>
+         
+        Machine learning
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info"></span>
+     
+    Contact
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://fr.linkedin.com/in/kezhanshi">
+        <span class="fa fa-linkedin-square"></span>
+         
+        Linkedin
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Visualisation des notions techniques</h1>
+
+</div>
+
+
+<div id="sinistralite" class="section level1">
+<h1><span class="header-section-number">1</span> Sinistralité</h1>
+<div id="installation-du-package" class="section level2">
+<h2><span class="header-section-number">1.1</span> Installation du package</h2>
+<pre class="r"><code># install.packages(&quot;ChainLadder&quot;)
+library(&quot;ChainLadder&quot;)
+library(&quot;ggvis&quot;)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+library(plotly)</code></pre>
+</div>
+<div id="visualisation-du-triangle" class="section level2">
+<h2><span class="header-section-number">1.2</span> Visualisation du triangle</h2>
+<div id="graphique-simple" class="section level3">
+<h3><span class="header-section-number">1.2.1</span> Graphique simple</h3>
+<p>Un exemple de triangle est contenu dans le package</p>
+<pre class="r"><code>RAA #Reinsurance Association of America</code></pre>
+<pre><code>##       dev
+## origin    1     2     3     4     5     6     7     8     9    10
+##   1981 5012  8269 10907 11805 13539 16181 18009 18608 18662 18834
+##   1982  106  4285  5396 10666 13782 15599 15496 16169 16704    NA
+##   1983 3410  8992 13873 16141 18735 22214 22863 23466    NA    NA
+##   1984 5655 11555 15766 21266 23425 26083 27067    NA    NA    NA
+##   1985 1092  9565 15836 22169 25955 26180    NA    NA    NA    NA
+##   1986 1513  6445 11702 12935 15852    NA    NA    NA    NA    NA
+##   1987  557  4020 10946 12314    NA    NA    NA    NA    NA    NA
+##   1988 1351  6947 13112    NA    NA    NA    NA    NA    NA    NA
+##   1989 3133  5395    NA    NA    NA    NA    NA    NA    NA    NA
+##   1990 2063    NA    NA    NA    NA    NA    NA    NA    NA    NA</code></pre>
+<pre class="r"><code>plot(RAA)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>plot(RAA,lattice=TRUE)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="graphique-interactif" class="section level3">
+<h3><span class="header-section-number">1.2.2</span> Graphique interactif</h3>
+<pre class="r"><code>p=ggplot(melt(RAA),aes(x=as.factor(dev),y=value,group=origin,col=(origin)))+geom_line()
+ggplotly(p)</code></pre>
+<div id="htmlwidget-e508830f94e462037e75" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e508830f94e462037e75">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10],"y":[5012,8269,10907,11805,13539,16181,18009,18608,18662,18834],"text":["as.factor(dev): 1<br>value: 5012<br>origin: 1981<br>(origin): 1981","as.factor(dev): 2<br>value: 8269<br>origin: 1982<br>(origin): 1981","as.factor(dev): 3<br>value: 10907<br>origin: 1983<br>(origin): 1981","as.factor(dev): 4<br>value: 11805<br>origin: 1984<br>(origin): 1981","as.factor(dev): 5<br>value: 13539<br>origin: 1985<br>(origin): 1981","as.factor(dev): 6<br>value: 16181<br>origin: 1986<br>(origin): 1981","as.factor(dev): 7<br>value: 18009<br>origin: 1987<br>(origin): 1981","as.factor(dev): 8<br>value: 18608<br>origin: 1988<br>(origin): 1981","as.factor(dev): 9<br>value: 18662<br>origin: 1989<br>(origin): 1981","as.factor(dev): 10<br>value: 18834<br>origin: 1990<br>(origin): 1981"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(19,43,67,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[106,4285,5396,10666,13782,15599,15496,16169,16704,null],"text":["as.factor(dev): 1<br>value: 106<br>origin: 1981<br>(origin): 1982","as.factor(dev): 2<br>value: 4285<br>origin: 1982<br>(origin): 1982","as.factor(dev): 3<br>value: 5396<br>origin: 1983<br>(origin): 1982","as.factor(dev): 4<br>value: 10666<br>origin: 1984<br>(origin): 1982","as.factor(dev): 5<br>value: 13782<br>origin: 1985<br>(origin): 1982","as.factor(dev): 6<br>value: 15599<br>origin: 1986<br>(origin): 1982","as.factor(dev): 7<br>value: 15496<br>origin: 1987<br>(origin): 1982","as.factor(dev): 8<br>value: 16169<br>origin: 1988<br>(origin): 1982","as.factor(dev): 9<br>value: 16704<br>origin: 1989<br>(origin): 1982","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1982"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(26,56,85,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[3410,8992,13873,16141,18735,22214,22863,23466,null,null],"text":["as.factor(dev): 1<br>value: 3410<br>origin: 1981<br>(origin): 1983","as.factor(dev): 2<br>value: 8992<br>origin: 1982<br>(origin): 1983","as.factor(dev): 3<br>value: 13873<br>origin: 1983<br>(origin): 1983","as.factor(dev): 4<br>value: 16141<br>origin: 1984<br>(origin): 1983","as.factor(dev): 5<br>value: 18735<br>origin: 1985<br>(origin): 1983","as.factor(dev): 6<br>value: 22214<br>origin: 1986<br>(origin): 1983","as.factor(dev): 7<br>value: 22863<br>origin: 1987<br>(origin): 1983","as.factor(dev): 8<br>value: 23466<br>origin: 1988<br>(origin): 1983","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1983","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1983"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(33,70,103,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[5655,11555,15766,21266,23425,26083,27067,null,null,null],"text":["as.factor(dev): 1<br>value: 5655<br>origin: 1981<br>(origin): 1984","as.factor(dev): 2<br>value: 11555<br>origin: 1982<br>(origin): 1984","as.factor(dev): 3<br>value: 15766<br>origin: 1983<br>(origin): 1984","as.factor(dev): 4<br>value: 21266<br>origin: 1984<br>(origin): 1984","as.factor(dev): 5<br>value: 23425<br>origin: 1985<br>(origin): 1984","as.factor(dev): 6<br>value: 26083<br>origin: 1986<br>(origin): 1984","as.factor(dev): 7<br>value: 27067<br>origin: 1987<br>(origin): 1984","as.factor(dev): 8<br>value: NA<br>origin: 1988<br>(origin): 1984","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1984","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1984"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(40,84,122,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[1092,9565,15836,22169,25955,26180,null,null,null,null],"text":["as.factor(dev): 1<br>value: 1092<br>origin: 1981<br>(origin): 1985","as.factor(dev): 2<br>value: 9565<br>origin: 1982<br>(origin): 1985","as.factor(dev): 3<br>value: 15836<br>origin: 1983<br>(origin): 1985","as.factor(dev): 4<br>value: 22169<br>origin: 1984<br>(origin): 1985","as.factor(dev): 5<br>value: 25955<br>origin: 1985<br>(origin): 1985","as.factor(dev): 6<br>value: 26180<br>origin: 1986<br>(origin): 1985","as.factor(dev): 7<br>value: NA<br>origin: 1987<br>(origin): 1985","as.factor(dev): 8<br>value: NA<br>origin: 1988<br>(origin): 1985","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1985","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1985"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(47,99,142,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[1513,6445,11702,12935,15852,null,null,null,null,null],"text":["as.factor(dev): 1<br>value: 1513<br>origin: 1981<br>(origin): 1986","as.factor(dev): 2<br>value: 6445<br>origin: 1982<br>(origin): 1986","as.factor(dev): 3<br>value: 11702<br>origin: 1983<br>(origin): 1986","as.factor(dev): 4<br>value: 12935<br>origin: 1984<br>(origin): 1986","as.factor(dev): 5<br>value: 15852<br>origin: 1985<br>(origin): 1986","as.factor(dev): 6<br>value: NA<br>origin: 1986<br>(origin): 1986","as.factor(dev): 7<br>value: NA<br>origin: 1987<br>(origin): 1986","as.factor(dev): 8<br>value: NA<br>origin: 1988<br>(origin): 1986","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1986","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1986"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(55,114,162,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[557,4020,10946,12314,null,null,null,null,null,null],"text":["as.factor(dev): 1<br>value: 557<br>origin: 1981<br>(origin): 1987","as.factor(dev): 2<br>value: 4020<br>origin: 1982<br>(origin): 1987","as.factor(dev): 3<br>value: 10946<br>origin: 1983<br>(origin): 1987","as.factor(dev): 4<br>value: 12314<br>origin: 1984<br>(origin): 1987","as.factor(dev): 5<br>value: NA<br>origin: 1985<br>(origin): 1987","as.factor(dev): 6<br>value: NA<br>origin: 1986<br>(origin): 1987","as.factor(dev): 7<br>value: NA<br>origin: 1987<br>(origin): 1987","as.factor(dev): 8<br>value: NA<br>origin: 1988<br>(origin): 1987","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1987","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1987"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(62,129,183,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[1351,6947,13112,null,null,null,null,null,null,null],"text":["as.factor(dev): 1<br>value: 1351<br>origin: 1981<br>(origin): 1988","as.factor(dev): 2<br>value: 6947<br>origin: 1982<br>(origin): 1988","as.factor(dev): 3<br>value: 13112<br>origin: 1983<br>(origin): 1988","as.factor(dev): 4<br>value: NA<br>origin: 1984<br>(origin): 1988","as.factor(dev): 5<br>value: NA<br>origin: 1985<br>(origin): 1988","as.factor(dev): 6<br>value: NA<br>origin: 1986<br>(origin): 1988","as.factor(dev): 7<br>value: NA<br>origin: 1987<br>(origin): 1988","as.factor(dev): 8<br>value: NA<br>origin: 1988<br>(origin): 1988","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1988","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1988"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(70,145,204,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[3133,5395,null,null,null,null,null,null,null,null],"text":["as.factor(dev): 1<br>value: 3133<br>origin: 1981<br>(origin): 1989","as.factor(dev): 2<br>value: 5395<br>origin: 1982<br>(origin): 1989","as.factor(dev): 3<br>value: NA<br>origin: 1983<br>(origin): 1989","as.factor(dev): 4<br>value: NA<br>origin: 1984<br>(origin): 1989","as.factor(dev): 5<br>value: NA<br>origin: 1985<br>(origin): 1989","as.factor(dev): 6<br>value: NA<br>origin: 1986<br>(origin): 1989","as.factor(dev): 7<br>value: NA<br>origin: 1987<br>(origin): 1989","as.factor(dev): 8<br>value: NA<br>origin: 1988<br>(origin): 1989","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1989","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1989"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(78,161,225,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3,4,5,6,7,8,9,10],"y":[2063,null,null,null,null,null,null,null,null,null],"text":["as.factor(dev): 1<br>value: 2063<br>origin: 1981<br>(origin): 1990","as.factor(dev): 2<br>value: NA<br>origin: 1982<br>(origin): 1990","as.factor(dev): 3<br>value: NA<br>origin: 1983<br>(origin): 1990","as.factor(dev): 4<br>value: NA<br>origin: 1984<br>(origin): 1990","as.factor(dev): 5<br>value: NA<br>origin: 1985<br>(origin): 1990","as.factor(dev): 6<br>value: NA<br>origin: 1986<br>(origin): 1990","as.factor(dev): 7<br>value: NA<br>origin: 1987<br>(origin): 1990","as.factor(dev): 8<br>value: NA<br>origin: 1988<br>(origin): 1990","as.factor(dev): 9<br>value: NA<br>origin: 1989<br>(origin): 1990","as.factor(dev): 10<br>value: NA<br>origin: 1990<br>(origin): 1990"],"key":null,"type":"scatter","mode":"lines","name":"","line":{"width":1.88976377952756,"color":"rgba(86,177,247,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[0.4,10.6],"y":[-1242.05,28415.05],"name":"99_7f838ae8dadb138f1db6335ca620d3ed","type":"scatter","mode":"markers","opacity":0,"hoverinfo":"none","showlegend":false,"marker":{"color":[0,1],"colorscale":[[0,"#132B43"],[0.0555555555555556,"#16324C"],[0.111111111111111,"#1A3855"],[0.166666666666667,"#1D3F5E"],[0.222222222222222,"#214667"],[0.277777777777778,"#244D71"],[0.333333333333333,"#28547A"],[0.388888888888889,"#2B5B84"],[0.444444444444444,"#2F638E"],[0.5,"#336A98"],[0.555555555555556,"#3772A2"],[0.611111111111111,"#3A79AC"],[0.666666666666667,"#3E81B7"],[0.722222222222222,"#4289C1"],[0.777777777777778,"#4691CC"],[0.833333333333333,"#4A99D6"],[0.888888888888889,"#4EA1E1"],[0.944444444444444,"#52A9EC"],[1,"#56B1F7"]],"colorbar":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"thickness":23.04,"title":"(origin)","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"tickmode":"array","ticktext":["1982.5","1985.0","1987.5","1990.0"],"tickvals":[0.166666666666667,0.444444444444444,0.722222222222222,1],"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"ticklen":2,"len":0.5}},"xaxis":"x","yaxis":"y"}],"layout":{"margin":{"t":26.2283105022831,"r":7.30593607305936,"b":40.1826484018265,"l":54.7945205479452},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"type":"linear","autorange":false,"tickmode":"array","range":[0.4,10.6],"ticktext":["1","2","3","4","5","6","7","8","9","10"],"tickvals":[1,2,3,4,5,6,7,8,9,10],"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":"as.factor(dev)","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"type":"linear","autorange":false,"tickmode":"array","range":[-1242.05,28415.05],"ticktext":["0","10000","20000"],"tickvals":[0,10000,20000],"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":"value","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895}},"hovermode":"closest"},"source":"A"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="visualisation-du-triangle-decumule" class="section level3">
+<h3><span class="header-section-number">1.2.3</span> Visualisation du triangle décumulé</h3>
+<pre class="r"><code>RAAnc=RAA[1:10,1:10]-cbind(t(t(rep(0,10))),RAA[1:10,1:9])
+matplot(t(RAAnc),type=&quot;b&quot;,lwd=2)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code># c=read.csv2(&quot;data/chainladder.csv&quot;)
+# matplot(t(c[,-1]),type=&quot;b&quot;)</code></pre>
+</div>
+<div id="bubble-chart-du-triangle" class="section level3">
+<h3><span class="header-section-number">1.2.4</span> Bubble chart du triangle</h3>
+<p>Utiliser un bubble chart pour visualiser</p>
+<ul>
+<li>le triangle cumulé</li>
+<li>le triangle décumulé</li>
+</ul>
+<pre class="r"><code>data=as.data.frame(cbind(rep(seq(1981,1990,1),10),
+                         as.vector(t(matrix(rep(seq(1,10,1),10),10,10))),
+                         as.vector(RAA)))</code></pre>
+<pre class="r"><code># symbols(data$V1,data$V2,squares=data$V3,inches=0.6,fg=&quot;white&quot;,bg=&quot;blue&quot;)
+symbols(data$V1,data$V2,circles=data$V3,inches=0.4,fg=&quot;white&quot;,bg=&quot;blue&quot;)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code># symbols(data$V1,data$V2,squares=data$V3,inches=0.6,fg=&quot;white&quot;,bg=&quot;blue&quot;)
+symbols(data$V1,data$V2,squares=data$V3,inches=0.4,fg=&quot;white&quot;,bg=&quot;blue&quot;)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Un autre triangle</p>
+<pre class="r"><code># data=as.data.frame(read.csv(&quot;data/triangle.csv&quot;,sep=&quot;;&quot;,header=TRUE))
+# 
+# data[data$Accident+data$Dev&gt;2015,]$Montant=0
+#   
+# symbols(data$Dev,data$Accident,squares=data$Montant,inches=0.5,fg=&quot;white&quot;,bg=&quot;red&quot;)
+# symbols(data$Dev,data$Accident,squares=data$Montant,inches=0.5,fg=&quot;white&quot;,bg=&quot;blue&quot;,add=TRUE)</code></pre>
+</div>
+</div>
+<div id="coefficients-de-developpement" class="section level2">
+<h2><span class="header-section-number">1.3</span> Coefficients de développement</h2>
+<p>Calculer les coefficients de développement selon la méthode de Chain Ladder</p>
+<ul>
+<li>avec une boucle R</li>
+<li>en utilisant la fonction <code>sapply</code></li>
+<li>rappel de la formule</li>
+</ul>
+<p><span class="math display">\[f_k=\frac{\sum_{i=1}^{n-k}C{i,k+1}}{\sum_{i=1}^{n-k}C{i,k}}\]</span></p>
+<pre class="r"><code>n=10
+f &lt;- sapply(1:(n-1),function(i){
+  sum(RAA[c(1:(n-i)),i+1])/sum(RAA[c(1:(n-i)),i])
+  })
+f</code></pre>
+<pre><code>## [1] 2.999359 1.623523 1.270888 1.171675 1.113385 1.041935 1.033264 1.016936
+## [9] 1.009217</code></pre>
+</div>
+<div id="extrapolation-des-coefficients" class="section level2">
+<h2><span class="header-section-number">1.4</span> Extrapolation des coefficients</h2>
+<p>En général, on ne considère pas que tout le développement est observé sur le triangle, ainsi on va faire une extrapolation.</p>
+<ul>
+<li>Faire un <code>plot</code> de <code>f</code> : que constate-t-on ?</li>
+<li>Quelle est la limite attendue de la suite ?</li>
+<li>Faire l’hypothèse que <code>log(f-1)</code> suit un modèle linéaire</li>
+<li>Réaliser la régression linéaire et trouver les coefficients du modèle</li>
+<li>Fonction pour la régression linéaire : <code>lm</code></li>
+<li>A partir de quelle année peut-on considérer que le développement est complet ?</li>
+</ul>
+<pre class="r"><code>dev=1:(n-1);tail.model=lm(log(f-1)~dev);co=coef(tail.model)
+plot(dev,log(f-1))
+abline(tail.model)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Calculer le tail factor</p>
+<pre class="r"><code>tail=exp(co[1]+c((n+1):(n+100))*co[2])+1
+f.tail=prod(tail)</code></pre>
+<ul>
+<li>Calculer la cadence de paiement, cumulée et non cumulée</li>
+<li>Tracer le graphique</li>
+</ul>
+</div>
+<div id="cadence-de-paiement-cumulee" class="section level2">
+<h2><span class="header-section-number">1.5</span> Cadence de paiement cumulée</h2>
+<pre class="r"><code>cpc=rev(1/cumprod(rev(c(f, tail[tail&gt;1.0001]))))
+plot(cpc, t=&quot;b&quot;,main=&quot;Cadence de paiement cumulée&quot;,
+xlab=&quot;Dev. period&quot;, ylab=&quot;Development % of ultimate loss&quot;)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="cadence-de-paiement-non-cumulee" class="section level2">
+<h2><span class="header-section-number">1.6</span> Cadence de paiement non cumulée</h2>
+<ul>
+<li>Calcul de la cadence de paiement non cumulée</li>
+<li>Lissage de la cadence</li>
+<li>Utilisation de la fonction <span class="math inline">\(a\cdot exp(polynome)\)</span></li>
+</ul>
+<pre class="r"><code>cpcn=c(cpc[1],diff(cpc))
+plot(cpcn, t=&quot;b&quot;,main=&quot;Cadence de paiement non cumulée&quot;,
+xlab=&quot;Dev&quot;, ylab=&quot;Development % of ultimate loss&quot;)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+<div id="lissage-cadence-de-paiement-non-cumulee" class="section level2">
+<h2><span class="header-section-number">1.7</span> Lissage cadence de paiement non cumulée</h2>
+<pre class="r"><code>plot(log(cpcn));dev=1:14
+cpcn.model=lm(log(cpcn)~dev+I(dev^2)+I(dev^3));cpcn.co=coef(cpcn.model)
+lines(dev,cpcn.co[1]+cpcn.co[2]*dev+cpcn.co[3]*dev^2+cpcn.co[4]*dev^3)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>cpcn=c(cpc[1],diff(cpc))
+plot(cpcn, t=&quot;b&quot;,main=&quot;Cadence de paiement non cumulée&quot;,xlab=&quot;Dev&quot;, ylab=&quot;Development % of ultimate loss&quot;)
+lines(dev,exp(cpcn.co[1]+cpcn.co[2]*dev+cpcn.co[3]*dev^2+cpcn.co[4]*dev^3))</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="completion-du-triangle" class="section level2">
+<h2><span class="header-section-number">1.8</span> Complétion du triangle</h2>
+<ul>
+<li>Compléter le triangle grâce aux coefficients de développement trouvés.</li>
+</ul>
+<pre class="r"><code>f.complet=c(f,f.tail)
+fullRAA=cbind(RAA,Ult=rep(0,10)) # initialisation
+for (k in 1:n){
+  fullRAA[(n-k+1):n,k+1]=fullRAA[(n-k+1):n,k]*f.complet[k]
+
+}
+round(fullRAA)</code></pre>
+<pre><code>##         1     2     3     4     5     6     7     8     9    10   Ult
+## 1981 5012  8269 10907 11805 13539 16181 18009 18608 18662 18834 18928
+## 1982  106  4285  5396 10666 13782 15599 15496 16169 16704 16858 16942
+## 1983 3410  8992 13873 16141 18735 22214 22863 23466 23863 24083 24204
+## 1984 5655 11555 15766 21266 23425 26083 27067 27967 28441 28703 28847
+## 1985 1092  9565 15836 22169 25955 26180 27278 28185 28663 28927 29072
+## 1986 1513  6445 11702 12935 15852 17649 18389 19001 19323 19501 19599
+## 1987  557  4020 10946 12314 14428 16064 16738 17294 17587 17749 17838
+## 1988 1351  6947 13112 16664 19525 21738 22650 23403 23800 24019 24139
+## 1989 3133  5395  8759 11132 13043 14521 15130 15634 15898 16045 16125
+## 1990 2063  6188 10046 12767 14959 16655 17353 17931 18234 18402 18495</code></pre>
+</div>
+<div id="calcul-de-provision" class="section level2">
+<h2><span class="header-section-number">1.9</span> Calcul de provision</h2>
+<ul>
+<li>Calculer le montant de provision par année</li>
+<li>Provion totale</li>
+</ul>
+<pre class="r"><code>getLatestCumulative(RAA)</code></pre>
+<pre><code>##  1981  1982  1983  1984  1985  1986  1987  1988  1989  1990 
+## 18834 16704 23466 27067 26180 15852 12314 13112  5395  2063 
+## attr(,&quot;latestcol&quot;)
+## 1981 1982 1983 1984 1985 1986 1987 1988 1989 1990 
+##   10    9    8    7    6    5    4    3    2    1 
+## attr(,&quot;rowsname&quot;)
+## [1] &quot;origin&quot;
+## attr(,&quot;colnames&quot;)
+##  [1] &quot;10&quot; &quot;9&quot;  &quot;8&quot;  &quot;7&quot;  &quot;6&quot;  &quot;5&quot;  &quot;4&quot;  &quot;3&quot;  &quot;2&quot;  &quot;1&quot; 
+## attr(,&quot;colsname&quot;)
+## [1] &quot;dev&quot;</code></pre>
+<pre class="r"><code>sum(fullRAA[,11]-getLatestCumulative(RAA))</code></pre>
+<pre><code>## [1] 53202.12</code></pre>
+</div>
+<div id="cadences-par-annee" class="section level2">
+<h2><span class="header-section-number">1.10</span> Cadences par année</h2>
+<ul>
+<li>Calculer la cadence par année de survence</li>
+<li>Tracer le grahpique des cadences individuelles</li>
+<li>Afficher la cadence moyenne sur les cadences individuelles</li>
+</ul>
+<pre class="r"><code>fullratio=RAA
+for (i in 1:10){
+  fullratio[i,]=RAA[i,]/fullRAA[i,11]
+}
+cpc</code></pre>
+<pre><code>##  [1] 0.1115699 0.3346381 0.5432926 0.6904641 0.8089993 0.9007276 0.9384993
+##  [8] 0.9697171 0.9861407 0.9952295 0.9975604 0.9988018 0.9994622 0.9998133</code></pre>
+<pre class="r"><code>matplot(t(rbind(fullratio,cpc[1:10])),type=&quot;b&quot;,lwd=2)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+</div>
+<div id="mack" class="section level2">
+<h2><span class="header-section-number">1.11</span> Mack</h2>
+<pre class="r"><code>mack &lt;- MackChainLadder(RAA, est.sigma=&quot;Mack&quot;)
+
+plot(mack)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+</div>
+</div>
+<div id="correlation-lineaire" class="section level1">
+<h1><span class="header-section-number">2</span> Corrélation linéaire</h1>
+<div id="quelques-generalites" class="section level2">
+<h2><span class="header-section-number">2.1</span> Quelques généralités</h2>
+<ul>
+<li>Ne pas confondre corrélation et causalité (voir spurious correlation)</li>
+<li>Distinguer la corrélation linéaire et la corrélation de Spearman</li>
+<li>Comprendre les inconvénients, voir <a href="https://people.math.ethz.ch/~embrecht/">Embrechts</a></li>
+</ul>
+</div>
+<div id="correlation-lineaire-1" class="section level2">
+<h2><span class="header-section-number">2.2</span> Corrélation linéaire</h2>
+<p>Utiliser <code>corrplot</code> (du package éponyme) pour visualiser les corrélations linéaires entre les différentes variables (de la série de données <code>mtcars</code>, <code>iris</code>, <code>economics</code> par exemple).</p>
+<pre class="r"><code>mcor &lt;- cor(mtcars)
+library(corrplot)
+corrplot(mcor, type=&quot;upper&quot;, order=&quot;hclust&quot;, tl.col=&quot;black&quot;, tl.srt=45)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>Utiliser la fonction <code>chart.Correlation</code> du package <code>PerformanceAnalytics</code></p>
+<pre class="r"><code>library(PerformanceAnalytics)
+mydata &lt;- mtcars[, c(1,3,4,5,6,7)]
+chart.Correlation(mydata, histogram=TRUE, pch=19)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>Utiliser un heatmap:</p>
+<pre class="r"><code>col&lt;- colorRampPalette(c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;))(20)
+heatmap(x = mcor, col = col, symm = TRUE)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+</div>
+<div id="inconvenient" class="section level2">
+<h2><span class="header-section-number">2.3</span> Inconvénient</h2>
+<p>Etant données deux lois lognormales, on peut exprimer la corrélation linéaire en fonction de leurs paramètres. Montrer qu’on peut trouver une limite supérieure et une limite inférieure, et tracer le graphique suivant:</p>
+<pre class="r"><code>sigma=seq(0.01,5,0.01)
+rho=1
+plot(sigma,exp(0.5)*exp(sigma^2/2)*(exp(rho*sigma)-1)/sqrt((exp(1)-1)*exp(1)*exp(sigma^2)*(exp(sigma^2)-1)),
+     ylim=c(-1,1),type=&quot;l&quot;,xlab=expression(sigma),
+     ylab=&quot;corrélation linéaire&quot;,main=expression(&quot;Bornes de la corrélation linéaire entre LN(0,1) et LN(0,&quot;*sigma*&quot;)&quot;))
+legend(2.5,0.9,c(&quot;Corrélation maximale&quot;,&quot;Corrélation minimale&quot;),col=c(1,2),lty=1,lwd=1,bty = &quot;n&quot;)
+rho=-1
+
+lines(sigma,exp(0.5)*exp(sigma^2/2)*(exp(rho*sigma)-1)/sqrt((exp(1)-1)*exp(1)*exp(sigma^2)*(exp(sigma^2)-1)),col=2)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+</div>
+</div>
+<div id="densite" class="section level1">
+<h1><span class="header-section-number">3</span> Densité</h1>
+<p>La densité peut être estimée par la méthode du noyau. L’histogramme est le cas particulier où le noyau est une loi uniforme sur tous les intervalles. Dans ggplot2, les lissages sont proposés, et le paramètre adjust permet de définir la largeur des intervalles.</p>
+<p>Construire l’estimateur avec <a href="estimateur_noyau.r">ce code</a>, et testez plusieurs noyaux et largeurs des intervalles. A l’aide de ggvis, ou shiny, vous pourrez faire varier certains paramètres de façon interactive.</p>
+</div>
+<div id="copules" class="section level1">
+<h1><span class="header-section-number">4</span> Copules</h1>
+<p>Les copules permettent d’expliciter totalement la relation de dépendance entre deux variables aléatoires. Lire <a href="http://datascienceplus.com/modelling-dependence-with-copulas/">cet article</a> et créer des graphiques en 3D avec threejs pour visualiser le comportement des copules.</p>
+</div>
+<div id="qqplot" class="section level1">
+<h1><span class="header-section-number">5</span> QQplot</h1>
+<p>Le qqplot de base n’est pas interactif. Créer un qqplot interactif.</p>
+<pre class="r"><code>set.seed(1)
+x &lt;- rnorm(80, mean=50, sd=5)
+y &lt;- runif(80)
+qqnorm(x)
+qqline(x)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre class="r"><code>qqnorm(y)
+qqline(y)</code></pre>
+<p><img src="2_technique_files/figure-html/unnamed-chunk-27-2.png" width="672" /></p>
+</div>
+<div id="courbes-des-taux" class="section level1">
+<h1><span class="header-section-number">6</span> Courbes des taux</h1>
+<p>Visualiser les simulations pour des courbes de taux selon le modèle de Vasicek, et tracer le graphique suivant.</p>
+<div class="figure">
+<img src="images/mc.png" alt="" />
+
+</div>
+</div>
+<div id="dautres-notions-techniques" class="section level1">
+<h1><span class="header-section-number">7</span> D’autres notions techniques</h1>
+<ul>
+<li>Table de mortalité</li>
+<li>Sinistralité, pour un modèle fréquence coût, visualiser les courbes AEP, OEP, et nombres de sinistres par tranche.</li>
+<li>A vous de trouver</li>
+</ul>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'kezhan'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-79158649-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<p>Copyright &copy; 2016 DatavISUP</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

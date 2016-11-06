@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Exemples de visualisation non techniques</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/htmlwidgets-0.7/htmlwidgets.js"></script>
+<script src="site_libs/d3-3.5.17/d3.min.js"></script>
+<link href="site_libs/sequences-0.1/sequences.css" rel="stylesheet" />
+<script src="site_libs/sunburst-binding-0.6.2/sunburst.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Accueil
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Bases de R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="0_cours_rapide_R.html">
+        <span class="fa fa-anchor"></span>
+         
+        Bases de R
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
+      </a>
+    </li>
+    <li>
+      <a href="0_manipulation.html">
+        <span class="fa fa-table"></span>
+         
+        Manipulation des données
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Data Visualisation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_base.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        Graphiques de base
+      </a>
+    </li>
+    <li>
+      <a href="1_avance.html">
+        <span class="fa fa-cogs"></span>
+         
+        Graphiques avancés
+      </a>
+    </li>
+    <li>
+      <a href="2_non_technique.html">
+        <span class="fa fa-industry"></span>
+         
+        Exemples non techniques
+      </a>
+    </li>
+    <li>
+      <a href="2_technique.html">
+        <span class="fa fa-flask"></span>
+         
+        Notions techniques
+      </a>
+    </li>
+    <li>
+      <a href="3_geo.html">
+        <span class="fa fa-map"></span>
+         
+        Données géographiques
+      </a>
+    </li>
+    <li>
+      <a href="4_machine_learning.html">
+        <span class="fa fa-rocket"></span>
+         
+        Machine learning
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info"></span>
+     
+    Contact
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://fr.linkedin.com/in/kezhanshi">
+        <span class="fa fa-linkedin-square"></span>
+         
+        Linkedin
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Exemples de visualisation non techniques</h1>
+
+</div>
+
+
+<pre class="r"><code>library(ggplot2)
+library(plotly)</code></pre>
+<div id="visualisation-des-indices" class="section level1">
+<h1><span class="header-section-number">1</span> Visualisation des indices</h1>
+<ul>
+<li><a href="exemples/flexdb/indices.html">Visualisation et prévision d’un indice</a></li>
+<li><a href="exemples/flexdb/plusieurs_indices_annuels.html">Comparaisons de plusieurs indices annuels</a></li>
+<li><a href="exemples/flexdb/plusieurs_indices_mensuels.html">Comparaisons de plusieurs indices mensuels</a></li>
+<li><a href="exemples/flexdb/securite_routiere.html">Sécurité routière</a></li>
+</ul>
+</div>
+<div id="visualisation-dun-portefeuille-dassurance" class="section level1">
+<h1><span class="header-section-number">2</span> Visualisation d’un portefeuille d’assurance</h1>
+<div id="treemap" class="section level2">
+<h2><span class="header-section-number">2.1</span> Treemap</h2>
+<p>Le treemap permet de visualiser la composition d’un portefeuille.</p>
+<pre class="r"><code>library(MASS)
+library(treemap)
+head(Insurance)</code></pre>
+<pre><code>##   District  Group   Age Holders Claims
+## 1        1    &lt;1l   &lt;25     197     38
+## 2        1    &lt;1l 25-29     264     35
+## 3        1    &lt;1l 30-35     246     20
+## 4        1    &lt;1l   &gt;35    1680    156
+## 5        1 1-1.5l   &lt;25     284     63
+## 6        1 1-1.5l 25-29     536     84</code></pre>
+<pre class="r"><code>Ins=Insurance
+Ins$Freq=Ins$Claims/Ins$Holders
+treemap(Ins,
+        index=c(&quot;District&quot;,&quot;Group&quot;,&quot;Age&quot;),
+        vSize=&quot;Holders&quot;,
+        vColor=&quot;Freq&quot;,
+        type=&quot;value&quot;)</code></pre>
+<p><img src="2_non_technique_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
+</div>
+<div id="sunburst" class="section level2">
+<h2><span class="header-section-number">2.2</span> Sunburst</h2>
+<p>Utiliser le package suivant pour réaliser un sunburst sur la série de données <code>diamonds</code>.</p>
+<pre class="r"><code>devtools::install_github(&quot;timelyportfolio/sunburstR&quot;)</code></pre>
+<pre class="r"><code>library(sunburstR)
+library(data.table)
+d1=data.table(District=gsub(&quot;-&quot;,&quot;_&quot;,as.character(Insurance$District)),
+              Group=gsub(&quot;-&quot;,&quot;_&quot;,as.character(Insurance$Group)),
+              Age=gsub(&quot;-&quot;,&quot;_&quot;,as.character(Insurance$Age)),
+              Holders=as.numeric(Insurance$Holders))
+
+d1$label=paste(d1$District,d1$Group,d1$Age,sep=&quot;-&quot;)
+agg=aggregate(Holders~label,data=d1,sum)
+sb=sunburst(agg,legend = list(w=200,h=20))
+sb</code></pre>
+<div class="sunburst html-widget" id="htmlwidget-ac57966d6fa915fe2e5d" style="width:768px;height:768px; position:relative;">
+<div>
+<div class="sunburst-main">
+<div class="sunburst-sequence"></div>
+<div class="sunburst-chart">
+<div class="sunburst-explanation" style="visibility:hidden;"></div>
+</div>
+</div>
+<div class="sunburst-sidebar">
+<input type="checkbox" class="sunburst-togglelegend">Legend</input>
+<div class="sunburst-legend" style="visibility:hidden;"></div>
+</div>
+</div>
+</div>
+<script type="application/json" data-for="htmlwidget-ac57966d6fa915fe2e5d">{"x":{"csvdata":{"label":["1-<1l-<25","1-<1l->35","1-<1l-25_29","1-<1l-30_35","1->2l-<25","1->2l->35","1->2l-25_29","1->2l-30_35","1-1_1.5l-<25","1-1_1.5l->35","1-1_1.5l-25_29","1-1_1.5l-30_35","1-1.5_2l-<25","1-1.5_2l->35","1-1.5_2l-25_29","1-1.5_2l-30_35","2-<1l-<25","2-<1l->35","2-<1l-25_29","2-<1l-30_35","2->2l-<25","2->2l->35","2->2l-25_29","2->2l-30_35","2-1_1.5l-<25","2-1_1.5l->35","2-1_1.5l-25_29","2-1_1.5l-30_35","2-1.5_2l-<25","2-1.5_2l->35","2-1.5_2l-25_29","2-1.5_2l-30_35","3-<1l-<25","3-<1l->35","3-<1l-25_29","3-<1l-30_35","3->2l-<25","3->2l->35","3->2l-25_29","3->2l-30_35","3-1_1.5l-<25","3-1_1.5l->35","3-1_1.5l-25_29","3-1_1.5l-30_35","3-1.5_2l-<25","3-1.5_2l->35","3-1.5_2l-25_29","3-1.5_2l-30_35","4-<1l-<25","4-<1l->35","4-<1l-25_29","4-<1l-30_35","4->2l-<25","4->2l->35","4->2l-25_29","4->2l-30_35","4-1_1.5l-<25","4-1_1.5l->35","4-1_1.5l-25_29","4-1_1.5l-30_35","4-1.5_2l-<25","4-1.5_2l->35","4-1.5_2l-25_29","4-1.5_2l-30_35"],"Holders":[197,1680,264,246,24,452,71,99,284,3582,536,696,133,1640,286,355,85,931,139,151,9,322,48,72,149,2443,313,419,66,1110,175,221,35,648,73,89,7,245,29,43,53,1635,155,240,24,692,78,121,20,316,33,40,3,114,16,25,31,724,81,122,18,344,39,68]},"jsondata":null,"options":{"legendOrder":null,"colors":null,"percent":true,"count":false,"explanation":null,"breadcrumb":[],"legend":{"w":200,"h":20},"sortFunction":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="prix-des-voitures" class="section level1">
+<h1><span class="header-section-number">3</span> Prix des voitures</h1>
+<p>Dans le cadre d’analyse des sommes assurées, il est intéressant d’analyser les prix de marché des voitures.</p>
+<p>Plusieurs sources de données sont possibles: - Cotes de voitures - Prix des concessionnaires des véhicules neufs - Prix des annonces de vente des véhicules d’occasion</p>
+<p>L’étude sur <a href="exemples/argus_annonces.html">les prix des annonces des voitures d’occasion</a> utilise quelques graphiques classiques (nuages de points) pour montrer les relations entre les différentes variables.</p>
+<p>Il est possible d’approfondir l’étude pour faire un projet.</p>
+<ul>
+<li>Comparer les prix des annonces et les cotes</li>
+<li>Etudier les décotes</li>
+<li>Calculer les prix à la location</li>
+</ul>
+<p>De même, il est possible d’étudier les prix immobiliers:</p>
+<ul>
+<li>Prix de ventes par code postal</li>
+<li>Prix de location par code postal</li>
+<li>Prix de vente et de location par mètre carré en fonction de la superficie</li>
+<li>Ratio prix de vente et prix locatif, par code postal, et par superficie</li>
+<li>Précision de la géolocation en fonction des mots clés (quartiers ou rue, malheureusement, les adresses exactes sont rarement indiquées)</li>
+</ul>
+</div>
+<div id="avis-assurance" class="section level1">
+<h1><span class="header-section-number">4</span> Avis assurance</h1>
+<p>L’exemple suivant porte sur <a href="exemples/avis_assurance.html">l’analyse des avis clients des produits d’assurance</a>. Des études de données textuelles peuvent être faites sur certaines données (projet sur Airbnb)</p>
+</div>
+<div id="donnees" class="section level1">
+<h1><span class="header-section-number">5</span> Données</h1>
+<p>En fonction de votre poste, choisir une série de données et faire l’analyse visuelle des données.</p>
+<div id="donnees-r" class="section level2">
+<h2><span class="header-section-number">5.1</span> Données R</h2>
+<p><strong>Séries de données dans certains packages R</strong></p>
+<pre class="r"><code>library(MASS)
+head(Insurance)</code></pre>
+<pre><code>##   District  Group   Age Holders Claims
+## 1        1    &lt;1l   &lt;25     197     38
+## 2        1    &lt;1l 25-29     264     35
+## 3        1    &lt;1l 30-35     246     20
+## 4        1    &lt;1l   &gt;35    1680    156
+## 5        1 1-1.5l   &lt;25     284     63
+## 6        1 1-1.5l 25-29     536     84</code></pre>
+<pre class="r"><code>head(Boston)</code></pre>
+<pre><code>##      crim zn indus chas   nox    rm  age    dis rad tax ptratio  black
+## 1 0.00632 18  2.31    0 0.538 6.575 65.2 4.0900   1 296    15.3 396.90
+## 2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.90
+## 3 0.02729  0  7.07    0 0.469 7.185 61.1 4.9671   2 242    17.8 392.83
+## 4 0.03237  0  2.18    0 0.458 6.998 45.8 6.0622   3 222    18.7 394.63
+## 5 0.06905  0  2.18    0 0.458 7.147 54.2 6.0622   3 222    18.7 396.90
+## 6 0.02985  0  2.18    0 0.458 6.430 58.7 6.0622   3 222    18.7 394.12
+##   lstat medv
+## 1  4.98 24.0
+## 2  9.14 21.6
+## 3  4.03 34.7
+## 4  2.94 33.4
+## 5  5.33 36.2
+## 6  5.21 28.7</code></pre>
+<pre class="r"><code>library(Ecdat)
+head(HI)</code></pre>
+<pre><code>##   whrswk hhi whi hhi2  education  race hispanic experience kidslt6 kids618
+## 1      0  no  no   no 13-15years white       no       13.0       2       1
+## 2     50  no yes   no 13-15years white       no       24.0       0       1
+## 3     40 yes  no  yes    12years white       no       43.0       0       0
+## 4     40  no yes  yes 13-15years white       no       17.0       0       1
+## 5      0 yes  no  yes  9-11years white       no       44.5       0       0
+## 6     40 yes yes  yes    12years white       no       32.0       0       0
+##    husby       region   wght
+## 1 11.960 northcentral 214986
+## 2  1.200 northcentral 210119
+## 3 31.275 northcentral 219955
+## 4  9.000 northcentral 210317
+## 5  0.000 northcentral 219955
+## 6 15.690 northcentral 208148</code></pre>
+<pre class="r"><code>head(Mofa)</code></pre>
+<pre><code>##         capexp    gdp sales  nbaf netinc
+## Belgium   2.00 0.8524  2.12  4.82   11.5
+## Denmark   3.00 0.5700  0.15  1.24    0.1
+## France    3.00 5.3726  2.70  9.08    0.4
+## Germany  24.00 6.6299  5.35 10.85    9.1
+## Greece    0.25 0.3395  0.02  0.79    0.1
+## Ireland   1.00 0.1718  0.29  2.15    5.1</code></pre>
+<pre class="r"><code>library(evir)
+data(danish)
+head(danish)</code></pre>
+<pre><code>## [1] 1.683748 2.093704 1.732581 1.779754 4.612006 8.725274</code></pre>
+<pre class="r"><code># str(danish)
+# typeof(danish)
+# plot(danish)</code></pre>
+</div>
+<div id="open-data" class="section level2">
+<h2><span class="header-section-number">5.2</span> Open Data</h2>
+<p>Les données sont sur les leurs sites</p>
+<ul>
+<li><a href="http://eca.knmi.nl/dailydata/index.php">Données météorologiques</a></li>
+<li><p><a href="https://www.data.gouv.fr/fr/datasets/base-de-donnees-accidents-corporels-de-la-circulation/">Données sur les sinistres automobiles corporels</a></p></li>
+<li><a href="http://public.opendatasoft.com/explore/dataset/correspondance-code-insee-code-postal/">Correspondance code postal insee 2013 avec altitude, superficie, population et gécodage</a></li>
+<li><a href="http://datanova.legroupe.laposte.fr/explore/dataset/carte-des-codes-postaux/table/">Carte des Codes Postaux 2016</a>: données de la Poste, centroïdes des codes postaux</li>
+<li><a href="http://public.opendatasoft.com/explore/dataset/evolution-et-structure-de-la-population-france-2012-categories-socio-professionn/information/">Catégories socio-professionnelles</a></li>
+<li><a href="http://public.opendatasoft.com/explore/dataset/evolution-et-structure-de-la-population-france-2012-migrations-residentielles/information/">Migrations résidentielles</a></li>
+<li><a href="http://public.opendatasoft.com/explore/dataset/resume-statistique-communes-departements-et-regions-france-2012-2013-2014/">Résumés statistiques des communes, départements et régions</a></li>
+<li><a href="http://public.opendatasoft.com/explore/dataset/capacite-des-communes-en-hebergement-touristique-2015/">Capacités des communes en hébergement touristique</a></li>
+<li><a href="http://public.opendatasoft.com/explore/dataset/revenus-imposables-et-montant-des-impots-1998-2005/">Revenus imposables et montants des impôts</a></li>
+<li><a href="http://public.opendatasoft.com/explore/dataset/equip-sport-loisir-socio-infra-2014/">Equipement sports et loisir par commune</a></li>
+<li><p><a href="http://public.opendatasoft.com/explore/dataset/deces-par-commune-departement-et-region-de-2003-a-2013/">Décès par commune, départements et régions</a></p></li>
+</ul>
+</div>
+<div id="donnees-pricing-game" class="section level2">
+<h2><span class="header-section-number">5.3</span> Données pricing game</h2>
+<p>L’Institut des Actuaires a organisé deux pricing games, et les données peuvent être utilisées:</p>
+<ul>
+<li><a href="doc/pricing-game-2015.pdf">Pricing game 2015</a></li>
+<li><a href="doc/pricing-game-2016.pdf">Pricing game 2016</a></li>
+</ul>
+</div>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'kezhan'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-79158649-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<p>Copyright &copy; 2016 DatavISUP</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
