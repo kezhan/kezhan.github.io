@@ -1,0 +1,186 @@
+---
+title: "Tableau de bord - Sécurité routière"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    social: menu
+    source_code: embed
+---
+
+
+```{r}
+library(highcharter)
+library(dplyr)
+library(viridisLite)
+library(forecast)
+library(treemap)
+library(flexdashboard)
+library(data.table)
+library(reshape2)
+library(xts)
+library(dygraphs)
+library(ggplot2)
+
+```
+
+
+```{r}
+nombres=read.csv2("data/Sécurité routière/mensuel_accidents.csv")
+blesses=read.csv2("data/Sécurité routière/mensuel_blesses.csv")
+hospit=read.csv2("data/Sécurité routière/mensuel_hospitalises.csv")
+tues=read.csv2("data/Sécurité routière/mensuel_tuesa30jours.csv")
+
+clean=function(data){
+  data=data.table(data)
+  setnames(data,as.character(seq(0,12,1)))
+  data
+  data2=melt(data,id.vars = c("0"))
+  data2$date=paste(data2$"0",data2$variable,"01",sep="-")
+  ts=xts(as.numeric(data2$value),order.by = as.Date(data2$date),frequency = 365.25/12)
+  ts=ts[is.na(ts[,1])==FALSE,]
+  return(ts)
+}
+
+nombres=clean(nombres)
+blesses=clean(blesses)
+hospit=clean(hospit)
+tues=clean(tues)
+
+data=cbind(nombres,blesses,hospit,tues)
+names(data)=c("nombres","blesses","hospitalises","tues")
+
+```
+
+Row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+### Evolutions temporelles
+
+```{r}
+dygraph(data) %>%
+  dyRoller(rollPeriod = 1)%>%
+  dyRangeSelector(height = 30)
+
+```
+
+### Prévision nombres
+
+```{r}
+
+# prevision=function(data){
+#   f=forecast(ts(data,frequency=12),level = 90)
+#   fd=cbind(f$x,f$mean,f$lower,f$upper)
+#   colnames(fd)=c("historique","prevision","borne inf","borne sup")
+#   prev=xts(fd,
+#            order.by = seq(as.Date("1999/1/1"),
+#                           by = "month",
+#                           len=nrow(fd)))
+#   return(as.xts(prev))
+# }
+
+prevision=function(data){
+  f=forecast(ts(data,frequency=12,start=c(1999,1)),level = 90)
+  fd=cbind(f$x,f$mean,f$lower,f$upper)
+  colnames(fd)=c("historique","prevision","borne inf","borne sup")
+  return(fd)
+}
+
+
+dygraph(prevision(nombres)) %>%
+  dyRoller(rollPeriod = 1)%>%
+  dyRangeSelector(height = 20)
+
+```
+
+### Prévision blessés
+
+```{r}
+dygraph(prevision(blesses)) %>%
+  dyRoller(rollPeriod = 1)%>%
+  dyRangeSelector(height = 20)
+```
+
+### Prévision hopitalisés
+
+```{r}
+
+dygraph(prevision(hospit)) %>%
+  dyRoller(rollPeriod = 1)%>%
+  dyRangeSelector(height = 20)
+
+```
+
+### Prévision tués
+
+```{r}
+dygraph(prevision(tues)) %>%
+  dyRoller(rollPeriod = 1)%>%
+  dyRangeSelector(height = 20)
+
+```
+
+### Test Highchart
+
+```{r}
+
+thm <- 
+  hc_theme(
+    colors = c("#1a6ecc", "#434348", "#90ed7d"),
+    chart = list(
+      backgroundColor = "transparent",
+      style = list(fontFamily = "Source Sans Pro")
+    ),
+    xAxis = list(
+      gridLineWidth = 1
+    )
+  )
+
+
+ts(nombres,frequency=12,start=c(1999,1)) %>% 
+  forecast(level = 90) %>% 
+  hchart()%>% 
+  hc_add_theme(thm)
+
+```
+
+
+
+Row
+-----------------------------------------------------------------------
+### Evolution annuelles
+
+```{r}
+
+DT=data.table(date=index(data),data)
+DTm=melt(DT,id.vars = "date")
+DTm$annee=substr(DTm$date,1,4)
+DTa=DTm[,.(t=sum(value)),by=c("annee","variable")]
+
+ggplot(DTa, aes(x=annee,y=t,fill=variable))+geom_bar(stat = "identity")
+
+
+```
+
+### Proportion
+
+
+```{r}
+ggplot(DTa[DTa$annee %in% seq(2005,2016,1),], aes(x=annee,y=t,fill=variable))+geom_bar(stat = "identity",position = "fill")
+
+```
+
+### Saisonnalité
+
+
+```{r}
+
+f=decompose(ts(nombres,frequency=12))
+s=data.table(mois=as.factor(seq(1,12,1)),
+             value=f$seasonal[1:12]+2000)
+
+ggplot(s,aes(x=mois,y=value))+geom_bar(stat = "identity")
+
+
+
+```
+
+

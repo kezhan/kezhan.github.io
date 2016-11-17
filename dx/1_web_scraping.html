@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Techniques de base du web-scraping</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: -22px; }
+.code-folding-btn.collapsed { margin-bottom: 4px; }
+</style>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Accueil
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Bases de R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="0_cours_rapide_R.html">
+        <span class="fa fa-anchor"></span>
+         
+        Bases de R
+      </a>
+    </li>
+    <li>
+      <a href="0_manipulation.html">
+        <span class="fa fa-table"></span>
+         
+        Manipulation des données
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Data Visualisation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_base.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        Graphiques de base
+      </a>
+    </li>
+    <li>
+      <a href="1_avance.html">
+        <span class="fa fa-cogs"></span>
+         
+        Graphiques avancés
+      </a>
+    </li>
+    <li>
+      <a href="2_non_technique.html">
+        <span class="fa fa-industry"></span>
+         
+        Exemples non techniques
+      </a>
+    </li>
+    <li>
+      <a href="2_technique.html">
+        <span class="fa fa-flask"></span>
+         
+        Notions techniques
+      </a>
+    </li>
+    <li>
+      <a href="3_geo.html">
+        <span class="fa fa-map"></span>
+         
+        Données géographiques
+      </a>
+    </li>
+    <li>
+      <a href="4_machine_learning.html">
+        <span class="fa fa-rocket"></span>
+         
+        Machine learning
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info"></span>
+     
+    Contact
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://fr.linkedin.com/in/kezhanshi">
+        <span class="fa fa-linkedin-square"></span>
+         
+        Linkedin
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Techniques de base du web-scraping</h1>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>Lors que vous voulez récupérer certaines données sur internet, vous pouvez faire le traditionnel copier-coller. Mais comme les textes ou les données numériques se retrouvent souvent dans le désordre, et vous devez alors faire du temps pour nettoyer. De plus, il peut y avoir une quantité importante de page à copier-coller. Pour faciliter cette étape de contruction de base de données venant d’un site internet, des techniques de web-scraping exitent pour automatiser la tâche.</p>
+<p>R dispose de nombreux packages pour lire et analyser du code html, voici un guide pour les débutants.</p>
+</div>
+<div id="preliminaire" class="section level1">
+<h1><span class="header-section-number">2</span> Préliminaire</h1>
+<div id="structure-dun-site-web" class="section level2">
+<h2><span class="header-section-number">2.1</span> Structure d’un site web</h2>
+<p>Avant de commencer le scraping, il faut avoir quelques notions de base concernant la structure d’un site web. Pour cela, vous pouvez utiliser l’inspecteur d’un navigateur, par exemple Chrome :</p>
+<ul>
+<li>Sur n’importe quelle page web, vous faites un clic droit, et vous cliquez sur “Inspecter”.</li>
+<li>Vous verrez dans la console la structure du code html, css, etc.</li>
+<li>Pour inspecter un élément spécifique, vous pourrez cliquer directement sur celui-ci et faire “inspecter”.</li>
+<li>Ainsi vous verrez que les données sont bien structurées, avec les balises comme header, body, div, span, a, h1, etc.</li>
+<li>Pour différencier ces balises et leur donner des fonctionnalités, vous verrez qu’elles peuvent avoir des classes, id, href, etc.</li>
+</ul>
+<p>Vous pourrez essayer directement sur le site suivant, avec l’idée de récupérer les liens qui permettent d’accéder aux pages des différentes villes :</p>
+<iframe title="My Map" width="980" height="400" src="https://www.restaurants.mcdonalds.fr" frameborder="0">
+</iframe>
+</div>
+<div id="principe-du-web-scraping" class="section level2">
+<h2><span class="header-section-number">2.2</span> Principe du web-scraping</h2>
+<p>L’idée de base du scraping, c’est donc :</p>
+<ul>
+<li>Je récupère l’ensemble des informations (code source) de la page web à l’aide d’un lien URL.</li>
+<li>Je récupère ensuite les éléments qui m’intéressent dans les balises spécifiques. Programme principal</li>
+</ul>
+<p>Avec R, les packages pour la lecture des url, le téléchargement et l’analyse du code source existent déjà :</p>
+<pre class="r"><code># install.packages(c(&quot;XML&quot;,&quot;rvest&quot;,&quot;httr&quot;,&quot;RCurl&quot;))
+library(XML)
+library(rvest)
+library(httr)
+library(RCurl)</code></pre>
+<p>Les tutoriels peuvent se trouver très facilement sur internet, <a href="https://blog.rstudio.org/2014/11/24/rvest-easy-web-scraping-with-r/">rvest</a>,<a href="https://cran.r-project.org/web/packages/XML/index.html">xml</a>, et <a href="https://blog.rstudio.org/2015/04/21/xml2">xml 2</a>.</p>
+</div>
+</div>
+<div id="programme-de-base" class="section level1">
+<h1><span class="header-section-number">3</span> Programme de base</h1>
+<div id="listes-de-points-geographiques" class="section level2">
+<h2><span class="header-section-number">3.1</span> Listes de points géographiques</h2>
+<p>L’exemple ici est la liste des restaurants McDonald’s.</p>
+<pre class="r"><code>url=&quot;https://www.restaurants.mcdonalds.fr/&quot;
+page = htmlTreeParse(getURL(url),useInternal = TRUE,encoding=&quot;utf8&quot;)
+locs = unlist(xpathApply(page, &#39;//ul[@class=&quot;large-services&quot;]//li/a&#39;, xmlGetAttr,&quot;href&quot;))
+locs</code></pre>
+<pre><code>##  [1] &quot;ain-01&quot;                     &quot;aisne-02&quot;                  
+##  [3] &quot;allier-03&quot;                  &quot;alpes-de-haute-provence-04&quot;
+##  [5] &quot;hautes-alpes-05&quot;            &quot;alpes-maritimes-06&quot;        
+##  [7] &quot;ardeche-07&quot;                 &quot;ardennes-08&quot;               
+##  [9] &quot;ariege-09&quot;                  &quot;aube-10&quot;                   
+## [11] &quot;aude-11&quot;                    &quot;aveyron-12&quot;                
+## [13] &quot;bouches-du-rhone-13&quot;        &quot;calvados-14&quot;               
+## [15] &quot;cantal-15&quot;                  &quot;charente-16&quot;               
+## [17] &quot;charente-maritime-17&quot;       &quot;cher-18&quot;                   
+## [19] &quot;correze-19&quot;                 &quot;cote-d-or-21&quot;              
+## [21] &quot;cotes-d-armor-22&quot;           &quot;creuse-23&quot;                 
+## [23] &quot;dordogne-24&quot;                &quot;doubs-25&quot;                  
+## [25] &quot;drome-26&quot;                   &quot;eure-27&quot;                   
+## [27] &quot;eure-et-loir-28&quot;            &quot;finistere-29&quot;              
+## [29] &quot;gard-30&quot;                    &quot;haute-garonne-31&quot;          
+## [31] &quot;gers-32&quot;                    &quot;gironde-33&quot;                
+## [33] &quot;herault-34&quot;                 &quot;ille-et-vilaine-35&quot;        
+## [35] &quot;indre-36&quot;                   &quot;indre-et-loire-37&quot;         
+## [37] &quot;isere-38&quot;                   &quot;jura-39&quot;                   
+## [39] &quot;landes-40&quot;                  &quot;loir-et-cher-41&quot;           
+## [41] &quot;loire-42&quot;                   &quot;haute-loire-43&quot;            
+## [43] &quot;loire-atlantique-44&quot;        &quot;loiret-45&quot;                 
+## [45] &quot;lot-46&quot;                     &quot;lot-et-garonne-47&quot;         
+## [47] &quot;lozere-48&quot;                  &quot;maine-et-loire-49&quot;         
+## [49] &quot;manche-50&quot;                  &quot;marne-51&quot;                  
+## [51] &quot;haute-marne-52&quot;             &quot;mayenne-53&quot;                
+## [53] &quot;meurthe-et-moselle-54&quot;      &quot;meuse-55&quot;                  
+## [55] &quot;morbihan-56&quot;                &quot;moselle-57&quot;                
+## [57] &quot;nievre-58&quot;                  &quot;nord-59&quot;                   
+## [59] &quot;oise-60&quot;                    &quot;orne-61&quot;                   
+## [61] &quot;pas-de-calais-62&quot;           &quot;puy-de-dome-63&quot;            
+## [63] &quot;pyrenees-atlantiques-64&quot;    &quot;hautes-pyrenees-65&quot;        
+## [65] &quot;pyrenees-orientales-66&quot;     &quot;bas-rhin-67&quot;               
+## [67] &quot;haut-rhin-68&quot;               &quot;rhone-69&quot;                  
+## [69] &quot;haute-saone-70&quot;             &quot;saone-et-loire-71&quot;         
+## [71] &quot;sarthe-72&quot;                  &quot;savoie-73&quot;                 
+## [73] &quot;haute-savoie-74&quot;            &quot;paris-75&quot;                  
+## [75] &quot;seine-maritime-76&quot;          &quot;seine-et-marne-77&quot;         
+## [77] &quot;yvelines-78&quot;                &quot;deux-sevres-79&quot;            
+## [79] &quot;somme-80&quot;                   &quot;tarn-81&quot;                   
+## [81] &quot;tarn-et-garonne-82&quot;         &quot;var-83&quot;                    
+## [83] &quot;vaucluse-84&quot;                &quot;vendee-85&quot;                 
+## [85] &quot;vienne-86&quot;                  &quot;haute-vienne-87&quot;           
+## [87] &quot;vosges-88&quot;                  &quot;yonne-89&quot;                  
+## [89] &quot;territoire-de-belfort-90&quot;   &quot;essonne-91&quot;                
+## [91] &quot;hauts-de-seine-92&quot;          &quot;seine-st-denis-93&quot;         
+## [93] &quot;val-de-marne-94&quot;            &quot;val-d-oise-95&quot;             
+## [95] &quot;marseille_13&quot;               &quot;lyon_69&quot;                   
+## [97] &quot;paris_75&quot;</code></pre>
+<p>Ensuite, il faudra aller sur chacun des liens pour récupérer les adresses des McDonald’s.</p>
+<p>Les packages fonctionnent très bien pour les sites web basiques html. Cependant, quand le contenu est généré par javascript, vous pouvez avoir de mauvaises surprises, par exemple, si vous allez sur <a href="http://www.elysee.fr/declarations/">le site des discours du président</a>:</p>
+<ul>
+<li>Avec l’inspecteur du code source du navigateur, vous voyez bien une balise;</li>
+<li>Mais lorsque vous parsez avec xml, vous ne trouvez pas cet élément dans R.</li>
+<li>Pour savoir si vous pouvez directement récupérer les données à partir d’une simple lecture de url, vous pouvez cliquez sur “Afficher le code source de la page” (ou ctrl + U pour Chrome): ce que vous voyez là est normalement lisible par getURL.</li>
+</ul>
+<p>Dans ce cas là, on doit adopter d’autres techniques.</p>
+</div>
+<div id="tableau-de-donnees" class="section level2">
+<h2><span class="header-section-number">3.2</span> Tableau de données</h2>
+<p>L’exemple ici est le site infoclimat</p>
+<pre class="r"><code>url=&quot;http://www.infoclimat.fr/observations-meteo/archives/2/mars/2016/paris-6eme-saint-germain-des-pres/000CT.html&quot;
+recap &lt;- url %&gt;%
+  read_html(encoding=&quot;UTF-8&quot;) %&gt;%
+  html_nodes(xpath=&#39;//table[@id=&quot;tableau-releves&quot;]&#39;) %&gt;%
+  html_table()
+
+recap</code></pre>
+<pre><code>## [[1]]
+##    Heure Temps Température Biométéo     Pluie Humidité Pt. de rosée
+## 1  00h30    NA      6.3 °C      4.6                80%       3.1 °C
+## 2  00h00    NA      6.2 °C      4.9   0 mm/1h      80%         3 °C
+## 3  23h30    NA      6.0 °C      4.7                78%       2.5 °C
+## 4  23h00    NA      5.9 °C      4.6   0 mm/1h      76%         2 °C
+## 5  22h30    NA      6.2 °C      4.1                72%       1.5 °C
+## 6  22h00    NA      6.5 °C      4.8   0 mm/1h      67%       0.8 °C
+## 7  21h30    NA      6.4 °C      5.2                67%       0.8 °C
+## 8  21h00    NA      6.3 °C      4.2   0 mm/1h      69%       1.1 °C
+## 9  20h30    NA      6.4 °C      4.3                70%       1.3 °C
+## 10 20h00    NA      6.5 °C      5.3   0 mm/1h      73%         2 °C
+## 11 19h30    NA      6.4 °C      3.7                74%       2.1 °C
+## 12 19h00    NA      6.1 °C      3.7 0.2 mm/1h      76%       2.1 °C
+## 13 18h30    NA      5.9 °C      3.1                78%       2.4 °C
+## 14 18h00    NA      5.4 °C      2.3   0 mm/1h      80%       2.3 °C
+## 15 17h30    NA      5.0 °C      2.0   1.2mm/h      83%       2.4 °C
+## 16 17h00    NA      3.2 °C      1.5 2.8 mm/1h      89%       1.5 °C
+## 17 16h30    NA      3.2 °C     -1.7    37mm/h      84%       0.7 °C
+## 18 16h00    NA      9.8 °C      7.6   0 mm/1h      54%       0.9 °C
+## 19 15h30    NA     10.2 °C       NA                51%       0.5 °C
+## 20 15h00    NA     10.7 °C       NA   0 mm/1h      52%       1.2 °C
+## 21 14h30    NA     10.3 °C       NA                54%       1.4 °C
+## 22 14h00    NA     10.2 °C       NA   0 mm/1h      53%       1.1 °C
+## 23 13h30    NA     10.6 °C       NA                52%       1.1 °C
+## 24 13h00    NA     10.4 °C       NA   0 mm/1h      55%       1.8 °C
+## 25 12h30    NA      9.8 °C      7.8                55%       1.2 °C
+## 26 12h00    NA      9.2 °C      7.1 0.2 mm/1h      61%         2 °C
+## 27 11h30    NA      8.6 °C      5.8                65%       2.4 °C
+## 28 11h00    NA      8.5 °C      6.3   0 mm/1h      66%       2.5 °C
+## 29 10h30    NA      8.3 °C      6.3                66%       2.3 °C
+## 30 10h00    NA      7.9 °C      6.1   0 mm/1h      66%         2 °C
+## 31 09h30    NA      7.8 °C      5.4                67%         2 °C
+## 32 09h00    NA      8.0 °C      6.2 0.2 mm/1h      75%       3.8 °C
+## 33 08h30    NA      8.1 °C      6.1                73%       3.5 °C
+## 34 08h00    NA      8.7 °C      7.1   0 mm/1h      73%       4.1 °C
+## 35 07h30    NA      9.2 °C      7.4                76%       5.2 °C
+## 36 07h00    NA      9.4 °C      7.9   0 mm/1h      75%       5.2 °C
+## 37 06h30    NA      9.4 °C      8.2                76%       5.4 °C
+## 38 06h00    NA      9.7 °C      8.6   0 mm/1h      77%       5.9 °C
+## 39 05h30    NA      9.9 °C      8.8                81%       6.8 °C
+## 40 05h00    NA     10.2 °C       NA 0.2 mm/1h      85%       7.8 °C
+## 41 04h30    NA     10.4 °C       NA                86%       8.2 °C
+## 42 04h00    NA     10.4 °C       NA   0 mm/1h      88%       8.5 °C
+## 43 03h30    NA     10.6 °C       NA                89%       8.8 °C
+## 44 03h00    NA     10.7 °C       NA   0 mm/1h      88%       8.8 °C
+## 45 02h30    NA     10.6 °C       NA                88%       8.7 °C
+## 46 02h00    NA     10.6 °C       NA 0.2 mm/1h      88%       8.7 °C
+## 47 01h30    NA     10.6 °C       NA                88%       8.7 °C
+## 48 01h00    NA     10.9 °C       NA   0 mm/1h      87%       8.8 °C
+##    Vent moyen (raf.)   Pression
+## 1             8 km/h  1004.2hPa
+## 2             6 km/h  1004.1hPa
+## 3             6 km/h  1004.3hPa
+## 4             6 km/h  1004.5hPa
+## 5            10 km/h  1004.6hPa
+## 6             8 km/h  1004.6hPa
+## 7             6 km/h  1004.5hPa
+## 8            10 km/h  1004.7hPa
+## 9            10 km/h  1004.9hPa
+## 10            6 km/h  1004.8hPa
+## 11           13 km/h  1004.8hPa
+## 12           11 km/h  1004.2hPa
+## 13           13 km/h  1004.1hPa
+## 14           15 km/h  1003.8hPa
+## 15           13 km/h  1003.4hPa
+## 16            6 km/h  1003.5hPa
+## 17           24 km/h  1004.5hPa
+## 18           15 km/h  1002.5hPa
+## 19           15 km/h  1002.8hPa
+## 20           11 km/h  1003.0hPa
+## 21           11 km/h  1003.3hPa
+## 22           11 km/h  1004.0hPa
+## 23           15 km/h  1004.7hPa
+## 24           13 km/h  1005.6hPa
+## 25           13 km/h  1005.7hPa
+## 26           13 km/h  1006.3hPa
+## 27           18 km/h  1006.5hPa
+## 28           13 km/h  1006.7hPa
+## 29           11 km/h  1006.8hPa
+## 30           10 km/h  1006.9hPa
+## 31           13 km/h  1006.8hPa
+## 32           10 km/h  1007.4hPa
+## 33           11 km/h  1007.1hPa
+## 34           10 km/h  1007.2hPa
+## 35           11 km/h  1007.3hPa
+## 36           10 km/h  1007.1hPa
+## 37            8 km/h  1007.2hPa
+## 38            8 km/h  1007.5hPa
+## 39            8 km/h  1007.7hPa
+## 40           10 km/h  1008.1hPa
+## 41           10 km/h  1007.9hPa
+## 42            6 km/h  1008.2hPa
+## 43            6 km/h 1008.7hPa=
+## 44            6 km/h 1009.1hPa=
+## 45            6 km/h 1009.8hPa=
+## 46            8 km/h 1010.3hPa=
+## 47            8 km/h 1010.7hPa=
+## 48            8 km/h 1011.0hPa=</code></pre>
+</div>
+</div>
+<div id="telecharger-la-page-web" class="section level1">
+<h1><span class="header-section-number">4</span> Télécharger la page web</h1>
+<p>Une solution rapide est de télécharger manuellement la page web, et ensuite vous faites la même chose en parsant le fichier html en local. Mais cette solution ne fonctionne pas si vous avez un grand nombre de fichiers à télécharger.</p>
+<p>Pour le site de Sephora par exemple, lorsque vous lisez <a href="http://www.sephora.fr/Parfum/Parfum-Femme/C309/2" class="uri">http://www.sephora.fr/Parfum/Parfum-Femme/C309/2</a>, vous aurez toujours les résultats de la première page.</p>
+<p>La solution de secours était donc : en mettant le nombre de produits par page au maximum (300), j’avais seulement 3 pages à télécharger.</p>
+</div>
+<div id="trouver-les-donnees-cachees" class="section level1">
+<h1><span class="header-section-number">5</span> Trouver les données cachées</h1>
+<p>Les données que vous cherchez à récupérer parfois se trouvent dans un fichier distinct, bien organisées. Ainsi, il n’est pas nécessaire de crawling le code html pour récupérer les éléments un par un, mais il est possible de lire directement dans ce fichier.</p>
+<p>Les exemples de sites sont les suivants:</p>
+<ul>
+<li><strong>Discours de François Hollande</strong> : quand vous êtes sur la page des discours, vous ne verrez pas la liste des discours dans le code source; en revanche, vous avez un lien dans le message d’avertissement en disant que la liste des liens des discours peuvent se trouver sur la page du <a href="http://www.elysee.fr/plan-du-site">plan du site</a>.</li>
+<li><strong>Quick</strong> : sur le site de <a href="http://familyquick.fr/store-locator" class="uri">http://familyquick.fr/store-locator</a>, vous voyez l’ensemble des restaurants Quick. Si vous essayez de trouver une manière de lire les données sur la page Google Map, vous ne pourrez pas réussir. Quand vous utilisez l’inspecteur du code source de Chrome, vous pouvez aller dans l’onglet Network, ensuite dans XHR, vous verrez des liens qui permettent de charger les données via js. Il suffit avoir de récupérer un bon lien url. En l’occurrence, c’est un fichier json.</li>
+<li><strong>Marathon de Paris</strong> : sur la <a href="http://www.schneiderelectricparismarathon.com/fr/la-course/resultats/resultats-marathon">page officielle</a> :, vous ne pouvez pas voir les résultats directement, car ils sont dans un iframe. Il faut ensuite regarder les liens qui permettent de charger l’iframe.</li>
+</ul>
+</div>
+<div id="larme-ultime-selenium" class="section level1">
+<h1><span class="header-section-number">6</span> L’arme ultime : Selenium</h1>
+<p>Selenium permet de simuler un navigateur. Ainsi, tout ce que vous voyez avec l’inspecteur de code source pourra être récupéré. Par exemple sur le site de Sephora :</p>
+<pre class="r"><code>install.packages(&quot;RSelenium&quot;)
+library(&#39;RSelenium&#39;)
+checkForServer()
+startServer()
+remDr remDr$open(silent=T)
+site=&quot;http://www.sephora.fr/Parfum/Parfum-Femme/C309/2&quot;
+remDr$navigate(site)</code></pre>
+<p>Sans Selenium, lorsque vous lisez la page 2, vous tombez toujours sur la page 1; avec Selenium, ce que vous êtes bien sur page 2 !</p>
+<p>Plus plus d’informations, vous pouvez lire <a href="https://cran.r-project.org/web/packages/RSelenium/vignettes/RSelenium-basics.html">la vignette sur le package RSelenium</a></p>
+</div>
+<div id="conclusion" class="section level1">
+<h1><span class="header-section-number">7</span> Conclusion</h1>
+<p>Grâce à ces techniques de web-scraping, il est possible de récupérer facilement les données sur des sites internet. Bien sûr, si vous voulez industrialiser ce processus, ou si vous avez des objectifs commerciaux, il est nécessaire de discuter avec les sites.</p>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'kezhan'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-79158649-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<p>Copyright &copy; 2016 Kezhan SHI</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

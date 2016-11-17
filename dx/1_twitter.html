@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Analyse de tweets avec R</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: -22px; }
+.code-folding-btn.collapsed { margin-bottom: 4px; }
+</style>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Accueil
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Bases de R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="0_cours_rapide_R.html">
+        <span class="fa fa-anchor"></span>
+         
+        Bases de R
+      </a>
+    </li>
+    <li>
+      <a href="0_manipulation.html">
+        <span class="fa fa-table"></span>
+         
+        Manipulation des données
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Data Visualisation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_base.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        Graphiques de base
+      </a>
+    </li>
+    <li>
+      <a href="1_avance.html">
+        <span class="fa fa-cogs"></span>
+         
+        Graphiques avancés
+      </a>
+    </li>
+    <li>
+      <a href="2_non_technique.html">
+        <span class="fa fa-industry"></span>
+         
+        Exemples non techniques
+      </a>
+    </li>
+    <li>
+      <a href="2_technique.html">
+        <span class="fa fa-flask"></span>
+         
+        Notions techniques
+      </a>
+    </li>
+    <li>
+      <a href="3_geo.html">
+        <span class="fa fa-map"></span>
+         
+        Données géographiques
+      </a>
+    </li>
+    <li>
+      <a href="4_machine_learning.html">
+        <span class="fa fa-rocket"></span>
+         
+        Machine learning
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info"></span>
+     
+    Contact
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://fr.linkedin.com/in/kezhanshi">
+        <span class="fa fa-linkedin-square"></span>
+         
+        Linkedin
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Analyse de tweets avec R</h1>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<div id="objectif" class="section level2">
+<h2><span class="header-section-number">1.1</span> Objectif</h2>
+<p>Récupérer des tweets et les analyser</p>
+</div>
+<div id="packages" class="section level2">
+<h2><span class="header-section-number">1.2</span> Packages</h2>
+<pre class="r"><code>install.packages(&quot;twitteR&quot;)
+install.packages(&quot;wordcloud&quot;)
+install.packages(&quot;tm&quot;)
+update.packages(&quot;tm&quot;)
+install.packages(&#39;base64enc&#39;)
+install.packages(&#39;httk&#39;)
+install.packages(&#39;httpuv&#39;)
+install.packages(&#39;SnowballC&#39;)</code></pre>
+</div>
+</div>
+<div id="recuperation-de-tweets" class="section level1">
+<h1><span class="header-section-number">2</span> Récupération de tweets</h1>
+<pre class="r"><code>library(&quot;twitteR&quot;)
+library(&quot;wordcloud&quot;)
+library(&quot;tm&quot;)
+library(RCurl)
+library(httr)
+library(SnowballC)
+library(stringr)
+# library(&#39;httk&#39;)
+# library(&#39;httpuv&#39;)</code></pre>
+<div id="configuration-du-compte" class="section level2">
+<h2><span class="header-section-number">2.1</span> Configuration du compte</h2>
+<p>le code peut être nécessaire en de proxy</p>
+<pre class="r"><code>set_config( config( ssl_verifypeer = 0L ) )
+set_config(use_proxy(url=&#39;http://proxyna&#39;,80,&quot;k.shi&quot;,&quot;&quot;))
+
+download.file(url=&quot;http://curl.haxx.se/ca/cacert.pem&quot;, destfile=&quot;cacert.pem&quot;)</code></pre>
+</div>
+<div id="connexion-avec-twitter" class="section level2">
+<h2><span class="header-section-number">2.2</span> Connexion avec Twitter</h2>
+<p>Au préalable, il faut créer un compte twitter et créer une application afin d’avoir l’accès à l’API.</p>
+<pre class="r"><code>#to get your consumerKey and consumerSecret see the twitteR documentation for instructions
+consumer_key &lt;- &#39;L1LTlJ4DxtJoF9SIZ6OFALDVP&#39;
+consumer_secret &lt;- &#39;n4jbl6Nk1cwhOMgi3aMiDwyVkFxeic3tEXgvvOMgAQzVEE8WNI&#39;
+access_token=&quot;2351383752-uTjsLG6sCa8XC3ZSjqwrwreWMYaOvJKmU1eSSEV&quot;
+access_token_secret=&quot;   n2p4jknTtO65cSf0SSc5ilT40cSeReW62bhT6KO4Q5Omp&quot;
+
+setup_twitter_oauth(consumer_key,consumer_secret,access_token,access_token_secret)
+
+setup_twitter_oauth(consumer_key,consumer_secret)</code></pre>
+<p>Dans certains cas de blocage, le code suivant est nécessaire</p>
+<pre class="r"><code>library(httr)
+
+# 1. Find OAuth settings for twitter:
+#    https://dev.twitter.com/docs/auth/oauth
+oauth_endpoints(&quot;twitter&quot;)
+
+# 2. Register an application at https://apps.twitter.com/
+#    Make sure to set callback url to &quot;http://127.0.0.1:1410&quot;
+#
+#    Replace key and secret below
+myapp &lt;- oauth_app(&quot;twitter&quot;,
+                   key = &quot;L1LTlJ4DxtJoF9SIZ6OFALDVP&quot;,
+                   secret = &quot;n4jbl6Nk1cwhOMgi3aMiDwyVkFxeic3tEXgvvOMgAQzVEE8WNI&quot;
+)
+
+# 3. Get OAuth credentials
+twitter_token &lt;- oauth1.0_token(oauth_endpoints(&quot;twitter&quot;), myapp)
+
+# 4. Use API
+req &lt;- GET(&quot;https://api.twitter.com/1.1/statuses/home_timeline.json&quot;,
+           config(token = twitter_token))
+stop_for_status(req)
+content(req)</code></pre>
+</div>
+<div id="recuperer-des-tweets" class="section level2">
+<h2><span class="header-section-number">2.3</span> Récupérer des tweets</h2>
+<pre class="r"><code>tweets &lt;- searchTwitter(&quot;assurance&quot;, n=1000,lang=&quot;fr&quot;)
+tweets &lt;- userTimeline(&quot;argusassurance&quot;, n=1000)</code></pre>
+<p>Sauvegarder les tweets</p>
+<pre class="r"><code>save(tweets,file=&quot;tweets.Rdata&quot;)</code></pre>
+</div>
+</div>
+<div id="analyse-des-tweets" class="section level1">
+<h1><span class="header-section-number">3</span> Analyse des tweets</h1>
+<div id="analyse-de-la-structure" class="section level2">
+<h2><span class="header-section-number">3.1</span> Analyse de la structure</h2>
+<pre class="r"><code>load(&quot;tweets.Rdata&quot;)
+head(tweets)</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;AllianzBeauvais: - 25% sur votre assurance habitation \xed\xa0\xbc\xed\xbf\xa0 en souscrivant à l&#39; assurance emprunteur !  → https://t.co/qp0YYZWrnP https://t.co/A7GVWxUnae #All…&quot;
+## 
+## [[2]]
+## [1] &quot;er_pirson: RT @Santhea_be: @Santhea_be auditionné au Parlement wallon dans le cadre de l&#39;assurance autonomie https://t.co/VCmngVDgCt&quot;
+## 
+## [[3]]
+## [1] &quot;cargnelli_info: #PUBLIC  Assurance habitation : l&#39;Ile-de-France est la région la plus chère https://t.co/Lwvukl1Jgq  | https://t.co/7cFrut4RGL&quot;
+## 
+## [[4]]
+## [1] &quot;fromagedebrebis: RT @rimydrasil: @MAIF Merci pour la bonne surprise quand j&#39;ai appris que le bien que je me suis fait voler ne me sera pas du tout couvert p…&quot;
+## 
+## [[5]]
+## [1] &quot;JeanVal26536332: @cathyhope2 Mon assurance-vie donne TOUT à Marie-France et ses Oeuvres @CorinnePerpinya&quot;
+## 
+## [[6]]
+## [1] &quot;congresVIE: RT @journ_assurance: Le Congrès 2016 de l’assurance et de l’investissement : c’est demain !\n https://t.co/3y8Uzwpd0t #CongresVIE2016 @congr…&quot;</code></pre>
+<pre class="r"><code>df &lt;- do.call(&quot;rbind&quot;, lapply(tweets, as.data.frame))
+head(df)</code></pre>
+<pre><code>##                                                                                                                                                                text
+## 1 - 25% sur votre assurance habitation \xed\xa0\xbc\xed\xbf\xa0 en souscrivant à l&#39; assurance emprunteur !  → https://t.co/qp0YYZWrnP https://t.co/A7GVWxUnae #All…
+## 2                                         RT @Santhea_be: @Santhea_be auditionné au Parlement wallon dans le cadre de l&#39;assurance autonomie https://t.co/VCmngVDgCt
+## 3                                    #PUBLIC  Assurance habitation : l&#39;Ile-de-France est la région la plus chère https://t.co/Lwvukl1Jgq  | https://t.co/7cFrut4RGL
+## 4                      RT @rimydrasil: @MAIF Merci pour la bonne surprise quand j&#39;ai appris que le bien que je me suis fait voler ne me sera pas du tout couvert p…
+## 5                                                                           @cathyhope2 Mon assurance-vie donne TOUT à Marie-France et ses Oeuvres @CorinnePerpinya
+## 6                     RT @journ_assurance: Le Congrès 2016 de l’assurance et de l’investissement : c’est demain !\n https://t.co/3y8Uzwpd0t #CongresVIE2016 @congr…
+##   favorited favoriteCount  replyToSN             created truncated
+## 1     FALSE             0       &lt;NA&gt; 2016-11-16 18:53:33     FALSE
+## 2     FALSE             0       &lt;NA&gt; 2016-11-16 18:53:05     FALSE
+## 3     FALSE             0       &lt;NA&gt; 2016-11-16 18:52:10     FALSE
+## 4     FALSE             0       &lt;NA&gt; 2016-11-16 18:51:35     FALSE
+## 5     FALSE             0 cathyhope2 2016-11-16 18:50:36     FALSE
+## 6     FALSE             0       &lt;NA&gt; 2016-11-16 18:50:22     FALSE
+##           replyToSID                 id replyToUID
+## 1               &lt;NA&gt; 798962227093061633       &lt;NA&gt;
+## 2               &lt;NA&gt; 798962108616429569       &lt;NA&gt;
+## 3               &lt;NA&gt; 798961878940553217       &lt;NA&gt;
+## 4               &lt;NA&gt; 798961732349788165       &lt;NA&gt;
+## 5 798960804762677248 798961485645021190  572808495
+## 6               &lt;NA&gt; 798961424705851392       &lt;NA&gt;
+##                                                                          statusSource
+## 1                                 &lt;a href=&quot;http://ifttt.com&quot; rel=&quot;nofollow&quot;&gt;IFTTT&lt;/a&gt;
+## 2  &lt;a href=&quot;http://twitter.com/download/iphone&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPhone&lt;/a&gt;
+## 3                                 &lt;a href=&quot;http://dlvr.it&quot; rel=&quot;nofollow&quot;&gt;dlvr.it&lt;/a&gt;
+## 4                  &lt;a href=&quot;http://twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web Client&lt;/a&gt;
+## 5                  &lt;a href=&quot;http://twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web Client&lt;/a&gt;
+## 6 &lt;a href=&quot;https://about.twitter.com/products/tweetdeck&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;
+##        screenName retweetCount isRetweet retweeted longitude latitude
+## 1 AllianzBeauvais            0     FALSE     FALSE        NA       NA
+## 2       er_pirson            2      TRUE     FALSE        NA       NA
+## 3  cargnelli_info            0     FALSE     FALSE        NA       NA
+## 4 fromagedebrebis            1      TRUE     FALSE        NA       NA
+## 5 JeanVal26536332            0     FALSE     FALSE        NA       NA
+## 6      congresVIE            1      TRUE     FALSE        NA       NA</code></pre>
+<pre class="r"><code>names(df)</code></pre>
+<pre><code>##  [1] &quot;text&quot;          &quot;favorited&quot;     &quot;favoriteCount&quot; &quot;replyToSN&quot;    
+##  [5] &quot;created&quot;       &quot;truncated&quot;     &quot;replyToSID&quot;    &quot;id&quot;           
+##  [9] &quot;replyToUID&quot;    &quot;statusSource&quot;  &quot;screenName&quot;    &quot;retweetCount&quot; 
+## [13] &quot;isRetweet&quot;     &quot;retweeted&quot;     &quot;longitude&quot;     &quot;latitude&quot;</code></pre>
+</div>
+<div id="analyse-des-metadonnees" class="section level2">
+<h2><span class="header-section-number">3.2</span> Analyse des métadonnées</h2>
+<pre class="r"><code>counts=table(df$statusSource)
+head(sort(counts,decreasing = TRUE),10)</code></pre>
+<pre><code>## 
+##                   &lt;a href=&quot;http://twitter.com&quot; rel=&quot;nofollow&quot;&gt;Twitter Web Client&lt;/a&gt; 
+##                                                                                  238 
+##   &lt;a href=&quot;http://twitter.com/download/iphone&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPhone&lt;/a&gt; 
+##                                                                                  204 
+## &lt;a href=&quot;http://twitter.com/download/android&quot; rel=&quot;nofollow&quot;&gt;Twitter for Android&lt;/a&gt; 
+##                                                                                  168 
+##                  &lt;a href=&quot;http://www.maths-fi.com/&quot; rel=&quot;nofollow&quot;&gt;MathsFi Twitt&lt;/a&gt; 
+##                                                                                   54 
+##  &lt;a href=&quot;https://about.twitter.com/products/tweetdeck&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt; 
+##                                                                                   34 
+##                                  &lt;a href=&quot;http://dlvr.it&quot; rel=&quot;nofollow&quot;&gt;dlvr.it&lt;/a&gt; 
+##                                                                                   32 
+##                      &lt;a href=&quot;http://www.hootsuite.com&quot; rel=&quot;nofollow&quot;&gt;Hootsuite&lt;/a&gt; 
+##                                                                                   31 
+##                                  &lt;a href=&quot;http://ifttt.com&quot; rel=&quot;nofollow&quot;&gt;IFTTT&lt;/a&gt; 
+##                                                                                   28 
+##                             &lt;a href=&quot;http://bufferapp.com&quot; rel=&quot;nofollow&quot;&gt;Buffer&lt;/a&gt; 
+##                                                                                   20 
+##                &lt;a href=&quot;http://www.facebook.com/twitter&quot; rel=&quot;nofollow&quot;&gt;Facebook&lt;/a&gt; 
+##                                                                                   19</code></pre>
+<pre class="r"><code>counts=table(df$screenName)
+head(sort(counts,decreasing = TRUE),20)</code></pre>
+<pre><code>## 
+##     Mathfi_Jobs  Emploi_Finance    christophevx    4closersonly 
+##              33              21              18               7 
+##        choclulu    CGPIFriendly      bearlytech journ_assurance 
+##               7               6               4               4 
+##      NChevesson        Orcialis  cargnelli_info drpatrickczerw1 
+##               4               4               3               3 
+##    DuquesnelLuc   Emploi_Banque          FP_Eco        GWotasek 
+##               3               3               3               3 
+##  ImmoProConcept        LeLynxfr  Montreal__jobs          NA_Pro 
+##               3               3               3               3</code></pre>
+<pre class="r"><code>barplot(head(sort(counts,decreasing = TRUE),20))</code></pre>
+<p><img src="1_twitter_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+</div>
+<div id="analyse-des-textes" class="section level1">
+<h1><span class="header-section-number">4</span> Analyse des textes</h1>
+<div id="recuperation-des-textes" class="section level2">
+<h2><span class="header-section-number">4.1</span> Récupération des textes</h2>
+<pre class="r"><code>tweets_text &lt;- sapply(tweets, function(x) x$getText())
+head(tweets_text)</code></pre>
+<pre><code>## [1] &quot;- 25% sur votre assurance habitation \xed\xa0\xbc\xed\xbf\xa0 en souscrivant à l&#39; assurance emprunteur !  → https://t.co/qp0YYZWrnP https://t.co/A7GVWxUnae #All…&quot;
+## [2] &quot;RT @Santhea_be: @Santhea_be auditionné au Parlement wallon dans le cadre de l&#39;assurance autonomie https://t.co/VCmngVDgCt&quot;                            
+## [3] &quot;#PUBLIC  Assurance habitation : l&#39;Ile-de-France est la région la plus chère https://t.co/Lwvukl1Jgq  | https://t.co/7cFrut4RGL&quot;                       
+## [4] &quot;RT @rimydrasil: @MAIF Merci pour la bonne surprise quand j&#39;ai appris que le bien que je me suis fait voler ne me sera pas du tout couvert p…&quot;         
+## [5] &quot;@cathyhope2 Mon assurance-vie donne TOUT à Marie-France et ses Oeuvres @CorinnePerpinya&quot;                                                              
+## [6] &quot;RT @journ_assurance: Le Congrès 2016 de l’assurance et de l’investissement : c’est demain !\n https://t.co/3y8Uzwpd0t #CongresVIE2016 @congr…&quot;</code></pre>
+</div>
+<div id="creation-du-corpus" class="section level2">
+<h2><span class="header-section-number">4.2</span> Creation du corpus</h2>
+<pre class="r"><code>tweets_text=str_replace_all(tweets_text,&quot;[^[:graph:]]&quot;, &quot; &quot;)
+tweets_text=iconv(tweets_text, &quot;latin1&quot;, &quot;ASCII&quot;, sub=&quot;&quot;)
+tweets_text=unique(tweets_text)
+myCorpus &lt;- Corpus(VectorSource(tweets_text))
+as.character(myCorpus[[1]])</code></pre>
+<pre><code>## [1] &quot;- 25% sur votre assurance habitation  en souscrivant  l&#39; assurance emprunteur !   https://t.co/qp0YYZWrnP https://t.co/A7GVWxUnae #All&quot;</code></pre>
+<pre class="r"><code># inspect(myCorpus)</code></pre>
+</div>
+<div id="nettoyage-du-corpus" class="section level2">
+<h2><span class="header-section-number">4.3</span> Nettoyage du corpus</h2>
+<pre class="r"><code>myCorpus =tm_map(myCorpus ,content_transformer(tolower),lazy=TRUE)
+myCorpus &lt;- tm_map(myCorpus, removePunctuation,lazy=TRUE)
+myCorpus &lt;- tm_map(myCorpus, removeNumbers,lazy=TRUE)
+myStopwords &lt;- c(stopwords(&#39;french&#39;), &quot;assureurs&quot;,
+                 &quot;assurance&quot;,&quot;lassurance&quot;,&quot;assurances&quot;,
+                 &quot;secteur&quot;,&quot;https...&quot;,&quot;pour&quot;)
+myCorpus &lt;- tm_map(myCorpus, removeWords, myStopwords,lazy=TRUE)
+myCorpus &lt;- tm_map(myCorpus, PlainTextDocument,lazy=TRUE)
+as.character(myCorpus[[1]])</code></pre>
+<pre><code>## [1] &quot;     habitation   souscrivant    emprunteur    coqpyyzwrnp coagvwxunae all&quot;</code></pre>
+<pre class="r"><code>as.character(myCorpus[[2]])</code></pre>
+<pre><code>## [1] &quot;rt santheabe santheabe auditionn  parlement wallon   cadre   autonomie covcmngvdgct&quot;</code></pre>
+</div>
+<div id="nuage-de-mots" class="section level2">
+<h2><span class="header-section-number">4.4</span> Nuage de mots</h2>
+<pre class="r"><code>wordcloud(myCorpus,min.freq=20)</code></pre>
+<p><img src="1_twitter_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+<div id="documents-termes-matrice" class="section level2">
+<h2><span class="header-section-number">4.5</span> Documents termes matrice</h2>
+<pre class="r"><code>dtm &lt;- TermDocumentMatrix(myCorpus, control = list(minWordLength = 10))</code></pre>
+</div>
+<div id="frequences-des-mots" class="section level2">
+<h2><span class="header-section-number">4.6</span> Fréquences des mots</h2>
+<pre class="r"><code>findFreqTerms(dtm, lowfreq=30)</code></pre>
+<pre><code>## [1] &quot;assurance&quot;  &quot;emploi&quot;     &quot;finance&quot;    &quot;habitation&quot; &quot;jobs&quot;      
+## [6] &quot;matmut&quot;     &quot;quant&quot;      &quot;via&quot;        &quot;vie&quot;</code></pre>
+</div>
+<div id="association-des-mots" class="section level2">
+<h2><span class="header-section-number">4.7</span> Association des mots</h2>
+<pre class="r"><code>findAssocs(dtm, &#39;finance&#39;, 0.30)</code></pre>
+<pre><code>## $finance
+##             emploi              quant         consultant 
+##               0.77               0.69               0.59 
+##               jobs              murex              annee 
+##               0.56               0.50               0.44 
+##           cadextan        fonctionnel         operations 
+##               0.44               0.44               0.44 
+##            softeam          lunalogic              ecole 
+##               0.44               0.42               0.39 
+##          ingenieur        experimente                net 
+##               0.39               0.38               0.38 
+##          cplusplus      developpement           grenoble 
+##               0.37               0.36               0.36 
+## ingenieurbacmaster              moody              paris 
+##               0.36               0.36               0.35 
+##                big          analytics        cosleolzijn 
+##               0.33               0.32               0.31 
+##         coxxlwjlvk        ingenieurba       ingenieurbac 
+##               0.31               0.31               0.31</code></pre>
+<pre class="r"><code>findAssocs(dtm, &#39;emploi&#39;, 0.30)</code></pre>
+<pre><code>## $emploi
+##            finance          lunalogic              quant 
+##               0.77               0.51               0.51 
+##              paris          cplusplus ingenieurbacmaster 
+##               0.50               0.49               0.49 
+##        codfxjjcelz          ingenieur              murex 
+##               0.48               0.46               0.44 
+##               prog      developpement           grenoble 
+##               0.40               0.39               0.39 
+##              moody         consultant          analytics 
+##               0.39               0.38               0.36 
+##                big           cadextan              ecole 
+##               0.35               0.32               0.32 
+##               jobs            product            softeam 
+##               0.32               0.32               0.32 
+##           coiyfghc 
+##               0.31</code></pre>
+<pre class="r"><code>findAssocs(dtm, &#39;matmut&#39;, 0.30)</code></pre>
+<pre><code>## $matmut
+##       tarifs     confirme        venir     contexte    difficile 
+##         0.57         0.54         0.54         0.51         0.51 
+##       hausse    multiplie partenariats         auto    chevalier 
+##         0.51         0.51         0.51         0.40         0.40 
+##      laspals        adieu     dommages    latribune 
+##         0.40         0.31         0.31         0.31</code></pre>
+<pre class="r"><code>findAssocs(dtm, &#39;vie&#39;, 0.30)</code></pre>
+<pre><code>## $vie
+##   buisson   patrick    systme meilleure     sapin 
+##      0.38      0.38      0.38      0.35      0.34</code></pre>
+<pre class="r"><code>m &lt;- as.matrix(dtm)
+v &lt;- sort(rowSums(m), decreasing=TRUE)
+myNames &lt;- names(v)
+d &lt;- data.frame(word=myNames, freq=v)
+wordcloud(d$word, d$freq, min.freq=30)</code></pre>
+<p><img src="1_twitter_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'kezhan'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-79158649-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<p>Copyright &copy; 2016 Kezhan SHI</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
