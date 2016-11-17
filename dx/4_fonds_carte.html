@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>S?ance 3: Exemples de visualisation de cartes</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="site_libs/highlight/textmate.css"
+      type="text/css" />
+<script src="site_libs/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: -22px; }
+.code-folding-btn.collapsed { margin-bottom: 4px; }
+</style>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Accueil
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Bases de R
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="0_cours_rapide_R.html">
+        <span class="fa fa-anchor"></span>
+         
+        Bases de R
+      </a>
+    </li>
+    <li>
+      <a href="0_manipulation.html">
+        <span class="fa fa-table"></span>
+         
+        Manipulation des données
+      </a>
+    </li>
+    <li>
+      <a href="0_exploration.html">
+        <span class="fa fa-binoculars"></span>
+         
+        Exploration des données
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-pencil"></span>
+     
+    Data Visualisation
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="1_base.html">
+        <span class="fa fa-bar-chart"></span>
+         
+        Graphiques de base
+      </a>
+    </li>
+    <li>
+      <a href="1_avance.html">
+        <span class="fa fa-cogs"></span>
+         
+        Graphiques avancés
+      </a>
+    </li>
+    <li>
+      <a href="2_non_technique.html">
+        <span class="fa fa-industry"></span>
+         
+        Exemples non techniques
+      </a>
+    </li>
+    <li>
+      <a href="2_technique.html">
+        <span class="fa fa-flask"></span>
+         
+        Notions techniques
+      </a>
+    </li>
+    <li>
+      <a href="3_geo.html">
+        <span class="fa fa-map"></span>
+         
+        Données géographiques
+      </a>
+    </li>
+    <li>
+      <a href="4_machine_learning.html">
+        <span class="fa fa-rocket"></span>
+         
+        Machine learning
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-info"></span>
+     
+    Contact
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://fr.linkedin.com/in/kezhanshi">
+        <span class="fa fa-linkedin-square"></span>
+         
+        Linkedin
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">S?ance 3: Exemples de visualisation de cartes</h1>
+
+</div>
+
+
+<div id="population-par-departement" class="section level1">
+<h1><span class="header-section-number">1</span> Population par departement</h1>
+<p><a href="http://professionnels.ign.fr/geofla#tab-3">Fonds de carte GEOFLA</a></p>
+<pre class="r"><code>library(RColorBrewer)
+library(maptools)
+library(classInt)
+library(&#39;rgdal&#39;) 
+library(&#39;plotrix&#39;)
+ 
+#Importation de fond de carte par departement
+
+fdc_dep &lt;- readShapeSpatial(&quot;data/DEPARTEMENT/DEPARTEMENT&quot;) 
+
+plot(fdc_dep)</code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>summary(fdc_dep)</code></pre>
+<pre><code>## Object of class SpatialPolygonsDataFrame
+## Coordinates:
+##         min     max
+## x   99217.1 1242417
+## y 6049646.3 7110480
+## Is projected: NA 
+## proj4string : [NA]
+## Data attributes:
+##                     ID_GEOFLA    CODE_DEPT                     NOM_DEPT 
+##  DEPARTEM0000000000000001: 1   01     : 1   AIN                    : 1  
+##  DEPARTEM0000000000000002: 1   02     : 1   AISNE                  : 1  
+##  DEPARTEM0000000000000003: 1   03     : 1   ALLIER                 : 1  
+##  DEPARTEM0000000000000004: 1   04     : 1   ALPES-DE-HAUTE-PROVENCE: 1  
+##  DEPARTEM0000000000000005: 1   05     : 1   ALPES-MARITIMES        : 1  
+##  DEPARTEM0000000000000006: 1   06     : 1   ARDECHE                : 1  
+##  (Other)                 :90   (Other):90   (Other)                :90  
+##     CODE_CHF     NOM_CHF     X_CHF_LIEU        Y_CHF_LIEU     
+##  001    : 2   AGEN   : 1   Min.   : 171326   Min.   :6108968  
+##  004    : 2   AJACCIO: 1   1st Qu.: 553176   1st Qu.:6401238  
+##  007    : 2   ALBI   : 1   Median : 658409   Median :6631771  
+##  010    : 2   ALENCON: 1   Mean   : 684049   Mean   :6609885  
+##  033    : 2   AMIENS : 1   3rd Qu.: 846156   3rd Qu.:6820420  
+##  085    : 2   ANGERS : 1   Max.   :1228512   Max.   :7059443  
+##  (Other):84   (Other):90                                      
+##    X_CENTROID        Y_CENTROID         CODE_REG 
+##  Min.   : 115669   Min.   :6050394   76     :13  
+##  1st Qu.: 544294   1st Qu.:6398674   75     :12  
+##  Median : 659892   Median :6639324   84     :12  
+##  Mean   : 681127   Mean   :6611276   44     :10  
+##  3rd Qu.: 838334   3rd Qu.:6834668   11     : 8  
+##  Max.   :1225168   Max.   :7046488   27     : 8  
+##                                      (Other):33  
+##                                 NOM_REG  
+##  LANGUEDOC-ROUSSILLON-MIDI-PYRENEES :13  
+##  AQUITAINE-LIMOUSIN-POITOU-CHARENTES:12  
+##  AUVERGNE-RHONE-ALPES               :12  
+##  ALSACE-CHAMPAGNE-ARDENNE-LORRAINE  :10  
+##  BOURGOGNE-FRANCHE-COMTE            : 8  
+##  ILE-DE-FRANCE                      : 8  
+##  (Other)                            :33</code></pre>
+<pre class="r"><code>str(fdc_dep@data)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    96 obs. of  11 variables:
+##  $ ID_GEOFLA : Factor w/ 96 levels &quot;DEPARTEM0000000000000001&quot;,..: 1 2 3 4 5 6 7 8 9 10 ...
+##  $ CODE_DEPT : Factor w/ 96 levels &quot;01&quot;,&quot;02&quot;,&quot;03&quot;,..: 40 43 77 90 69 27 10 56 62 68 ...
+##  $ NOM_DEPT  : Factor w/ 96 levels &quot;AIN&quot;,&quot;AISNE&quot;,..: 51 54 82 95 35 30 9 65 71 12 ...
+##  $ CODE_CHF  : Factor w/ 86 levels &quot;001&quot;,&quot;004&quot;,&quot;007&quot;,..: 69 56 83 11 25 28 74 13 1 80 ...
+##  $ NOM_CHF   : Factor w/ 96 levels &quot;AGEN&quot;,&quot;AJACCIO&quot;,..: 53 84 82 12 34 30 91 14 4 86 ...
+##  $ X_CHF_LIEU: int  895198 808646 562355 742447 1024125 588211 779954 859261 484935 1050377 ...
+##  $ Y_CHF_LIEU: int  6622537 6482549 6928721 6744261 6784581 6817344 6800379 6854586 6818334 6840891 ...
+##  $ X_CENTROID: int  886172 795655 550942 748211 1016174 579506 787771 873653 502675 1035762 ...
+##  $ Y_CENTROID: int  6641548 6521581 6952842 6750855 6763894 6810114 6802945 6885669 6833540 6839265 ...
+##  $ CODE_REG  : Factor w/ 13 levels &quot;11&quot;,&quot;24&quot;,&quot;27&quot;,..: 3 11 4 3 6 2 6 6 4 6 ...
+##  $ NOM_REG   : Factor w/ 13 levels &quot;ALSACE-CHAMPAGNE-ARDENNE-LORRAINE&quot;,..: 4 3 11 4 1 6 1 1 11 1 ...
+##  - attr(*, &quot;data_types&quot;)= chr  &quot;C&quot; &quot;C&quot; &quot;C&quot; &quot;C&quot; ...</code></pre>
+<pre class="r"><code>plot(fdc_dep,col=as.numeric(fdc_dep$CODE_REG))</code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>library(readr)
+# guess_encoding(&quot;data/departements.csv&quot;, n_max = 1000)
+pop_dep &lt;- read.csv(&quot;data/departements.csv&quot;, header = TRUE, sep= &quot;;&quot;, dec=&quot;,&quot; ,skip = 7, fill= TRUE,encoding = &quot;UTF-8&quot;,fileEncoding = &quot;windows-1252&quot;)</code></pre>
+<pre class="r"><code>head(pop_dep)</code></pre>
+<pre><code>##   Code.région           Nom.de.la.région Code.département
+## 1          82                Rhône-Alpes               01
+## 2          22                   Picardie               02
+## 3          83                   Auvergne               03
+## 4          93 Provence-Alpes-Côte d&#39;Azur               04
+## 5          93 Provence-Alpes-Côte d&#39;Azur               05
+## 6          93 Provence-Alpes-Côte d&#39;Azur               06
+##        Nom.du.département Nombre.d.arrondissements Nombre.de.cantons
+## 1                     Ain                        4                23
+## 2                   Aisne                        5                21
+## 3                  Allier                        3                19
+## 4 Alpes-de-Haute-Provence                        4                15
+## 5            Hautes-Alpes                        2                15
+## 6         Alpes-Maritimes                        2                27
+##   Nombre.de.communes Population.municipale Population.totale  X
+## 1                419               619 497           636 916 NA
+## 2                816               540 067           554 512 NA
+## 3                320               343 431           353 742 NA
+## 4                200               161 916           166 726 NA
+## 5                172               139 279           144 640 NA
+## 6                163             1 080 771         1 096 741 NA</code></pre>
+<pre class="r"><code>class(pop_dep$Population.totale) # les espaces n&#39;etant pas reconnus comme separateur de milier par R on doit les enlever</code></pre>
+<pre><code>## [1] &quot;factor&quot;</code></pre>
+<pre class="r"><code>pop_dep$pop &lt;- as.numeric(gsub(&quot; &quot;,&quot;&quot;,pop_dep$Population.totale,fixed=TRUE))
+class(pop_dep$pop) </code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code>distr &lt;- classIntervals(pop_dep$pop,11,style=&quot;quantile&quot;)$brks
+display.brewer.all() </code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>couleurs &lt;- brewer.pal(11,&quot;Spectral&quot;)
+
+couleurs  &lt;-  couleurs[11:1]
+mtch &lt;- match(fdc_dep$CODE_DEPT,pop_dep$Code.département)  </code></pre>
+<pre class="r"><code>colMap1 &lt;- couleurs[(findInterval(pop_dep$pop,distr,all.inside=TRUE))]
+col_match&lt;-colMap1[mtch]</code></pre>
+<pre class="r"><code>maLeg &lt;- function (vec, arrond, mil) {
+  x &lt;- vec
+  lx &lt;- length(x)
+  if (lx &lt; 10) 
+    stop(&quot;pas suffisamment de classes&quot;)
+  res &lt;- character(lx - 1)
+  res
+  for (i in 1:(lx - 1))
+  {res[i] &lt;- paste(round(x[i]/mil,arrond), round(x[i + 1]/mil,arrond),sep=&quot; - &quot;)
+  }
+  res
+}</code></pre>
+<pre class="r"><code>plot(fdc_dep,col=col_match,main =&quot;Population par departement en milliers&quot;, sub=&quot;nSource: IGN (fond de carte GEOFLA), INSEE (Recensement de la population)&quot;,cex.sub=0.7)
+
+legend(&quot;bottomleft&quot;, maLeg(distr,0,1000),pch=22, 
+       pt.bg=couleurs, bty=&quot;n&quot;,
+       title=&quot;Population par departement en milliers&quot;,
+       title.adj=0.5, xpd=TRUE,y.intersp=1,xjust=0,adj=0,
+       pt.cex=1.3,cex=0.7)</code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>fdc_dep_idf&lt;-fdc_dep[fdc_dep$CODE_REG==&quot;11&quot;,]  # creation de la carte IDF en selectionnant que les donn??es de la condition CODE_REG==&quot;11&quot; pour l&#39;il de france
+ 
+
+mtch2 &lt;- match(fdc_dep_idf$CODE_DEPT,pop_dep$Code.département) 
+# On doit rematcher la nouvelle carte par code de departement pour avoir les bonnes coueleurs
+
+
+colMap2 &lt;- couleurs[(findInterval(pop_dep$pop,distr,all.inside=TRUE))]
+col_match2&lt;-colMap2[mtch2]</code></pre>
+<pre class="r"><code>plot(fdc_dep_idf,col=col_match2,main =&quot;Population par departement IDF en milliers&quot;, sub=&quot;nSource: IGN (fond de carte GEOFLA), INSEE (Recensement de la population)&quot;,cex.sub=0.7)</code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="carte-europe" class="section level1">
+<h1><span class="header-section-number">2</span> Carte Europe</h1>
+<pre class="r"><code>library(&quot;sp&quot;)
+library(&quot;rgeos&quot;)
+library(&quot;cartography&quot;)
+
+
+# Import de donn?es dans la session
+data(nuts2006)
+
+
+# Calcul du taux de croissance annuel moyen
+nuts2.df$cagr &lt;- 100 * (((nuts2.df$pop2008/nuts2.df$pop1999)^(1/9)) -   1)
+
+# Cartographie
+choroLayer(spdf = nuts2.spdf, df = nuts2.df, var = &quot;cagr&quot;)
+title(&quot;Taux de croissance en Europe&quot;)</code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code># Construire une palette de couleurs
+cols &lt;- carto.pal(pal1 = &quot;green.pal&quot;, n1 = 2, pal2 = &quot;red.pal&quot;, 
+    n2 = 4)
+
+# Affichage de couches d&#39;habillage
+plot(nuts0.spdf, border = NA, col = NA, bg = &quot;#A6CAE0&quot;)
+plot(world.spdf, col = &quot;#E3DEBF&quot;, border = NA, add = TRUE)
+
+# Cartographie du taux de croissance annuel moyen
+choroLayer(spdf = nuts2.spdf, df = nuts2.df, var = &quot;cagr&quot;, 
+    breaks = c(-2.43, -1, 0, 0.5, 1, 2, 3.1), col = cols, 
+    border = &quot;grey40&quot;, lwd = 0.5, legend.pos = &quot;right&quot;, 
+    legend.title.txt = &quot;taux de croissance\nannuel moyen&quot;, 
+    legend.values.rnd = 2, add = TRUE)
+
+# Affichage de couches d&#39;habillage
+plot(nuts0.spdf, border = &quot;grey20&quot;, lwd = 0.75, add = TRUE)
+
+# Ajout des titres, l?gende, sources, etc.
+layoutLayer(title = &quot;Taux de croissance en Europe&quot;, 
+    author = &quot;cartography&quot;, sources = &quot;Eurostat, 2008&quot;, 
+    frame = TRUE, col = NA, scale = NULL, coltitle = &quot;black&quot;, 
+    south = TRUE)</code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+<pre class="r"><code>#Cartographie d&#39;un stock (la population nationale) avec des figur?s proportionnels.
+
+# Affichage de couches d&#39;habillage
+plot(nuts0.spdf, border = NA, col = NA, bg = &quot;#A6CAE0&quot;)
+plot(world.spdf, col = &quot;#E3DEBF&quot;, border = NA, add = TRUE)
+plot(nuts0.spdf, col = &quot;#D1914D&quot;, border = &quot;grey80&quot;, 
+    add = TRUE)
+
+# Cartographie de la population des pays en cercles
+# proportionnels
+propSymbolsLayer(spdf = nuts0.spdf, df = nuts0.df, 
+    var = &quot;pop2008&quot;, symbols = &quot;circle&quot;, col = &quot;#920000&quot;, 
+    legend.pos = &quot;right&quot;, legend.title.txt = &quot;Total\npopulation (2008)&quot;, 
+    legend.style = &quot;c&quot;)
+
+# Ajout des titres, l?gende, sources, etc.
+layoutLayer(title = &quot;Countries Population in Europe&quot;, 
+    author = &quot;cartography&quot;, sources = &quot;Eurostat, 2008&quot;, 
+    scale = NULL, south = TRUE)</code></pre>
+<p><img src="4_fonds_carte_files/figure-html/unnamed-chunk-14-3.png" width="672" /></p>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'kezhan'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-79158649-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<p>Copyright &copy; 2016 Kezhan SHI</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
