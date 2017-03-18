@@ -9,4 +9,4 @@ output:
 ---
 
 
-<center>[Nouveau site](www.kezshi.github.io)</center>
+<center>[Nouveau site](http://kezshi.github.io)</center>
