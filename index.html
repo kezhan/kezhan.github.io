@@ -8,25 +8,22 @@
 </head>
 <body>
 
-<nav>
-    <div class="navbar-header">
-        <img src="https://www.diot-siaci.com/wp-content/uploads/2022/10/logo.svg" alt="Logo" class="logo"> <!-- Update path to your logo -->
-    </div>
-    <ul class="nav_links">
-        <li><a href="#">Accueil</a></li>
-        <li><a href="#">À propos</a></li>
-        <li><a href="#">Nos solutions</a></li>
-        <li><a href="#">Nos actualités</a></li>
-        <li><a href="#">Nos engagements</a></li>
-        <li><a href="#">Notre groupe</a></li>
-    </ul>
-</nav>
+<div id="navbar-placeholder"></div>
+
 
 <iframe
     src="https://fraudes-assurance.streamlit.app/?embed=true&embed_options=light_theme&embed_options=hide_footer"
     frameborder="0"
     style="position: fixed; top: 60px; left: 0; width: 100%; height: calc(100% - 60px);"
 ></iframe>
+
+<script>
+// Fetch the navbar and then insert it into the navbar-placeholder div
+fetch('ia_navbar.html')
+    .then(response => response.text())
+    .then(text => document.getElementById('navbar-placeholder').innerHTML = text);
+</script>
+
 
 </body>
 </html>
