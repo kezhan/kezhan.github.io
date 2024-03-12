@@ -17,6 +17,31 @@ body, html {
 	margin-bottom: 10px; /* Space between logo and nav links */
 }
 
+.nav_links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center; /* Center the links if the nav bar is the full width of the page */
+}
+
+.nav_links li {
+    display: inline; /* Display the list items inline */
+    margin-right: 20px; /* Space between the list items */
+}
+
+.nav_links li a {
+    text-decoration: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* The font looks like Helvetica or Arial */
+    font-size: 16px; /* Adjust as needed to match the image */
+    color: #000000; /* The text color appears to be black */
+    padding: 5px 10px; /* Padding to increase the clickable area */
+    transition: color 0.3s ease-in-out; /* Smooth transition for hover effect */
+}
+
+.nav_links li a:hover {
+    color: #0044cc; /* Text color changes on hover, adjust the color as needed */
+    border-bottom: 2px solid #0044cc; /* Underline effect on hover */
+}
 
 .nav_links {
     list-style-type: none;
