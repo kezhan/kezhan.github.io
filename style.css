@@ -14,6 +14,7 @@ body, html {
     height: 50px; /* Adjust the height as necessary */
     margin-left: 10px; /* Add some space on the left */
     margin-right: 20px; /* Space between logo and nav links */
+	margin-bottom: 10px; /* Space between logo and nav links */
 }
 
 
