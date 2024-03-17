@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligence artificielle Diot-Siaci</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+
+<iframe
+    src="https://fraudes-assurance.streamlit.app/?embed=true&embed_options=light_theme&embed_options=hide_footer"
+    frameborder="0"
+    style="position: fixed; top: 60px; left: 0; width: 100%; height: calc(100% - 60px);"
+></iframe>
+
+<script>
+// Fetch the navbar and then insert it into the navbar-placeholder div
+fetch('ia_navbar.html')
+    .then(response => response.text())
+    .then(text => document.getElementById('navbar-placeholder').innerHTML = text);
+</script>
+
+
+</body>
+</html>
