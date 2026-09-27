@@ -3,7 +3,7 @@
 const S = {
   kid:"p7", present:false,
   names:{p7:KID_DEFAULT.p7.name, p4:KID_DEFAULT.p4.name},
-  prof:{p7:{stars:0, words:{}}, p4:{stars:0, words:{}}},
+  prof:{p7:{stars:0, words:{}, scores:{}}, p4:{stars:0, words:{}, scores:{}}},
   pending:[]
 };
 const $ = id => document.getElementById(id);
@@ -19,7 +19,10 @@ function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clea
 /* ---------- local cache (per device, fallback only) ---------- */
 function loadLocal(){
   try { const d = JSON.parse(localStorage.getItem("iam") || "null"); if (d) { Object.assign(S.names, d.names||{}); if (d.prof) S.prof = d.prof; S.pending = d.pending || []; S.present = !!d.present; S.kid = d.kid || S.kid; } } catch(e) {}
+  normProf();
 }
+// profiles saved by version 1.0 have no scores yet
+function normProf(){ ["p7","p4"].forEach(k => { S.prof[k] = Object.assign({stars:0, words:{}, scores:{}}, S.prof[k]); }); }
 function saveLocal(){
   try { localStorage.setItem("iam", JSON.stringify({names:S.names, prof:S.prof, pending:S.pending.slice(-200), present:S.present, kid:S.kid})); } catch(e) {}
 }
@@ -61,7 +64,7 @@ async function flushPending(){
   const items = S.pending.splice(0); saveLocal();
   for (const it of items) await record(it.kind, it.id, it.data);
 }
-function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words}).catch(()=>{}); }
+function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words, scores:S.prof[k].scores}).catch(()=>{}); }
 function saveConfig(){ saveLocal(); if (Store.mode !== "local") Store.put("config", "main", {names:S.names, present:S.present}).catch(()=>{}); }
 
 async function connect(){
@@ -75,7 +78,7 @@ async function connect(){
     const [cfg, a, b] = await Promise.all([Store.get("config","main"), Store.get("profiles","p7"), Store.get("profiles","p4")]);
     if (cfg) { Object.assign(S.names, cfg.names||{}); S.present = !!cfg.present; } else saveConfig();
     [["p7",a],["p4",b]].forEach(([k,d]) => {
-      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{}))};
+      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{})), scores:JSON.parse(JSON.stringify(d.scores||{}))};
       else saveProfile(k);
     });
     await flushPending();
@@ -158,7 +161,9 @@ function renderHome(){
   const map = $("map"); map.innerHTML = "";
   ACTS.filter(a => !a.mic || MIC_OK).forEach(a => {
     const b = el("button","spot chunky");
-    b.innerHTML = `${a.badge ? `<span class="badge">${a.badge}</span>` : ""}<span class="em">${a.em}</span><h3>${a.name}</h3><p>${a.desc}</p>`;
+    const sc = S.prof[S.kid].scores[a.id];
+    const score = sc && sc.plays ? `<span class="score">🏆 ${sc.best} · ${sc.plays} partie${sc.plays > 1 ? "s" : ""} · ${fmtTime(sc.secs)}</span>` : `<span class="score">Nouveau !</span>`;
+    b.innerHTML = `${a.badge ? `<span class="badge">${a.badge}</span>` : ""}<span class="em">${a.em}</span><h3>${a.name}</h3><p>${a.desc}</p>${score}`;
     b.onclick = () => { sfx.tap(); openAct(a.id); };
     map.appendChild(b);
   });
@@ -216,16 +221,27 @@ function endSession(completed){
   G.done = completed; G.tEnd = Date.now(); G.saved = true;
   // an open-then-leave with nothing played is noise, not feedback
   if (!completed && !G.rounds.length && G.taps < 2 && (G.tEnd - G.t0) < 8000) return;
+  const sc = S.prof[G.kid].scores[G.act] || {best:0, plays:0, done:0, secs:0};
+  sc.plays++; sc.secs += Math.round((G.tEnd - G.t0)/1000);
+  if (completed) {
+    sc.done++;
+    G.record = sc.done > 1 && G.stars > sc.best;
+    sc.best = Math.max(sc.best, G.stars);
+  }
+  sc.last = new Date(G.t0).toISOString();
+  S.prof[G.kid].scores[G.act] = sc;
   record("sessions", G.id, sessionDoc(G));
   saveProfile(G.kid);
 }
+const fmtTime = s => s < 60 ? `${s} s` : s < 3600 ? `${Math.round(s/60)} min` : `${Math.floor(s/3600)} h ${Math.round((s%3600)/60)} min`;
 let lastLaunch = null;
 function finish(){
   const g = G; endSession(true); stopLoops();
   sfx.win(); confetti();
   const ok = g.rounds.filter(r => r.ok).length;
-  $("endEmoji").textContent = g.stars >= g.total * 0.8 ? "🏆" : g.stars ? "🌟" : "🎉";
-  $("endTitle").textContent = PRAISE[rnd(PRAISE.length)];
+  $("endEmoji").textContent = g.record ? "🏆" : g.stars >= g.total * 0.8 ? "🥇" : g.stars ? "🌟" : "🎉";
+  $("endTitle").textContent = g.record ? "New record!" : PRAISE[rnd(PRAISE.length)];
+  if (g.record) { confetti(30); toast("Nouveau record : ⭐ " + g.stars); }
   $("endSub").textContent = g.rounds.length ? `${ok} sur ${g.rounds.length} du premier coup · ⭐ ${g.stars}` : `⭐ ${g.stars}`;
   document.querySelectorAll(".face").forEach(f => f.setAttribute("aria-pressed","false"));
   show("end");

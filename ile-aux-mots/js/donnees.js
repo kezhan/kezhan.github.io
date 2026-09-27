@@ -1,5 +1,5 @@
-/* L'Île aux Mots : mots, thèmes, jeux et constantes. */
-const VERSION = "1.1";
+﻿/* L'Île aux Mots : mots, thèmes, jeux et constantes. */
+const VERSION = "1.2";
 /* ---------- words: emoji|english|français|中文 ---------- */
 const P = s => s.trim().split("\n").map(l => { const [e,en,fr,zh] = l.trim().split("|"); return {e,en,fr,zh}; });
 const THEMES = {
