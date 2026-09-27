@@ -185,7 +185,7 @@ const SIMON = P(`👃|Touch your nose!|Touche ton nez|摸摸你的鼻子
 🦶|Stomp your feet!|Tape des pieds|跺跺脚
 🙆|Touch your head!|Touche ta tête|摸摸你的头
 😑|Close your eyes!|Ferme les yeux|闭上眼睛
-🙌|Hands up!|Lève les mains|举起手
+🙌|Put your hands up!|Lève les mains|举起手
 😝|Stick out your tongue!|Tire la langue|吐舌头`);
 const STICKERS = ["🦄","🚀","🦖","🐙","🌈","🏰","🍦","🎈","🦋","🐳","🦕","🚁","🧸","🍭","🐧","🎸","🦜","🛸","🐢","🍩","🐉","🎠","🧁","🪐"];
 const PRAISE = ["Great job!","Well done!","Yes!","Super!","Amazing!","You got it!"];
