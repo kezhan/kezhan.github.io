@@ -23,7 +23,26 @@ function openParent(){
   $("persistInfo").textContent = S.persisted === true
     ? "Ce navigateur protège la progression : elle n'est pas effacée pour faire de la place."
     : "Ce navigateur peut effacer la progression s'il manque de place. Installez l'application ou gardez une sauvegarde.";
+  renderLevels();
   show("parent"); loadStats();
+}
+function renderLevels(){
+  const t = $("levelsTable"); t.innerHTML = "";
+  const head = el("tr"); head.append(el("th", "", "Jeu"));
+  ["p7","p4"].forEach(k => { const th = el("th"); th.textContent = S.names[k]; head.append(th); });
+  t.append(head);
+  ACTS.filter(a => a.levels !== false).forEach(a => {
+    const tr = el("tr"); tr.append(el("td", "", `${a.em} ${a.name}`));
+    ["p7","p4"].forEach(k => {
+      const td = el("td"), row = el("div", "row"); row.style.gap = "6px"; row.style.flexWrap = "nowrap";
+      const minus = el("button", "chip", "−"), plus = el("button", "chip", "+"), val = el("b", "", String(levelOf(a.id, k)));
+      minus.setAttribute("aria-label", `Baisser le niveau de ${a.name}`); plus.setAttribute("aria-label", `Monter le niveau de ${a.name}`);
+      minus.onclick = () => { setLevel(a.id, levelOf(a.id, k) - 1, k); renderLevels(); renderHome(); };
+      plus.onclick = () => { setLevel(a.id, levelOf(a.id, k) + 1, k); renderLevels(); renderHome(); };
+      row.append(minus, val, plus); td.append(row); tr.append(td);
+    });
+    t.append(tr);
+  });
 }
 function downloadJSON(name, obj){
   const blob = new Blob([JSON.stringify(obj, null, 1)], {type:"application/json"});
