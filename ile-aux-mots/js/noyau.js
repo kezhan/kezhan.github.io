@@ -123,6 +123,15 @@ function voiceFor(lang){
   const pool = exact.length ? exact : loose;
   return pool.find(good) || pool[0] || null;
 }
+// English number words from 0 to 100: 14 "fourteen", 40 "forty", 56 "fifty-six"
+const NUM_ONES = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+const NUM_TENS = ["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+function numberWords(n){
+  if (n < 20) return NUM_ONES[n];
+  if (n === 100) return "one hundred";
+  const t = Math.floor(n / 10), u = n % 10;
+  return NUM_TENS[t] + (u ? "-" + NUM_ONES[u] : "");
+}
 // automated recette (address ending in #test): instant voice, no confetti, right answers marked
 const TEST = /(^#|&)test\b/.test(location.hash);
 function markOk(elm){ if (TEST && elm) elm.dataset.ok = "1"; return elm; }
