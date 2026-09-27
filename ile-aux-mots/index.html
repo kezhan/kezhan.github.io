@@ -1,0 +1,1003 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>L'Île aux Mots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{
+  --sea:#36B5D8; --sea-deep:#1C7FA6; --sand:#FFF1CF; --paper:#FFFBF2;
+  --ink:#1B2D45; --ink-soft:#4A5B72; --coral:#FF6F59; --sun:#FFC43D; --leaf:#43AA8B;
+  --good:#2F9E6E; --bad:#E0523F;
+  --display:"Fredoka","Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+.home{display:flex; flex-direction:column; gap:18px}
+body{
+  margin:0; font-family:var(--body); color:var(--ink); font-size:16px;
+  background-color:var(--sea);
+  background-image:
+    radial-gradient(ellipse 60px 10px at 30px 20px, rgba(255,255,255,.22) 60%, transparent 62%),
+    radial-gradient(ellipse 40px 8px at 110px 70px, rgba(255,255,255,.16) 60%, transparent 62%);
+  background-size:160px 110px;
+  -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none;
+}
+.wrap{max-width:980px; margin:0 auto; padding-inline:16px; padding-block:14px 40px; display:flex; flex-direction:column; gap:18px}
+button{font:inherit; color:inherit; cursor:pointer; border:0; background:none}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:4px solid var(--sun); outline-offset:3px}
+h1,h2,h3{font-family:var(--display); margin:0; text-wrap:balance; line-height:1.1}
+
+/* cut-paper pieces: thick ink edge + hard offset shadow */
+.paper{background:var(--paper); border:3px solid var(--ink); border-radius:22px; box-shadow:5px 6px 0 var(--ink)}
+.chunky{border:3px solid var(--ink); border-radius:18px; box-shadow:3px 4px 0 var(--ink); transition:transform .12s, box-shadow .12s}
+.chunky:active{transform:translate(3px,4px); box-shadow:0 0 0 var(--ink)}
+
+/* header */
+.top{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px}
+.brand h1{font-size:clamp(28px,6vw,44px); color:#fff; text-shadow:3px 3px 0 var(--ink); letter-spacing:.5px}
+.brand .tag{font-family:var(--display); font-size:14px; background:var(--sun); border:3px solid var(--ink); border-radius:999px; padding:2px 10px; transform:rotate(-4deg)}
+.lock{font-size:13px; font-weight:800; background:var(--paper); padding:8px 12px; display:flex; align-items:center; gap:8px; position:relative; overflow:hidden}
+.lock .fill{position:absolute; inset:0; background:var(--sun); transform-origin:left; transform:scaleX(0)}
+.lock span{position:relative}
+
+/* kid picker */
+.kids{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.kid{display:flex; align-items:center; gap:12px; padding:12px 14px; background:var(--paper); text-align:left}
+.kid .ava{font-size:46px; line-height:1; width:64px; height:64px; display:grid; place-items:center; background:var(--sand); border:3px solid var(--ink); border-radius:50%}
+.kid .nm{font-family:var(--display); font-size:22px; font-weight:600}
+.kid .meta{font-size:13px; color:var(--ink-soft); font-weight:700}
+.kid[aria-pressed="true"]{background:var(--sun)}
+.kid[aria-pressed="true"] .ava{background:#fff}
+.stickers{display:flex; flex-wrap:wrap; gap:2px; font-size:18px; min-height:22px}
+
+/* activity map */
+.map{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:16px}
+.spot{padding:14px 12px 12px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; position:relative}
+.spot .em{font-size:56px; line-height:1.1}
+.spot h3{font-size:21px}
+.spot p{margin:0; font-size:13px; font-weight:700; color:var(--ink-soft)}
+.spot .badge{position:absolute; top:-12px; right:10px; font-size:11px; font-weight:800; background:var(--coral); color:#fff; border:2px solid var(--ink); border-radius:999px; padding:2px 8px}
+.spot:nth-child(6n+1){background:#FFE3A3}.spot:nth-child(6n+2){background:#BDEBDD}.spot:nth-child(6n+3){background:#FFD0C6}
+.spot:nth-child(6n+4){background:#D4ECFF}.spot:nth-child(6n+5){background:#F4E1FF}.spot:nth-child(6n+6){background:#E6F5C2}
+.spot[disabled]{opacity:.45; filter:grayscale(.6)}
+
+.hint{color:#fff; font-weight:800; font-size:14px; text-shadow:1px 1px 0 var(--ink)}
+.status{font-size:12px; font-weight:700; color:#fff; opacity:.9}
+
+/* game stage */
+.stage{padding:16px; display:flex; flex-direction:column; gap:14px; min-height:60vh}
+.bar{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.iconbtn{width:56px; height:56px; font-size:28px; display:grid; place-items:center; background:var(--paper)}
+.stars{font-family:var(--display); font-size:24px; font-weight:700; display:flex; align-items:center; gap:6px}
+.dots{display:flex; gap:6px; flex-wrap:wrap; justify-content:center}
+.dots i{width:14px; height:14px; border-radius:50%; border:2px solid var(--ink); background:#fff}
+.dots i.ok{background:var(--leaf)} .dots i.ko{background:var(--coral)} .dots i.now{background:var(--sun)}
+.prompt{font-family:var(--display); font-size:clamp(24px,5vw,36px); text-align:center}
+.prompt small{display:block; font-family:var(--body); font-size:15px; color:var(--ink-soft); font-weight:700}
+.speak{align-self:center; font-size:22px; font-family:var(--display); font-weight:600; background:var(--sun); padding:12px 22px; display:flex; gap:10px; align-items:center}
+.choices{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.choice{aspect-ratio:1; max-width:100%; background:#fff; font-size:clamp(56px,14vw,96px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px}
+.choice .w{font-size:18px; font-family:var(--display); font-weight:600}
+.choice.ok{background:#C9F2DF} .choice.ko{background:#FFD6CF; animation:shake .4s}
+.swatch{width:62%; aspect-ratio:1; border-radius:50%; border:3px solid var(--ink)}
+.grid-cards{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.card{aspect-ratio:1; background:#fff; font-size:58px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:6px}
+.card .w{font-size:17px; font-family:var(--display); font-weight:600; min-height:1.2em}
+.card .fr{font-size:12px; color:var(--ink-soft); font-weight:700}
+.card.seen{background:var(--sand)}
+.card.flipped{background:var(--sun)}
+.card.back{background:var(--sea-deep); color:transparent}
+.card.back *{visibility:hidden}
+.card.done{background:#C9F2DF}
+
+/* balloons */
+.sky{position:relative; height:min(60vh,520px); border:3px solid var(--ink); border-radius:18px; overflow:hidden; background:linear-gradient(#BFE9FA,#E9F8FF)}
+.balloon{position:absolute; bottom:-130px; width:78px; height:96px; border-radius:50% 50% 48% 48%; border:3px solid var(--ink); display:block}
+.balloon::after{content:""; position:absolute; left:50%; top:100%; width:2px; height:34px; background:var(--ink)}
+.balloon.pop{animation:pop .25s forwards}
+.balloon.wrong{animation:shake .4s}
+
+/* counting */
+.pile{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; font-size:clamp(40px,9vw,60px); padding:12px; background:#fff; border:3px dashed var(--ink); border-radius:18px}
+.nums{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(84px,1fr))}
+.num{font-family:var(--display); font-size:44px; font-weight:700; padding:10px; background:#fff}
+.num.ok{background:#C9F2DF}.num.ko{background:#FFD6CF; animation:shake .4s}
+
+/* simon */
+.order{font-size:clamp(90px,24vw,150px); text-align:center; line-height:1}
+.judge{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.judge button{font-family:var(--display); font-size:22px; font-weight:600; padding:16px 10px}
+.bigbtn{font-family:var(--display); font-size:22px; font-weight:600; padding:14px 22px; background:var(--leaf); color:#fff}
+
+/* end + rating */
+.end{text-align:center; align-items:center; justify-content:center}
+.end .won{font-size:64px}
+.faces{display:flex; gap:16px; justify-content:center; flex-wrap:wrap}
+.face{font-size:64px; width:104px; height:104px; display:grid; place-items:center; background:#fff}
+.face[aria-pressed="true"]{background:var(--sun)}
+
+/* parent zone */
+.parent{padding:18px; display:flex; flex-direction:column; gap:18px}
+.parent h2{font-size:26px}
+.parent h3{font-size:19px}
+.parent section{display:flex; flex-direction:column; gap:10px}
+.parent label{font-weight:800; font-size:14px}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.parent input[type=text],.parent textarea,.parent select{font:inherit; font-size:16px; padding:10px 12px; border:2px solid var(--ink); border-radius:12px; background:#fff; color:var(--ink); max-width:100%}
+.parent textarea{min-height:90px; width:100%; box-sizing:border-box; resize:vertical}
+.chip{font-weight:800; font-size:14px; padding:7px 12px; border:2px solid var(--ink); border-radius:999px; background:#fff}
+.chip[aria-pressed="true"]{background:var(--ink); color:#fff}
+.switch{display:flex; align-items:center; gap:12px; font-weight:800}
+.switch button{width:64px; height:36px; border:3px solid var(--ink); border-radius:999px; background:#fff; position:relative}
+.switch button::after{content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:var(--ink); transition:left .15s}
+.switch button[aria-checked="true"]{background:var(--leaf)}
+.switch button[aria-checked="true"]::after{left:31px; background:#fff}
+.tablebox{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:14px; font-variant-numeric:tabular-nums}
+th,td{text-align:left; padding:8px 10px; border-bottom:2px solid var(--sand); white-space:nowrap}
+th{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft)}
+.pill{display:inline-block; font-size:12px; font-weight:800; padding:2px 8px; border-radius:999px; border:2px solid var(--ink)}
+.pill.g{background:#C9F2DF}.pill.m{background:#FFE3A3}.pill.b{background:#FFD6CF}
+.note{font-size:14px; padding:10px 12px; background:var(--sand); border-radius:12px; border:2px solid var(--ink)}
+.note b{font-size:12px; color:var(--ink-soft)}
+.toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--ink); color:#fff; font-weight:800; padding:10px 18px; border-radius:999px; z-index:50}
+.muted{color:var(--ink-soft); font-size:14px; margin:0}
+
+.confetti{position:fixed; top:-40px; font-size:30px; pointer-events:none; z-index:40; animation:fall 1.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@keyframes shake{25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-5px)}}
+@keyframes pop{to{transform:scale(1.6); opacity:0}}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.bob{animation:bob 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important; animation-iteration-count:1!important; transition:none!important}}
+@media (max-width:520px){
+  .kids{grid-template-columns:1fr}
+  .map{grid-template-columns:1fr 1fr; gap:12px}
+  .spot .em{font-size:44px} .spot h3{font-size:18px}
+  .choices{grid-template-columns:1fr 1fr}
+}
+</style>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>L'Île aux Mots</h1>
+      <span class="tag">English!</span>
+    </div>
+    <button class="lock chunky" id="lockBtn" aria-label="Coin des parents : rester appuyé 2 secondes"><i class="fill" id="lockFill"></i><span>🔒 Parents · appui long</span></button>
+  </header>
+
+  <!-- HOME -->
+  <main id="home" class="home">
+    <div class="kids" id="kids"></div>
+    <p class="hint" id="homeHint">Choisis ton explorateur, puis une île !</p>
+    <div class="map" id="map"></div>
+    <p class="status" id="status"></p>
+  </main>
+
+  <!-- THEME PICKER -->
+  <section id="themes" class="paper stage" hidden>
+    <div class="bar">
+      <button class="iconbtn chunky" data-home aria-label="Retour">🏠</button>
+      <h2 class="prompt" id="themeTitle">Quel monde ?</h2>
+      <span style="width:56px"></span>
+    </div>
+    <div class="map" id="themeGrid"></div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="paper stage" hidden>
+    <div class="bar">
+      <button class="iconbtn chunky" id="quitBtn" aria-label="Quitter">🏠</button>
+      <div class="dots" id="dots"></div>
+      <div class="stars"><span>⭐</span><span id="gStars">0</span></div>
+    </div>
+    <div id="gameBody" style="display:flex;flex-direction:column;gap:14px"></div>
+  </section>
+
+  <!-- END -->
+  <section id="end" class="paper stage end" hidden>
+    <div class="won bob" id="endEmoji">🏆</div>
+    <h2 class="prompt" id="endTitle">Bravo !</h2>
+    <p class="muted" id="endSub"></p>
+    <h3 class="prompt" style="font-size:26px">Tu as aimé ?</h3>
+    <div class="faces" id="faces">
+      <button class="face chunky" data-r="3" aria-label="J'ai adoré">😍</button>
+      <button class="face chunky" data-r="2" aria-label="Bof">🙂</button>
+      <button class="face chunky" data-r="1" aria-label="Pas aimé">😴</button>
+    </div>
+    <div class="row" style="justify-content:center">
+      <button class="bigbtn chunky" id="againBtn">🔁 Encore</button>
+      <button class="bigbtn chunky" style="background:var(--sea-deep)" data-home>🏝️ Les îles</button>
+    </div>
+  </section>
+
+  <!-- PARENTS -->
+  <section id="parent" class="paper parent" hidden>
+    <div class="bar">
+      <h2>Coin des parents</h2>
+      <button class="iconbtn chunky" data-home aria-label="Retour">🏠</button>
+    </div>
+    <div class="note row" style="justify-content:space-between"><span id="storeInfo"></span><button class="chip" id="exportBtn" hidden>Exporter les retours</button></div>
+
+    <section>
+      <div class="switch"><button role="switch" id="presentSw" aria-checked="false" aria-label="Je joue avec eux"></button><span>Je joue avec eux en ce moment</span></div>
+      <p class="muted">Chaque partie est notée « avec parent » ou « seul ». Ça aide à voir ce qui marche sans vous.</p>
+    </section>
+
+    <section>
+      <h3>Les enfants</h3>
+      <div class="row">
+        <label for="name7">7 ans</label><input type="text" id="name7" maxlength="20">
+        <label for="name4">4 ans</label><input type="text" id="name4" maxlength="20">
+        <button class="chip" id="saveNames">Enregistrer</button>
+      </div>
+    </section>
+
+    <section>
+      <h3>Votre retour</h3>
+      <p class="muted">Ce qui a plu, ce qui a coincé, un bug, une idée. Claude lit ces notes pour améliorer le site.</p>
+      <div class="row">
+        <label for="fbAct">Sur</label>
+        <select id="fbAct"></select>
+        <label for="fbKid">Pour</label>
+        <select id="fbKid"><option value="both">les deux</option><option value="p7">7 ans</option><option value="p4">4 ans</option></select>
+      </div>
+      <div class="row" id="fbTags"></div>
+      <textarea id="fbText" placeholder="Ex. : le petit a adoré les ballons mais ne comprend pas « purple »"></textarea>
+      <div class="row"><button class="bigbtn chunky" id="fbSend">Envoyer le retour</button></div>
+    </section>
+
+    <section>
+      <h3>Ce qui marche</h3>
+      <div class="tablebox"><table id="statsTable"></table></div>
+      <h3>Mots qui résistent</h3>
+      <div class="row" id="hardWords"></div>
+      <h3>Derniers retours</h3>
+      <div id="notesList" style="display:flex;flex-direction:column;gap:8px"></div>
+    </section>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script>
+const VERSION = "1.0";
+/* ---------- words: emoji|english|français|中文 ---------- */
+const P = s => s.trim().split("\n").map(l => { const [e,en,fr,zh] = l.trim().split("|"); return {e,en,fr,zh}; });
+const THEMES = {
+  animals:{label:"Animaux", icon:"🐱", words:P(`🐱|cat|chat|猫
+🐶|dog|chien|狗
+🐮|cow|vache|奶牛
+🐷|pig|cochon|猪
+🦆|duck|canard|鸭子
+🐴|horse|cheval|马
+🦁|lion|lion|狮子
+🐸|frog|grenouille|青蛙
+🐟|fish|poisson|鱼
+🐦|bird|oiseau|鸟
+🐰|rabbit|lapin|兔子
+🐵|monkey|singe|猴子
+🐘|elephant|éléphant|大象
+🐻|bear|ours|熊
+🐭|mouse|souris|老鼠
+🐑|sheep|mouton|羊`)},
+  food:{label:"Miam", icon:"🍎", words:P(`🍎|apple|pomme|苹果
+🍌|banana|banane|香蕉
+🍓|strawberry|fraise|草莓
+🍇|grapes|raisin|葡萄
+🍊|orange|orange|橙子
+🍐|pear|poire|梨
+🍒|cherries|cerises|樱桃
+🍉|watermelon|pastèque|西瓜
+🍞|bread|pain|面包
+🧀|cheese|fromage|奶酪
+🥛|milk|lait|牛奶
+🥚|egg|œuf|鸡蛋
+🍰|cake|gâteau|蛋糕
+🥕|carrot|carotte|胡萝卜
+🍕|pizza|pizza|比萨`)},
+  colors:{label:"Couleurs", icon:"🎨", words:P(`#E53935|red|rouge|红色
+#1E88E5|blue|bleu|蓝色
+#43A047|green|vert|绿色
+#FDD835|yellow|jaune|黄色
+#FB8C00|orange|orange|橙色
+#F48FB1|pink|rose|粉色
+#8E24AA|purple|violet|紫色
+#212121|black|noir|黑色
+#FFFFFF|white|blanc|白色
+#795548|brown|marron|棕色`)},
+  body:{label:"Mon corps", icon:"👃", words:P(`👀|eyes|yeux|眼睛
+👃|nose|nez|鼻子
+👄|mouth|bouche|嘴巴
+👂|ear|oreille|耳朵
+✋|hand|main|手
+🦶|foot|pied|脚
+🦷|tooth|dent|牙齿
+💪|arm|bras|胳膊
+🦵|leg|jambe|腿
+💇|hair|cheveux|头发`)},
+  things:{label:"Mon monde", icon:"⚽", words:P(`⚽|ball|ballon|球
+🚗|car|voiture|汽车
+🚲|bike|vélo|自行车
+⛵|boat|bateau|船
+✈️|plane|avion|飞机
+🚂|train|train|火车
+📖|book|livre|书
+🏠|house|maison|房子
+🌳|tree|arbre|树
+🌸|flower|fleur|花
+☀️|sun|soleil|太阳
+🌙|moon|lune|月亮
+⭐|star|étoile|星星`)}
+};
+const NUMS = ["one","two","three","four","five","six","seven","eight","nine","ten"];
+const NUMS_FR = ["un","deux","trois","quatre","cinq","six","sept","huit","neuf","dix"];
+const NUMS_ZH = ["一","二","三","四","五","六","七","八","九","十"];
+const SIMON = P(`👃|Touch your nose!|Touche ton nez|摸摸你的鼻子
+👏|Clap your hands!|Tape dans tes mains|拍拍手
+🦘|Jump!|Saute|跳一跳
+🔄|Turn around!|Tourne sur toi|转个圈
+🪑|Sit down!|Assieds-toi|坐下
+🧍|Stand up!|Lève-toi|站起来
+👋|Wave hello!|Fais coucou|挥挥手
+🦶|Stomp your feet!|Tape des pieds|跺跺脚
+🙆|Touch your head!|Touche ta tête|摸摸你的头
+😑|Close your eyes!|Ferme les yeux|闭上眼睛
+🙌|Hands up!|Lève les mains|举起手
+😝|Stick out your tongue!|Tire la langue|吐舌头`);
+const STICKERS = ["🦄","🚀","🦖","🐙","🌈","🏰","🍦","🎈","🦋","🐳","🦕","🚁","🧸","🍭","🐧","🎸","🦜","🛸","🐢","🍩","🐉","🎠","🧁","🪐"];
+const PRAISE = ["Great job!","Well done!","Yes!","Super!","Amazing!","You got it!"];
+
+const ACTS = [
+  {id:"imagier", em:"📚", name:"Imagier", desc:"Touche une image, elle parle", themes:true},
+  {id:"ecoute",  em:"👂", name:"Écoute & trouve", desc:"Trouve la bonne image", themes:true},
+  {id:"ballons", em:"🎈", name:"Ballons", desc:"Éclate la bonne couleur"},
+  {id:"compte",  em:"🔢", name:"Combien ?", desc:"Compte en anglais"},
+  {id:"memory",  em:"🃏", name:"Memory", desc:"Retrouve les paires", themes:true},
+  {id:"simon",   em:"🙆", name:"Jacques a dit", desc:"Bouge ton corps", badge:"avec un parent"},
+  {id:"repete",  em:"🎤", name:"Répète !", desc:"Dis le mot au micro", themes:true, mic:true}
+];
+// speech recognition needs a secure page outside claude.ai: the PC at http://localhost, or a future https site
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const MIC_OK = !!SR && !window.claude && window.isSecureContext;
+const KID_DEFAULT = {
+  p7:{name:"Le grand", age:7, ava:"🦊", bridge:"zh", choices:4, showWord:true},
+  p4:{name:"Le petit", age:4, ava:"🐣", bridge:"fr", choices:3, showWord:false}
+};
+const FB_TAGS = ["Adoré","Trop facile","Trop dur","Ennui","Son / voix","Bug","Idée"];
+
+/* ---------- state ---------- */
+const S = {
+  kid:"p7", present:false,
+  names:{p7:KID_DEFAULT.p7.name, p4:KID_DEFAULT.p4.name},
+  prof:{p7:{stars:0, words:{}}, p4:{stars:0, words:{}}},
+  pending:[]
+};
+const $ = id => document.getElementById(id);
+const rnd = n => Math.floor(Math.random()*n);
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=rnd(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pick = (a, n) => shuffle(a).slice(0, n);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const kidCfg = k => KID_DEFAULT[k || S.kid];
+const device = (() => { const u = navigator.userAgent; return /iPad|Macintosh.*Mobile|Macintosh.*Touch/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1) ? "iPad" : /iPhone/.test(u) ? "iPhone" : /Android/.test(u) ? (/Mobile/.test(u) ? "Android phone" : "Android tablet") : /Windows/.test(u) ? "Windows" : /Mac/.test(u) ? "Mac" : "other"; })();
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true, 2600); }
+
+/* ---------- local cache (per device, fallback only) ---------- */
+function loadLocal(){
+  try { const d = JSON.parse(localStorage.getItem("iam") || "null"); if (d) { Object.assign(S.names, d.names||{}); if (d.prof) S.prof = d.prof; S.pending = d.pending || []; S.present = !!d.present; S.kid = d.kid || S.kid; } } catch(e) {}
+}
+function saveLocal(){
+  try { localStorage.setItem("iam", JSON.stringify({names:S.names, prof:S.prof, pending:S.pending.slice(-200), present:S.present, kid:S.kid})); } catch(e) {}
+}
+
+/* ---------- where feedback goes ----------
+   on claude.ai (artifact): its database · on the home PC: serveur.py writes retours/*.jsonl · otherwise: this browser, with an export button */
+const Store = {
+  mode:"local", db:null, queues:{},
+  label(){ return {artifact:"Retours enregistrés en ligne sur claude.ai.", server:"Retours enregistrés sur le PC, dans le dossier retours.", local:"Retours gardés dans ce navigateur. Lancez serveur.py sur le PC pour que Claude les lise."}[this.mode]; },
+  put(kind, id, data){
+    const key = kind + "/" + id;
+    const run = async () => {
+      if (this.mode === "artifact") return this.db.doc(key).set(data);
+      const r = await fetch("api/doc", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({kind, id, data})});
+      if (!r.ok) throw {code:"unavailable"};
+    };
+    // one write at a time per document
+    this.queues[key] = (this.queues[key] || Promise.resolve()).then(run, run);
+    return this.queues[key];
+  },
+  async get(kind, id){
+    if (this.mode === "artifact") { const d = await this.db.doc(kind + "/" + id).get(); return d.exists ? d.data() : null; }
+    const r = await fetch("api/doc?kind=" + kind + "&id=" + id); return r.ok ? r.json() : null;
+  },
+  async list(kind, n){
+    if (this.mode === "artifact") return (await this.db.collection(kind).orderBy("t","desc").limit(n).get()).docs.map(d => d.data());
+    if (this.mode === "server") { const r = await fetch("api/list?kind=" + kind + "&limit=" + n); return r.ok ? r.json() : []; }
+    return [];
+  }
+};
+function record(kind, id, data){
+  if (Store.mode === "local") { S.pending.push({kind, id, data}); saveLocal(); return Promise.resolve(); }
+  return Store.put(kind, id, data).catch(e => {
+    if (e && e.code === "quota_exceeded") toast("Mémoire pleine : prévenez Claude");
+    S.pending.push({kind, id, data}); saveLocal();
+  });
+}
+async function flushPending(){
+  const items = S.pending.splice(0); saveLocal();
+  for (const it of items) await record(it.kind, it.id, it.data);
+}
+function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words}).catch(()=>{}); }
+function saveConfig(){ saveLocal(); if (Store.mode !== "local") Store.put("config", "main", {names:S.names, present:S.present}).catch(()=>{}); }
+
+async function connect(){
+  if (window.claude && window.claude.use) {
+    try { const db = await window.claude.use("db"); if (db) { Store.mode = "artifact"; Store.db = db; } } catch(e) {}
+  } else if (location.protocol.startsWith("http")) {
+    try { const r = await fetch("api/ping"); if (r.ok) Store.mode = "server"; } catch(e) {}
+  }
+  if (Store.mode === "local") { $("status").textContent = Store.label(); return; }
+  try {
+    const [cfg, a, b] = await Promise.all([Store.get("config","main"), Store.get("profiles","p7"), Store.get("profiles","p4")]);
+    if (cfg) { Object.assign(S.names, cfg.names||{}); S.present = !!cfg.present; } else saveConfig();
+    [["p7",a],["p4",b]].forEach(([k,d]) => {
+      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{}))};
+      else saveProfile(k);
+    });
+    await flushPending();
+    $("status").textContent = "";
+    saveLocal(); renderHome();
+  } catch(e) { $("status").textContent = "Carnet de bord injoignable : les retours attendent dans ce navigateur."; }
+}
+
+/* ---------- voice ---------- */
+let voices = [];
+function loadVoices(){ try { voices = speechSynthesis.getVoices() || []; } catch(e) { voices = []; } }
+if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+const LANG = {en:"en-GB", fr:"fr-FR", zh:"zh-CN"};
+function voiceFor(lang){
+  if (!voices.length) loadVoices();
+  const want = LANG[lang].toLowerCase(), base = want.slice(0,2);
+  const norm = v => v.lang.toLowerCase().replace("_","-");
+  const good = v => /google|natural|enhanced|premium|samantha|daniel|serena|amelie|thomas|ting|mei/i.test(v.name);
+  const exact = voices.filter(v => norm(v) === want), loose = voices.filter(v => norm(v).startsWith(base));
+  const pool = exact.length ? exact : loose;
+  return pool.find(good) || pool[0] || null;
+}
+function say(text, lang="en", rate){
+  return new Promise(res => {
+    if (!("speechSynthesis" in window)) return res();
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = LANG[lang]; const v = voiceFor(lang); if (v) u.voice = v;
+      u.rate = rate || (lang === "en" ? (S.kid === "p4" ? 0.75 : 0.85) : 0.95); u.pitch = 1.1;
+      let done = false; const fin = () => { if (!done) { done = true; res(); } };
+      u.onend = fin; u.onerror = fin; setTimeout(fin, 5000);
+      speechSynthesis.speak(u);
+    } catch(e) { res(); }
+  });
+}
+
+/* ---------- sounds ---------- */
+let ac;
+function tone(freqs, dur=.12, type="triangle"){
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const t = ac.currentTime;
+    freqs.forEach((f,i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = type; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t+i*dur); g.gain.exponentialRampToValueAtTime(.22, t+i*dur+.02); g.gain.exponentialRampToValueAtTime(.0001, t+(i+1)*dur);
+      o.connect(g); g.connect(ac.destination); o.start(t+i*dur); o.stop(t+(i+1)*dur+.05);
+    });
+  } catch(e) {}
+}
+const sfx = {ok:()=>tone([660,880,1320]), ko:()=>tone([300,220],.16,"sine"), pop:()=>tone([900,1500],.05,"square"), win:()=>tone([523,659,784,1047,1319],.12), tap:()=>tone([520],.06)};
+function confetti(n=18){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const set = ["⭐","🎉","✨","🌟","🎈"];
+  for (let i=0;i<n;i++){ const s=document.createElement("div"); s.className="confetti"; s.textContent=set[rnd(set.length)]; s.style.left=rnd(100)+"vw"; s.style.animationDelay=(Math.random()*.5)+"s"; document.body.appendChild(s); setTimeout(()=>s.remove(), 2400); }
+}
+/* ---------- screens ---------- */
+const SCREENS = ["home","themes","game","end","parent"];
+function show(id){ SCREENS.forEach(s => $(s).hidden = s !== id); window.scrollTo(0,0); }
+function goHome(){ GEN++; if (G && !G.done) endSession(false); try { speechSynthesis.cancel(); } catch(e) {} stopLoops(); renderHome(); show("home"); }
+document.addEventListener("click", e => { if (e.target.closest("[data-home]")) goHome(); });
+$("quitBtn").onclick = goHome;
+
+function el(tag, cls, html){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
+
+function renderHome(){
+  const kids = $("kids"); kids.innerHTML = "";
+  ["p7","p4"].forEach(k => {
+    const c = kidCfg(k), st = S.prof[k].stars, got = Math.floor(st/5);
+    const b = el("button","kid chunky");
+    b.setAttribute("aria-pressed", String(S.kid === k));
+    b.innerHTML = `<span class="ava">${c.ava}</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+      <span class="nm"></span><span class="meta">${c.age} ans · ⭐ ${st} · prochain autocollant dans ${5 - st%5}</span>
+      <span class="stickers">${STICKERS.slice(0, Math.min(got, STICKERS.length)).join("")}</span></span>`;
+    b.querySelector(".nm").textContent = S.names[k];
+    b.onclick = () => { S.kid = k; saveLocal(); sfx.tap(); renderHome(); say("Hello " + S.names[k] + "!"); };
+    kids.appendChild(b);
+  });
+  const map = $("map"); map.innerHTML = "";
+  ACTS.filter(a => !a.mic || MIC_OK).forEach(a => {
+    const b = el("button","spot chunky");
+    b.innerHTML = `${a.badge ? `<span class="badge">${a.badge}</span>` : ""}<span class="em">${a.em}</span><h3>${a.name}</h3><p>${a.desc}</p>`;
+    b.onclick = () => { sfx.tap(); openAct(a.id); };
+    map.appendChild(b);
+  });
+  $("homeHint").textContent = `${S.names[S.kid]}, choisis une île !`;
+}
+
+function openAct(id){
+  const a = ACTS.find(x => x.id === id);
+  if (!a.themes) return launch(id, null);
+  $("themeTitle").textContent = a.em + " " + a.name;
+  const g = $("themeGrid"); g.innerHTML = "";
+  Object.entries(THEMES).forEach(([key,t]) => {
+    const b = el("button","spot chunky");
+    const icon = key === "colors" ? "🎨" : t.icon;
+    b.innerHTML = `<span class="em">${icon}</span><h3>${t.label}</h3>`;
+    b.onclick = () => { sfx.tap(); launch(id, key); };
+    g.appendChild(b);
+  });
+  show("themes");
+}
+
+/* ---------- sessions: every game leaves a trace for the feedback loop ---------- */
+let G = null;
+function startSession(act, theme, total){
+  G = {id:uid(), act, theme, kid:S.kid, present:S.present, t0:Date.now(), rounds:[], stars:0, replays:0, hints:0, taps:0, done:false, rating:null, total, saved:false};
+  $("gStars").textContent = "0";
+}
+function sessionDoc(g){
+  return {
+    kid:g.kid, age:kidCfg(g.kid).age, act:g.act, theme:g.theme, withParent:g.present,
+    at:new Date(g.t0).toISOString(), t:g.t0, secs:Math.round(((g.tEnd||Date.now()) - g.t0)/1000),
+    completed:g.done, planned:g.total, played:g.rounds.length,
+    firstTry:g.rounds.filter(r => r.ok).length,
+    rounds:g.rounds, missed:[...new Set(g.rounds.filter(r => !r.ok).map(r => r.w))],
+    stars:g.stars, replays:g.replays, hints:g.hints, taps:g.taps, rating:g.rating,
+    voice:(voiceFor("en") || {}).name || "none", device, ver:VERSION
+  };
+}
+function logRound(word, firstTry, tries, extra){
+  G.rounds.push({w:word, ok:firstTry, tries, ...(extra || {})});
+  const w = S.prof[G.kid].words; const s = w[word] || [0,0];
+  if (firstTry) s[0]++; else s[1]++;
+  w[word] = s;
+}
+function addStar(n=1){
+  const p = S.prof[G.kid], before = p.stars;
+  G.stars += n; p.stars += n; $("gStars").textContent = G.stars;
+  if (Math.floor(p.stars/5) > Math.floor(before/5)) {
+    const s = STICKERS[(Math.floor(p.stars/5) - 1) % STICKERS.length];
+    setTimeout(() => { toast("Nouvel autocollant ! " + s); confetti(24); }, 500);
+  }
+}
+function endSession(completed){
+  if (!G || G.saved) return;
+  G.done = completed; G.tEnd = Date.now(); G.saved = true;
+  // an open-then-leave with nothing played is noise, not feedback
+  if (!completed && !G.rounds.length && G.taps < 2 && (G.tEnd - G.t0) < 8000) return;
+  record("sessions", G.id, sessionDoc(G));
+  saveProfile(G.kid);
+}
+let lastLaunch = null;
+function finish(){
+  const g = G; endSession(true); stopLoops();
+  sfx.win(); confetti();
+  const ok = g.rounds.filter(r => r.ok).length;
+  $("endEmoji").textContent = g.stars >= g.total * 0.8 ? "🏆" : g.stars ? "🌟" : "🎉";
+  $("endTitle").textContent = PRAISE[rnd(PRAISE.length)];
+  $("endSub").textContent = g.rounds.length ? `${ok} sur ${g.rounds.length} du premier coup · ⭐ ${g.stars}` : `⭐ ${g.stars}`;
+  document.querySelectorAll(".face").forEach(f => f.setAttribute("aria-pressed","false"));
+  show("end");
+  say($("endTitle").textContent).then(() => say("Tu as aimé ?", "fr"));
+}
+document.querySelectorAll(".face").forEach(f => f.onclick = () => {
+  if (!G) return;
+  document.querySelectorAll(".face").forEach(x => x.setAttribute("aria-pressed", String(x === f)));
+  G.rating = +f.dataset.r; sfx.tap();
+  record("sessions", G.id, sessionDoc(G));
+  say(G.rating === 3 ? "Yay! Thank you!" : "Thank you!");
+});
+$("againBtn").onclick = () => { if (lastLaunch) launch(...lastLaunch); };
+
+/* helpers shared by games */
+function speakBtn(getText, label="Écoute"){
+  const b = el("button","speak chunky", `🔊 <span>${label}</span>`);
+  b.onclick = () => { G.replays++; say(getText()); };
+  return b;
+}
+function bridgeBtn(w){
+  // the language each child already knows: 中文 for the 7-year-old, French for the 4-year-old
+  const lang = kidCfg(G.kid).bridge, txt = lang === "zh" ? w.zh : w.fr;
+  const b = el("button","chip", lang === "zh" ? "中文 ?" : "En français ?");
+  b.onclick = e => { e.stopPropagation(); G.hints++; b.textContent = txt; say(txt, lang); };
+  return b;
+}
+function renderDots(done, total, cur){
+  const d = $("dots"); d.innerHTML = "";
+  for (let i=0;i<total;i++){ const x = el("i"); if (i < done.length) x.className = done[i] ? "ok" : "ko"; else if (i === cur) x.className = "now"; d.appendChild(x); }
+}
+let loops = [];
+function stopLoops(){ loops.forEach(clearInterval); loops.forEach(clearTimeout); loops = []; }
+function wordFace(w){ return w.e.startsWith("#") ? `<span class="swatch" style="background:${w.e}"></span>` : w.e; }
+
+let GEN = 0; // bumps on every screen change so a pending voice line cannot resume an old game
+const alive = g => g === GEN && !$("game").hidden;
+function launch(id, theme){
+  GEN++; lastLaunch = [id, theme]; stopLoops();
+  $("gameBody").innerHTML = ""; $("dots").innerHTML = "";
+  show("game");
+  GAMES[id](theme);
+}
+/* ---------- games ---------- */
+const findPrompt = (w, theme) => theme === "colors" ? `Find ${w.en}!` : `Find the ${w.en}!`;
+const COUNT_ITEMS = [["🐱","cats"],["🐶","dogs"],["🐷","pigs"],["🦆","ducks"],["🐸","frogs"],["🐰","rabbits"],["🍎","apples"],["🍌","bananas"],["🍓","strawberries"],["🥕","carrots"],["⭐","stars"],["🚗","cars"],["🎈","balloons"]];
+
+const GAMES = {
+  imagier(theme){
+    const words = THEMES[theme].words, seen = new Set();
+    startSession("imagier", theme, words.length);
+    const body = $("gameBody");
+    body.append(el("p","prompt","Touche une image !<small>Elle te dit son nom en anglais</small>"));
+    const grid = el("div","grid-cards");
+    words.forEach(w => {
+      const c = el("button","card chunky", `${wordFace(w)}<span class="w"></span><span class="fr"></span>`);
+      c.onclick = () => {
+        G.taps++; seen.add(w.en); say(w.en);
+        c.querySelector(".w").textContent = w.en;
+        c.querySelector(".fr").textContent = kidCfg(G.kid).bridge === "zh" ? w.zh : w.fr;
+        c.classList.add("seen","flipped"); setTimeout(() => c.classList.remove("flipped"), 700);
+        renderDots([...Array(seen.size)].map(() => 1), words.length, -1);
+        if (seen.size === words.length && !G.allSeen) { G.allSeen = true; addStar(3); confetti(10); say("You heard them all!"); }
+      };
+      grid.appendChild(c);
+    });
+    body.append(grid);
+    const done = el("button","bigbtn chunky","Fini ! ⭐"); done.style.alignSelf = "center";
+    done.onclick = () => { if (!G.allSeen) addStar(Math.min(3, Math.ceil(seen.size/4))); finish(); };
+    body.append(done);
+    renderDots([], words.length, -1);
+  },
+
+  ecoute(theme){
+    const k = kidCfg(), n = k.choices, total = S.kid === "p4" ? 6 : 8;
+    const words = THEMES[theme].words, targets = pick(words, total), res = [];
+    startSession("ecoute", theme, total);
+    let i = 0; const gen = GEN;
+    const round = () => {
+      if (!alive(gen)) return;
+      if (i >= total) return finish();
+      const t = targets[i], opts = shuffle([t, ...pick(words.filter(w => w !== t), n-1)]);
+      let tries = 0, locked = false;
+      renderDots(res, total, i);
+      const body = $("gameBody"); body.innerHTML = "";
+      body.append(el("p","prompt","Écoute bien…<small>et touche la bonne image</small>"));
+      const row = el("div","row"); row.style.justifyContent = "center";
+      row.append(speakBtn(() => findPrompt(t, theme), "Encore"), bridgeBtn(t)); body.append(row);
+      const grid = el("div","choices");
+      opts.forEach(w => {
+        const c = el("button","choice chunky", `${wordFace(w)}<span class="w"></span>`);
+        c.onclick = async () => {
+          if (locked) return; G.taps++;
+          if (w === t) {
+            locked = true; c.classList.add("ok"); sfx.ok();
+            if (k.showWord || tries) c.querySelector(".w").textContent = w.en;
+            const first = tries === 0; if (first) addStar();
+            logRound(t.en, first, tries + 1); res.push(first ? 1 : 0);
+            renderDots(res, total, -1);
+            await say(PRAISE[rnd(PRAISE.length)] + " " + (theme === "colors" ? t.en : "The " + t.en + "!"));
+            i++; loops.push(setTimeout(round, 350));
+          } else {
+            tries++; sfx.ko(); c.classList.remove("ko"); void c.offsetWidth; c.classList.add("ko");
+            c.querySelector(".w").textContent = w.en;
+            say(`That's ${theme === "colors" ? "" : "the "}${w.en}. ${findPrompt(t, theme)}`);
+            // the 4-year-old gets a nudge after two misses so the game never stalls
+            if (tries >= 2 && S.kid === "p4") [...grid.children][opts.indexOf(t)].classList.add("bob");
+          }
+        };
+        grid.appendChild(c);
+      });
+      body.append(grid);
+      say(findPrompt(t, theme));
+    };
+    round();
+  },
+
+  ballons(){
+    const small = S.kid === "p4", total = small ? 6 : 8;
+    const pool = THEMES.colors.words.slice(0, small ? 6 : 10);
+    const targets = [...Array(total)].map((_, j) => pool[(j + rnd(pool.length)) % pool.length]);
+    const res = []; let i = 0, tries = 0, locked = false;
+    startSession("ballons", "colors", total); const gen = GEN;
+    const body = $("gameBody");
+    const p = el("p","prompt",""); const row = el("div","row"); row.style.justifyContent = "center";
+    const sky = el("div","sky");
+    body.append(p, row, sky);
+    const ask = () => { const t = targets[i]; p.innerHTML = `Pop the balloon!<small>Écoute la couleur</small>`; row.innerHTML = ""; row.append(speakBtn(() => `Pop the ${t.en} balloon!`, "Encore"), bridgeBtn(t)); renderDots(res, total, i); say(`Pop the ${t.en} balloon!`); tries = 0; locked = false; };
+    const spawn = () => {
+      if (i >= total) return;
+      const t = targets[i], w = Math.random() < 0.4 ? t : pool[rnd(pool.length)];
+      const b = el("button","balloon"); b.style.background = w.e; b.setAttribute("aria-label", w.en + " balloon");
+      const W = sky.clientWidth, H = sky.clientHeight;
+      b.style.left = Math.max(4, rnd(Math.max(1, W - 86))) + "px";
+      const dur = (small ? 9000 : 7000) * (matchMedia("(prefers-reduced-motion: reduce)").matches ? 1.6 : 1);
+      const anim = b.animate([{transform:"translateY(0)"},{transform:`translateY(-${H + 240}px)`}], {duration:dur, easing:"linear"});
+      anim.onfinish = () => b.remove();
+      b.onpointerdown = async ev => {
+        ev.preventDefault(); if (locked) return; G.taps++;
+        const now = targets[i];
+        if (w.en === now.en) {
+          locked = true; anim.pause(); b.classList.add("pop"); sfx.pop(); setTimeout(() => b.remove(), 260);
+          const first = tries === 0; if (first) addStar();
+          logRound(now.en, first, tries + 1); res.push(first ? 1 : 0); renderDots(res, total, -1);
+          await say(PRAISE[rnd(PRAISE.length)] + " " + now.en + "!");
+          if (!alive(gen)) return;
+          i++; if (i >= total) return finish(); ask();
+        } else {
+          tries++; sfx.ko(); b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong");
+          say(`That's ${w.en}!`);
+        }
+      };
+      sky.appendChild(b);
+    };
+    ask(); spawn();
+    loops.push(setInterval(spawn, small ? 1300 : 950));
+  },
+
+  compte(){
+    const small = S.kid === "p4", total = small ? 5 : 8, max = small ? 5 : 10;
+    const res = []; let i = 0;
+    const qs = [...Array(total)].map(() => ({n:1 + rnd(max), it:COUNT_ITEMS[rnd(COUNT_ITEMS.length)]}));
+    startSession("compte", null, total); const gen = GEN;
+    const round = () => {
+      if (!alive(gen)) return;
+      if (i >= total) return finish();
+      const q = qs[i], word = {en:NUMS[q.n-1], fr:NUMS_FR[q.n-1], zh:NUMS_ZH[q.n-1]};
+      const plural = q.n === 1 ? q.it[1].replace(/ies$/, "y").replace(/s$/, "") : q.it[1];
+      let tries = 0, locked = false, counted = 0;
+      renderDots(res, total, i);
+      const body = $("gameBody"); body.innerHTML = "";
+      body.append(el("p","prompt",`How many ${q.it[1]}?<small>Touche-les pour compter en anglais</small>`));
+      const pile = el("div","pile");
+      for (let j=0;j<q.n;j++){ const s = el("button","", q.it[0]); s.style.fontSize = "inherit"; s.onclick = () => { if (s.dataset.c) return; s.dataset.c = 1; s.style.opacity = ".45"; G.taps++; say(NUMS[counted++]); }; pile.append(s); }
+      body.append(pile);
+      const row = el("div","row"); row.style.justifyContent = "center";
+      row.append(speakBtn(() => `How many ${q.it[1]}?`, "Encore")); body.append(row);
+      const opts = shuffle([q.n, ...pick([...Array(max)].map((_,j) => j+1).filter(x => x !== q.n), small ? 2 : 3)]);
+      const nums = el("div","nums");
+      opts.forEach(v => {
+        const b = el("button","num chunky", String(v));
+        b.onclick = async () => {
+          if (locked) return;
+          if (v === q.n) {
+            locked = true; b.classList.add("ok"); sfx.ok();
+            const first = tries === 0; if (first) addStar();
+            logRound(word.en, first, tries + 1); res.push(first ? 1 : 0); renderDots(res, total, -1);
+            await say(`Yes! ${word.en} ${plural}!`); i++; loops.push(setTimeout(round, 300));
+          } else { tries++; sfx.ko(); b.classList.remove("ko"); void b.offsetWidth; b.classList.add("ko"); say(`${NUMS[v-1]}? Let's count!`); }
+        };
+        nums.append(b);
+      });
+      body.append(nums);
+      say(`How many ${q.it[1]}?`);
+    };
+    round();
+  },
+
+  memory(theme){
+    const small = S.kid === "p4", pairs = small ? 3 : 6;
+    const words = pick(THEMES[theme].words, pairs);
+    startSession("memory", theme, pairs);
+    // 4 ans: two identical pictures; 7 ans: a picture and its written English word
+    const cards = shuffle(words.flatMap(w => [{w, kind:"pic"}, {w, kind: small ? "pic" : "word"}]));
+    const body = $("gameBody");
+    body.append(el("p","prompt", small ? "Trouve les deux pareils !" : "Trouve l'image et son mot !"));
+    const grid = el("div","grid-cards"); body.append(grid);
+    let open = [], found = 0, busy = false;
+    const res = [];
+    renderDots(res, pairs, -1);
+    cards.forEach(c => {
+      const b = el("button","card chunky back", c.kind === "pic" ? `${wordFace(c.w)}` : `<span class="w" style="font-size:22px">${c.w.en}</span>`);
+      b.onclick = () => {
+        if (busy || !b.classList.contains("back")) return;
+        G.taps++; b.classList.remove("back"); say(c.w.en); open.push({b, c});
+        if (open.length < 2) return;
+        const [x, y] = open; open = [];
+        if (x.c.w === y.c.w) {
+          x.b.classList.add("done"); y.b.classList.add("done"); sfx.ok(); addStar(); found++;
+          res.push(1); renderDots(res, pairs, -1);
+          if (found === pairs) loops.push(setTimeout(finish, 900));
+        } else { busy = true; loops.push(setTimeout(() => { x.b.classList.add("back"); y.b.classList.add("back"); busy = false; }, 1100)); }
+      };
+      grid.append(b);
+    });
+  },
+
+  simon(){
+    const small = S.kid === "p4", total = 8, res = [];
+    const orders = pick(SIMON, total).map(o => ({...o, trick: !small && Math.random() < 0.3}));
+    startSession("simon", null, total);
+    if (!S.present) toast("Ce jeu marche mieux avec un parent pour arbitrer");
+    let i = 0; const gen = GEN;
+    const round = () => {
+      if (!alive(gen)) return;
+      if (i >= total) return finish();
+      const o = orders[i], line = (o.trick ? "" : "Simon says: ") + o.en;
+      renderDots(res, total, i);
+      const body = $("gameBody"); body.innerHTML = "";
+      body.append(el("div","order bob", o.e));
+      const p = el("p","prompt", ""); p.textContent = kidCfg().showWord ? line : "Écoute Simon !";
+      const hint = el("small","", o.trick ? "Parent : piège ! Sans « Simon says », il ne faut pas bouger." : "Parent : fais-le avec lui la première fois.");
+      p.append(hint); body.append(p);
+      const row = el("div","row"); row.style.justifyContent = "center";
+      row.append(speakBtn(() => line, "Encore"), bridgeBtn(o)); body.append(row);
+      const judge = el("div","judge");
+      const ok = el("button","chunky", "✅ Réussi"); ok.style.background = "#C9F2DF";
+      const ko = el("button","chunky", "🔁 Pas encore"); ko.style.background = "#FFD6CF";
+      ok.onclick = async () => { sfx.ok(); addStar(); logRound(o.en, true, 1); res.push(1); i++; await say(o.trick ? "Good! Simon didn't say!" : PRAISE[rnd(PRAISE.length)]); round(); };
+      ko.onclick = async () => { sfx.ko(); logRound(o.en, false, 1); res.push(0); i++; await say(o.trick ? "Oops! Simon didn't say!" : "Nice try!"); round(); };
+      judge.append(ok, ko); body.append(judge);
+      say(line);
+    };
+    round();
+  },
+
+  repete(theme){
+    const small = S.kid === "p4", total = small ? 5 : 8, res = [];
+    const words = pick(THEMES[theme].words, total);
+    const norm = x => x.toLowerCase().replace(/[^a-z ]/g, "").split(" ").map(t => t.replace(/s$/, "")).join(" ");
+    startSession("repete", theme, total);
+    let i = 0; const gen = GEN;
+    const round = () => {
+      if (!alive(gen)) return;
+      if (i >= total) return finish();
+      const w = words[i]; let tries = 0, heard = [], rec = null, moved = false;
+      renderDots(res, total, i);
+      const body = $("gameBody"); body.innerHTML = "";
+      body.append(el("div","order", wordFace(w)));
+      const p = el("p","prompt", ""); p.textContent = kidCfg().showWord ? w.en : "Écoute, puis répète !";
+      const info = el("small","", "Appuie sur le micro et dis le mot en anglais"); p.append(info); body.append(p);
+      const row = el("div","row"); row.style.justifyContent = "center";
+      row.append(speakBtn(() => w.en, "Écoute"), bridgeBtn(w)); body.append(row);
+      const mic = el("button","bigbtn chunky", "🎤 À toi !"); mic.style.alignSelf = "center"; mic.style.fontSize = "28px";
+      const judge = el("div","judge");
+      const okB = el("button","chunky", "✅ C'était bien"); okB.style.background = "#C9F2DF";
+      const skipB = el("button","chunky", "⏭️ Mot suivant"); skipB.style.background = "#FFE3A3";
+      judge.append(okB, skipB);
+      body.append(mic, el("p","muted","Parent : si le micro comprend mal, validez vous-même."), judge);
+      const next = async (ok, how) => {
+        if (moved || !alive(gen)) return; moved = true;
+        if (rec) try { rec.abort(); } catch(e) {}
+        if (ok && tries === 0) addStar();
+        logRound(w.en, ok && tries === 0, tries + 1, {heard, how});
+        res.push(ok && tries === 0 ? 1 : 0); renderDots(res, total, -1);
+        await say(ok ? PRAISE[rnd(PRAISE.length)] + " " + w.en + "!" : "Good try! " + w.en + "!");
+        i++; round();
+      };
+      okB.onclick = () => { sfx.ok(); next(true, "parent"); };
+      skipB.onclick = () => next(false, "skip");
+      mic.onclick = () => {
+        try { speechSynthesis.cancel(); } catch(e) {}
+        rec = new SR(); rec.lang = "en-US"; rec.maxAlternatives = 5; rec.interimResults = false;
+        mic.textContent = "👂 J'écoute…"; mic.disabled = true; G.taps++;
+        rec.onresult = ev => {
+          const alts = [...ev.results[0]].map(a => a.transcript);
+          heard.push(alts[0] || "");
+          if (alts.some(a => (" " + norm(a) + " ").includes(" " + norm(w.en) + " "))) { sfx.ok(); next(true, "mic"); return; }
+          tries++; sfx.ko(); info.textContent = `J'ai entendu « ${alts[0] || "…"} ». Encore une fois !`;
+          // young voices are hard for recognition: never let the child stay stuck
+          if (tries >= (small ? 2 : 3)) next(false, "mic");
+          else say("Try again! " + w.en);
+        };
+        rec.onerror = ev => {
+          if (ev.error === "not-allowed" || ev.error === "service-not-allowed") toast("Micro refusé : autorisez-le dans le navigateur");
+          else if (ev.error === "no-speech") info.textContent = "Je n'ai rien entendu. Parle plus fort !";
+          else if (ev.error === "network") toast("La reconnaissance vocale a besoin d'internet");
+        };
+        rec.onend = () => { mic.textContent = "🎤 À toi !"; mic.disabled = false; };
+        try { rec.start(); } catch(e) { mic.disabled = false; }
+      };
+      say(w.en);
+    };
+    round();
+  }
+};
+/* ---------- parents' corner ---------- */
+(() => {
+  // long press keeps small hands out
+  const btn = $("lockBtn"), fill = $("lockFill"); let t = null;
+  const cancel = () => { clearTimeout(t); t = null; fill.style.transition = "transform .15s"; fill.style.transform = "scaleX(0)"; };
+  btn.addEventListener("pointerdown", () => { fill.style.transition = "transform 1.8s linear"; fill.style.transform = "scaleX(1)"; t = setTimeout(() => { cancel(); openParent(); }, 1800); });
+  ["pointerup","pointerleave","pointercancel"].forEach(ev => btn.addEventListener(ev, cancel));
+  btn.addEventListener("click", e => { if (e.detail === 0) openParent(); });
+  btn.addEventListener("contextmenu", e => e.preventDefault());
+})();
+
+let fbTags = new Set();
+function openParent(){
+  GEN++; if (G && !G.done) endSession(false); stopLoops();
+  $("presentSw").setAttribute("aria-checked", String(S.present));
+  $("name7").value = S.names.p7; $("name4").value = S.names.p4;
+  $("fbAct").innerHTML = `<option value="general">Le site en général</option>` + ACTS.map(a => `<option value="${a.id}">${a.name}</option>`).join("");
+  const tags = $("fbTags"); tags.innerHTML = ""; fbTags = new Set();
+  FB_TAGS.forEach(tg => { const c = el("button","chip"); c.textContent = tg; c.setAttribute("aria-pressed","false"); c.onclick = () => { fbTags.has(tg) ? fbTags.delete(tg) : fbTags.add(tg); c.setAttribute("aria-pressed", String(fbTags.has(tg))); }; tags.append(c); });
+  $("storeInfo").textContent = Store.label() + (S.pending.length ? ` ${S.pending.length} élément(s) en attente d'envoi.` : "");
+  $("exportBtn").hidden = !(Store.mode === "local" && S.pending.length);
+  show("parent"); loadStats();
+}
+$("exportBtn").onclick = () => {
+  // without the server, the parent carries this file to ile-aux-mots/retours/ for Claude
+  const blob = new Blob([JSON.stringify({exportedAt:new Date().toISOString(), names:S.names, prof:S.prof, items:S.pending}, null, 1)], {type:"application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "retours-" + new Date().toISOString().slice(0,10) + ".json";
+  document.body.append(a); a.click(); a.remove();
+  toast("Fichier prêt : déposez-le dans ile-aux-mots/retours");
+};
+$("presentSw").onclick = () => { S.present = !S.present; $("presentSw").setAttribute("aria-checked", String(S.present)); saveConfig(); toast(S.present ? "Noté : vous jouez avec eux" : "Noté : ils jouent seuls"); };
+$("saveNames").onclick = () => { S.names.p7 = $("name7").value.trim() || KID_DEFAULT.p7.name; S.names.p4 = $("name4").value.trim() || KID_DEFAULT.p4.name; saveConfig(); toast("Prénoms enregistrés"); };
+$("fbSend").onclick = async () => {
+  const text = $("fbText").value.trim();
+  if (!text && !fbTags.size) return toast("Choisissez une étiquette ou écrivez un mot");
+  const id = uid();
+  await record("notes", id, {at:new Date().toISOString(), t:Date.now(), act:$("fbAct").value, kid:$("fbKid").value, tags:[...fbTags], text, withParent:S.present, device, ver:VERSION, status:"new"});
+  $("fbText").value = ""; openParent(); toast("Merci ! Claude le lira.");
+};
+
+async function loadStats(){
+  const table = $("statsTable"), hard = $("hardWords"), list = $("notesList");
+  let sessions = [], notes = [];
+  try { sessions = await Store.list("sessions", 600); } catch(e) {}
+  try { notes = await Store.list("notes", 15); } catch(e) {}
+  S.pending.forEach(p => { if (p.kind === "sessions") sessions.push(p.data); else if (p.kind === "notes") notes.unshift(p.data); });
+  if (!sessions.length) { table.innerHTML = `<tr><td class="muted">Pas encore de partie jouée. Les chiffres apparaîtront ici après les premiers jeux.</td></tr>`; }
+  else {
+    const rows = ACTS.map(a => {
+      const s = sessions.filter(x => x.act === a.id);
+      if (!s.length) return `<tr><td>${a.em} ${a.name}</td><td colspan="5" class="muted">pas encore joué</td></tr>`;
+      const done = s.filter(x => x.completed).length, rated = s.filter(x => x.rating);
+      const rounds = s.reduce((n,x) => n + (x.played||0), 0), first = s.reduce((n,x) => n + (x.firstTry||0), 0);
+      const pct = rounds ? Math.round(100*first/rounds) : null;
+      const avg = rated.length ? rated.reduce((n,x) => n + x.rating, 0) / rated.length : null;
+      const face = avg == null ? "–" : avg >= 2.5 ? "😍" : avg >= 1.7 ? "🙂" : "😴";
+      const cls = v => v == null ? "" : v >= 75 ? "g" : v >= 50 ? "m" : "b";
+      return `<tr><td>${a.em} ${a.name}</td><td>${s.length}</td><td><span class="pill ${cls(Math.round(100*done/s.length))}">${Math.round(100*done/s.length)} %</span></td>
+        <td>${pct == null ? "–" : `<span class="pill ${cls(pct)}">${pct} %</span>`}</td><td>${face} ${rated.length ? `(${rated.length})` : ""}</td>
+        <td>${Math.round(s.reduce((n,x) => n + (x.secs||0), 0) / s.length)} s</td></tr>`;
+    }).join("");
+    table.innerHTML = `<tr><th>Jeu</th><th>Parties</th><th>Finies</th><th>Du 1er coup</th><th>Avis enfants</th><th>Durée moy.</th></tr>` + rows;
+  }
+  hard.innerHTML = "";
+  const hw = [];
+  ["p7","p4"].forEach(k => Object.entries(S.prof[k].words).forEach(([w,[ok,ko]]) => { if (ko > 0 && ok + ko >= 2) hw.push({w, k, r: ko/(ok+ko), n: ok+ko}); }));
+  hw.sort((a,b) => b.r - a.r || b.n - a.n);
+  if (!hw.length) hard.innerHTML = `<p class="muted">Rien à signaler pour l'instant.</p>`;
+  hw.slice(0, 14).forEach(x => { const c = el("button","chip"); c.textContent = `${x.w} · ${S.names[x.k]} ${Math.round(100*x.r)} % raté`; c.onclick = () => say(x.w); hard.append(c); });
+  list.innerHTML = notes.length ? "" : `<p class="muted">Aucun retour écrit pour l'instant.</p>`;
+  notes.forEach(n => {
+    const d = el("div","note");
+    const act = (ACTS.find(a => a.id === n.act) || {name:"Général"}).name;
+    const head = el("b"); head.textContent = `${new Date(n.at).toLocaleDateString("fr-FR")} · ${act} · ${(n.tags||[]).join(", ")}${n.status === "done" ? " · ✅ traité" : ""}`;
+    const body = el("div"); body.textContent = n.text || "";
+    d.append(head, body); list.append(d);
+  });
+}
+
+/* ---------- boot ---------- */
+function start(data){
+  loadLocal();
+  if (data && data.kid) S.kid = data.kid;
+  renderHome(); show("home"); connect();
+}
+try { if (window.claude && window.claude.hot && typeof window.claude.hot.snapshot === "function") window.claude.hot.snapshot(() => ({kid:S.kid})); } catch(e) {}
+if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start);
+else start((window.claude && window.claude.hot && window.claude.hot.data) || {});
+</script>
