@@ -31,6 +31,16 @@ function downloadJSON(name, obj){
   document.body.append(a); a.click(); a.remove();
 }
 const today = () => new Date().toISOString().slice(0,10);
+// Chrome on the Android tablet offers installation; keep its event for the parents' button
+let installEvt = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("installBtn").hidden = false; });
+window.addEventListener("appinstalled", () => { installEvt = null; $("installBtn").hidden = true; toast("Application installée sur l'écran d'accueil"); });
+$("installBtn").onclick = async () => {
+  if (!installEvt) return;
+  installEvt.prompt();
+  try { await installEvt.userChoice; } catch(e) {}
+  installEvt = null; $("installBtn").hidden = true;
+};
 $("exportBtn").onclick = () => {
   // without the server, the parent carries this file to ile-aux-mots/retours/ for Claude
   downloadJSON("retours-" + today() + ".json", {exportedAt:new Date().toISOString(), names:S.names, prof:S.prof, items:S.pending});
