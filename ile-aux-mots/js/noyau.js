@@ -22,7 +22,7 @@ function loadLocal(){
   normProf();
 }
 // profiles saved by version 1.0 have no scores yet
-function normProf(){ ["p7","p4"].forEach(k => { S.prof[k] = Object.assign({stars:0, words:{}, scores:{}}, S.prof[k]); }); }
+function normProf(){ ["p7","p4"].forEach(k => { S.prof[k] = Object.assign({stars:0, words:{}, scores:{}, levels:{}}, S.prof[k]); }); }
 function saveLocal(){
   try { localStorage.setItem("iam", JSON.stringify({names:S.names, prof:S.prof, pending:S.pending.slice(-200), outbox:(S.outbox || []).slice(-200), present:S.present, kid:S.kid})); } catch(e) {}
 }
@@ -86,7 +86,7 @@ async function flushPending(){
   const items = S.pending.splice(0); saveLocal();
   for (const it of items) await record(it.kind, it.id, it.data);
 }
-function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words, scores:S.prof[k].scores}).catch(()=>{}); }
+function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words, scores:S.prof[k].scores, levels:S.prof[k].levels}).catch(()=>{}); }
 function saveConfig(){ saveLocal(); if (Store.mode !== "local") Store.put("config", "main", {names:S.names, present:S.present}).catch(()=>{}); }
 
 async function connect(){
@@ -100,7 +100,7 @@ async function connect(){
     const [cfg, a, b] = await Promise.all([Store.get("config","main"), Store.get("profiles","p7"), Store.get("profiles","p4")]);
     if (cfg) { Object.assign(S.names, cfg.names||{}); S.present = !!cfg.present; } else saveConfig();
     [["p7",a],["p4",b]].forEach(([k,d]) => {
-      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{})), scores:JSON.parse(JSON.stringify(d.scores||{}))};
+      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{})), scores:JSON.parse(JSON.stringify(d.scores||{})), levels:JSON.parse(JSON.stringify(d.levels||{}))};
       else saveProfile(k);
     });
     await flushPending();
@@ -188,7 +188,8 @@ function renderHome(){
   ACTS.filter(a => !a.mic || MIC_OK).forEach(a => {
     const b = el("button","spot chunky");
     const sc = S.prof[S.kid].scores[a.id];
-    const score = sc && sc.plays ? `<span class="score">🏆 ${sc.best} · ${sc.plays} partie${sc.plays > 1 ? "s" : ""} · ${fmtTime(sc.secs)}</span>` : `<span class="score">Nouveau !</span>`;
+    const niv = a.levels === false ? "" : `Niv. ${levelOf(a.id)} · `;
+    const score = sc && sc.plays ? `<span class="score">${niv}🏆 ${sc.best} · ${fmtTime(sc.secs)}</span>` : `<span class="score">${niv}Nouveau !</span>`;
     b.innerHTML = `${a.badge ? `<span class="badge">${a.badge}</span>` : ""}<span class="em">${a.em}</span><h3>${a.name}</h3><p>${a.desc}</p>${score}`;
     b.onclick = () => { sfx.tap(); openAct(a.id); };
     map.appendChild(b);
@@ -214,12 +215,36 @@ function openAct(id){
 /* ---------- sessions: every game leaves a trace for the feedback loop ---------- */
 let G = null;
 function startSession(act, theme, total){
-  G = {id:uid(), act, theme, kid:S.kid, present:S.present, t0:Date.now(), rounds:[], stars:0, replays:0, hints:0, taps:0, done:false, rating:null, total, saved:false};
+  G = {id:uid(), act, theme, kid:S.kid, lvl:levelOf(act), present:S.present, t0:Date.now(), rounds:[], stars:0, replays:0, hints:0, taps:0, done:false, rating:null, total, saved:false};
   $("gStars").textContent = "0";
+}
+
+/* ---------- levels: 1 to 4 per child and per game, rising on their own ---------- */
+const LEVEL_MAX = 4, LEVEL_START = {p7:2, p4:1};
+// a game may start a child higher (registerGame meta.start, e.g. {p7:3} for sums in English)
+function levelOf(act, kid){
+  kid = kid || S.kid;
+  const own = (S.prof[kid].levels || {})[act];
+  if (own) return own;
+  const meta = ACTS.find(a => a.id === act);
+  return (meta && meta.start && meta.start[kid]) || LEVEL_START[kid];
+}
+function setLevel(act, lvl, kid){
+  kid = kid || S.kid;
+  S.prof[kid].levels = S.prof[kid].levels || {};
+  S.prof[kid].levels[act] = Math.max(1, Math.min(LEVEL_MAX, lvl));
+  saveProfile(kid);
+}
+// at least 5 rounds: 80 % right first time goes up, under 50 % goes down
+function adjustLevel(g){
+  const n = g.rounds.length; if (n < 5) return;
+  const rate = g.rounds.filter(r => r.ok).length / n;
+  if (rate >= 0.8 && g.lvl < LEVEL_MAX) { g.levelUp = g.lvl + 1; S.prof[g.kid].levels = S.prof[g.kid].levels || {}; S.prof[g.kid].levels[g.act] = g.levelUp; }
+  else if (rate < 0.5 && g.lvl > 1) { g.levelDown = g.lvl - 1; S.prof[g.kid].levels = S.prof[g.kid].levels || {}; S.prof[g.kid].levels[g.act] = g.levelDown; }
 }
 function sessionDoc(g){
   return {
-    kid:g.kid, age:kidCfg(g.kid).age, act:g.act, theme:g.theme, withParent:g.present,
+    kid:g.kid, age:kidCfg(g.kid).age, act:g.act, theme:g.theme, lvl:g.lvl, lvlAfter:g.levelUp || g.levelDown || g.lvl, withParent:g.present,
     at:new Date(g.t0).toISOString(), t:g.t0, secs:Math.round(((g.tEnd||Date.now()) - g.t0)/1000),
     completed:g.done, planned:g.total, played:g.rounds.length,
     firstTry:g.rounds.filter(r => r.ok).length,
@@ -253,6 +278,7 @@ function endSession(completed){
     sc.done++;
     G.record = sc.done > 1 && G.stars > sc.best;
     sc.best = Math.max(sc.best, G.stars);
+    adjustLevel(G);
   }
   sc.last = new Date(G.t0).toISOString();
   S.prof[G.kid].scores[G.act] = sc;
@@ -268,6 +294,8 @@ function finish(){
   $("endEmoji").textContent = g.record ? "🏆" : g.stars >= g.total * 0.8 ? "🥇" : g.stars ? "🌟" : "🎉";
   $("endTitle").textContent = g.record ? "New record!" : PRAISE[rnd(PRAISE.length)];
   if (g.record) { confetti(30); toast("Nouveau record : ⭐ " + g.stars); }
+  if (g.levelUp) { $("endEmoji").textContent = "🚀"; $("endTitle").textContent = "Level " + g.levelUp + "!"; confetti(40); toast(`Niveau ${g.levelUp} débloqué !`); }
+  else if (g.levelDown) toast(`On revient au niveau ${g.levelDown} pour s'entraîner`);
   $("endSub").textContent = g.rounds.length ? `${ok} sur ${g.rounds.length} du premier coup · ⭐ ${g.stars}` : `⭐ ${g.stars}`;
   document.querySelectorAll(".face").forEach(f => f.setAttribute("aria-pressed","false"));
   show("end");

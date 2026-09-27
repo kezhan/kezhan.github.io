@@ -1,5 +1,5 @@
 ﻿/* L'Île aux Mots : mots, thèmes, jeux et constantes. */
-const VERSION = "1.2";
+const VERSION = "1.3";
 // Google Sheet collector (Apps Script web app URL ending in /exec, see outils/collecteur.gs). Empty = off.
 const COLLECTE = {url: ""};
 /* ---------- words: emoji|english|français|中文 ---------- */
