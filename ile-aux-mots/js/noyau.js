@@ -18,13 +18,13 @@ function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clea
 
 /* ---------- local cache (per device, fallback only) ---------- */
 function loadLocal(){
-  try { const d = JSON.parse(localStorage.getItem("iam") || "null"); if (d) { Object.assign(S.names, d.names||{}); if (d.prof) S.prof = d.prof; S.pending = d.pending || []; S.present = !!d.present; S.kid = d.kid || S.kid; } } catch(e) {}
+  try { const d = JSON.parse(localStorage.getItem("iam") || "null"); if (d) { Object.assign(S.names, d.names||{}); if (d.prof) S.prof = d.prof; S.pending = d.pending || []; S.outbox = d.outbox || []; S.present = !!d.present; S.kid = d.kid || S.kid; } } catch(e) {}
   normProf();
 }
 // profiles saved by version 1.0 have no scores yet
 function normProf(){ ["p7","p4"].forEach(k => { S.prof[k] = Object.assign({stars:0, words:{}, scores:{}}, S.prof[k]); }); }
 function saveLocal(){
-  try { localStorage.setItem("iam", JSON.stringify({names:S.names, prof:S.prof, pending:S.pending.slice(-200), present:S.present, kid:S.kid})); } catch(e) {}
+  try { localStorage.setItem("iam", JSON.stringify({names:S.names, prof:S.prof, pending:S.pending.slice(-200), outbox:(S.outbox || []).slice(-200), present:S.present, kid:S.kid})); } catch(e) {}
 }
 
 /* ---------- where feedback goes ----------
@@ -53,7 +53,29 @@ const Store = {
     return [];
   }
 };
+/* Google Form collector (COLLECTE in donnees.js): write-only, no names, lets Claude see what they play from any device.
+   A no-cors post never reveals success, so a network error is the only failure we can see: those wait in the outbox. */
+function sendForm(kind, id, data){
+  if (!COLLECTE.form || !COLLECTE.entry || !navigator.onLine) return Promise.reject();
+  const body = new URLSearchParams(); body.append(COLLECTE.entry, JSON.stringify({kind, id, ...data}));
+  return fetch(COLLECTE.form, {method:"POST", mode:"no-cors", body});
+}
+function collect(kind, id, data){
+  if (!COLLECTE.form || (kind !== "sessions" && kind !== "notes")) return;
+  S.outbox = S.outbox || [];
+  sendForm(kind, id, data).catch(() => { S.outbox.push({kind, id, data}); saveLocal(); });
+}
+async function flushOutbox(){
+  if (!COLLECTE.form || !(S.outbox || []).length) return;
+  const items = S.outbox.splice(0); saveLocal();
+  for (const it of items) {
+    try { await sendForm(it.kind, it.id, it.data); } catch(e) { S.outbox.push(it); }
+  }
+  saveLocal();
+}
+window.addEventListener("online", () => flushOutbox());
 function record(kind, id, data){
+  collect(kind, id, data);
   if (Store.mode === "local") { S.pending.push({kind, id, data}); saveLocal(); return Promise.resolve(); }
   return Store.put(kind, id, data).catch(e => {
     if (e && e.code === "quota_exceeded") toast("Mémoire pleine : prévenez Claude");

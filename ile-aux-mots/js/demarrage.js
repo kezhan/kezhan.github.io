@@ -3,7 +3,7 @@
 function start(data){
   loadLocal();
   if (data && data.kid) S.kid = data.kid;
-  renderHome(); show("home"); connect();
+  renderHome(); show("home"); connect(); flushOutbox();
   // ask the browser not to evict stars and stickers when space runs low
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().then(ok => { S.persisted = ok; }, () => {}); } catch(e) {}
 }
