@@ -12,11 +12,11 @@ GAMES.memory = function (theme) {
   const res = [];
   renderDots(res, pairs, -1);
   cards.forEach(c => {
-    const b = el("button","card chunky back", c.kind === "pic" ? `${wordFace(c.w)}` : `<span class="w" style="font-size:22px">${c.w.en}</span>`);
+    const b = el("button","card chunky back", c.kind === "pic" ? `${wordFace(c.w)}` : `<span class="w" style="font-size:22px">${T(c.w)}</span>`);
     if (TEST) b.dataset.pair = c.w.en; // the recette finds pairs without guessing
     b.onclick = () => {
       if (busy || !b.classList.contains("back")) return;
-      G.taps++; b.classList.remove("back"); say(c.w.en); open.push({b, c});
+      G.taps++; b.classList.remove("back"); sayT(T(c.w)); open.push({b, c});
       if (open.length < 2) return;
       const [x, y] = open; open = [];
       if (x.c.w === y.c.w) {

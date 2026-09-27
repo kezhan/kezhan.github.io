@@ -333,27 +333,29 @@ $("againBtn").onclick = () => { if (lastLaunch) launch(...lastLaunch); };
 /* ---------- target language: what each child is learning, switched at home in one tap ---------- */
 const LANGS = {en:{flag:"🇬🇧", label:"English"}, fr:{flag:"🇫🇷", label:"Français"}, zh:{flag:"🇨🇳", label:"中文"}};
 const PHRASES = {
-  en:{find:w => `Find the ${w}!`, findColor:w => `Find ${w}!`, thats:w => `That's the ${w}.`, pop:w => `Pop the ${w} balloon!`, praise:PRAISE},
-  fr:{find:w => `Trouve : ${w} !`, findColor:w => `Trouve : ${w} !`, thats:w => `Ça, c'est : ${w}.`, pop:w => `Éclate le ballon ${w} !`, praise:["Bravo !","Super !","Génial !","Oui !","Bien joué !"]},
-  zh:{find:w => `找到${w}！`, findColor:w => `找到${w}！`, thats:w => `这是${w}。`, pop:w => `把${w}的气球戳破！`, praise:["太棒了！","真棒！","对了！","好厉害！"]}
+  en:{find:w => `Find the ${w}!`, findColor:w => `Find ${w}!`, thats:w => `That's the ${w}.`, thatsColor:w => `That's ${w}.`, pop:w => `Pop the ${w} balloon!`, praise:PRAISE},
+  fr:{find:w => `Trouve : ${w} !`, findColor:w => `Trouve : ${w} !`, thats:w => `Ça, c'est : ${w}.`, thatsColor:w => `Ça, c'est : ${w}.`, pop:w => `Éclate le ballon ${w} !`, praise:["Bravo !","Super !","Génial !","Oui !","Bien joué !"]},
+  zh:{find:w => `找到${w}！`, findColor:w => `找到${w}！`, thats:w => `这是${w}。`, thatsColor:w => `这是${w}。`, pop:w => `把${w}的气球戳破！`, praise:["太棒了！","真棒！","对了！","好厉害！"]}
 };
 function langOf(kid){ return S.prof[kid || S.kid].lang || "en"; }
 function T(w){ return w[langOf()] || w.en; }            // the word in the language being learnt
 function sayT(text){ return say(text, langOf()); }
 function phrase(){ return PHRASES[langOf()] || PHRASES.en; }
 function setLang(kid, lang){ S.prof[kid].lang = lang; saveProfile(kid); }
+function praiseT(){ const p = phrase().praise; return p[rnd(p.length)]; }
+// help language: the one the child knows, never the one being learnt (null = no help needed)
+function bridgeLang(kid){ kid = kid || S.kid; const b = kidCfg(kid).bridge; return b !== langOf(kid) ? b : (b === "zh" ? "fr" : null); }
 
 /* helpers shared by games */
-function speakBtn(getText, label="Écoute"){
+function speakBtn(getText, label="Écoute", lang="en"){
   const b = el("button","speak chunky", `🔊 <span>${label}</span>`);
-  b.onclick = () => { G.replays++; say(getText()); };
+  b.onclick = () => { G.replays++; say(getText(), lang); };
   return b;
 }
 function bridgeBtn(w){
   // the language each child already knows: 中文 for the 7-year-old, French for the 4-year-old;
   // never the language being learnt (the big one learning Chinese gets French help)
-  let lang = kidCfg(G.kid).bridge;
-  if (lang === langOf(G.kid)) lang = lang === "zh" ? "fr" : null;
+  const lang = bridgeLang(G.kid);
   if (!lang) return el("span");
   const txt = w[lang];
   const b = el("button","chip", lang === "zh" ? "中文 ?" : "En français ?");

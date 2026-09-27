@@ -1,6 +1,6 @@
 /* L'Île aux Mots : jeu « ecoute ».
    1: 3 pictures · 2: 4 pictures · 3: 6 pictures, other themes and sound-alike traps · 4: read the word, no voice */
-const findPrompt = (w, theme) => theme === "colors" ? `Find ${w.en}!` : `Find the ${w.en}!`;
+const findPrompt = (w, theme) => theme === "colors" ? phrase().findColor(T(w)) : phrase().find(T(w));
 // words that sound alike, to make level 3 listen carefully
 const SOUNDALIKE = [["bear","pear"],["mouse","house"],["car","star"],["cake","snake"],["sheep","ship"],["tree","three"],["hat","cat"],["boat","goat"],["cow","owl"]];
 
@@ -16,17 +16,17 @@ GAMES.ecoute = function (theme) {
     if (!alive(gen)) return;
     if (i >= targets.length) return finish();
     const t = targets[i];
-    const twin = lvl >= 3 ? SOUNDALIKE.flatMap(p => p.includes(t.en) ? p.filter(x => x !== t.en) : []).map(x => all.find(w => w.en === x)).filter(Boolean) : [];
+    const twin = lvl >= 3 && langOf() === "en" ? SOUNDALIKE.flatMap(p => p.includes(t.en) ? p.filter(x => x !== t.en) : []).map(x => all.find(w => w.en === x)).filter(Boolean) : [];
     const rest = pick(lvl >= 3 ? all.filter(w => w !== t && !twin.includes(w)) : words.filter(w => w !== t), n - 1 - twin.length);
     const opts = shuffle([t, ...twin, ...rest]);
     let tries = 0, locked = false;
     renderDots(res, targets.length, i);
     const body = $("gameBody"); body.innerHTML = "";
-    if (reading) body.append(el("p", "prompt", `<span style="font-size:1.6em">${t.en}</span><small>Lis le mot et touche la bonne image</small>`));
+    if (reading) body.append(el("p", "prompt", `<span style="font-size:1.6em">${T(t)}</span><small>Lis le mot et touche la bonne image</small>`));
     else body.append(el("p", "prompt", "Écoute bien…<small>et touche la bonne image</small>"));
     const row = el("div", "row"); row.style.justifyContent = "center";
-    if (reading) { const b = el("button", "chip", "🔊 Écoute"); b.onclick = () => { G.hints++; say(t.en); }; row.append(b); }
-    else row.append(speakBtn(() => findPrompt(t, theme), "Encore"));
+    if (reading) { const b = el("button", "chip", "🔊 Écoute"); b.onclick = () => { G.hints++; sayT(T(t)); }; row.append(b); }
+    else row.append(speakBtn(() => findPrompt(t, theme), "Encore", langOf()));
     if (lvl <= 3) row.append(bridgeBtn(t));
     body.append(row);
     const grid = el("div", "choices");
@@ -37,16 +37,16 @@ GAMES.ecoute = function (theme) {
         if (locked) return; G.taps++;
         if (w === t) {
           locked = true; c.classList.add("ok"); sfx.ok();
-          if (S.kid === "p7" || tries) c.querySelector(".w").textContent = w.en;
+          if (S.kid === "p7" || tries) c.querySelector(".w").textContent = T(w);
           const first = tries === 0; if (first) addStar();
           logRound(t.en, first, tries + 1, {lvl}); res.push(first ? 1 : 0);
           renderDots(res, targets.length, -1);
-          await say(PRAISE[rnd(PRAISE.length)] + " " + (theme === "colors" ? t.en : "The " + t.en + "!"));
+          await sayT(praiseT() + " " + T(t) + "!");
           i++; loops.push(setTimeout(round, 350));
         } else {
           tries++; sfx.ko(); c.classList.remove("ko"); void c.offsetWidth; c.classList.add("ko");
-          c.querySelector(".w").textContent = w.en;
-          say(`That's ${theme === "colors" ? "" : "the "}${w.en}. ${findPrompt(t, theme)}`);
+          c.querySelector(".w").textContent = T(w);
+          sayT((theme === "colors" ? phrase().thatsColor(T(w)) : phrase().thats(T(w))) + " " + findPrompt(t, theme));
           // the 4-year-old gets a nudge after two misses so the game never stalls
           if (tries >= 2 && S.kid === "p4") [...grid.children][opts.indexOf(t)].classList.add("bob");
         }
@@ -54,7 +54,7 @@ GAMES.ecoute = function (theme) {
       grid.appendChild(c);
     });
     body.append(grid);
-    if (!reading) say(findPrompt(t, theme));
+    if (!reading) sayT(findPrompt(t, theme));
   };
   round();
 };

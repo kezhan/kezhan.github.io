@@ -9,7 +9,7 @@ GAMES.ballons = function () {
   const p = el("p","prompt",""); const row = el("div","row"); row.style.justifyContent = "center";
   const sky = el("div","sky");
   body.append(p, row, sky);
-  const ask = () => { const t = targets[i]; p.innerHTML = `Pop the balloon!<small>Écoute la couleur</small>`; row.innerHTML = ""; row.append(speakBtn(() => `Pop the ${t.en} balloon!`, "Encore"), bridgeBtn(t)); renderDots(res, total, i); say(`Pop the ${t.en} balloon!`); tries = 0; locked = false; if (TEST) document.body.dataset.target = t.en; };
+  const ask = () => { const t = targets[i]; p.innerHTML = `Éclate le bon ballon !<small>Écoute la couleur</small>`; row.innerHTML = ""; row.append(speakBtn(() => phrase().pop(T(t)), "Encore", langOf()), bridgeBtn(t)); renderDots(res, total, i); sayT(phrase().pop(T(t))); tries = 0; locked = false; if (TEST) document.body.dataset.target = t.en; };
   const spawn = () => {
     if (i >= total) return;
     const t = targets[i], w = Math.random() < 0.4 ? t : pool[rnd(pool.length)];
@@ -27,12 +27,12 @@ GAMES.ballons = function () {
         locked = true; anim.pause(); b.classList.add("pop"); sfx.pop(); setTimeout(() => b.remove(), 260);
         const first = tries === 0; if (first) addStar();
         logRound(now.en, first, tries + 1); res.push(first ? 1 : 0); renderDots(res, total, -1);
-        await say(PRAISE[rnd(PRAISE.length)] + " " + now.en + "!");
+        await sayT(praiseT() + " " + T(now) + "!");
         if (!alive(gen)) return;
         i++; if (i >= total) return finish(); ask();
       } else {
         tries++; sfx.ko(); b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong");
-        say(`That's ${w.en}!`);
+        sayT(phrase().thatsColor(T(w)));
       }
     };
     sky.appendChild(b);

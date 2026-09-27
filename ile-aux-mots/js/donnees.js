@@ -89,13 +89,13 @@ const STICKERS = ["🦄","🚀","🦖","🐙","🌈","🏰","🍦","🎈","🦋"
 const PRAISE = ["Great job!","Well done!","Yes!","Super!","Amazing!","You got it!"];
 
 const ACTS = [
-  {id:"imagier", em:"📚", name:"Imagier", desc:"Touche une image, elle parle", themes:true},
-  {id:"ecoute",  em:"👂", name:"Écoute & trouve", desc:"Trouve la bonne image", themes:true},
-  {id:"ballons", em:"🎈", name:"Ballons", desc:"Éclate la bonne couleur"},
+  {id:"imagier", multi:true, em:"📚", name:"Imagier", desc:"Touche une image, elle parle", themes:true},
+  {id:"ecoute", multi:true,  em:"👂", name:"Écoute & trouve", desc:"Trouve la bonne image", themes:true},
+  {id:"ballons", multi:true, em:"🎈", name:"Ballons", desc:"Éclate la bonne couleur"},
   {id:"compte",  em:"🔢", name:"Combien ?", desc:"Compte en anglais"},
-  {id:"memory",  em:"🃏", name:"Memory", desc:"Retrouve les paires", themes:true},
+  {id:"memory", multi:true,  em:"🃏", name:"Memory", desc:"Retrouve les paires", themes:true},
   {id:"simon",   em:"🙆", name:"Jacques a dit", desc:"Bouge ton corps", badge:"avec un parent"},
-  {id:"repete",  em:"🎤", name:"Répète !", desc:"Dis le mot à voix haute", themes:true, mic:true}
+  {id:"repete", multi:true,  em:"🎤", name:"Répète !", desc:"Dis le mot à voix haute", themes:true, mic:true}
 ];
 // speech recognition needs a secure page outside claude.ai: the PC at http://localhost, or a future https site
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
