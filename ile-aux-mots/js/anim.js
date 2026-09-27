@@ -60,5 +60,38 @@ const fx = (() => {
     });
   }
   clouds();
-  return {sparkle, bounce, flyStar, star, wrong, calm, get last(){ return last; }};
+  // a screen slides in gently
+  function enter(el){ if (!el || calm()) return; el.animate([{opacity: 0, transform: "translateY(14px) scale(.97)"}, {opacity: 1, transform: "none"}], {duration: 300, easing: "cubic-bezier(.2,.8,.3,1)"}); }
+  // the trophy falls from the sky and bounces
+  function trophy(el){
+    if (!el || calm()) return;
+    el.animate([
+      {transform: "translateY(-260px) rotate(-25deg)", opacity: 0},
+      {transform: "translateY(0) rotate(8deg)", opacity: 1, offset: .55},
+      {transform: "translateY(-38px) rotate(-4deg)", offset: .75},
+      {transform: "translateY(0) rotate(0)", offset: .9},
+      {transform: "translateY(-8px)"}, {transform: "none"}
+    ], {duration: 1100, easing: "ease-out"});
+  }
+  // a rocket crosses the screen for a new level
+  function rocket(){
+    if (calm()) return;
+    const d = layer("🚀", innerWidth * 0.15, innerHeight * 0.9, 64);
+    d.animate([{transform: "translate(-50%,-50%) rotate(0)"}, {transform: `translate(calc(-50% + ${innerWidth * 0.7}px), calc(-50% - ${innerHeight}px)) rotate(10deg) scale(1.4)`}],
+      {duration: 1600, easing: "cubic-bezier(.5,0,.8,.6)"}).onfinish = () => d.remove();
+    for (let k = 0; k < 8; k++) setTimeout(() => sparkle(innerWidth * (0.15 + k * 0.08), innerHeight * (0.9 - k * 0.1), 5), k * 150);
+  }
+  // a new sticker grows in the middle, then flies away to the top
+  function sticker(s){
+    if (calm()) return;
+    const d = layer(s, innerWidth / 2, innerHeight / 2, 120);
+    d.animate([
+      {transform: "translate(-50%,-50%) scale(.1) rotate(-30deg)", opacity: 0},
+      {transform: "translate(-50%,-50%) scale(1.2) rotate(8deg)", opacity: 1, offset: .35},
+      {transform: "translate(-50%,-50%) scale(1) rotate(0)", offset: .7},
+      {transform: `translate(calc(-50% - ${innerWidth * 0.35}px), calc(-50% - ${innerHeight * 0.45}px)) scale(.3)`, opacity: .2}
+    ], {duration: 1800, easing: "ease-in-out"}).onfinish = () => d.remove();
+    sparkle(innerWidth / 2, innerHeight / 2, 16);
+  }
+  return {sparkle, bounce, flyStar, star, wrong, enter, trophy, rocket, sticker, calm, get last(){ return last; }};
 })();

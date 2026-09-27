@@ -197,7 +197,7 @@ function confetti(n=18){
 }
 /* ---------- screens ---------- */
 const SCREENS = ["home","themes","game","end","parent"];
-function show(id){ SCREENS.forEach(s => $(s).hidden = s !== id); window.scrollTo(0,0); }
+function show(id){ SCREENS.forEach(s => $(s).hidden = s !== id); window.scrollTo(0,0); if (typeof fx !== "undefined") fx.enter($(id)); }
 function goHome(){ GEN++; if (G && !G.done) endSession(false); try { speechSynthesis.cancel(); } catch(e) {} stopLoops(); renderHome(); show("home"); }
 document.addEventListener("click", e => { if (e.target.closest("[data-home]")) goHome(); });
 $("quitBtn").onclick = goHome;
@@ -309,7 +309,7 @@ function addStar(n=1){
   if (typeof fx !== "undefined") fx.star();
   if (Math.floor(p.stars/5) > Math.floor(before/5)) {
     const s = STICKERS[(Math.floor(p.stars/5) - 1) % STICKERS.length];
-    setTimeout(() => { toast("Nouvel autocollant ! " + s); confetti(24); }, 500);
+    setTimeout(() => { toast("Nouvel autocollant ! " + s); confetti(24); if (typeof fx !== "undefined") fx.sticker(s); }, 500);
   }
 }
 function endSession(completed){
@@ -339,11 +339,12 @@ function finish(){
   $("endEmoji").textContent = g.record ? "🏆" : g.stars >= g.total * 0.8 ? "🥇" : g.stars ? "🌟" : "🎉";
   $("endTitle").textContent = g.record ? "New record!" : PRAISE[rnd(PRAISE.length)];
   if (g.record) { confetti(30); toast("Nouveau record : ⭐ " + g.stars); }
-  if (g.levelUp) { $("endEmoji").textContent = "🚀"; $("endTitle").textContent = "Level " + g.levelUp + "!"; confetti(40); toast(`Niveau ${g.levelUp} débloqué !`); }
+  if (g.levelUp) { $("endEmoji").textContent = "🚀"; $("endTitle").textContent = "Level " + g.levelUp + "!"; confetti(40); toast(`Niveau ${g.levelUp} débloqué !`); if (typeof fx !== "undefined") setTimeout(() => fx.rocket(), 400); }
   else if (g.levelDown) toast(`On revient au niveau ${g.levelDown} pour s'entraîner`);
   $("endSub").textContent = g.rounds.length ? `${ok} sur ${g.rounds.length} du premier coup · ⭐ ${g.stars}` : `⭐ ${g.stars}`;
   document.querySelectorAll(".face").forEach(f => f.setAttribute("aria-pressed","false"));
   show("end");
+  if (typeof fx !== "undefined") fx.trophy($("endEmoji"));
   say($("endTitle").textContent).then(() => say("Tu as aimé ?", "fr"));
 }
 document.querySelectorAll(".face").forEach(f => f.onclick = () => {
