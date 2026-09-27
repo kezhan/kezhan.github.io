@@ -23,8 +23,27 @@ function openParent(){
   $("persistInfo").textContent = S.persisted === true
     ? "Ce navigateur protège la progression : elle n'est pas effacée pour faire de la place."
     : "Ce navigateur peut effacer la progression s'il manque de place. Installez l'application ou gardez une sauvegarde.";
-  renderLevels();
+  renderLevels(); renderTime();
   show("parent"); loadStats();
+}
+// where each child spends time: from the scores kept on this device, most played first
+function renderTime(){
+  const t = $("timeTable"); t.innerHTML = "";
+  const rows = [];
+  ["p7","p4"].forEach(k => Object.entries(S.prof[k].scores || {}).forEach(([id, sc]) => {
+    const a = ACTS.find(x => x.id === id); if (!a || !sc.plays) return;
+    rows.push({k, a, sc});
+  }));
+  if (!rows.length) { t.innerHTML = `<tr><td class="muted">Pas encore de partie sur cet appareil.</td></tr>`; return; }
+  rows.sort((x, y) => y.sc.secs - x.sc.secs);
+  const head = el("tr"); ["Enfant", "Jeu", "Temps", "Parties", "Finies", "Record", "Niveau"].forEach(h => head.append(el("th", "", h))); t.append(head);
+  rows.forEach(({k, a, sc}) => {
+    const tr = el("tr");
+    const kid = el("td"); kid.textContent = S.names[k];
+    tr.append(kid, el("td", "", `${a.em} ${a.name}`), el("td", "", fmtTime(sc.secs)), el("td", "", String(sc.plays)),
+      el("td", "", String(sc.done || 0)), el("td", "", `⭐ ${sc.best || 0}`), el("td", "", a.levels === false ? "–" : String(levelOf(a.id, k))));
+    t.append(tr);
+  });
 }
 function renderLevels(){
   const t = $("levelsTable"); t.innerHTML = "";
