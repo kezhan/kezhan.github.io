@@ -47,6 +47,7 @@ GAMES.ballons = function () {
       const want = now();
       if (key(t) === key(want)) {
         anim.pause(); b.classList.add("pop"); sfx.pop(); setTimeout(() => b.remove(), 260);
+        if (typeof fx !== "undefined") { const r = b.getBoundingClientRect(); fx.sparkle(r.left + r.width / 2, r.top + r.height / 2, 10); } // the balloon bursts into sparkles
         if (step === 0 && rounds[i].length === 2) { step = 1; if (TEST) document.body.dataset.target = key(now()); sayT(praiseT()); return; }
         locked = true;
         const first = tries === 0; if (first) addStar();

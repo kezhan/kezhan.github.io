@@ -1,6 +1,12 @@
 /* L'Île aux Mots : jeu « memory ».
    1: 3 pairs of identical pictures · 2: 6 pairs picture and written word · 3: 8 pairs, mixed themes
    4: 8 pairs word and its translation in the help language, no picture, no voice */
+// cards turn over in 3D (the hidden side is the blue back)
+addStyle(`.grid-cards .card{transition:transform .38s cubic-bezier(.3,1.4,.5,1), background .2s; transform-style:preserve-3d}
+.grid-cards .card.back{transform:rotateY(180deg)}
+.grid-cards .card.done{animation:paire .5s ease-out}
+@keyframes paire{40%{transform:scale(1.15) rotate(-4deg)} 70%{transform:scale(.95)}}
+@media (prefers-reduced-motion:reduce){.grid-cards .card{transition:none}}`);
 GAMES.memory = function (theme) {
   const lvl = levelOf("memory"), want = [3, 6, 8, 8][lvl - 1];
   const own = wordsOf(theme, lvl);
