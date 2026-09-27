@@ -343,6 +343,11 @@ function langOf(kid){ return S.prof[kid || S.kid].lang || "en"; }
 function T(w){ return w[langOf()] || w.en; }            // the word in the language being learnt
 function sayT(text){ return say(text, langOf()); }
 function phrase(){ return PHRASES[langOf()] || PHRASES.en; }
+// words met at a game level: level 1 only easy words, 2 up to word level 2, 3 and 4 all (never fewer than 4)
+function wordsOf(theme, lvl){
+  const all = THEMES[theme].words, ws = all.filter(w => (w.lvl || 1) <= Math.min(3, lvl || 1));
+  return ws.length >= 4 ? ws : all;
+}
 function setLang(kid, lang){ S.prof[kid].lang = lang; saveProfile(kid); }
 function praiseT(){ const p = phrase().praise; return p[rnd(p.length)]; }
 // help language: the one the child knows, never the one being learnt (null = no help needed)

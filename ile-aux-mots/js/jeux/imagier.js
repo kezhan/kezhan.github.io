@@ -1,6 +1,6 @@
 /* L'Île aux Mots : jeu « imagier ». */
 GAMES.imagier = function (theme) {
-  const words = THEMES[theme].words, seen = new Set();
+  const words = wordsOf(theme, levelOf("imagier")), seen = new Set();
   startSession("imagier", theme, words.length);
   const body = $("gameBody");
   body.append(el("p","prompt",`Touche une image !<small>Elle te dit son nom : ${LANGS[langOf()].label}</small>`));

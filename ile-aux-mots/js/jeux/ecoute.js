@@ -6,8 +6,8 @@ const SOUNDALIKE = [["bear","pear"],["mouse","house"],["car","star"],["cake","sn
 
 GAMES.ecoute = function (theme) {
   const lvl = levelOf("ecoute"), n = [3, 4, 6, 6][lvl - 1], total = lvl === 1 ? 6 : 8;
-  const words = THEMES[theme].words, targets = pick(words, Math.min(total, words.length)), res = [];
-  const others = lvl >= 3 && theme !== "colors" ? Object.entries(THEMES).filter(([k]) => k !== theme && k !== "colors").flatMap(([, t]) => t.words) : [];
+  const words = wordsOf(theme, lvl), targets = pick(words, Math.min(total, words.length)), res = [];
+  const others = lvl >= 3 && theme !== "colors" ? Object.entries(THEMES).filter(([k]) => k !== theme && k !== "colors").flatMap(([k]) => wordsOf(k, lvl)) : [];
   const all = words.concat(others);
   const reading = lvl === 4;
   startSession("ecoute", theme, targets.length);

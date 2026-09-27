@@ -3,8 +3,8 @@
    4: 8 pairs word and its translation in the help language, no picture, no voice */
 GAMES.memory = function (theme) {
   const lvl = levelOf("memory"), want = [3, 6, 8, 8][lvl - 1];
-  const own = THEMES[theme].words;
-  const others = Object.entries(THEMES).filter(([k]) => k !== theme && k !== "colors").flatMap(([, t]) => t.words);
+  const own = wordsOf(theme, lvl);
+  const others = Object.entries(THEMES).filter(([k]) => k !== theme && k !== "colors").flatMap(([k]) => wordsOf(k, lvl));
   // levels 3-4 mix 4 words of the theme with words from the other themes (colours stay alone)
   const words = lvl >= 3 && theme !== "colors" ? [...pick(own, 4), ...pick(others, want - 4)] : pick(own, Math.min(want, own.length));
   const pairs = words.length;

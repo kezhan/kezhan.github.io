@@ -1,7 +1,7 @@
 /* L'Île aux Mots : jeu « repete ». */
 GAMES.repete = function (theme) {
   const small = S.kid === "p4", total = small ? 5 : 8, res = [];
-  const words = pick(THEMES[theme].words, total);
+  const words = pick(wordsOf(theme, levelOf("repete")), total);
   const norm = x => x.toLowerCase().replace(/[^a-z ]/g, "").split(" ").map(t => t.replace(/s$/, "")).join(" ");
   const clean = x => x.toLowerCase().replace(/[\s.,!?;:。！？，、]/g, "");
   startSession("repete", theme, total);
