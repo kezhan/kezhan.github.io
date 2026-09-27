@@ -1,7 +1,7 @@
 ﻿/* L'Île aux Mots : mots, thèmes, jeux et constantes. */
 const VERSION = "1.2";
-// Google Form that receives each game (formResponse URL, and the entry id of its "data" field). Empty = off.
-const COLLECTE = {form: "", entry: ""};
+// Google Sheet collector (Apps Script web app URL ending in /exec, see outils/collecteur.gs). Empty = off.
+const COLLECTE = {url: ""};
 /* ---------- words: emoji|english|français|中文 ---------- */
 const P = s => s.trim().split("\n").map(l => { const [e,en,fr,zh] = l.trim().split("|"); return {e,en,fr,zh}; });
 const THEMES = {

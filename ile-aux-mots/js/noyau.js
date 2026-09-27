@@ -53,20 +53,20 @@ const Store = {
     return [];
   }
 };
-/* Google Form collector (COLLECTE in donnees.js): write-only, no names, lets Claude see what they play from any device.
-   A no-cors post never reveals success, so a network error is the only failure we can see: those wait in the outbox. */
+/* Google Sheet collector (COLLECTE in donnees.js): write-only, no names, lets Claude see what they play from any device.
+   Plain-text JSON keeps it a simple request; a no-cors post never reveals success, so only network errors wait in the outbox. */
 function sendForm(kind, id, data){
-  if (!COLLECTE.form || !COLLECTE.entry || !navigator.onLine) return Promise.reject();
-  const body = new URLSearchParams(); body.append(COLLECTE.entry, JSON.stringify({kind, id, ...data}));
-  return fetch(COLLECTE.form, {method:"POST", mode:"no-cors", body});
+  if (!COLLECTE.url || !navigator.onLine) return Promise.reject();
+  const body = JSON.stringify({app:"ile-aux-mots", kind, id, ...data});
+  return fetch(COLLECTE.url, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body});
 }
 function collect(kind, id, data){
-  if (!COLLECTE.form || (kind !== "sessions" && kind !== "notes")) return;
+  if (!COLLECTE.url || (kind !== "sessions" && kind !== "notes")) return;
   S.outbox = S.outbox || [];
   sendForm(kind, id, data).catch(() => { S.outbox.push({kind, id, data}); saveLocal(); });
 }
 async function flushOutbox(){
-  if (!COLLECTE.form || !(S.outbox || []).length) return;
+  if (!COLLECTE.url || !(S.outbox || []).length) return;
   const items = S.outbox.splice(0); saveLocal();
   for (const it of items) {
     try { await sendForm(it.kind, it.id, it.data); } catch(e) { S.outbox.push(it); }
