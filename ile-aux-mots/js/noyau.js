@@ -87,7 +87,7 @@ async function flushPending(){
   const items = S.pending.splice(0); saveLocal();
   for (const it of items) await record(it.kind, it.id, it.data);
 }
-function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words, scores:S.prof[k].scores, levels:S.prof[k].levels}).catch(()=>{}); }
+function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words, scores:S.prof[k].scores, levels:S.prof[k].levels, lang:S.prof[k].lang || "en"}).catch(()=>{}); }
 function saveConfig(){ saveLocal(); if (Store.mode !== "local") Store.put("config", "main", {names:S.names, present:S.present}).catch(()=>{}); }
 
 async function connect(){
@@ -101,7 +101,7 @@ async function connect(){
     const [cfg, a, b] = await Promise.all([Store.get("config","main"), Store.get("profiles","p7"), Store.get("profiles","p4")]);
     if (cfg) { Object.assign(S.names, cfg.names||{}); S.present = !!cfg.present; } else saveConfig();
     [["p7",a],["p4",b]].forEach(([k,d]) => {
-      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{})), scores:JSON.parse(JSON.stringify(d.scores||{})), levels:JSON.parse(JSON.stringify(d.levels||{}))};
+      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{})), scores:JSON.parse(JSON.stringify(d.scores||{})), levels:JSON.parse(JSON.stringify(d.levels||{})), lang:d.lang || "en"};
       else saveProfile(k);
     });
     await flushPending();
@@ -194,6 +194,13 @@ function renderHome(){
     b.onclick = () => { S.kid = k; saveLocal(); sfx.tap(); renderHome(); say("Hello " + S.names[k] + "!"); };
     kids.appendChild(b);
   });
+  const langs = $("langs"); langs.innerHTML = "";
+  Object.entries(LANGS).forEach(([code, L]) => {
+    const b = el("button", "chip lang", `${L.flag} ${L.label}`);
+    b.setAttribute("aria-pressed", String(langOf() === code));
+    b.onclick = () => { setLang(S.kid, code); sfx.tap(); renderHome(); say(L.label, code); };
+    langs.append(b);
+  });
   const map = $("map"); map.innerHTML = "";
   // an island may be kept for one child (meta.ages, e.g. ["p7"] for reading the clock)
   ACTS.filter(a => !a.ages || a.ages.includes(S.kid)).forEach(a => {
@@ -201,7 +208,9 @@ function renderHome(){
     const sc = S.prof[S.kid].scores[a.id];
     const niv = a.levels === false ? "" : `Niv. ${levelOf(a.id)} · `;
     const score = sc && sc.plays ? `<span class="score">${niv}🏆 ${sc.best} · ${fmtTime(sc.secs)}</span>` : `<span class="score">${niv}Nouveau !</span>`;
-    b.innerHTML = `${a.badge ? `<span class="badge">${a.badge}</span>` : ""}<span class="em">${a.em}</span><h3>${a.name}</h3><p>${a.desc}</p>${score}`;
+    // games written for English only say so when another language is chosen
+    const badge = a.badge || (!a.multi && langOf() !== "en" ? "en anglais" : "");
+    b.innerHTML = `${badge ? `<span class="badge">${badge}</span>` : ""}<span class="em">${a.em}</span><h3>${a.name}</h3><p>${a.desc}</p>${score}`;
     b.onclick = () => { sfx.tap(); openAct(a.id); };
     map.appendChild(b);
   });
@@ -255,7 +264,7 @@ function adjustLevel(g){
 }
 function sessionDoc(g){
   return {
-    kid:g.kid, age:kidCfg(g.kid).age, act:g.act, theme:g.theme, lvl:g.lvl, lvlAfter:g.levelUp || g.levelDown || g.lvl, withParent:g.present,
+    kid:g.kid, age:kidCfg(g.kid).age, act:g.act, theme:g.theme, lang:langOf(g.kid), lvl:g.lvl, lvlAfter:g.levelUp || g.levelDown || g.lvl, withParent:g.present,
     at:new Date(g.t0).toISOString(), t:g.t0, secs:Math.round(((g.tEnd||Date.now()) - g.t0)/1000),
     completed:g.done, planned:g.total, played:g.rounds.length,
     firstTry:g.rounds.filter(r => r.ok).length,
@@ -321,6 +330,19 @@ document.querySelectorAll(".face").forEach(f => f.onclick = () => {
 });
 $("againBtn").onclick = () => { if (lastLaunch) launch(...lastLaunch); };
 
+/* ---------- target language: what each child is learning, switched at home in one tap ---------- */
+const LANGS = {en:{flag:"🇬🇧", label:"English"}, fr:{flag:"🇫🇷", label:"Français"}, zh:{flag:"🇨🇳", label:"中文"}};
+const PHRASES = {
+  en:{find:w => `Find the ${w}!`, findColor:w => `Find ${w}!`, thats:w => `That's the ${w}.`, pop:w => `Pop the ${w} balloon!`, praise:PRAISE},
+  fr:{find:w => `Trouve : ${w} !`, findColor:w => `Trouve : ${w} !`, thats:w => `Ça, c'est : ${w}.`, pop:w => `Éclate le ballon ${w} !`, praise:["Bravo !","Super !","Génial !","Oui !","Bien joué !"]},
+  zh:{find:w => `找到${w}！`, findColor:w => `找到${w}！`, thats:w => `这是${w}。`, pop:w => `把${w}的气球戳破！`, praise:["太棒了！","真棒！","对了！","好厉害！"]}
+};
+function langOf(kid){ return S.prof[kid || S.kid].lang || "en"; }
+function T(w){ return w[langOf()] || w.en; }            // the word in the language being learnt
+function sayT(text){ return say(text, langOf()); }
+function phrase(){ return PHRASES[langOf()] || PHRASES.en; }
+function setLang(kid, lang){ S.prof[kid].lang = lang; saveProfile(kid); }
+
 /* helpers shared by games */
 function speakBtn(getText, label="Écoute"){
   const b = el("button","speak chunky", `🔊 <span>${label}</span>`);
@@ -328,8 +350,12 @@ function speakBtn(getText, label="Écoute"){
   return b;
 }
 function bridgeBtn(w){
-  // the language each child already knows: 中文 for the 7-year-old, French for the 4-year-old
-  const lang = kidCfg(G.kid).bridge, txt = lang === "zh" ? w.zh : w.fr;
+  // the language each child already knows: 中文 for the 7-year-old, French for the 4-year-old;
+  // never the language being learnt (the big one learning Chinese gets French help)
+  let lang = kidCfg(G.kid).bridge;
+  if (lang === langOf(G.kid)) lang = lang === "zh" ? "fr" : null;
+  if (!lang) return el("span");
+  const txt = w[lang];
   const b = el("button","chip", lang === "zh" ? "中文 ?" : "En français ?");
   b.onclick = e => { e.stopPropagation(); G.hints++; b.textContent = txt; say(txt, lang); };
   return b;

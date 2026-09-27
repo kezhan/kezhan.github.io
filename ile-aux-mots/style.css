@@ -54,6 +54,9 @@ h1,h2,h3{font-family:var(--display); margin:0; text-wrap:balance; line-height:1.
 .spot .em{font-size:56px; line-height:1.1}
 .spot h3{font-size:21px}
 .spot p{margin:0; font-size:13px; font-weight:700; color:var(--ink-soft)}
+.langs{gap:8px}
+.langs .chip{font-size:16px; padding:8px 14px; border-width:3px; box-shadow:2px 3px 0 var(--ink)}
+.langs .chip[aria-pressed="true"]{background:var(--sun); color:var(--ink)}
 .spot .score{font-size:12px; font-weight:800; background:rgba(255,255,255,.7); border:2px solid var(--ink); border-radius:999px; padding:2px 9px; font-variant-numeric:tabular-nums}
 .spot .badge{position:absolute; top:-12px; right:10px; font-size:11px; font-weight:800; background:var(--coral); color:#fff; border:2px solid var(--ink); border-radius:999px; padding:2px 8px}
 .spot:nth-child(6n+1){background:#FFE3A3}.spot:nth-child(6n+2){background:#BDEBDD}.spot:nth-child(6n+3){background:#FFD0C6}
