@@ -195,7 +195,8 @@ function renderHome(){
     kids.appendChild(b);
   });
   const map = $("map"); map.innerHTML = "";
-  ACTS.forEach(a => {
+  // an island may be kept for one child (meta.ages, e.g. ["p7"] for reading the clock)
+  ACTS.filter(a => !a.ages || a.ages.includes(S.kid)).forEach(a => {
     const b = el("button","spot chunky");
     const sc = S.prof[S.kid].scores[a.id];
     const niv = a.levels === false ? "" : `Niv. ${levelOf(a.id)} · `;

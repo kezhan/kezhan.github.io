@@ -1,5 +1,5 @@
 /* L'Île aux Mots : jeu « heure ». */
-registerGame({id:"heure", em:"🕒", name:"Quelle heure ?", desc:"Lire l'heure en anglais"}, function () {
+registerGame({id:"heure", em:"🕒", name:"Quelle heure ?", desc:"Lire l'heure en anglais", ages:["p7"]}, function () {
   const lvl = levelOf("heure");
   // clock emoji: U+1F550 + h-1 for o'clock, U+1F55C + h-1 for half past
   const clock = (h, half) => String.fromCodePoint((half ? 0x1F55C : 0x1F550) + h - 1);
