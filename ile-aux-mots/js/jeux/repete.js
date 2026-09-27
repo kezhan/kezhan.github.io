@@ -18,7 +18,7 @@ GAMES.repete = function (theme) {
     const info = el("small","", MIC_OK ? "Appuie sur le micro et dis le mot" : "Dis le mot à voix haute ! Parent : touchez ✅ si c'était bien");
     p.append(info); body.append(p);
     const row = el("div","row"); row.style.justifyContent = "center";
-    row.append(speakBtn(() => T(w), "Écoute", langOf()), bridgeBtn(w)); body.append(row);
+    row.append(speakBtn(() => T(w), "Écoute", langOf), bridgeBtn(w)); body.append(row);
     const mic = el("button","bigbtn chunky", "🎤 À toi !"); mic.style.alignSelf = "center"; mic.style.fontSize = "28px";
     const judge = el("div","judge");
     const okB = el("button","chunky", "✅ C'était bien"); okB.style.background = "#C9F2DF";

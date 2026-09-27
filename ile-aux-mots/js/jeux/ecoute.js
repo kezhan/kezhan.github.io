@@ -26,7 +26,7 @@ GAMES.ecoute = function (theme) {
     else body.append(el("p", "prompt", "Écoute bien…<small>et touche la bonne image</small>"));
     const row = el("div", "row"); row.style.justifyContent = "center";
     if (reading) { const b = el("button", "chip", "🔊 Écoute"); b.onclick = () => { G.hints++; sayT(T(t)); }; row.append(b); }
-    else row.append(speakBtn(() => findPrompt(t, theme), "Encore", langOf()));
+    else row.append(speakBtn(() => findPrompt(t, theme), "Encore", langOf));
     if (lvl <= 3) row.append(bridgeBtn(t));
     body.append(row);
     const grid = el("div", "choices");

@@ -351,7 +351,7 @@ function bridgeLang(kid){ kid = kid || S.kid; const b = kidCfg(kid).bridge; retu
 /* helpers shared by games */
 function speakBtn(getText, label="Écoute", lang="en"){
   const b = el("button","speak chunky", `🔊 <span>${label}</span>`);
-  b.onclick = () => { G.replays++; say(getText(), lang); };
+  b.onclick = () => { G.replays++; say(getText(), typeof lang === "function" ? lang() : lang); }; // lang may be langOf, read at the tap
   return b;
 }
 function bridgeBtn(w){
@@ -377,8 +377,26 @@ const alive = g => g === GEN && !$("game").hidden;
 function launch(id, theme){
   GEN++; lastLaunch = [id, theme]; stopLoops();
   $("gameBody").innerHTML = ""; $("dots").innerHTML = "";
+  renderGameLangs(id);
   show("game");
   GAMES[id](theme);
+}
+// flags in the game bar: switch language mid-game; the current instruction is said again in the new one
+function renderGameLangs(id){
+  const box = $("gameLangs"); box.innerHTML = "";
+  const meta = ACTS.find(a => a.id === id);
+  if (!meta || !meta.multi) return;
+  Object.entries(LANGS).forEach(([code, L]) => {
+    const b = el("button", "chip lang", L.flag);
+    b.setAttribute("aria-label", L.label); b.setAttribute("aria-pressed", String(langOf() === code));
+    b.onclick = () => {
+      setLang(S.kid, code);
+      box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      const again = document.querySelector("#gameBody .speak");
+      if (again) again.click(); else say(L.label, code);
+    };
+    box.append(b);
+  });
 }
 
 const GAMES = {}; // each js/jeux/<jeu>.js adds its game

@@ -9,7 +9,7 @@ GAMES.ballons = function () {
   const p = el("p","prompt",""); const row = el("div","row"); row.style.justifyContent = "center";
   const sky = el("div","sky");
   body.append(p, row, sky);
-  const ask = () => { const t = targets[i]; p.innerHTML = `Éclate le bon ballon !<small>Écoute la couleur</small>`; row.innerHTML = ""; row.append(speakBtn(() => phrase().pop(T(t)), "Encore", langOf()), bridgeBtn(t)); renderDots(res, total, i); sayT(phrase().pop(T(t))); tries = 0; locked = false; if (TEST) document.body.dataset.target = t.en; };
+  const ask = () => { const t = targets[i]; p.innerHTML = `Éclate le bon ballon !<small>Écoute la couleur</small>`; row.innerHTML = ""; row.append(speakBtn(() => phrase().pop(T(t)), "Encore", langOf), bridgeBtn(t)); renderDots(res, total, i); sayT(phrase().pop(T(t))); tries = 0; locked = false; if (TEST) document.body.dataset.target = t.en; };
   const spawn = () => {
     if (i >= total) return;
     const t = targets[i], w = Math.random() < 0.4 ? t : pool[rnd(pool.length)];
