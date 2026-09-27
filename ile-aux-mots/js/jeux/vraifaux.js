@@ -15,10 +15,13 @@ registerGame({id:"vraifaux", em:"✅", name:"Vrai ou faux ?", desc:"Écoute ou l
       const f = FACTS[rnd(FACTS.length)], col = truth ? f[2] : pick(COLORS.filter(c => c !== f[2]), 1)[0];
       sentence = `The ${f[1]} ${f[1] === "grapes" ? "are" : "is"} ${col}.`; visual = f[0];
     }
-    const heard = lvl <= 2; // levels 3-4: read it yourself
-    return {say: heard ? sentence : "", show: heard ? "Vrai ou faux ?" : `<b>${sentence}</b>`, visual, word: sentence,
+    // the little one cannot read: she always hears it; the big one reads alone from level 3, with a listen button
+    const readAlone = S.kid === "p7" && lvl >= 3;
+    const shown = S.kid === "p7" ? `<b>${sentence}</b>` : "Vrai ou faux ?<small>Écoute la phrase</small>";
+    return {say: readAlone ? "" : sentence + " True or false?", show: shown, visual, word: sentence, listen: readAlone ? sentence : "",
       praise: truth ? "Yes, that's true!" : "Yes, that's false!",
-      choices: [{html: "✅ True", small: true, ok: truth}, {html: "❌ False", small: true, ok: !truth}]};
+      choices: [{html: "✅<span class='w'>True</span>", ok: truth, sayWrong: `No! ${sentence} That's ${truth ? "true" : "false"}.`},
+                {html: "❌<span class='w'>False</span>", ok: !truth, sayWrong: `No! ${sentence} That's ${truth ? "true" : "false"}.`}]};
   });
   runQuiz("vraifaux", null, rounds);
 });

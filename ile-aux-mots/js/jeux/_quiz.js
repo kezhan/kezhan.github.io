@@ -14,6 +14,8 @@ function runQuiz(act, theme, rounds){
     if (r.visual) body.append(el("div", "order", r.visual));
     const row = el("div", "row"); row.style.justifyContent = "center";
     if (r.say) row.append(speakBtn(() => r.say, "Encore"));
+    // reading rounds: silent at first, the voice only on request (counted as a hint)
+    if (r.listen) { const b = el("button", "chip", "🔊 Écoute"); b.onclick = () => { G.hints++; say(r.listen); }; row.append(b); }
     body.append(row);
     const grid = el("div", "choices");
     shuffle(r.choices).forEach(c => {
