@@ -48,5 +48,17 @@ const fx = (() => {
   }
   function star(){ sparkle(); bounce(last.el); flyStar(); }
   function wrong(){ if (calm() || !last.el) return; last.el.animate([{transform: "translateX(0)"}, {transform: "translateX(-10px) rotate(-2deg)"}, {transform: "translateX(9px) rotate(2deg)"}, {transform: "translateX(-5px)"}, {transform: "translateX(0)"}], {duration: 420}); }
+  // clouds drifting across the sky, each at its own height and speed
+  function clouds(){
+    if (calm()) return;
+    [[70, 9, 48, 0], [150, 6, 70, -25], [40, 12, 58, -42]].forEach(([y, size, secs, start]) => {
+      const c = document.createElement("div");
+      c.className = "nuage"; c.textContent = "☁️"; c.style.fontSize = size * 8 + "px";
+      document.body.append(c);
+      c.animate([{transform: `translate(-30vw, ${y}px)`}, {transform: `translate(110vw, ${y + 12}px)`}],
+        {duration: secs * 1000, iterations: Infinity, delay: start * 1000});
+    });
+  }
+  clouds();
   return {sparkle, bounce, flyStar, star, wrong, calm, get last(){ return last; }};
 })();

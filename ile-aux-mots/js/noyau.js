@@ -205,6 +205,7 @@ function renderHome(){
   // an island may be kept for one child (meta.ages, e.g. ["p7"] for reading the clock)
   ACTS.filter(a => !a.ages || a.ages.includes(S.kid)).forEach(a => {
     const b = el("button","spot chunky");
+    b.style.setProperty("--i", map.children.length);
     const sc = S.prof[S.kid].scores[a.id];
     const niv = a.levels === false ? "" : `Niv. ${levelOf(a.id)} · `;
     const score = sc && sc.plays ? `<span class="score">${niv}🏆 ${sc.best} · ${fmtTime(sc.secs)}</span>` : `<span class="score">${niv}Nouveau !</span>`;

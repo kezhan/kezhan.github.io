@@ -13,12 +13,22 @@ html,body{height:100%}
 body{
   margin:0; font-family:var(--body); color:var(--ink); font-size:16px;
   background-color:var(--sea);
+  -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none;
+}
+/* living sea: the waves sit on their own layer and only slide (transform), smooth on the tablet */
+body::before{content:""; position:fixed; top:-120px; left:-320px; right:-320px; bottom:-120px; z-index:-1; pointer-events:none;
   background-image:
     radial-gradient(ellipse 60px 10px at 30px 20px, rgba(255,255,255,.22) 60%, transparent 62%),
     radial-gradient(ellipse 40px 8px at 110px 70px, rgba(255,255,255,.16) 60%, transparent 62%);
-  background-size:160px 110px;
-  -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none;
-}
+  background-size:160px 110px; animation:vagues 16s linear infinite; will-change:transform}
+@keyframes vagues{from{transform:translate(0,0)} 50%{transform:translate(80px,6px)} to{transform:translate(160px,0)}}
+.nuage{position:fixed; top:0; left:0; z-index:-1; pointer-events:none; opacity:.85; filter:drop-shadow(2px 3px 0 rgba(27,45,69,.15)); will-change:transform}
+/* islands pop up one after another, then float */
+.map .spot{animation:surgir .5s cubic-bezier(.2,1.4,.4,1) both; animation-delay:calc(var(--i, 0) * 55ms)}
+.map .spot .em{display:inline-block; animation:flotte 3.2s ease-in-out infinite; animation-delay:calc(var(--i, 0) * -.45s)}
+@keyframes surgir{from{transform:translateY(24px) scale(.7); opacity:.15} to{transform:none; opacity:1}}
+@keyframes flotte{50%{transform:translateY(-7px) rotate(-3deg)}}
+.kid .ava{transition:transform .2s} .kid[aria-pressed="true"] .ava{animation:flotte 2.4s ease-in-out infinite}
 .wrap{max-width:980px; margin:0 auto; padding-inline:16px; padding-block:14px 40px; display:flex; flex-direction:column; gap:18px}
 button{font:inherit; color:inherit; cursor:pointer; border:0; background:none}
 button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:4px solid var(--sun); outline-offset:3px}
