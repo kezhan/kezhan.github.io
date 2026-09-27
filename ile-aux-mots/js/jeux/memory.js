@@ -13,6 +13,7 @@ GAMES.memory = function (theme) {
   renderDots(res, pairs, -1);
   cards.forEach(c => {
     const b = el("button","card chunky back", c.kind === "pic" ? `${wordFace(c.w)}` : `<span class="w" style="font-size:22px">${c.w.en}</span>`);
+    if (TEST) b.dataset.pair = c.w.en; // the recette finds pairs without guessing
     b.onclick = () => {
       if (busy || !b.classList.contains("back")) return;
       G.taps++; b.classList.remove("back"); say(c.w.en); open.push({b, c});
