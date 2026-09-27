@@ -11,8 +11,14 @@ addStyle(`
 `);
 registerGame({id:"manque", em:"🎩", name:"Qu'est-ce qui manque ?", desc:"Retiens les objets du magicien", themes:true, multi:true}, function (theme) {
   const lvl = levelOf("manque"), n = [3, 5, 6, 8][lvl - 1], nChoix = [3, 4, 4, 6][lvl - 1], words4 = lvl >= 3;
-  const MISSING = {en:"What's missing?", fr:"Qu'est-ce qui manque ?", zh:"少了什么？", de:"Was fehlt?", lb:"Wat feelt?"};
-  const CLOSE = {en:"Close your eyes!", fr:"Ferme les yeux !", zh:"闭上眼睛！", de:"Augen zu!", lb:"Maach d'Aen zou!"};
+  // everything the child sees or hears is in the language being learnt (no French for the children)
+  const TXT = {
+    en:{look:"Look at the magician's things!", tap:"Tap them to hear their names", ready:"I've got it! 👀", gone:"Something has gone…", missing:"What's missing?", which:"Which one has gone?", close:"Close your eyes!"},
+    de:{look:"Schau dir die Sachen vom Zauberer an!", tap:"Tipp sie an, dann hörst du ihren Namen", ready:"Ich hab's! 👀", gone:"Etwas ist verschwunden…", missing:"Was fehlt?", which:"Was ist weg?", close:"Augen zu!"},
+    lb:{look:"Kuck d'Saache vum Zauberer!", tap:"Tipp drop, da héiers de hiren Numm", ready:"Ech hunn et! 👀", gone:"Eppes ass fort…", missing:"Wat feelt?", which:"Wat ass fort?", close:"Maach d'Aen zou!"},
+    zh:{look:"看看魔术师的东西！", tap:"点一点，听它们的名字", ready:"我记住了！👀", gone:"有东西不见了……", missing:"少了什么？", which:"哪个不见了？", close:"闭上眼睛！"}
+  };
+  const tx = k => (TXT[langOf()] || TXT.en)[k];
   const pool = lvl === 1 || theme === "colors" ? wordsOf(theme, lvl)
     : Object.keys(THEMES).filter(k => k !== "colors").flatMap(k => wordsOf(k, lvl));
   const total = 5, res = []; let i = 0;
@@ -23,10 +29,10 @@ registerGame({id:"manque", em:"🎩", name:"Qu'est-ce qui manque ?", desc:"Retie
     renderDots(res, total, i);
     const objs = pick(pool, n), gone = objs[rnd(n)];
     const body = $("gameBody"); body.innerHTML = "";
-    const p = el("p", "prompt", "Regarde bien les objets du magicien 🎩<small>Touche-les pour entendre leur nom</small>");
+    const p = el("p", "prompt", `${tx("look")} 🎩<small>${tx("tap")}</small>`);
     const table = el("div", "table-magie");
     const drap = el("div", "drap", "🎩");
-    const ready = el("button", "bigbtn chunky", "J'ai retenu ! 👀"); ready.style.alignSelf = "center";
+    const ready = el("button", "bigbtn chunky", tx("ready")); ready.style.alignSelf = "center";
     body.append(p, table, ready);
     const cells = objs.map(w => {
       const b = el("button", "obj", wordFace(w));
@@ -43,16 +49,16 @@ registerGame({id:"manque", em:"🎩", name:"Qu'est-ce qui manque ?", desc:"Retie
     })();
     const reveal = async () => {
       if (ready.disabled || !alive(gen)) return; ready.disabled = true; ready.remove();
-      p.innerHTML = "Abracadabra !<small>Un objet a disparu…</small>";
-      sayT(CLOSE[langOf()] || CLOSE.en);
+      p.innerHTML = `Abracadabra!<small>${tx("gone")}</small>`;
+      sayT(tx("close"));
       drap.classList.add("tombe");
       await new Promise(r => loops.push(setTimeout(r, TEST ? 50 : 1300)));
       if (!alive(gen)) return;
       const slot = cells[objs.indexOf(gone)];
       slot.innerHTML = "❓"; slot.classList.add("vide"); slot.onclick = null;
       drap.classList.remove("tombe");
-      p.innerHTML = `${MISSING[langOf()] || MISSING.en}<small>Qu'est-ce qui a disparu ?</small>`;
-      sayT(MISSING[langOf()] || MISSING.en);
+      p.innerHTML = `${tx("missing")}<small>${tx("which")}</small>`;
+      sayT(tx("missing"));
       // the wrong answers are never on the table: the child has to remember
       const choix = shuffle([gone, ...pick(pool.filter(w => !objs.includes(w)), nChoix - 1)]);
       const grid = el("div", "choices"); let tries = 0, locked = false;
