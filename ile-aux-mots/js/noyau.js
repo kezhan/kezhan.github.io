@@ -166,7 +166,7 @@ function tone(freqs, dur=.12, type="triangle"){
     });
   } catch(e) {}
 }
-const sfx = {ok:()=>tone([660,880,1320]), ko:()=>tone([300,220],.16,"sine"), pop:()=>tone([900,1500],.05,"square"), win:()=>tone([523,659,784,1047,1319],.12), tap:()=>tone([520],.06)};
+const sfx = {ok:()=>tone([660,880,1320]), ko:()=>{ tone([300,220],.16,"sine"); if (typeof fx !== "undefined") fx.wrong(); }, pop:()=>tone([900,1500],.05,"square"), win:()=>tone([523,659,784,1047,1319],.12), tap:()=>tone([520],.06)};
 function confetti(n=18){
   if (TEST || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const set = ["⭐","🎉","✨","🌟","🎈"];
@@ -282,6 +282,7 @@ function logRound(word, firstTry, tries, extra){
 function addStar(n=1){
   const p = S.prof[G.kid], before = p.stars;
   G.stars += n; p.stars += n; $("gStars").textContent = G.stars;
+  if (typeof fx !== "undefined") fx.star();
   if (Math.floor(p.stars/5) > Math.floor(before/5)) {
     const s = STICKERS[(Math.floor(p.stars/5) - 1) % STICKERS.length];
     setTimeout(() => { toast("Nouvel autocollant ! " + s); confetti(24); }, 500);
