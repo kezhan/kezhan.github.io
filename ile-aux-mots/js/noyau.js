@@ -114,7 +114,7 @@ async function connect(){
 let voices = [];
 function loadVoices(){ try { voices = speechSynthesis.getVoices() || []; } catch(e) { voices = []; } }
 if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
-const LANG = {en:"en-GB", fr:"fr-FR", zh:"zh-CN"};
+const LANG = {en:"en-GB", fr:"fr-FR", zh:"zh-CN", de:"de-DE", lb:"lb-LU"};
 function voiceFor(lang){
   if (!voices.length) loadVoices();
   const want = LANG[lang].toLowerCase(), base = want.slice(0,2);
@@ -139,6 +139,7 @@ function markOk(elm){ if (TEST && elm) elm.dataset.ok = "1"; return elm; }
 function say(text, lang="en", rate){
   return new Promise(res => {
     if (TEST) { S.lastSaid = text; return res(); }
+    if (lang === "lb") return playLb(text).then(res);
     if (!("speechSynthesis" in window)) return res();
     try {
       speechSynthesis.cancel();
@@ -149,6 +150,28 @@ function say(text, lang="en", rate){
       u.onend = fin; u.onerror = fin; setTimeout(fin, 5000);
       speechSynthesis.speak(u);
     } catch(e) { res(); }
+  });
+}
+
+/* Luxembourgish: no device has a voice, so play the lod.lu recording (CC0) of the word found in the text */
+let lbIndex = null, lbPlayer = null;
+function lbAudio(text){
+  if (!lbIndex) {
+    lbIndex = Object.values(THEMES).flatMap(t => t.words).filter(w => w.lb && w.lod).map(w => [w.lb, w.lod.toLowerCase()]);
+    lbIndex.sort((a, b) => b[0].length - a[0].length); // longest first: "d'Kanéngchen" before shorter words
+  }
+  const hit = lbIndex.find(([word]) => text.includes(word));
+  return hit ? `audio/lb/${hit[1]}.m4a` : null;
+}
+function playLb(text){
+  return new Promise(res => {
+    try { speechSynthesis.cancel(); } catch(e) {}
+    if (lbPlayer) { lbPlayer.pause(); lbPlayer = null; }
+    const src = lbAudio(text); if (!src) return res();
+    const a = new Audio(src); lbPlayer = a;
+    let done = false; const fin = () => { if (!done) { done = true; res(); } };
+    a.onended = fin; a.onerror = fin; setTimeout(fin, 5000);
+    a.play().catch(fin);
   });
 }
 
@@ -333,11 +356,14 @@ document.querySelectorAll(".face").forEach(f => f.onclick = () => {
 $("againBtn").onclick = () => { if (lastLaunch) launch(...lastLaunch); };
 
 /* ---------- target language: what each child is learning, switched at home in one tap ---------- */
-const LANGS = {en:{flag:"🇬🇧", label:"English"}, fr:{flag:"🇫🇷", label:"Français"}, zh:{flag:"🇨🇳", label:"中文"}};
+const LANGS = {en:{flag:"🇬🇧", label:"English"}, fr:{flag:"🇫🇷", label:"Français"}, zh:{flag:"🇨🇳", label:"中文"}, de:{flag:"🇩🇪", label:"Deutsch"}, lb:{flag:"🇱🇺", label:"Lëtzebuergesch"}};
 const PHRASES = {
   en:{find:w => `Find the ${w}!`, findColor:w => `Find ${w}!`, thats:w => `That's the ${w}.`, thatsColor:w => `That's ${w}.`, pop:w => `Pop the ${w} balloon!`, praise:PRAISE},
   fr:{find:w => `Trouve : ${w} !`, findColor:w => `Trouve : ${w} !`, thats:w => `Ça, c'est : ${w}.`, thatsColor:w => `Ça, c'est : ${w}.`, pop:w => `Éclate le ballon ${w} !`, praise:["Bravo !","Super !","Génial !","Oui !","Bien joué !"]},
-  zh:{find:w => `找到${w}！`, findColor:w => `找到${w}！`, thats:w => `这是${w}。`, thatsColor:w => `这是${w}。`, pop:w => `把${w}的气球戳破！`, praise:["太棒了！","真棒！","对了！","好厉害！"]}
+  zh:{find:w => `找到${w}！`, findColor:w => `找到${w}！`, thats:w => `这是${w}。`, thatsColor:w => `这是${w}。`, pop:w => `把${w}的气球戳破！`, praise:["太棒了！","真棒！","对了！","好厉害！"]},
+  de:{find:w => `Zeig mir ${w}!`, findColor:w => `Zeig mir ${w}!`, thats:w => `Das ist ${w}.`, thatsColor:w => `Das ist ${w}.`, pop:w => `Platz den Ballon: ${w}!`, praise:["Super!","Toll!","Richtig!","Prima!","Sehr gut!"]},
+  // Luxembourgish is heard through the lod.lu recording of the word inside the sentence
+  lb:{find:w => `Weis mer ${w}!`, findColor:w => `Weis mer ${w}!`, thats:w => `Dat ass ${w}.`, thatsColor:w => `Dat ass ${w}.`, pop:w => `Platz de Ballon: ${w}!`, praise:["Super!","Bravo!","Richteg!","Flott!","Ganz gutt!"]}
 };
 function langOf(kid){ return S.prof[kid || S.kid].lang || "en"; }
 function T(w){ return w[langOf()] || w.en; }            // the word in the language being learnt
