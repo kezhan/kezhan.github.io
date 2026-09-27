@@ -123,8 +123,12 @@ function voiceFor(lang){
   const pool = exact.length ? exact : loose;
   return pool.find(good) || pool[0] || null;
 }
+// automated recette (address ending in #test): instant voice, no confetti, right answers marked
+const TEST = /(^#|&)test\b/.test(location.hash);
+function markOk(elm){ if (TEST && elm) elm.dataset.ok = "1"; return elm; }
 function say(text, lang="en", rate){
   return new Promise(res => {
+    if (TEST) { S.lastSaid = text; return res(); }
     if (!("speechSynthesis" in window)) return res();
     try {
       speechSynthesis.cancel();
@@ -154,7 +158,7 @@ function tone(freqs, dur=.12, type="triangle"){
 }
 const sfx = {ok:()=>tone([660,880,1320]), ko:()=>tone([300,220],.16,"sine"), pop:()=>tone([900,1500],.05,"square"), win:()=>tone([523,659,784,1047,1319],.12), tap:()=>tone([520],.06)};
 function confetti(n=18){
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (TEST || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const set = ["⭐","🎉","✨","🌟","🎈"];
   for (let i=0;i<n;i++){ const s=document.createElement("div"); s.className="confetti"; s.textContent=set[rnd(set.length)]; s.style.left=rnd(100)+"vw"; s.style.animationDelay=(Math.random()*.5)+"s"; document.body.appendChild(s); setTimeout(()=>s.remove(), 2400); }
 }
@@ -309,3 +313,9 @@ function launch(id, theme){
 }
 
 const GAMES = {}; // each js/jeux/<jeu>.js adds its game
+// a new game touches only its own file: registerGame({id, em, name, desc, themes?, badge?, mic?}, fn)
+function registerGame(meta, fn){
+  if (!ACTS.some(a => a.id === meta.id)) ACTS.push(meta);
+  GAMES[meta.id] = fn;
+}
+function addStyle(css){ const s = document.createElement("style"); s.textContent = css; document.head.append(s); }
