@@ -1,29 +1,46 @@
-/* L'Île aux Mots : jeu « memory ». */
+/* L'Île aux Mots : jeu « memory ».
+   1: 3 pairs of identical pictures · 2: 6 pairs picture and written word · 3: 8 pairs, mixed themes
+   4: 8 pairs word and its translation in the help language, no picture, no voice */
 GAMES.memory = function (theme) {
-  const small = S.kid === "p4", pairs = small ? 3 : 6;
-  const words = pick(THEMES[theme].words, pairs);
+  const lvl = levelOf("memory"), want = [3, 6, 8, 8][lvl - 1];
+  const own = THEMES[theme].words;
+  const others = Object.entries(THEMES).filter(([k]) => k !== theme && k !== "colors").flatMap(([, t]) => t.words);
+  // levels 3-4 mix 4 words of the theme with words from the other themes (colours stay alone)
+  const words = lvl >= 3 && theme !== "colors" ? [...pick(own, 4), ...pick(others, want - 4)] : pick(own, Math.min(want, own.length));
+  const pairs = words.length;
+  const help = bridgeLang();
+  const twoWords = lvl === 4 && help;
   startSession("memory", theme, pairs);
-  // 4 ans: two identical pictures; 7 ans: a picture and its written English word
-  const cards = shuffle(words.flatMap(w => [{w, kind:"pic"}, {w, kind: small ? "pic" : "word"}]));
+  const face = (c) => c.kind === "pic" ? wordFace(c.w)
+    : `<span class="w" style="font-size:22px">${c.kind === "help" ? c.w[help] : T(c.w)}</span>`;
+  const cards = shuffle(words.flatMap(w => [
+    {w, kind: twoWords ? "help" : "pic"},
+    {w, kind: lvl === 1 ? "pic" : "word"}
+  ]));
   const body = $("gameBody");
-  body.append(el("p","prompt", small ? "Trouve les deux pareils !" : "Trouve l'image et son mot !"));
-  const grid = el("div","grid-cards"); body.append(grid);
-  let open = [], found = 0, busy = false;
+  body.append(el("p", "prompt", lvl === 1 ? "Trouve les deux pareils !" : twoWords ? "Relie le mot et sa traduction !" : "Trouve l'image et son mot !"));
+  const grid = el("div", "grid-cards"); body.append(grid);
+  let open = [], found = 0, busy = false, misses = 0;
   const res = [];
   renderDots(res, pairs, -1);
   cards.forEach(c => {
-    const b = el("button","card chunky back", c.kind === "pic" ? `${wordFace(c.w)}` : `<span class="w" style="font-size:22px">${T(c.w)}</span>`);
+    const b = el("button", "card chunky back", face(c));
     if (TEST) b.dataset.pair = c.w.en; // the recette finds pairs without guessing
     b.onclick = () => {
       if (busy || !b.classList.contains("back")) return;
-      G.taps++; b.classList.remove("back"); sayT(T(c.w)); open.push({b, c});
+      G.taps++; b.classList.remove("back");
+      if (!twoWords) sayT(T(c.w)); // level 4 is about reading
+      open.push({b, c});
       if (open.length < 2) return;
       const [x, y] = open; open = [];
       if (x.c.w === y.c.w) {
         x.b.classList.add("done"); y.b.classList.add("done"); sfx.ok(); addStar(); found++;
+        // a pair found with at most one miss since the last one counts as right first time
+        logRound(x.c.w.en, misses <= 1, misses + 1, {lvl}); misses = 0;
         res.push(1); renderDots(res, pairs, -1);
+        if (twoWords) sayT(T(x.c.w));
         if (found === pairs) loops.push(setTimeout(finish, 900));
-      } else { busy = true; loops.push(setTimeout(() => { x.b.classList.add("back"); y.b.classList.add("back"); busy = false; }, 1100)); }
+      } else { misses++; busy = true; loops.push(setTimeout(() => { x.b.classList.add("back"); y.b.classList.add("back"); busy = false; }, 1100)); }
     };
     grid.append(b);
   });
