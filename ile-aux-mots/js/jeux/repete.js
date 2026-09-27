@@ -13,7 +13,9 @@ GAMES.repete = function (theme) {
     const body = $("gameBody"); body.innerHTML = "";
     body.append(el("div","order", wordFace(w)));
     const p = el("p","prompt", ""); p.textContent = kidCfg().showWord ? w.en : "Écoute, puis répète !";
-    const info = el("small","", "Appuie sur le micro et dis le mot en anglais"); p.append(info); body.append(p);
+    // without speech recognition (e.g. the Android tablet), the child says it out loud and the parent judges
+    const info = el("small","", MIC_OK ? "Appuie sur le micro et dis le mot en anglais" : "Dis le mot à voix haute ! Parent : touchez ✅ si c'était bien");
+    p.append(info); body.append(p);
     const row = el("div","row"); row.style.justifyContent = "center";
     row.append(speakBtn(() => w.en, "Écoute"), bridgeBtn(w)); body.append(row);
     const mic = el("button","bigbtn chunky", "🎤 À toi !"); mic.style.alignSelf = "center"; mic.style.fontSize = "28px";
@@ -21,12 +23,13 @@ GAMES.repete = function (theme) {
     const okB = el("button","chunky", "✅ C'était bien"); okB.style.background = "#C9F2DF";
     const skipB = el("button","chunky", "⏭️ Mot suivant"); skipB.style.background = "#FFE3A3";
     judge.append(okB, skipB);
-    body.append(mic, el("p","muted","Parent : si le micro comprend mal, validez vous-même."), judge);
+    if (MIC_OK) body.append(mic, el("p","muted","Parent : si le micro comprend mal, validez vous-même."));
+    body.append(judge);
     const next = async (ok, how) => {
       if (moved || !alive(gen)) return; moved = true;
       if (rec) try { rec.abort(); } catch(e) {}
       if (ok && tries === 0) addStar();
-      logRound(w.en, ok && tries === 0, tries + 1, {heard, how});
+      logRound(w.en, ok && tries === 0, tries + 1, {heard, how, mic: MIC_OK});
       res.push(ok && tries === 0 ? 1 : 0); renderDots(res, total, -1);
       await say(ok ? PRAISE[rnd(PRAISE.length)] + " " + w.en + "!" : "Good try! " + w.en + "!");
       i++; round();

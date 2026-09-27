@@ -194,7 +194,7 @@ function renderHome(){
     kids.appendChild(b);
   });
   const map = $("map"); map.innerHTML = "";
-  ACTS.filter(a => !a.mic || MIC_OK).forEach(a => {
+  ACTS.forEach(a => {
     const b = el("button","spot chunky");
     const sc = S.prof[S.kid].scores[a.id];
     const niv = a.levels === false ? "" : `Niv. ${levelOf(a.id)} · `;

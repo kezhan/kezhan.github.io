@@ -95,7 +95,7 @@ const ACTS = [
   {id:"compte",  em:"🔢", name:"Combien ?", desc:"Compte en anglais"},
   {id:"memory",  em:"🃏", name:"Memory", desc:"Retrouve les paires", themes:true},
   {id:"simon",   em:"🙆", name:"Jacques a dit", desc:"Bouge ton corps", badge:"avec un parent"},
-  {id:"repete",  em:"🎤", name:"Répète !", desc:"Dis le mot au micro", themes:true, mic:true}
+  {id:"repete",  em:"🎤", name:"Répète !", desc:"Dis le mot à voix haute", themes:true, mic:true}
 ];
 // speech recognition needs a secure page outside claude.ai: the PC at http://localhost, or a future https site
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
