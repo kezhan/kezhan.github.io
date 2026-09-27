@@ -1,7 +1,18 @@
 /* L'Île aux Mots : jeu « repete ». */
 GAMES.repete = function (theme) {
   const small = S.kid === "p4", total = small ? 5 : 8, res = [];
-  const words = pick(wordsOf(theme, levelOf("repete")), total);
+  const lvl = levelOf("repete");
+  let words = pick(wordsOf(theme, lvl).filter(w => lvl < 3 || !/s$/.test(w.en) || w.en === "bus"), total);
+  // English levels 3-4: word groups ("an orange cat"), then short sentences ("I can see a red bus.")
+  if (langOf() === "en" && lvl >= 3 && theme !== "colors" && theme !== "actions") {
+    const cols = wordsOf("colors", 2);
+    const a = x => (/^[aeiou]/.test(x) ? "an " : "a ") + x;
+    words = words.map(w => {
+      const c = pick(cols, 1)[0].en, group = a(`${c} ${w.en}`);
+      const text = lvl === 3 ? group : pick([`I can see ${group}.`, `The ${w.en} is ${c}.`, `Where is the ${c} ${w.en}?`], 1)[0];
+      return {...w, en: text, base: w};
+    });
+  }
   const norm = x => x.toLowerCase().replace(/[^a-z ]/g, "").split(" ").map(t => t.replace(/s$/, "")).join(" ");
   const clean = x => x.toLowerCase().replace(/[\s.,!?;:。！？，、]/g, "");
   startSession("repete", theme, total);
@@ -18,7 +29,7 @@ GAMES.repete = function (theme) {
     const info = el("small","", MIC_OK ? "Appuie sur le micro et dis le mot" : "Dis le mot à voix haute ! Parent : touchez ✅ si c'était bien");
     p.append(info); body.append(p);
     const row = el("div","row"); row.style.justifyContent = "center";
-    row.append(speakBtn(() => T(w), "Écoute", langOf), bridgeBtn(w)); body.append(row);
+    row.append(speakBtn(() => T(w), "Écoute", langOf), bridgeBtn(w.base || w)); body.append(row);
     const mic = el("button","bigbtn chunky", "🎤 À toi !"); mic.style.alignSelf = "center"; mic.style.fontSize = "28px";
     const judge = el("div","judge");
     const okB = el("button","chunky", "✅ C'était bien"); okB.style.background = "#C9F2DF";
