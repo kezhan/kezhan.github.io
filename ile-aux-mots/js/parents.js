@@ -20,15 +20,37 @@ function openParent(){
   FB_TAGS.forEach(tg => { const c = el("button","chip"); c.textContent = tg; c.setAttribute("aria-pressed","false"); c.onclick = () => { fbTags.has(tg) ? fbTags.delete(tg) : fbTags.add(tg); c.setAttribute("aria-pressed", String(fbTags.has(tg))); }; tags.append(c); });
   $("storeInfo").textContent = Store.label() + (S.pending.length ? ` ${S.pending.length} élément(s) en attente d'envoi.` : "");
   $("exportBtn").hidden = !(Store.mode === "local" && S.pending.length);
+  $("persistInfo").textContent = S.persisted === true
+    ? "Ce navigateur protège la progression : elle n'est pas effacée pour faire de la place."
+    : "Ce navigateur peut effacer la progression s'il manque de place. Installez l'application ou gardez une sauvegarde.";
   show("parent"); loadStats();
 }
+function downloadJSON(name, obj){
+  const blob = new Blob([JSON.stringify(obj, null, 1)], {type:"application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.append(a); a.click(); a.remove();
+}
+const today = () => new Date().toISOString().slice(0,10);
 $("exportBtn").onclick = () => {
   // without the server, the parent carries this file to ile-aux-mots/retours/ for Claude
-  const blob = new Blob([JSON.stringify({exportedAt:new Date().toISOString(), names:S.names, prof:S.prof, items:S.pending}, null, 1)], {type:"application/json"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = "retours-" + new Date().toISOString().slice(0,10) + ".json";
-  document.body.append(a); a.click(); a.remove();
+  downloadJSON("retours-" + today() + ".json", {exportedAt:new Date().toISOString(), names:S.names, prof:S.prof, items:S.pending});
   toast("Fichier prêt : déposez-le dans ile-aux-mots/retours");
+};
+$("saveProg").onclick = () => {
+  downloadJSON("ile-aux-mots-sauvegarde-" + today() + ".json", {app:"ile-aux-mots", savedAt:new Date().toISOString(), ver:VERSION, names:S.names, prof:S.prof, present:S.present});
+  toast("Sauvegarde enregistrée dans Téléchargements");
+};
+$("restoreProg").onchange = async ev => {
+  const file = ev.target.files[0]; ev.target.value = "";
+  if (!file) return;
+  try {
+    const d = JSON.parse(await file.text());
+    if (d.app !== "ile-aux-mots" || !d.prof || !d.prof.p7 || !d.prof.p4) throw new Error("format");
+    S.names = Object.assign({}, S.names, d.names || {}); S.prof = d.prof; S.present = !!d.present;
+    normProf(); saveLocal(); saveConfig(); saveProfile("p7"); saveProfile("p4");
+    renderHome(); openParent();
+    toast(`Progression restaurée : ⭐ ${S.prof.p7.stars} et ⭐ ${S.prof.p4.stars}`);
+  } catch(e) { toast("Ce fichier n'est pas une sauvegarde de L'Île aux Mots"); }
 };
 $("presentSw").onclick = () => { S.present = !S.present; $("presentSw").setAttribute("aria-checked", String(S.present)); saveConfig(); toast(S.present ? "Noté : vous jouez avec eux" : "Noté : ils jouent seuls"); };
 $("saveNames").onclick = () => { S.names.p7 = $("name7").value.trim() || KID_DEFAULT.p7.name; S.names.p4 = $("name4").value.trim() || KID_DEFAULT.p4.name; saveConfig(); toast("Prénoms enregistrés"); };
