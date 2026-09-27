@@ -1,4 +1,4 @@
-﻿/* L'Île aux Mots : mots, thèmes, jeux et constantes. */
+/* L'Île aux Mots : mots, thèmes, jeux et constantes. */
 const VERSION = "1.3";
 // Google Sheet collector (Apps Script web app URL ending in /exec, see outils/collecteur.gs). Empty = off.
 const COLLECTE = {url: ""};
@@ -102,7 +102,7 @@ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const MIC_OK = !!SR && !window.claude && window.isSecureContext;
 const KID_DEFAULT = {
   p7:{name:"Le grand", age:7, ava:"🦊", bridge:"zh", choices:4, showWord:true},
-  p4:{name:"Le petit", age:4, ava:"🐣", bridge:"fr", choices:3, showWord:false}
+  p4:{name:"La petite", age:4, ava:"🐣", bridge:"fr", choices:3, showWord:false}
 };
 const FB_TAGS = ["Adoré","Trop facile","Trop dur","Ennui","Son / voix","Bug","Idée"];
 

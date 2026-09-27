@@ -19,6 +19,7 @@ function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clea
 /* ---------- local cache (per device, fallback only) ---------- */
 function loadLocal(){
   try { const d = JSON.parse(localStorage.getItem("iam") || "null"); if (d) { Object.assign(S.names, d.names||{}); if (d.prof) S.prof = d.prof; S.pending = d.pending || []; S.outbox = d.outbox || []; S.present = !!d.present; S.kid = d.kid || S.kid; } } catch(e) {}
+  if (S.names.p4 === "Le petit") S.names.p4 = "La petite"; // she is a girl; fixes names saved by 1.x
   normProf();
 }
 // profiles saved by version 1.0 have no scores yet
@@ -229,7 +230,7 @@ function startSession(act, theme, total){
 }
 
 /* ---------- levels: 1 to 4 per child and per game, rising on their own ---------- */
-const LEVEL_MAX = 4, LEVEL_START = {p7:2, p4:1};
+const LEVEL_MAX = 4, LEVEL_START = {p7:3, p4:1}; // the big one knows his times tables: start high
 // a game may start a child higher (registerGame meta.start, e.g. {p7:3} for sums in English)
 function levelOf(act, kid){
   kid = kid || S.kid;
