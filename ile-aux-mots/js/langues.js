@@ -36,7 +36,7 @@ function bridgeBtn(w){
   if (!lang) {
     if (G.kid !== "p4") return el("span");
     const s = el("button","chip","🐢"); s.setAttribute("aria-label", "slow");
-    s.onclick = e => { e.stopPropagation(); G.hints++; say(T(w), langOf(), 0.55); };
+    s.onclick = e => { e.stopPropagation(); G.hints++; say(T(w), langOf(), voiceRate() * 0.7); };
     return s;
   }
   const txt = w[lang];
@@ -63,9 +63,9 @@ function playLb(text){
     try { speechSynthesis.cancel(); } catch(e) {}
     if (lbPlayer) { lbPlayer.pause(); lbPlayer = null; }
     const src = lbAudio(text); if (!src) return res();
-    const a = new Audio(src); lbPlayer = a;
+    const a = new Audio(src); lbPlayer = a; a.playbackRate = audioRate();
     let done = false; const fin = () => { if (!done) { done = true; res(); } };
-    a.onended = fin; a.onerror = fin; setTimeout(fin, 5000);
+    a.onended = fin; a.onerror = fin; setTimeout(fin, 8000);
     a.play().catch(fin);
   });
 }

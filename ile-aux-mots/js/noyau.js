@@ -147,9 +147,10 @@ function say(text, lang, rate){
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = LANG[lang]; const v = voiceFor(lang); if (v) u.voice = v;
-      u.rate = rate || (lang === "en" ? (S.kid === "p4" ? 0.75 : 0.85) : 0.95); u.pitch = 1.1;
+      u.rate = rate || voiceRate();   // the natural pitch: a raised one sounds robotic
       let done = false; const fin = () => { if (!done) { done = true; res(); } };
-      u.onend = fin; u.onerror = fin; setTimeout(fin, 5000);
+      // safety net for a lost onend, long enough for a slow sentence: a fixed 5 s cut long riddles in the middle
+      u.onend = fin; u.onerror = fin; setTimeout(fin, 3000 + text.length * 110 / u.rate);
       speechSynthesis.speak(u);
     } catch(e) { res(); }
   });

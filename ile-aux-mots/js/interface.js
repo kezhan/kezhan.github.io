@@ -27,4 +27,5 @@ function applyUI(){
   document.querySelectorAll("[data-t-ph]").forEach(n => n.setAttribute("placeholder", tx(n.dataset.tPh)));
   showLangTag();
   if (typeof renderFlags === "function") renderFlags();
+  if (typeof renderSpeed === "function") renderSpeed();
 }
