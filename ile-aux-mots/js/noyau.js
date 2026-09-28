@@ -202,7 +202,7 @@ function renderHome(){
   });
   const map = $("map"); map.innerHTML = "";
   // an island may be kept for one child (meta.ages, e.g. ["p7"] for reading the clock)
-  ACTS.filter(a => !a.ages || a.ages.includes(S.kid)).forEach(a => {
+  const island = a => {
     const b = el("button","spot chunky");
     b.style.setProperty("--i", map.children.length);
     const sc = S.prof[S.kid].scores[a.id];
@@ -212,8 +212,12 @@ function renderHome(){
     const badge = a.badge || (!a.multi && langOf() !== "en" ? tx("inEnglish") : "");
     b.innerHTML = `${badge ? `<span class="badge">${badge}</span>` : ""}<span class="em">${a.em}</span><h3>${actTitle(a)}</h3><p>${actSub(a)}</p>${score}`;
     b.onclick = () => { sfx.tap(); openAct(a.id); };
-    map.appendChild(b);
-  });
+    return b;
+  };
+  const list = ACTS.filter(a => !a.ages || a.ages.includes(S.kid));
+  // islands grouped by category with tabs (js/categories.js); a plain list if that file is missing
+  if (typeof renderCategories === "function") renderCategories(map, list, island);
+  else list.forEach(a => map.appendChild(island(a)));
   $("homeHint").textContent = tx("chooseIsland", kidName(S.kid));
 }
 
