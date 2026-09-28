@@ -197,8 +197,9 @@
     ['The sleeping volcano towers over the whole valley.', 3],
     ['My grandmother is baking a delicious chocolate cake.', 3],
     ['Our class visited the museum by the harbour.', 3],
-    ['After colouring, please put the pencils back in the box.', 3],
-  ].map(([texte, niveau]) => ({ texte, niveau }));
+    // variantes : autres ordres justes écrits avec les mêmes mots (acceptés aussi par le jeu).
+    ['After colouring, please put the pencils back in the box.', 3, ['After colouring, please put back the pencils in the box.']],
+  ].map(([texte, niveau, variantes]) => (variantes ? { texte, niveau, variantes } : { texte, niveau }));
 
   // Mots supplémentaires sans image (pour les dictées, mots cachés, alphabet…).
   const MOTS_SIMPLES = {

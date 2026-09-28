@@ -10,6 +10,11 @@
  *          art (article indéfini), def (article défini, élidé si besoin : « l’ ») }
  * Pour écrire « article + mot », utiliser Ile.groupe(article, mot) (pas d'espace après « l’ »).
  *
+ * PHRASES : { texte, niveau, mots?, variantes? } : la ponctuation finale reste collée au dernier mot ;
+ *   variantes (facultatif) = autres ordres justes écrits avec exactement les mêmes mots, en texte
+ *   ou en liste de mots ('After colouring, please put back the pencils in the box.'), acceptés
+ *   aussi par le jeu « phrase ». Mieux vaut choisir des phrases qui n'ont qu'un seul ordre juste.
+ *
  * Champs propres à certaines langues :
  *  - ecriture 'hanzi' (chinois) : chaque mot a aussi pinyin ('píng guǒ', une syllabe par caractère),
  *    epeler (pinyin sans tons, 'pingguo' : utilisé par les jeux de lettres), syl = un caractère par

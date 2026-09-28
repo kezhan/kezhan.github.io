@@ -33,10 +33,6 @@
       coupDePouce: (m) => '💡 Here’s the next word: “' + m + '”.',
       finParfaite: 'Every sentence right first time, with no hints: brilliant!',
       finNormale: 'You get a point for each sentence with no hints and no mistakes. Have another go!',
-      // Autres ordres justes avec les mêmes mots (en attendant p.variantes dans le pack).
-      variantes: {
-        'After colouring, please put the pencils back in the box.': ['After colouring, please put back the pencils in the box.'],
-      },
     },
     zh: {
       consigne: '按顺序点词语，把句子排好。',
@@ -53,7 +49,6 @@
       coupDePouce: (m) => '💡 下一个词是“' + m + '”。',
       finParfaite: '每个句子都排对了，也没用提示：太棒了！',
       finNormale: '没用提示、也没出错的句子，每个得一分。再试一次吧！',
-      variantes: {},
     },
     de: {
       consigne: 'Tippe die Wörter in der richtigen Reihenfolge an.',
@@ -70,7 +65,6 @@
       coupDePouce: (m) => '💡 Das nächste Wort ist „' + m + '“.',
       finParfaite: 'Alle Sätze ohne Fehler und ohne Tipp: super!',
       finNormale: 'Für jeden Satz ohne Tipp und ohne Fehler gibt es einen Punkt. Versuch es noch einmal!',
-      variantes: {},
     },
     lb: {
       consigne: 'Dréck op d’Wierder an der richteger Reiefolleg.',
@@ -87,7 +81,6 @@
       coupDePouce: (m) => '💡 Dat nächst Wuert ass „' + m + '“.',
       finParfaite: 'All d’Sätz ouni Feeler an ouni Tipp: Bravo!',
       finNormale: 'Fir all Saz ouni Tipp an ouni Feeler gëtt et e Punkt. Probéier nach eng Kéier!',
-      variantes: {},
     },
     fr: {
       consigne: 'Touche les mots dans le bon ordre pour former la phrase.',
@@ -104,7 +97,6 @@
       coupDePouce: (m) => '💡 Coup de pouce : le mot suivant est « ' + m + ' ».',
       finParfaite: 'Toutes les phrases remises en ordre sans erreur ni indice : bravo !',
       finNormale: 'Un point par phrase remise en ordre sans erreur ni indice. Tu peux réessayer !',
-      variantes: {},
     },
   };
 
@@ -178,7 +170,7 @@
         // Ordres acceptés : celui du pack, et ses variantes éventuelles (p.variantes : autres phrases justes
         // écrites avec les mêmes mots, textes ou listes de mots), pour ne jamais refuser une bonne réponse.
         const cleMots = (arr) => arr.slice().sort().join('\u0001');
-        const autres = (Array.isArray(p.variantes) ? p.variantes : []).concat((tx.variantes || {})[p.texte] || []);
+        const autres = Array.isArray(p.variantes) ? p.variantes : [];
         const ordres = [attendus].concat(autres.map((v) => {
           const j = Array.isArray(v) ? v.slice() : String(v).split(' ');
           if (fixe && j[j.length - 1] === fixe) j.pop();
