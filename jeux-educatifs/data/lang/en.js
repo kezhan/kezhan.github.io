@@ -328,6 +328,7 @@
       languesVisiblesAide: 'Untick a language to hide it from children (for example French, to play only in foreign languages).',
       fermer: 'Close',
       jeuIndisponible: 'This game isn\u2019t available in this language. Choose another game:',
+      jeuIndisponibleTitre: 'Not available in English', // titre d'un jeu qui n'existe pas dans cette langue
     },
 
     // Nom, lieu de l'île, compétence et description de chaque jeu.

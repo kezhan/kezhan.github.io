@@ -126,39 +126,13 @@
 
   // Deux images dont l'une nomme AUSSI l'autre ne vont jamais dans la même partie : l'enfant qui
   // associe 🦉 au mot « oiseau », 🚌 à « 车 » ou 🌴 à « arbre » a raison, et le jeu lui dirait
-  // « ce n'est pas une paire ». Même table que jeux/images.js (emojis sans le sélecteur U+FE0F).
-  const GENERIQUES = {
-    '🐦': '🦉🦜🐧🐔🦆🦩🦅🦢🐓', // oiseau
-    '🌳': '🌴🌲', // arbre
-    '🌸': '🌻🌷🌹🌺', // fleur
-    '⛰': '🌋🏔', // montagne
-    '🦕': '🦖', // dinosaure
-    '🐉': '🦕🦖', // 龙 / 恐龙
-    '🐟': '🦈🐠🐡🐳', // poisson (et Walfësch)
-    '🚗': '🚕🚓🚙🚌🚑🚒🚲🚂🚜🏍', // voiture ; en chinois, 车 désigne tout véhicule
-    '✈': '🚁', // 飞机 / 直升机
-    '⛵': '🚢', // bateau / navire
-    '🐒': '🦍', // singe
-    '🐳': '🐬', // baleine / dauphin
-    '🐚': '🦪', // coquillage / huître
-    '🐻': '🧸', // ours / ours en peluche
-    '☁': '🌧⛈🌩', // nuage / pluie
-    '🏝': '🌴🌊', // l'île a un palmier et la mer
-    '🧒': '👧👦👸', // enfant
-    '👧': '👸', // fille / princesse
-  };
-  const sansVariante = (e) => String(e).replace(/\uFE0F/g, '');
-  function ambigu(a, b) {
-    const x = sansVariante(a.emoji);
-    const y = sansVariante(b.emoji);
-    const inclut = (g, e) => !!GENERIQUES[g] && Array.from(GENERIQUES[g]).indexOf(e) !== -1;
-    return x === y || inclut(x, y) || inclut(y, x);
-  }
+  // « ce n'est pas une paire ». Table commune : Ile.ambigu (js/common.js).
   // Mots de la partie : ceux du niveau d'abord (Ile.motsPourPartie), sans deux images ambiguës.
   function choisirMots(level, n) {
+    const sansVariante = (e) => String(e).replace(/\uFE0F/g, '');
     const tous = Ile.motsPourPartie(level, Infinity, (m) => sansVariante(m.emoji) !== sansVariante(EMOJI_DOS));
     const choix = [];
-    tous.forEach((m) => { if (choix.length < n && !choix.some((c) => ambigu(c, m))) choix.push(m); });
+    tous.forEach((m) => { if (choix.length < n && !choix.some((c) => Ile.ambigu(c, m))) choix.push(m); });
     return choix;
   }
 
@@ -343,9 +317,7 @@
         if (nbCoups === total) message += sep + tx.sansErreur;
         else if (score === total) message += sep + tx.memoire;
         else message += sep + tx.objectif(total + 2);
-        Ile.showResult({ id: ID, score, total, message });
-        const ligne = document.querySelector('.result .result__score');
-        if (ligne) ligne.textContent = tx.points(score, total);
+        Ile.showResult({ id: ID, score, total, message, scoreTexte: tx.points(score, total) });
       }
 
       // Flèches du clavier : se déplacer de carte en carte dans la grille

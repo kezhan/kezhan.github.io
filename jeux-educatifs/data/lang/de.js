@@ -332,6 +332,7 @@
       languesVisiblesAide: 'Entferne das Häkchen bei einer Sprache, um sie für die Kinder auszublenden (zum Beispiel Französisch, damit nur in Fremdsprachen gespielt wird).',
       fermer: 'Schließen',
       jeuIndisponible: 'Dieses Spiel gibt es in dieser Sprache nicht. Wähle ein anderes Spiel:',
+      jeuIndisponibleTitre: 'Nicht auf Deutsch verfügbar', // titre d'un jeu qui n'existe pas dans cette langue
     },
 
     // Nom, lieu de l'île, compétence et description de chaque jeu.

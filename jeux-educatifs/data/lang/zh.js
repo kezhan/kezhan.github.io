@@ -347,6 +347,7 @@
       languesVisiblesAide: '取消勾选某种语言，孩子们就看不到它了（例如隐藏法语，只用外语来玩）。',
       fermer: '关闭',
       jeuIndisponible: '这个游戏没有中文版。请选择别的游戏：',
+      jeuIndisponibleTitre: '没有中文版', // titre d'un jeu qui n'existe pas dans cette langue
     },
 
     // Nom, lieu de l'île, compétence et description de chaque jeu.

@@ -55,37 +55,8 @@
     },
   };
 
-  // Mots génériques qui nomment AUSSI une image plus précise : jamais l'un comme distracteur de
-  // l'autre (🦖 霸王龙 est aussi un 恐龙, 🚁 un 飞机, 🌋 une montagne, 🦉 un oiseau, 🚌 un 车…).
-  // Clés et valeurs : emojis des packs, sans le sélecteur de variante U+FE0F.
-  const GENERIQUES = {
-    '🐦': '🦉🦜🐧🐔🦆🦩🦅🦢🐓', // oiseau
-    '🌳': '🌴🌲', // arbre
-    '🌸': '🌻🌷🌹🌺', // fleur
-    '⛰': '🌋🏔', // montagne
-    '🦕': '🦖', // dinosaure
-    '🐉': '🦕🦖', // 龙 / 恐龙 : les enfants appellent souvent les dinosaures « 龙 »
-    '🐟': '🦈🐠🐡🐳', // poisson (et Walfësch)
-    '🚗': '🚕🚓🚙🚌🚑🚒🚲🚂🚜🏍', // voiture ; en chinois, 车 désigne tout véhicule
-    '✈': '🚁', // 飞机 / 直升机 (直升飞机)
-    '⛵': '🚢', // bateau / navire
-    '🐒': '🦍', // singe
-    '🐳': '🐬', // baleine / dauphin
-    '🐚': '🦪', // coquillage / huître
-    '🐻': '🧸', // ours / ours en peluche
-    '☁': '🌧⛈🌩', // nuage / pluie
-    '🏝': '🌴🌊', // l'île de l'image a un palmier et la mer
-    '🧒': '👧👦👸', // enfant
-    '👧': '👸', // fille / princesse
-  };
-  const sansVariante = (e) => String(e).replace(/\uFE0F/g, '');
-  function ambigu(a, b) {
-    const x = sansVariante(a.emoji);
-    const y = sansVariante(b.emoji);
-    const inclut = (g, s) => !!GENERIQUES[g] && Array.from(GENERIQUES[g]).indexOf(s) !== -1;
-    return x === y || inclut(x, y) || inclut(y, x);
-  }
-
+  // Un mot qui nomme AUSSI l'image (🦖 霸王龙 est aussi un 恐龙, 🚁 un 飞机, 🌋 une montagne, 🦉 un
+  // oiseau, 🚌 un 车…) n'est jamais proposé comme mauvaise réponse : table commune Ile.ambigu.
   const SHY = '\u00AD';
   const hanzi = () => Ile.L().ecriture === 'hanzi';
   const pinyinEl = (p) => el('span', { class: 'pinyin', lang: 'zh-Latn-pinyin', text: p });
@@ -114,7 +85,7 @@
     return s;
   }
   function distracteurs(cible, pool, n, level) {
-    let autres = Ile.shuffle(pool.filter((m) => m.mot !== cible.mot && !ambigu(m, cible)));
+    let autres = Ile.shuffle(pool.filter((m) => m.mot !== cible.mot && !Ile.ambigu(m, cible)));
     if (level >= 2) autres = autres.sort((x, y) => ressemblance(y, cible, level) - ressemblance(x, cible, level));
     return autres.slice(0, n);
   }

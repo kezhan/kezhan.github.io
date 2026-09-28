@@ -324,6 +324,7 @@
       languesVisiblesAide: 'Huel den Haken ewech, fir eng Sprooch virun de Kanner ze verstoppen (zum Beispill Franséisch, fir nëmmen a Friemsproochen ze spillen).',
       fermer: 'Zoumaachen',
       jeuIndisponible: 'Dëst Spill gëtt et an dëser Sprooch net. Wiel en anert Spill:',
+      jeuIndisponibleTitre: 'Net op Lëtzebuergesch', // titre d'un jeu qui n'existe pas dans cette langue
     },
 
     // Nom, lieu de l'île, compétence et description de chaque jeu.

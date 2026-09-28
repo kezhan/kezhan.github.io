@@ -83,7 +83,6 @@
       resultat: 'See my score',
       aRevoir: (liste) => 'To practise: ' + liste,
       parfait: 'Every plural is right!',
-      titreSansJeu: '', // le jeu existe : titre du pack
       fautes: (x) => {
         const { s, p } = x;
         const c = [[s, 3], [s + 's', 3], [s + 'z', 1]]; // cat, boxs, babys, childs ; catz
@@ -131,7 +130,6 @@
       aRevoir: (liste) => '要复习：' + liste,
       parfait: '全部答对了！',
       // Titre de l'en-tête sur la page de repli (le pack n'a pas de titre : jeux.pluriel = null).
-      titreSansJeu: '一个还是很多个',
       fautes: () => [],
       variantes: {},
       aEviter: [],
@@ -163,7 +161,6 @@
       resultat: 'Mein Ergebnis',
       aRevoir: (liste) => 'Zum Üben: ' + liste,
       parfait: 'Du hast alle Wörter richtig in die Mehrzahl gesetzt!',
-      titreSansJeu: '', // le jeu existe : titre du pack
       // Erreurs d'apprenant : singulier inchangé, -e, -en, -er, -s, Umlaut oublié ou ajouté.
       // Jamais le datif pluriel (Hunden, Vögeln) : c'est une vraie forme, d'un autre cas.
       fautes: (x, o) => {
@@ -230,7 +227,6 @@
       resultat: 'Mäi Resultat',
       aRevoir: (liste) => 'Fir ze iwwen: ' + liste,
       parfait: 'Kee Feeler! Gutt gemaach!',
-      titreSansJeu: '', // le jeu existe : titre du pack
       // Erreurs d'apprenant : singulier inchangé, -en, -er, -n, fin ajoutée à un pluriel déjà
       // changé (Hënnen), ä / é / ë oubliés. Pas de -s (pluriel allemand ou français, pas luxembourgeois).
       fautes: (x, o) => {
@@ -277,7 +273,6 @@
       resultat: 'Voir mon résultat',
       aRevoir: (liste) => 'À revoir' + NB + ': ' + liste,
       parfait: 'Tous les pluriels sont justes' + NB + '!',
-      titreSansJeu: '', // le jeu existe : titre du pack
       // Erreurs d'élève : singulier inchangé, -s au lieu de -x (et inversement), -al → -als,
       // -aus, marque ajoutée à un mot invariable, accents oubliés.
       fautes: (x, o) => {
@@ -804,20 +799,4 @@
       poser();
     },
   });
-
-  // Langue sans ce jeu (chinois) : common.js affiche la page de repli, mais son en-tête reprendrait
-  // le titre anglais (« One or many »). Contournement local : titre de T dans la langue de la page.
-  // (Écouteur ajouté après celui de mountGame : il passe après le nouvel en-tête.)
-  function titreDeRepli() {
-    if (Ile.gameAvailable(ID)) return;
-    const titre = Ile.txt(T).titreSansJeu;
-    const h1 = document.querySelector('#topbar .topbar__title');
-    if (!titre || !h1) return;
-    const g = Ile.game(ID);
-    h1.textContent = '';
-    h1.append(el('span', { 'aria-hidden': 'true', text: (g && g.emoji ? g.emoji + ' ' : '') }), titre);
-    document.title = titre + ' · ' + Ile.t('titreSite');
-  }
-  titreDeRepli();
-  document.addEventListener('ile:langue', titreDeRepli);
 })();

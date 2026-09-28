@@ -303,6 +303,7 @@
       languesVisiblesAide: 'Décoche une langue pour la masquer aux enfants (par exemple le français, pour ne jouer que dans les langues étrangères).',
       fermer: 'Fermer',
       jeuIndisponible: 'Ce jeu n\u2019existe pas dans cette langue. Choisis un autre jeu :',
+      jeuIndisponibleTitre: 'Pas disponible en français', // titre d'un jeu qui n'existe pas dans cette langue
     },
 
     // Nom, lieu de l'île, compétence et description de chaque jeu.

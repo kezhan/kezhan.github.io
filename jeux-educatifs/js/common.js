@@ -137,11 +137,15 @@
     return !!(P && P.jeux && P.jeux[id]);
   }
   // Infos d'un jeu dans la langue courante : { id, emoji, titre, lieu, competence, desc, disponible }.
+  // Jeu absent de la langue (jeux[id] === null) : titre générique traduit (« 没有中文版 »), jamais
+  // le titre d'une autre langue.
   function game(id) {
     const g = GAMES.find((x) => x.id === id);
     if (!g) return null;
-    const info = (L().jeux && L().jeux[id]) || (LANGS[FALLBACK_LANG] && LANGS[FALLBACK_LANG].jeux[id]) || {};
-    return Object.assign({}, g, info, { disponible: gameAvailable(id) });
+    if (!gameAvailable(id)) {
+      return Object.assign({}, g, { titre: t('jeuIndisponibleTitre'), lieu: '', competence: '', desc: '', disponible: false });
+    }
+    return Object.assign({}, g, L().jeux[id], { disponible: true });
   }
   // Jeux disponibles dans la langue courante, dans l'ordre de l'île.
   function jeuxDisponibles() { return GAMES.filter((g) => gameAvailable(g.id)).map((g) => game(g.id)); }
@@ -259,6 +263,38 @@
   // pinyin sans tons en chinois (mot.epeler, fourni par le pack).
   function epeler(mot) { return (mot && mot.epeler) || (mot && mot.mot) || ''; }
 
+  // Images dont le mot nomme AUSSI une image plus précise (🦖 霸王龙 est aussi un 恐龙, 🚁 un 飞机,
+  // 🌋 une montagne, 🦉 un oiseau, 🚌 un 车…) : jamais l'une comme mauvaise réponse de l'autre,
+  // ni les deux dans une même partie de mémo. Clés et valeurs : emojis des packs, sans U+FE0F.
+  const GENERIQUES = {
+    '🐦': '🦉🦜🐧🐔🦆🦩🦅🦢🐓', // oiseau
+    '🌳': '🌴🌲', // arbre
+    '🌸': '🌻🌷🌹🌺', // fleur
+    '⛰': '🌋🏔', // montagne
+    '🦕': '🦖', // dinosaure
+    '🐉': '🦕🦖', // 龙 / 恐龙 : les enfants appellent souvent les dinosaures « 龙 »
+    '🐟': '🦈🐠🐡🐳', // poisson (et Walfësch)
+    '🚗': '🚕🚓🚙🚌🚑🚒🚲🚂🚜🏍', // voiture ; en chinois, 车 désigne tout véhicule
+    '✈': '🚁', // 飞机 / 直升机 (直升飞机)
+    '⛵': '🚢', // bateau / navire
+    '🐒': '🦍', // singe
+    '🐳': '🐬', // baleine / dauphin
+    '🐚': '🦪', // coquillage / huître
+    '🐻': '🧸', // ours / ours en peluche
+    '☁': '🌧⛈🌩', // nuage / pluie
+    '🏝': '🌴🌊', // l'île de l'image a un palmier et la mer
+    '🧒': '👧👦👸', // enfant
+    '👧': '👸', // fille / princesse
+  };
+  const sansVariante = (e) => String(e).replace(/\uFE0F/g, '');
+  // Ile.ambigu(a, b) : deux mots (ou deux emojis) qu'un enfant peut confondre à bon droit.
+  function ambigu(a, b) {
+    const x = sansVariante(a && a.emoji !== undefined ? a.emoji : a);
+    const y = sansVariante(b && b.emoji !== undefined ? b.emoji : b);
+    const inclut = (g, e) => !!GENERIQUES[g] && Array.from(GENERIQUES[g]).indexOf(e) !== -1;
+    return x === y || inclut(x, y) || inclut(y, x);
+  }
+
   // Mots disponibles pour un niveau (niveau <= demandé), filtrables.
   function motsNiveau(level, filter) {
     const all = L().MOTS || [];
@@ -304,10 +340,12 @@
     try { window.speechSynthesis.addEventListener('voiceschanged', pickVoice); } catch (e) { /* ancien navigateur */ }
   }
 
+  // Ile.say(texte, { rate?, pitch?, file? }) : lit le texte avec la voix de la langue courante.
+  // Par défaut, coupe la lecture en cours ; file: true met le texte à la suite (sans rien couper).
   function say(text, opts) {
     if (!voixDisponible() || muted) return false;
     try {
-      window.speechSynthesis.cancel();
+      if (!(opts && opts.file)) window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = L().tts;
       if (voice) u.voice = voice;
@@ -532,8 +570,10 @@
   }
 
   /*
-   * Ile.showResult({ id, score, total, message? })
+   * Ile.showResult({ id, score, total, message?, scoreTexte? })
    * Enregistre le résultat, affiche la fenêtre de fin (étoiles, rejouer, jeu suivant).
+   * scoreTexte : ligne de score écrite par le jeu (« 3 / 4 points »), à la place de « 3 / 4 bonnes réponses ».
+   * Le titre est lu APRÈS la lecture en cours (dernière réponse), sans la couper.
    */
   function showResult(opts) {
     const level = getLevel();
@@ -541,8 +581,14 @@
     if (Ile._refreshStars) Ile._refreshStars();
     closeResult();
 
+    // Jeu suivant de l'île qui existe dans la langue courante (le pluriel n'existe pas en chinois).
     const idx = GAMES.findIndex((g) => g.id === opts.id);
-    const next = game(GAMES[(idx + 1) % GAMES.length].id);
+    let next = null;
+    for (let k = 1; k <= GAMES.length && !next; k++) {
+      const suivant = GAMES[(idx + k) % GAMES.length];
+      if (gameAvailable(suivant.id)) next = game(suivant.id);
+    }
+    next = next || game(opts.id);
     const titres = t('resultTitres');
     const starsRow = el('div', { class: 'result__stars', role: 'img', 'aria-label': t('etoilesSur3', res.stars) },
       [1, 2, 3].map((i) => el('span', { class: 'result__star' + (i <= res.stars ? ' is-on' : ''), 'aria-hidden': 'true', text: '⭐', style: 'animation-delay:' + (i * 0.18) + 's' })));
@@ -554,7 +600,7 @@
       el('div', { class: 'result__card' }, [
         el('h2', { id: 'result-title', text: titres[res.stars] }),
         starsRow,
-        el('p', { class: 'result__score', text: t('score', opts.score, opts.total) }),
+        el('p', { class: 'result__score', text: opts.scoreTexte || t('score', opts.score, opts.total) }),
         opts.message ? el('p', { class: 'result__msg', text: opts.message }) : null,
         res.record && res.stars > 0 ? el('p', { class: 'result__record', text: t('record') }) : null,
         el('div', { class: 'result__actions' }, [
@@ -567,7 +613,7 @@
     document.body.appendChild(dialog);
     replay.focus();
     if (res.stars >= 2) { sfx('win'); confetti(); } else { sfx('click'); }
-    say(titres[res.stars]);
+    say(titres[res.stars], { file: true });
     return res;
   }
   function closeResult() {
@@ -591,7 +637,7 @@
     store, getLevel, setLevel, getBest, saveResult, resetStars, gameStars, totalStars, starsFor,
     // Aléatoire, texte, mots
     shuffle, pick, randInt, sansAccents, clean, plier, lettresGrille, compare,
-    un, le, groupe, aide, pinyin, epeler, motsNiveau, motsPourPartie,
+    un, le, groupe, aide, pinyin, epeler, motsNiveau, motsPourPartie, ambigu,
     // Son
     say, voixDisponible, sfx, isMuted, setMuted, updateMuteButton,
     // Interface
