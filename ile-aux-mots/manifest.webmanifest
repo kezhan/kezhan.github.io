@@ -1,7 +1,7 @@
 {
   "name": "L'Île aux Mots",
   "short_name": "Île aux Mots",
-  "description": "Jeux d'anglais parlés pour les enfants de 4 à 7 ans.",
+  "description": "Language games: English, Deutsch, Lëtzebuergesch, 中文.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",
