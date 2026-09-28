@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>L'ordre alphabétique · L'Île aux mots</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* L'ordre alphabétique — styles propres au jeu (variables de style.css : compatibles mode sombre) */
+    .alp {
+      --bois: #b07a45;
+      --bois-fond: rgba(176, 122, 69, 0.12);
+      --repere-bg: var(--sun);
+      --repere-bord: #e0a800;
+      --repere-ink: #3a2a00;
+      --cache-bg: rgba(108, 76, 255, 0.12);
+      --cache-ink: var(--focus);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme='light']) .alp { --bois: #9a6a3c; --bois-fond: rgba(176, 122, 69, 0.18); --cache-bg: rgba(150, 130, 255, 0.2); --cache-ink: #b3a6ff; }
+    }
+    :root[data-theme='dark'] .alp { --bois: #9a6a3c; --bois-fond: rgba(176, 122, 69, 0.18); --cache-bg: rgba(150, 130, 255, 0.2); --cache-ink: #b3a6ff; }
+
+    .alp .feedback { min-height: 2.6em; }
+
+    /* ---------- Niveau 1 : la question ---------- */
+    .alp-question {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .alp-question .speak { width: 46px; height: 46px; font-size: 1.3rem; }
+
+    .alp-duo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 4px 0 14px;
+    }
+    .alp-carte {
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      font-size: 2.6rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--repere-ink);
+      background: var(--repere-bg);
+      border: 3px solid var(--repere-bord);
+      border-radius: 18px;
+      box-shadow: 0 4px 0 rgba(35, 50, 74, 0.15);
+    }
+    .alp-carte--inconnue {
+      color: var(--cache-ink);
+      background: var(--cache-bg);
+      border: 3px dashed var(--cache-ink);
+    }
+    .alp-carte--inconnue.is-trouvee {
+      color: var(--good);
+      background: var(--good-bg);
+      border: 3px solid var(--good);
+      animation: ile-pop 0.45s ease;
+    }
+    .alp-fleche { font-size: 2rem; font-weight: 700; color: var(--ink-soft); }
+
+    .alp-choix {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 460px;
+      margin: 14px auto 0;
+    }
+    .alp-lettre { font-size: 2rem; min-height: 66px; padding: 6px; }
+
+    /* ---------- Frise de l'alphabet ---------- */
+    .alp-frise {
+      display: grid;
+      grid-template-columns: repeat(var(--nl), minmax(0, 1fr));
+      gap: 3px;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .alp-frise__l {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      height: 34px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      background: var(--card);
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+    }
+    .alp-frise__l.is-repere {
+      color: var(--repere-ink);
+      background: var(--repere-bg);
+      border-color: var(--repere-bord);
+      font-weight: 700;
+    }
+    .alp-frise__l.is-cachee {
+      color: var(--cache-ink);
+      background: var(--cache-bg);
+      border: 2px dashed var(--cache-ink);
+      font-weight: 700;
+    }
+    .alp-frise__l.is-trouvee,
+    .alp-frise__l.is-utilisee {
+      color: var(--good);
+      background: var(--good-bg);
+      border-color: var(--good);
+      font-weight: 700;
+    }
+    .alp--n2 .alp-frise,
+    .alp--n3 .alp-frise { margin-top: 16px; }
+
+    /* ---------- Niveaux 2 et 3 : l'étagère et les mots ---------- */
+    .alp-astuce {
+      display: inline-block;
+      margin: 0 0 4px;
+      padding: 3px 12px;
+      border-radius: 12px;
+      background: var(--sand-2);
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    .alp-places {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0 6px;
+      padding: 12px 10px;
+      list-style: none;
+      background: var(--bois-fond);
+      border-bottom: 8px solid var(--bois);
+      border-radius: 14px 14px 6px 6px;
+    }
+    .alp-place {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 110px;
+      min-height: 54px;
+      padding: 6px 14px 6px 8px;
+      background: var(--card);
+      border: 3px dashed var(--card-border);
+      border-radius: 12px;
+    }
+    .alp-place__n {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 28px;
+      height: 28px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--card);
+      background: var(--ink-soft);
+      border-radius: 50%;
+    }
+    .alp-place__mot { font-size: 1.3rem; font-weight: 700; overflow-wrap: anywhere; }
+    .alp-place.is-pleine { border-style: solid; border-color: var(--good); background: var(--good-bg); }
+    .alp-place.is-pleine .alp-place__n { background: var(--good); color: #fff; }
+
+    .alp-tuiles {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 14px 0 0;
+    }
+    .alp-tuile {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 1.4rem;
+      padding: 8px 18px;
+      min-height: 56px;
+      max-width: 100%;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+    /* Mot posé sur l'étagère : sa place reste marquée en pointillés (rien ne bouge sous le doigt). */
+    .alp-tuile.is-placee { opacity: 0.7; background: transparent; border-style: dashed; box-shadow: none; }
+    .alp-tuile.is-placee > * { visibility: hidden; }
+    .alp-init { color: var(--coral); font-weight: 800; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme='light']) .alp-init { color: #ffa27f; }
+    }
+    :root[data-theme='dark'] .alp-init { color: #ffa27f; }
+
+    /* Chinois : caractères en grand, pinyin dessous (c'est lui qui donne l'ordre). */
+    .pinyin {
+      display: block;
+      font-size: 0.72em;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    .alp-hanzi { display: block; font-size: 1.15em; letter-spacing: 0.06em; }
+    .alp-tuile .pinyin { font-size: 0.82em; color: var(--ink); }
+    .alp-place__mot .alp-hanzi { font-size: 1em; }
+    .alp-place__mot .pinyin { font-size: 0.7em; color: var(--good); }
+    :lang(zh) .alp-place__mot { display: flex; flex-direction: column; align-items: center; }
+    :lang(zh) .alp-tuile { padding: 6px 14px; min-width: 72px; }
+
+    @media (max-width: 820px) {
+      .alp-frise { grid-template-columns: repeat(9, minmax(0, 1fr)); max-width: 420px; margin-inline: auto; }
+    }
+    @media (max-width: 480px) {
+      .panel.alp { padding: 14px 10px 16px; }
+      .alp-question { font-size: 1.2rem; gap: 8px; }
+      .alp-carte { width: 64px; height: 64px; font-size: 2.2rem; }
+      .alp-choix { gap: 8px; }
+      .alp-lettre { font-size: 1.8rem; min-height: 60px; }
+      .alp-frise__l { height: 32px; }
+      .alp .consigne { font-size: 1.05rem; }
+      .alp-places { gap: 8px; padding: 10px 6px; }
+      .alp-place { min-width: 0; min-height: 48px; padding: 4px 10px 4px 6px; gap: 6px; }
+      .alp-place__n { width: 24px; height: 24px; font-size: 0.85rem; }
+      .alp-place__mot { font-size: 1.1rem; }
+      .alp-tuiles { gap: 8px; }
+      .alp-tuile { font-size: 1.2rem; padding: 6px 12px; min-height: 52px; }
+    }
+  </style>
+</head>
+<body>
+  <header id="topbar"></header>
+  <main id="jeu"></main>
+  <script src="../data/lang/en.js"></script>
+  <script src="../data/lang/zh.js"></script>
+  <script src="../data/lang/de.js"></script>
+  <script src="../data/lang/lb.js"></script>
+  <script src="../data/lang/fr.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="alphabet.js"></script>
+</body>
+</html>

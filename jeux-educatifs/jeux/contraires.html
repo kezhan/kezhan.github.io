@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Les contraires · L'Île aux mots</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ---- Les contraires / Opposites / 反义词 / Gegenteile / Géigendeeler ---- */
+    .contraires {
+      --ct-cible-bg: #fff4e0;
+      --ct-cible-border: #f3c77a;
+      /* Couleurs des paires reliées (niveau 3), avec un symbole pour ne pas dépendre de la couleur seule. */
+      --ct-c1: #ffd9e4; --ct-b1: #d9466f;
+      --ct-c2: #d5f5d0; --ct-b2: #2f8f3e;
+      --ct-c3: #d7e8ff; --ct-b3: #2f6fc0;
+      --ct-c4: #fff1b8; --ct-b4: #b88a00;
+      --ct-c5: #eadcff; --ct-b5: #7c4ddb;
+      --ct-sel: #fff7d6;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme='light']) .contraires {
+        --ct-cible-bg: #3a3222;
+        --ct-cible-border: #8a6b2e;
+        --ct-c1: #5b2438; --ct-b1: #ff8fb1;
+        --ct-c2: #1f4d2a; --ct-b2: #6fd67f;
+        --ct-c3: #1e3a64; --ct-b3: #7fb2ff;
+        --ct-c4: #54440f; --ct-b4: #ffd54a;
+        --ct-c5: #3b2a63; --ct-b5: #b69cff;
+        --ct-sel: #2f3f5e;
+      }
+    }
+    :root[data-theme='dark'] .contraires {
+      --ct-cible-bg: #3a3222;
+      --ct-cible-border: #8a6b2e;
+      --ct-c1: #5b2438; --ct-b1: #ff8fb1;
+      --ct-c2: #1f4d2a; --ct-b2: #6fd67f;
+      --ct-c3: #1e3a64; --ct-b3: #7fb2ff;
+      --ct-c4: #54440f; --ct-b4: #ffd54a;
+      --ct-c5: #3b2a63; --ct-b5: #b69cff;
+      --ct-sel: #2f3f5e;
+    }
+    .contraires .consigne { margin-bottom: 10px; }
+    /* Le panneau garde le focus clavier entre deux manches (niveau 3) : pas de cadre autour de tout le jeu. */
+    .panel.contraires:focus { outline: none; }
+    .ct-emoji {
+      /* Emojis en couleur même si une police monochrome les connaît. */
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', sans-serif;
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    /* Pinyin : petit, clair, sous les caractères. */
+    .pinyin {
+      display: block;
+      font-size: 0.7em;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    :lang(zh) .ct-texte { letter-spacing: 0.04em; }
+
+    /* ---------- Niveaux 1–2 : le mot, puis son contraire parmi 3 ou 4 ---------- */
+    .ct-cible {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto 6px;
+      padding: 12px 20px;
+      background: var(--ct-cible-bg);
+      border: 3px solid var(--ct-cible-border);
+      border-radius: 22px;
+    }
+    .ct-cible .ct-emoji { font-size: clamp(2.8rem, 12vw, 4.2rem); }
+    .ct-cible .speak { width: 50px; height: 50px; }
+    .ct-cible__mot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+      max-width: 100%;
+      font-size: clamp(1.9rem, 7.5vw, 2.7rem);
+      font-weight: 700;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+    :lang(zh) .ct-cible__mot .ct-texte { font-size: 1.2em; }
+    .ct-cible__mot .pinyin { font-size: 0.5em; margin-top: 2px; }
+
+    .ct-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 16px;
+      max-width: 680px;
+      margin: 14px auto 0;
+    }
+    .ct-options--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 820px; }
+    .ct-option { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .ct-choice {
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 68px;
+      gap: 10px;
+      padding: 8px 12px;
+      line-height: 1.15;
+    }
+    .ct-choice .ct-emoji { font-size: 1.6rem; flex: 0 0 auto; }
+    .ct-choice__mot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+    :lang(zh) .ct-choice .ct-texte { font-size: 1.3em; }
+    .ct-choice .pinyin { font-size: 0.78em; }
+    /* Pinyin de la bonne réponse : couleur du texte (le vert sur fond vert est illisible, surtout en sombre). */
+    .ct-choice.is-correct .pinyin { color: inherit; }
+    .ct-choice.is-wrong .pinyin { color: var(--bad); }
+    .ct-options.is-fini .ct-choice:disabled { opacity: 1; cursor: default; }
+    .ct-options.is-fini .ct-option:not(.is-bonne) { opacity: 0.55; }
+    .ct-option .speak { width: 44px; height: 44px; font-size: 1.25rem; }
+
+    /* Rappel de la paire dans le message : grand ↔ petit (pinyin sous chaque mot en chinois). */
+    .ct-feedback { min-height: 2.8em; line-height: 1.4; }
+    .ct-recap {
+      display: inline-flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2px 8px;
+      vertical-align: top;
+    }
+    .ct-recap__mot { display: inline-flex; flex-direction: column; align-items: center; }
+    /* Pinyin du rappel en gris lisible (le vert du message, en petit, manque de contraste). */
+    .ct-recap__mot .pinyin { font-size: 0.72em; color: var(--ink-soft); }
+    .ct-recap__fleche { color: var(--ink-soft); }
+    /* Aide neutre du niveau 3 (« touche maintenant son contraire à droite ») : plus discrète. */
+    .ct-feedback.ct-aide { font-size: 1.05rem; font-weight: 500; color: var(--ink-soft); }
+
+    /* ---------- Niveau 3 : relier les contraires ---------- */
+    .ct-manche {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: var(--sand-2);
+      font-weight: 600;
+      font-size: 0.98rem;
+    }
+    .ct-plateau {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 clamp(14px, 5vw, 48px);
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .ct-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+    .ct-col__titre {
+      margin: 0 0 2px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      text-transform: none;
+    }
+    .ct-mot {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      min-height: 60px;
+      padding: 6px 10px;
+      flex-direction: column;
+      gap: 0;
+      font-size: clamp(1.05rem, 4.3vw, 1.35rem);
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+    :lang(zh) .ct-mot .ct-texte { font-size: 1.25em; }
+    .ct-mot .pinyin { font-size: 0.76em; }
+    .ct-mot.is-sel {
+      background: var(--ct-sel);
+      border-color: var(--focus);
+      box-shadow: 0 0 0 3px var(--focus), 0 4px 0 rgba(35, 50, 74, 0.15);
+      transform: translateY(-2px);
+    }
+    .ct-mot.is-paire,
+    .ct-mot.is-paire:disabled {
+      opacity: 1;
+      cursor: default;
+      background: var(--ct-c);
+      border-color: var(--ct-b);
+      color: var(--ink);
+      transform: none;
+    }
+    .ct-mot.is-paire .pinyin { color: var(--ink); opacity: 0.8; }
+    .ct-marque {
+      position: absolute;
+      top: 3px;
+      right: 6px;
+      font-size: 0.85rem;
+      line-height: 1;
+      color: var(--ct-b);
+    }
+    .ct-mot[data-cote='g'] .ct-marque { right: auto; left: 6px; }
+
+    /* Tablette étroite et téléphone : une proposition par ligne, bouton « écouter » à droite. */
+    @media (max-width: 640px) {
+      .ct-options, .ct-options--3 { grid-template-columns: minmax(0, 1fr); max-width: 420px; gap: 10px; }
+      .ct-choice { min-height: 60px; }
+    }
+    @media (max-width: 480px) {
+      .ct-cible { padding: 10px 14px; gap: 6px 12px; }
+      .ct-choice { font-size: 1.25rem; }
+      .ct-mot { padding: 6px 6px; }
+    }
+  </style>
+</head>
+<body>
+  <header id="topbar"></header>
+  <main id="jeu"></main>
+  <script src="../data/lang/en.js"></script>
+  <script src="../data/lang/zh.js"></script>
+  <script src="../data/lang/de.js"></script>
+  <script src="../data/lang/lb.js"></script>
+  <script src="../data/lang/fr.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="contraires.js"></script>
+</body>
+</html>

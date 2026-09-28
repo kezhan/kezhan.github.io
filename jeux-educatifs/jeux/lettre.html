@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La lettre perdue · L'Île aux mots</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ---- La lettre perdue (styles propres au jeu ; variables de style.css : mode sombre compris) ---- */
+    .lettre .consigne { margin-bottom: 4px; }
+    .lettre .big-emoji {
+      margin: 2px 0 6px;
+      /* Emojis en couleur même si une police monochrome les connaît. */
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', sans-serif;
+    }
+
+    .lettre-ligne {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 2px 0 8px;
+    }
+    /* Le mot, avec une case vide pour chaque lettre perdue. */
+    .lettre-mot {
+      margin: 0;
+      min-width: 0;
+      font-size: clamp(2rem, 9vw, 3.2rem);
+      letter-spacing: 0.08em;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    /* Mots longs (8 lettres et plus, puis 11 et plus : caterpillar, Schmetterling, Waassermeloun…) : plus petits pour garder le bouton écouter sur la ligne. */
+    .lettre-mot--long { font-size: clamp(1.5rem, 7vw, 3.2rem); letter-spacing: 0.05em; }
+    .lettre-mot--tres-long { font-size: clamp(1.35rem, 6.2vw, 3rem); letter-spacing: 0.03em; }
+    /* La case contient toujours du texte (espace insécable, puis la lettre) :
+       elle reste alignée sur la ligne de base et ne change pas de taille une fois remplie. */
+    .lettre-trou {
+      display: inline-block;
+      min-width: 1.1em;
+      margin: 0 0.1em 0 0.02em;
+      padding: 0.04em 0.06em;
+      vertical-align: baseline;
+      border: 3px dashed var(--sea-2);
+      border-radius: 12px;
+      background: rgba(47, 163, 214, 0.08);
+      line-height: 1.15;
+      letter-spacing: 0;
+      text-align: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .lettre-trou.is-active {
+      border-style: solid;
+      border-color: #e0a800;
+      background: rgba(255, 201, 60, 0.22);
+      animation: lettre-attente 1.4s ease-in-out infinite;
+    }
+    .lettre-trou.is-rempli {
+      border-style: solid;
+      border-color: var(--good);
+      background: var(--good-bg);
+      color: var(--good);
+      animation: none;
+    }
+    @keyframes lettre-attente {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 201, 60, 0); }
+      50% { box-shadow: 0 0 0 6px rgba(255, 201, 60, 0.35); }
+    }
+
+    /* Chinois : un caractère par colonne, sa syllabe de pinyin dessous (cachée au niveau 3 jusqu'à la
+       réponse : la place reste réservée pour que rien ne saute quand elle apparaît). */
+    .lettre-mot--zh {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 0.12em;
+      font-size: clamp(2.6rem, 12vw, 3.6rem);
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+    .lettre-zi {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 1.2em;
+    }
+    /* Caractère et case vide de même hauteur : la ligne de pinyin reste alignée. */
+    .lettre-car,
+    .lettre-zi .lettre-trou {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      height: 1.3em;
+      min-width: 1.2em;
+      line-height: 1;
+    }
+    .lettre-zi .lettre-trou { margin: 0; padding: 0; }
+    .lettre-py {
+      margin-top: 0.1em;
+      font-family: var(--font);
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    .lettre-zi .lettre-py[hidden] { display: block !important; visibility: hidden; }
+    .lettre-tuile--zh {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 76px;
+      min-height: 76px;
+      font-size: 2.4rem;
+      font-weight: 600;
+      line-height: 1.05;
+    }
+    .lettre-tuile__py {
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--ink-soft);
+    }
+
+    /* Tuiles de lettres. */
+    .tiles.lettre-tiles { gap: 12px; margin-top: 10px; }
+    .lettre-tuile {
+      min-width: 62px;
+      min-height: 62px;
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .lettre-tiles--accents .lettre-tuile {
+      min-width: 72px;
+      min-height: 72px;
+      font-size: 2.5rem;
+    }
+    .lettre-tuile.is-wrong,
+    .lettre-tuile.is-wrong:disabled { background: var(--bad-bg); border-color: var(--bad); opacity: 0.4; }
+    .lettre-tuile.is-correct,
+    .lettre-tuile.is-correct:disabled { background: var(--good-bg); border-color: var(--good); opacity: 1; }
+    .lettre-tuile.is-used:disabled { background: var(--good-bg); border-color: var(--good); opacity: 0.45; }
+    .lettre-tiles.is-fini .lettre-tuile:not(.is-correct):not(.is-used) { opacity: 0.3; }
+    .lettre-tiles.is-fini .lettre-tuile { cursor: default; }
+
+    @media (max-width: 480px) {
+      .tiles.lettre-tiles { gap: 10px; }
+      .lettre-tuile { min-width: 54px; min-height: 58px; font-size: 1.8rem; padding: 4px 8px; }
+      .lettre-tiles--accents .lettre-tuile { min-width: 64px; min-height: 66px; font-size: 2.2rem; }
+      /* Six tuiles : deux rangées de trois plutôt que 4 + 2. */
+      .tiles.lettre-tiles--6 { max-width: 210px; margin-left: auto; margin-right: auto; }
+      .lettre-tuile--zh { min-width: 68px; min-height: 70px; font-size: 2.1rem; }
+    }
+    @media (max-width: 359px) {
+      .lettre-mot { font-size: 1.7rem; }
+      .lettre-mot--long { font-size: 1.35rem; }
+      .lettre-mot--tres-long { font-size: 1.2rem; }
+      .lettre-ligne { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <header id="topbar"></header>
+  <main id="jeu"></main>
+  <script src="../data/lang/en.js"></script>
+  <script src="../data/lang/zh.js"></script>
+  <script src="../data/lang/de.js"></script>
+  <script src="../data/lang/lb.js"></script>
+  <script src="../data/lang/fr.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="lettre.js"></script>
+</body>
+</html>

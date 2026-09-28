@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La phrase en désordre · L'Île aux mots</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* La phrase en désordre — styles propres au jeu (variables de style.css : compatibles mode sombre) */
+    .phr {
+      --papier: #fcf3da;
+      --papier-2: #f3dfae;
+      --encre: #4a3218;
+      --rouleau: #dcb676;
+      --rouleau-2: #b98a47;
+      --rouleau-bord: #8f6330;
+      --mot-bg: rgba(255, 255, 255, 0.78);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme='light']) .phr {
+        --papier: #3d3525; --papier-2: #30291b; --encre: #f6e8c8;
+        --rouleau: #8a6a3e; --rouleau-2: #6b4f2b; --rouleau-bord: #b48b52; --mot-bg: rgba(255, 255, 255, 0.08);
+      }
+    }
+    :root[data-theme='dark'] .phr {
+      --papier: #3d3525; --papier-2: #30291b; --encre: #f6e8c8;
+      --rouleau: #8a6a3e; --rouleau-2: #6b4f2b; --rouleau-bord: #b48b52; --mot-bg: rgba(255, 255, 255, 0.08);
+    }
+
+    .phr-tete { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 6px; }
+    .phr-tete .consigne { margin: 0; }
+    .phr-astuce {
+      display: inline-block;
+      margin: 4px 0 2px;
+      padding: 3px 12px;
+      border-radius: 12px;
+      background: var(--sand-2);
+      font-size: 0.95rem;
+      line-height: 1.3;
+    }
+
+    /* ---------- Le parchemin ---------- */
+    .phr-parchemin {
+      position: relative;
+      margin: 22px 10px 14px;
+      padding: 22px 16px;
+      color: var(--encre);
+      background: linear-gradient(180deg, var(--papier) 0%, var(--papier-2) 100%);
+      border-left: 2px solid var(--rouleau-bord);
+      border-right: 2px solid var(--rouleau-bord);
+      box-shadow: inset 0 0 28px rgba(120, 80, 30, 0.18), 0 6px 14px rgba(35, 50, 74, 0.12);
+    }
+    /* Les deux rouleaux du parchemin. */
+    .phr-parchemin::before,
+    .phr-parchemin::after {
+      content: '';
+      position: absolute;
+      left: -10px;
+      right: -10px;
+      height: 16px;
+      background: linear-gradient(180deg, var(--rouleau) 0%, var(--rouleau-2) 100%);
+      border: 2px solid var(--rouleau-bord);
+      border-radius: 9px;
+    }
+    .phr-parchemin::before { top: -10px; }
+    .phr-parchemin::after { bottom: -10px; }
+    .phr-parchemin.is-reussie { box-shadow: inset 0 0 0 3px var(--good), inset 0 0 28px rgba(120, 80, 30, 0.18), 0 6px 14px rgba(35, 50, 74, 0.12); }
+
+    .phr-ligne {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 10px 8px;
+      min-height: 52px;
+    }
+    .phr-mot {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 48px;
+      max-width: 100%;
+      padding: 4px 10px;
+      font: inherit;
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--encre);
+      background: var(--mot-bg);
+      border: 2px solid var(--rouleau-bord);
+      border-radius: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+      overflow-wrap: anywhere;
+    }
+    .phr-mot:hover { transform: translateY(-2px); }
+    .phr-mot.is-bloque { cursor: default; transform: none; border-color: var(--good); background: var(--good-bg); color: var(--ink); }
+    .phr-mot.is-faux { border-color: var(--bad); background: var(--bad-bg); color: var(--ink); }
+    /* Phrase trouvée : les mots s'écrivent comme sur le papier, sans cadre. */
+    .phr-parchemin.is-reussie .phr-ligne { gap: 6px 0.3em; }
+    .phr-parchemin.is-reussie .phr-mot { padding: 2px 0; min-width: 0; min-height: 0; background: transparent; border-color: transparent; color: var(--encre); }
+    /* Emplacements vides : une ligne d'écriture par mot, bien séparées. */
+    .phr-trou {
+      display: inline-block;
+      width: 56px;
+      height: 44px;
+      margin: 0 3px;
+      background: linear-gradient(var(--rouleau-bord), var(--rouleau-bord)) center bottom / 100% 3px no-repeat;
+      border-radius: 2px;
+      opacity: 0.55;
+    }
+    .phr-ponct {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--encre);
+    }
+    .phr-parchemin.is-reussie .phr-ponct { padding: 4px 0; }
+
+    /* ---------- Les mots à poser ---------- */
+    .phr-reserve {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 8px 0 0;
+    }
+    .phr-tuile {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      max-width: 100%;
+      font-size: 1.3rem;
+      line-height: 1.15;
+      padding: 8px 14px;
+      overflow-wrap: anywhere;
+    }
+    /* Mot posé : sa place reste marquée en pointillés (rien ne bouge sous le doigt). */
+    .phr-tuile.is-placee { opacity: 0.7; background: transparent; border-style: dashed; box-shadow: none; }
+    .phr-tuile.is-placee > * { visibility: hidden; }
+    .phr-actions { margin-top: 14px; }
+    .phr .feedback { min-height: 2.6em; margin: 0 0 6px; line-height: 1.3; display: flex; align-items: center; justify-content: center; }
+    .phr .feedback.phr-feedback--indice { color: var(--ink); }
+
+    /* Chinois : caractères un peu plus grands, pinyin dessous. */
+    .pinyin {
+      display: block;
+      font-size: 0.66em;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    .phr-mot .pinyin { color: inherit; opacity: 0.85; }
+    .phr-parchemin.is-reussie .pinyin { color: var(--good); opacity: 1; }
+    :lang(zh) .phr-texte { font-size: 1.15em; letter-spacing: 0.04em; }
+    :lang(zh) .phr-parchemin.is-reussie .phr-ligne { gap: 8px 0.15em; }
+
+    @media (max-width: 480px) {
+      .panel.phr { padding: 14px 10px 16px; }
+      .phr .consigne { font-size: 1.05rem; }
+      .phr-tete { gap: 8px; }
+      .phr-parchemin { margin: 20px 6px 12px; padding: 18px 8px; }
+      .phr .feedback { font-size: 1.1rem; }
+      .phr-ligne { gap: 8px 6px; }
+      .phr-mot { font-size: 1.15rem; padding: 4px 8px; }
+      .phr-trou { width: 42px; height: 40px; }
+      .phr-ponct { font-size: 1.15rem; }
+      .phr-reserve { gap: 8px; }
+      .phr-tuile { font-size: 1.15rem; padding: 6px 10px; min-height: 50px; }
+    }
+  </style>
+</head>
+<body>
+  <header id="topbar"></header>
+  <main id="jeu"></main>
+  <script src="../data/lang/en.js"></script>
+  <script src="../data/lang/zh.js"></script>
+  <script src="../data/lang/de.js"></script>
+  <script src="../data/lang/lb.js"></script>
+  <script src="../data/lang/fr.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="phrase.js"></script>
+</body>
+</html>

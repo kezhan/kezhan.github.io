@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le mot et l'image · L'Île aux mots</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ---- Le mot et l'image / Word and picture / 看图找词 / Wort und Bild / Wuert a Bild ---- */
+    .images .consigne { margin-bottom: 4px; }
+    .images-emoji {
+      /* Emojis en couleur même si une police monochrome les connaît. */
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', sans-serif;
+    }
+
+    /* Choix : le mot, et son pinyin dessous en chinois (niveaux 1–2). */
+    .choices.images-choices { max-width: 780px; margin-left: auto; margin-right: auto; }
+    /* Quatre choix : toujours 2 × 2, pour que les mots longs (Schmetterling, watermelon) tiennent sur une ligne. */
+    .choices.images-choices--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 620px; }
+    /* Trois choix : sur une ligne quand il y a la place, sinon deux + le troisième centré dessous. */
+    .choices.images-choices--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 719px) {
+      .choices.images-choices--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 620px; }
+      .images-choices--3 .choice:last-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc(50% - 6px);
+      }
+    }
+    .images-choice {
+      flex-direction: column;
+      gap: 2px;
+      padding-left: 12px;
+      padding-right: 12px;
+      line-height: 1.2;
+    }
+    /* Les mots longs se coupent seulement entre deux syllabes (césure douce), jamais au hasard. */
+    .images-choice__mot { overflow-wrap: normal; word-break: normal; hyphens: manual; max-width: 100%; }
+    /* Sur petit écran, les mots longs sont un peu plus petits (les boutons sont étroits). */
+    @media (max-width: 600px) {
+      .images-choice--long { font-size: clamp(1.05rem, 4vw, 1.35rem); }
+      .images-choice--xlong { font-size: clamp(1rem, 3.7vw, 1.25rem); }
+    }
+    .images-choice:disabled.is-correct { opacity: 1; cursor: default; }
+    .images-choices.is-fini .choice:not(.is-correct):not(.is-wrong) { opacity: 0.45; }
+
+    /* Pinyin : petit, clair, sous les caractères. */
+    .pinyin {
+      display: block;
+      font-size: 0.7em;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    .choice.is-correct .pinyin { color: var(--good); }
+    .choice.is-wrong .pinyin { color: var(--bad); }
+
+    /* Caractères chinois un peu plus grands : ils sont plus denses que les lettres. */
+    :lang(zh) .images-choice__mot { font-size: 1.25em; letter-spacing: 0.06em; }
+
+    /* Réponse trouvée : « article + mot » mis en valeur, pinyin centré dessous en chinois
+       (hors du flux, pour ne pas écarter les caractères de la phrase). */
+    .images-feedback { min-height: 2.8em; line-height: 1.35; }
+    .images-fin { white-space: nowrap; }
+    .images-groupe { font-weight: 700; }
+    .images-groupe--py { position: relative; display: inline-block; margin-bottom: 1.1em; }
+    .images-groupe--py .pinyin {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--good);
+    }
+
+    @media (max-width: 480px) {
+      .images-choice { padding: 8px 6px; }
+      .images-choice--xlong { font-size: 0.95rem; padding-left: 3px; padding-right: 3px; }
+      :lang(zh) .images-choice__mot { font-size: 1.15em; }
+    }
+  </style>
+</head>
+<body>
+  <header id="topbar"></header>
+  <main id="jeu"></main>
+  <script src="../data/lang/en.js"></script>
+  <script src="../data/lang/zh.js"></script>
+  <script src="../data/lang/de.js"></script>
+  <script src="../data/lang/lb.js"></script>
+  <script src="../data/lang/fr.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="images.js"></script>
+</body>
+</html>

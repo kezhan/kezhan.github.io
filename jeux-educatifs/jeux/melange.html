@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lettres en vrac · L'Île aux mots</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* Lettres en vrac — styles propres au jeu (variables de style.css : compatibles mode sombre) */
+    .melange {
+      --cell: 56px;
+      --cell-h: 64px;
+      --gap: 8px;
+      --fs: 1.9rem;
+      --hint-bg: #fff1bf;
+      --hint-border: #e0a800;
+      --hint-ink: #3a2a00;
+    }
+    @media (max-width: 480px) {
+      /* Marges plus fines : un mot de 11 lettres tient sur deux lignes de cases de 44 px. */
+      .panel.melange { --cell: 44px; --cell-h: 54px; --gap: 5px; --fs: 1.5rem; padding: 14px 8px 18px; }
+    }
+
+    .mel-figure {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 0 0 6px;
+    }
+    .mel-figure .speak { width: 50px; height: 50px; }
+    .mel-image {
+      margin: 0;
+      font-size: clamp(3.6rem, 16vw, 6rem);
+      line-height: 1.15;
+      /* Emojis en couleur même si une police monochrome les connaît (🐱). */
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', sans-serif;
+    }
+    .mel-image.is-mystere { font-family: var(--font); }
+    .mel-image.is-mystere {
+      font-weight: 700;
+      color: var(--ink-soft);
+      background: var(--sand-2);
+      border: 3px dashed var(--card-border);
+      border-radius: 20px;
+    }
+    /* Niveau 3 : l'image cachée et l'indice de thème côte à côte. */
+    .mel-figure--cachee { flex-wrap: wrap; gap: 10px 14px; }
+    .mel-figure--cachee .mel-image {
+      display: grid;
+      place-items: center;
+      width: 1.35em;
+      height: 1.2em;
+      font-size: clamp(3rem, 13vw, 4.5rem);
+    }
+    .mel-theme {
+      margin: 0;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--sand-2);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* Cases : grille aux colonnes équilibrées (calculées en JS), lue comme une ligne de texte. */
+    .slots.mel-cases {
+      display: grid;
+      grid-template-columns: repeat(var(--cols, 6), var(--cell));
+      gap: var(--gap);
+      justify-content: center;
+    }
+    /* Lettres : même largeur de ligne que les cases, dernière ligne centrée. */
+    .tiles.mel-reserve {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--gap);
+      max-width: calc(var(--cols, 6) * var(--cell) + (var(--cols, 6) - 1) * var(--gap));
+    }
+    .slots.mel-cases {
+      width: fit-content;
+      max-width: 100%;
+      margin: 10px auto 4px;
+      padding: 10px 6px;
+      background: var(--sand);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .slots.mel-cases.is-win { border-style: solid; border-color: var(--good); background: var(--good-bg); }
+    .tiles.mel-reserve { margin: 16px auto 4px; min-height: var(--cell-h); }
+
+    .mel-case {
+      display: grid;
+      place-items: center;
+      width: var(--cell);
+      height: var(--cell-h);
+      padding: 0;
+      font: inherit;
+      font-size: var(--fs);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink);
+      background: var(--card);
+      border: 3px dashed var(--card-border);
+      border-radius: 12px;
+      touch-action: manipulation;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .mel-case.is-filled {
+      background: var(--sand-2);
+      border-style: solid;
+      box-shadow: 0 4px 0 rgba(35, 50, 74, 0.15);
+      cursor: pointer;
+    }
+    .mel-case.is-locked { background: var(--good-bg); border-color: var(--good); box-shadow: none; }
+    .mel-case.is-aidee { background: var(--hint-bg); border-color: var(--hint-border); color: var(--hint-ink); box-shadow: none; }
+    .mel-case.is-wrong { background: var(--bad-bg); border-color: var(--bad); }
+    .mel-case:disabled { cursor: default; }
+
+    .mel-tuile {
+      width: var(--cell);
+      min-width: 0;
+      height: var(--cell-h);
+      padding: 0;
+      font-size: var(--fs);
+      line-height: 1;
+    }
+    .mel-tuile.is-used {
+      opacity: 0.6;
+      color: transparent;
+      background: transparent;
+      border-style: dashed;
+      box-shadow: none;
+    }
+
+    .tiles.mel-reserve.is-done { opacity: 0.4; }
+
+    /* Survol : la tuile se soulève de 2 px (style.css). Pendant le survol, on prolonge sa zone
+       sensible vers le bas pour que le pointeur posé sur son bord ne la fasse pas trembler. */
+    .mel-tuile,
+    .melange .actions .btn { position: relative; }
+    .mel-tuile:not(:disabled):hover::after,
+    .melange .actions .btn:not(:disabled):hover::after {
+      content: '';
+      position: absolute;
+      left: -3px;
+      right: -3px;
+      bottom: -6px;
+      height: 6px;
+    }
+
+    /* Allemand, luxembourgeois : rappel de la majuscule du nom (niveau 1). */
+    .mel-astuce {
+      margin: -6px 0 10px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+
+    /* Chinois : les caractères (aide) à côté de l'image, le pinyin avec ses tons dessous après la réussite
+       (sa place reste réservée : rien ne saute quand il apparaît). */
+    .mel-hanzi {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      line-height: 1.15;
+    }
+    .mel-hanzi__mot {
+      font-size: clamp(2.2rem, 10vw, 3rem);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    .mel-pinyin {
+      margin-top: 2px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--palm-dark);
+      white-space: nowrap;
+    }
+    .mel-hanzi .mel-pinyin[hidden] { display: block !important; visibility: hidden; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme='light']) .mel-pinyin { color: #7ee0a4; }
+    }
+    :root[data-theme='dark'] .mel-pinyin { color: #7ee0a4; }
+
+    .mel-actions { margin-top: 12px; }
+    .mel-info { color: var(--ink); }
+    @media (max-width: 480px) {
+      .mel-actions { gap: 8px; }
+      .mel-actions .btn { padding: 8px 14px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header id="topbar"></header>
+  <main id="jeu"></main>
+  <script src="../data/lang/en.js"></script>
+  <script src="../data/lang/zh.js"></script>
+  <script src="../data/lang/de.js"></script>
+  <script src="../data/lang/lb.js"></script>
+  <script src="../data/lang/fr.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="melange.js"></script>
+</body>
+</html>

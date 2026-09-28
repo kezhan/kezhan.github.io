@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>L'Île aux mots</title>
+  <meta name="description" content="Educational word games for children learning English, Chinese, German, Luxembourgish and French.">
+  <meta name="theme-color" content="#2fa3d6">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏝️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="lang-bar" id="langs" aria-label="Language · 语言 · Sprache · Sprooch · Langue"></nav>
+
+  <header class="hero">
+    <div class="hero__island" aria-hidden="true">🏝️</div>
+    <h1 id="site-title">L'Île aux mots</h1>
+    <p id="site-tagline"></p>
+  </header>
+
+  <main class="page">
+    <section class="panel" aria-labelledby="choix-niveau">
+      <h2 id="choix-niveau" class="consigne" style="margin:0 0 8px"></h2>
+      <div class="levels" id="levels" role="group" aria-labelledby="choix-niveau"></div>
+      <div class="treasure" aria-live="polite">
+        <span aria-hidden="true">💰</span>
+        <div class="treasure__bar" aria-hidden="true"><div class="treasure__fill" id="treasure-fill"></div></div>
+        <span id="treasure-text"></span>
+      </div>
+      <div class="hub-tools">
+        <button type="button" class="btn btn--sun" id="surprise"></button>
+        <button type="button" class="icon-btn" data-ile-mute></button>
+        <button type="button" class="icon-btn" id="open-settings" aria-haspopup="dialog">⚙️</button>
+      </div>
+    </section>
+
+    <h2 class="sr-only" id="games-title"></h2>
+    <ul class="games" id="games" style="margin-top:20px"></ul>
+  </main>
+
+  <footer class="footer">
+    <p id="footer-text"></p>
+  </footer>
+
+  <div class="result settings" id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+    <div class="result__card">
+      <h2 id="settings-title"></h2>
+      <fieldset class="settings__langs">
+        <legend id="settings-langs-title"></legend>
+        <p class="settings__help" id="settings-langs-help"></p>
+        <div id="settings-langs"></div>
+      </fieldset>
+      <div class="result__actions">
+        <button type="button" class="btn btn--ghost" id="reset"></button>
+        <button type="button" class="btn btn--primary" id="close-settings"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/lang/en.js"></script>
+  <script src="data/lang/zh.js"></script>
+  <script src="data/lang/de.js"></script>
+  <script src="data/lang/lb.js"></script>
+  <script src="data/lang/fr.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    (function () {
+      const { el, t } = Ile;
+      const $ = (id) => document.getElementById(id);
+
+      function renderLangs() {
+        const bar = $('langs');
+        bar.innerHTML = '';
+        Ile.langues().forEach((l) => {
+          const b = el('button', {
+            type: 'button', class: 'lang-btn', lang: l.htmlLang, 'data-lang': l.code, 'aria-pressed': String(l.code === Ile.getLang()),
+          }, [el('span', { 'aria-hidden': 'true', text: l.drapeau }), ' ' + l.nom]);
+          b.addEventListener('click', () => { Ile.sfx('click'); Ile.setLang(l.code); });
+          bar.appendChild(b);
+        });
+      }
+
+      function renderTexts() {
+        document.title = t('titreSite');
+        $('site-title').textContent = t('titreSite');
+        $('site-tagline').textContent = t('accroche');
+        $('choix-niveau').textContent = t('choisisGrade');
+        $('surprise').textContent = t('surprise');
+        $('games-title').textContent = t('lesJeux');
+        $('footer-text').textContent = t('footer');
+        $('reset').textContent = t('effacer');
+        $('open-settings').setAttribute('aria-label', t('parametres'));
+        $('open-settings').title = t('parametres');
+        $('settings-title').textContent = '⚙️ ' + t('parametres');
+        $('settings-langs-title').textContent = t('languesVisibles');
+        $('settings-langs-help').textContent = t('languesVisiblesAide');
+        $('close-settings').textContent = t('fermer');
+        const meta = document.querySelector('meta[name="description"]');
+        if (meta) meta.setAttribute('content', t('descriptionSite'));
+        Ile.updateMuteButton(document.querySelector('[data-ile-mute]'));
+      }
+
+      function renderLevels() {
+        const levelsEl = $('levels');
+        levelsEl.innerHTML = '';
+        const current = Ile.getLevel();
+        Ile.niveaux().forEach((l) => {
+          const b = el('button', {
+            type: 'button', class: 'btn level-btn', 'aria-pressed': String(l.n === current),
+            text: l.emoji + ' ' + l.nom + ' · ' + l.classe,
+          });
+          b.addEventListener('click', () => { Ile.setLevel(l.n); Ile.sfx('click'); renderLevels(); renderGames(); });
+          levelsEl.appendChild(b);
+        });
+      }
+
+      function renderGames() {
+        const level = Ile.getLevel();
+        const gamesEl = $('games');
+        gamesEl.innerHTML = '';
+        Ile.jeuxDisponibles().forEach((g) => {
+          const id = g.id;
+          const best = Ile.getBest(id, level);
+          gamesEl.appendChild(el('li', null, [
+            el('a', { class: 'game-card', href: 'jeux/' + id + '.html' }, [
+              el('span', { class: 'game-card__emoji', 'aria-hidden': 'true', text: g.emoji }),
+              el('h3', { class: 'game-card__title', text: g.titre }),
+              el('span', { class: 'game-card__place', text: '📍 ' + g.lieu }),
+              el('p', { class: 'game-card__desc', text: g.desc }),
+              el('div', { class: 'game-card__meta' }, [
+                el('span', { class: 'tag', text: g.competence }),
+                el('span', { class: 'game-card__stars', role: 'img', 'aria-label': t('etoilesNiveau', best), text: '★'.repeat(best) + '☆'.repeat(3 - best) }),
+              ]),
+            ]),
+          ]));
+        });
+        const total = Ile.totalStars();
+        $('treasure-fill').style.width = (total / Ile.MAX_STARS) * 100 + '%';
+        $('treasure-text').textContent = t('etoilesTotal', total, Ile.MAX_STARS);
+      }
+
+      function renderAll() { renderLangs(); renderTexts(); renderLevels(); renderGames(); }
+
+      // Paramètres (pour l'adulte) : langues proposées aux enfants.
+      function renderSettings() {
+        const box = $('settings-langs');
+        box.innerHTML = '';
+        const visibles = Ile.visibleLangs();
+        Ile.toutesLangues().forEach((l) => {
+          const id = 'langue-' + l.code;
+          const cb = el('input', { type: 'checkbox', id, checked: visibles.indexOf(l.code) !== -1 });
+          // On ne peut pas masquer la dernière langue visible.
+          if (visibles.length === 1 && visibles[0] === l.code) cb.disabled = true;
+          cb.addEventListener('change', () => {
+            if (!Ile.setLangHidden(l.code, !cb.checked)) cb.checked = true;
+            Ile.sfx('click');
+            renderSettings();
+            renderAll();
+          });
+          box.appendChild(el('label', { class: 'settings__lang', for: id, lang: l.htmlLang }, [
+            cb, el('span', { 'aria-hidden': 'true', text: l.drapeau }), el('span', { text: l.nom }),
+          ]));
+        });
+      }
+      function openSettings() {
+        renderSettings();
+        $('settings').hidden = false;
+        $('close-settings').focus();
+      }
+      function closeSettings() {
+        $('settings').hidden = true;
+        $('open-settings').focus();
+      }
+      $('open-settings').addEventListener('click', openSettings);
+      $('close-settings').addEventListener('click', closeSettings);
+      $('settings').addEventListener('click', (e) => { if (e.target === $('settings')) closeSettings(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('settings').hidden) closeSettings(); });
+
+      $('surprise').addEventListener('click', () => {
+        const g = Ile.pick(Ile.jeuxDisponibles(), 1)[0];
+        window.location.href = 'jeux/' + g.id + '.html';
+      });
+      $('reset').addEventListener('click', () => {
+        if (window.confirm(t('confirmerEffacer'))) {
+          Ile.resetStars();
+          renderGames();
+        }
+      });
+      document.querySelector('[data-ile-mute]').addEventListener('click', () => Ile.setMuted(!Ile.isMuted()));
+      document.addEventListener('ile:langue', () => { renderAll(); if (!$('settings').hidden) renderSettings(); });
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
