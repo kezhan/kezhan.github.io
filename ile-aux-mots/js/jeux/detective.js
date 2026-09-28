@@ -130,8 +130,9 @@ registerGame({id:"detective", em:"🕵️", name:"Détective", desc:"Qui a mang�
     const L = lang(), l = cs.line ? cs.line() : null, intro = cat(D.openers[L][cs.op], D.crime(L, cs.w, cs.eat));
     again.innerHTML = cs.kind === "read" ? "<b>🔊</b>" : `<b>🔊</b><span>${U().again}</span>`;
     const n = (cs.kind === "elim" || cs.kind === "read") && cs.stage === "elim" ? `<span class="dt-n">🔍 ${U().clue} ${cs.k + 1}/${cs.clues.length}</span>` : "";
-    if (reads()) bub.innerHTML = `${cs.stage === "intro" ? "" : `<small>${intro}</small>`}${n}${l ? `<b>${l.text}</b>` : ""}${cs.note ? `<small class="dt-note">${cs.note()}</small>` : ""}`;
-    else bub.innerHTML = `<span><span class="dt-ev">${cs.w.e}</span> 👂 ${cs.hint ? `<span class="dt-hi">${[clue().a, clue().b].filter(Boolean).map(icon).join("")}</span>` : ""}</span>`;
+    // always written, the little one included (Kezhan: a chance to read); she also gets the pictures
+    const pics = reads() ? "" : `<span><span class="dt-ev">${cs.w.e}</span> ${cs.hint ? `<span class="dt-hi">${[clue().a, clue().b].filter(Boolean).map(icon).join("")}</span>` : ""}</span>`;
+    bub.innerHTML = `${pics}${cs.stage === "intro" ? "" : `<small>${intro}</small>`}${n}${l ? `<b>${l.text}</b>` : ""}${cs.note ? `<small class="dt-note">${cs.note()}</small>` : ""}`;
   }
 
   /* ---------- the suspects ---------- */

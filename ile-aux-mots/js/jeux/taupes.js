@@ -193,7 +193,7 @@ registerGame({id:ID, em:"🔨", name:"Tape-taupes", desc:"Tape la taupe qui tien
     const t = target();
     sign.innerHTML = reading
       ? `<small>${tx(t.length === 2 ? C.two : C.read)}</small><b>${t.map(w => `<span class="tp-w${found.includes(w) ? " done" : ""}">${noun(w, "n")}</span>`).join(" ")}</b>`
-      : `<b>👂 ${tx(C.listen)}</b>`;
+      : `<small>👂 ${tx(C.listen)}</small><b>${promptText()}</b>`; // what the voice says is written too (Kezhan: a chance to read)
   }
   function drawTools(){
     tools.innerHTML = "";

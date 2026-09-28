@@ -10,6 +10,14 @@ GAMES.ecoute = function (theme) {
   const others = lvl >= 3 && theme !== "colors" ? Object.entries(THEMES).filter(([k]) => k !== theme && k !== "colors").flatMap(([k]) => wordsOf(k, lvl)) : [];
   const all = words.concat(others);
   const reading = lvl === 4;
+  // what the child reads, in the language being learnt (no French for the children)
+  const TXT = {
+    en:{read:"Read the word and tap the right picture", listen:"Listen carefully…", hear:"Listen", again:"Again"},
+    de:{read:"Lies das Wort und tipp auf das richtige Bild", listen:"Hör gut zu…", hear:"Hören", again:"Nochmal"},
+    lb:{read:"Lies d'Wuert an tipp op dat richtegt Bild", listen:"Lauschter gutt…", hear:"Lauschteren", again:"Nach eng Kéier"},
+    zh:{read:"读一读，点出对的图片", listen:"仔细听……", hear:"听一听", again:"再听一次"}
+  };
+  const tx = k => (TXT[langOf()] || TXT.en)[k];
   startSession("ecoute", theme, targets.length);
   let i = 0; const gen = GEN;
   const round = () => {
@@ -22,11 +30,11 @@ GAMES.ecoute = function (theme) {
     let tries = 0, locked = false;
     renderDots(res, targets.length, i);
     const body = $("gameBody"); body.innerHTML = "";
-    if (reading) body.append(el("p", "prompt", `<span style="font-size:1.6em">${T(t)}</span><small>Lis le mot et touche la bonne image</small>`));
-    else body.append(el("p", "prompt", "Écoute bien…<small>et touche la bonne image</small>"));
+    if (reading) body.append(el("p", "prompt", `<span style="font-size:1.6em">${T(t)}</span><small>${tx("read")}</small>`));
+    else body.append(el("p", "prompt", `👂 ${findPrompt(t, theme)}<small>${tx("listen")}</small>`)); // written too (Kezhan: a chance to read)
     const row = el("div", "row"); row.style.justifyContent = "center";
-    if (reading) { const b = el("button", "chip", "🔊 Écoute"); b.onclick = () => { G.hints++; sayT(T(t)); }; row.append(b); }
-    else row.append(speakBtn(() => findPrompt(t, theme), "Encore", langOf));
+    if (reading) { const b = el("button", "chip", "🔊 " + tx("hear")); b.onclick = () => { G.hints++; sayT(T(t)); }; row.append(b); }
+    else row.append(speakBtn(() => findPrompt(t, theme), tx("again"), langOf));
     if (lvl <= 3) row.append(bridgeBtn(t));
     body.append(row);
     const grid = el("div", "choices");

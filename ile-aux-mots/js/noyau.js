@@ -32,7 +32,7 @@ function saveLocal(){
    on claude.ai (artifact): its database · on the home PC: serveur.py writes retours/*.jsonl · otherwise: this browser, with an export button */
 const Store = {
   mode:"local", db:null, queues:{},
-  label(){ return {artifact:"Retours enregistrés en ligne sur claude.ai.", server:"Retours enregistrés sur le PC, dans le dossier retours.", local:"Retours gardés dans ce navigateur. Lancez serveur.py sur le PC pour que Claude les lise."}[this.mode]; },
+  label(){ return tx({artifact:"storeArtifact", server:"storeServer", local:"storeLocal"}[this.mode]); },
   put(kind, id, data){
     const key = kind + "/" + id;
     const run = async () => {
@@ -79,7 +79,7 @@ function record(kind, id, data){
   collect(kind, id, data);
   if (Store.mode === "local") { S.pending.push({kind, id, data}); saveLocal(); return Promise.resolve(); }
   return Store.put(kind, id, data).catch(e => {
-    if (e && e.code === "quota_exceeded") toast("Mémoire pleine : prévenez Claude");
+    if (e && e.code === "quota_exceeded") toast(tx("storageFull"));
     S.pending.push({kind, id, data}); saveLocal();
   });
 }
@@ -107,7 +107,7 @@ async function connect(){
     await flushPending();
     $("status").textContent = "";
     saveLocal(); renderHome();
-  } catch(e) { $("status").textContent = "Carnet de bord injoignable : les retours attendent dans ce navigateur."; }
+  } catch(e) { $("status").textContent = tx("unreachable"); }
 }
 
 /* ---------- voice ---------- */
@@ -136,9 +136,11 @@ function numberWords(n){
 // automated recette (address ending in #test): instant voice, no confetti, right answers marked
 const TEST = /(^#|&)test\b/.test(location.hash);
 function markOk(elm){ if (TEST && elm) elm.dataset.ok = "1"; return elm; }
-function say(text, lang="en", rate){
+// the voice follows the language being learnt unless a game asks for another one (help in 中文, English words)
+function say(text, lang, rate){
+  lang = lang || langOf();
   return new Promise(res => {
-    if (TEST) { S.lastSaid = text; return res(); }
+    if (TEST) { S.lastSaid = text; S.lastLang = lang; return res(); }
     if (lang === "lb") return playLb(text).then(res);
     if (!("speechSynthesis" in window)) return res();
     try {
@@ -184,25 +186,18 @@ $("quitBtn").onclick = goHome;
 function el(tag, cls, html){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
 
 function renderHome(){
-  showLangTag();
+  applyUI();
   const kids = $("kids"); kids.innerHTML = "";
   ["p7","p4"].forEach(k => {
     const c = kidCfg(k), st = S.prof[k].stars, got = Math.floor(st/5);
     const b = el("button","kid chunky");
     b.setAttribute("aria-pressed", String(S.kid === k));
     b.innerHTML = `<span class="ava">${c.ava}</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0">
-      <span class="nm"></span><span class="meta">${c.age} ans · ⭐ ${st} · prochain autocollant dans ${5 - st%5}</span>
+      <span class="nm"></span><span class="meta">${tx("years", c.age)} · ⭐ ${st} · ${tx("nextSticker", 5 - st%5)}</span>
       <span class="stickers">${STICKERS.slice(0, Math.min(got, STICKERS.length)).join("")}</span></span>`;
-    b.querySelector(".nm").textContent = S.names[k];
-    b.onclick = () => { S.kid = k; saveLocal(); sfx.tap(); renderHome(); say("Hello " + S.names[k] + "!"); };
+    b.querySelector(".nm").textContent = kidName(k);
+    b.onclick = () => { S.kid = k; saveLocal(); sfx.tap(); renderHome(); sayT(tx("hello", kidName(k))); };
     kids.appendChild(b);
-  });
-  const langs = $("langs"); langs.innerHTML = "";
-  Object.entries(LANGS).forEach(([code, L]) => {
-    const b = el("button", "chip lang", `${L.flag} ${L.label}`);
-    b.setAttribute("aria-pressed", String(langOf() === code));
-    b.onclick = () => { setLang(S.kid, code); sfx.tap(); renderHome(); say(L.label, code); };
-    langs.append(b);
   });
   const map = $("map"); map.innerHTML = "";
   // an island may be kept for one child (meta.ages, e.g. ["p7"] for reading the clock)
@@ -210,26 +205,27 @@ function renderHome(){
     const b = el("button","spot chunky");
     b.style.setProperty("--i", map.children.length);
     const sc = S.prof[S.kid].scores[a.id];
-    const niv = a.levels === false ? "" : `Niv. ${levelOf(a.id)} · `;
-    const score = sc && sc.plays ? `<span class="score">${niv}🏆 ${sc.best} · ${fmtTime(sc.secs)}</span>` : `<span class="score">${niv}Nouveau !</span>`;
+    const niv = a.levels === false ? "" : `${tx("lvl", levelOf(a.id))} · `;
+    const score = sc && sc.plays ? `<span class="score">${niv}🏆 ${sc.best} · ${fmtTime(sc.secs)}</span>` : `<span class="score">${niv}${tx("isNew")}</span>`;
     // games written for English only say so when another language is chosen
-    const badge = a.badge || (!a.multi && langOf() !== "en" ? "en anglais" : "");
-    b.innerHTML = `${badge ? `<span class="badge">${badge}</span>` : ""}<span class="em">${a.em}</span><h3>${a.name}</h3><p>${a.desc}</p>${score}`;
+    const badge = a.badge || (!a.multi && langOf() !== "en" ? tx("inEnglish") : "");
+    b.innerHTML = `${badge ? `<span class="badge">${badge}</span>` : ""}<span class="em">${a.em}</span><h3>${actTitle(a)}</h3><p>${actSub(a)}</p>${score}`;
     b.onclick = () => { sfx.tap(); openAct(a.id); };
     map.appendChild(b);
   });
-  $("homeHint").textContent = `${S.names[S.kid]}, choisis une île !`;
+  $("homeHint").textContent = tx("chooseIsland", kidName(S.kid));
 }
 
 function openAct(id){
   const a = ACTS.find(x => x.id === id);
   if (!a.themes) return launch(id, null);
-  $("themeTitle").textContent = a.em + " " + a.name;
+  openAct.cur = id;
+  $("themeTitle").textContent = a.em + " " + actTitle(a);
   const g = $("themeGrid"); g.innerHTML = "";
   Object.entries(THEMES).forEach(([key,t]) => {
     const b = el("button","spot chunky");
     const icon = key === "colors" ? "🎨" : t.icon;
-    b.innerHTML = `<span class="em">${icon}</span><h3>${t.label}</h3>`;
+    b.innerHTML = `<span class="em">${icon}</span><h3>${themeLabel(key)}</h3>`;
     b.onclick = () => { sfx.tap(); launch(id, key); };
     g.appendChild(b);
   });
@@ -289,7 +285,7 @@ function addStar(n=1){
   if (typeof fx !== "undefined") fx.star();
   if (Math.floor(p.stars/5) > Math.floor(before/5)) {
     const s = STICKERS[(Math.floor(p.stars/5) - 1) % STICKERS.length];
-    setTimeout(() => { toast("Nouvel autocollant ! " + s); confetti(24); if (typeof fx !== "undefined") fx.sticker(s); }, 500);
+    setTimeout(() => { toast(tx("newSticker", s)); confetti(24); if (typeof fx !== "undefined") fx.sticker(s); }, 500);
   }
 }
 function endSession(completed){
@@ -317,28 +313,28 @@ function finish(){
   sfx.win(); confetti();
   const ok = g.rounds.filter(r => r.ok).length;
   $("endEmoji").textContent = g.record ? "🏆" : g.stars >= g.total * 0.8 ? "🥇" : g.stars ? "🌟" : "🎉";
-  $("endTitle").textContent = g.record ? "New record!" : PRAISE[rnd(PRAISE.length)];
-  if (g.record) { confetti(30); toast("Nouveau record : ⭐ " + g.stars); }
-  if (g.levelUp) { $("endEmoji").textContent = "🚀"; $("endTitle").textContent = "Level " + g.levelUp + "!"; confetti(40); toast(`Niveau ${g.levelUp} débloqué !`); if (typeof fx !== "undefined") setTimeout(() => fx.rocket(), 400); }
-  else if (g.levelDown) toast(`On revient au niveau ${g.levelDown} pour s'entraîner`);
-  $("endSub").textContent = g.rounds.length ? `${ok} sur ${g.rounds.length} du premier coup · ⭐ ${g.stars}` : `⭐ ${g.stars}`;
+  $("endTitle").textContent = g.record ? tx("newRecord") : praiseT();
+  if (g.record) { confetti(30); toast(tx("recordToast", g.stars)); }
+  if (g.levelUp) { $("endEmoji").textContent = "🚀"; $("endTitle").textContent = tx("levelTitle", g.levelUp); confetti(40); toast(tx("levelUp", g.levelUp)); if (typeof fx !== "undefined") setTimeout(() => fx.rocket(), 400); }
+  else if (g.levelDown) toast(tx("levelDown", g.levelDown));
+  $("endSub").textContent = g.rounds.length ? tx("endSub", ok, g.rounds.length, g.stars) : `⭐ ${g.stars}`;
   document.querySelectorAll(".face").forEach(f => f.setAttribute("aria-pressed","false"));
   show("end");
   if (typeof fx !== "undefined") fx.trophy($("endEmoji"));
-  say($("endTitle").textContent).then(() => sayT({en:"Did you like it?", de:"Hat es dir gefallen?", lb:"Huet et der gefall?", zh:"你喜欢吗？"}[langOf()]));
+  sayT($("endTitle").textContent).then(() => sayT(tx("didYouLike")));
 }
 document.querySelectorAll(".face").forEach(f => f.onclick = () => {
   if (!G) return;
   document.querySelectorAll(".face").forEach(x => x.setAttribute("aria-pressed", String(x === f)));
   G.rating = +f.dataset.r; sfx.tap();
   record("sessions", G.id, sessionDoc(G));
-  say(G.rating === 3 ? "Yay! Thank you!" : "Thank you!");
+  sayT(tx(G.rating === 3 ? "thanksLove" : "thanks"));
 });
 $("againBtn").onclick = () => { if (lastLaunch) launch(...lastLaunch); };
 
 /* helpers shared by games */
-function speakBtn(getText, label="Écoute", lang="en"){
-  const b = el("button","speak chunky", `🔊 <span>${label}</span>`);
+function speakBtn(getText, label, lang){
+  const b = el("button","speak chunky", `🔊 <span>${label || tx("listen")}</span>`);
   b.onclick = () => { G.replays++; say(getText(), typeof lang === "function" ? lang() : lang); }; // lang may be langOf, read at the tap
   return b;
 }
@@ -355,26 +351,8 @@ const alive = g => g === GEN && !$("game").hidden;
 function launch(id, theme){
   GEN++; lastLaunch = [id, theme]; stopLoops();
   $("gameBody").innerHTML = ""; $("dots").innerHTML = "";
-  renderGameLangs(id);
   show("game");
   GAMES[id](theme);
-}
-// flags in the game bar: switch language mid-game; the current instruction is said again in the new one
-function renderGameLangs(id){
-  const box = $("gameLangs"); box.innerHTML = "";
-  const meta = ACTS.find(a => a.id === id);
-  if (!meta || !meta.multi) return;
-  Object.entries(LANGS).forEach(([code, L]) => {
-    const b = el("button", "chip lang", L.flag);
-    b.setAttribute("aria-label", L.label); b.setAttribute("aria-pressed", String(langOf() === code));
-    b.onclick = () => {
-      setLang(S.kid, code);
-      box.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-      const again = document.querySelector("#gameBody .speak");
-      if (again) again.click(); else say(L.label, code);
-    };
-    box.append(b);
-  });
 }
 
 const GAMES = {}; // each js/jeux/<jeu>.js adds its game

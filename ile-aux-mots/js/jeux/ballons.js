@@ -13,9 +13,18 @@ GAMES.ballons = function () {
   const rounds = [...Array(total)].map(() => lvl === 4 && en ? [target(), target()] : [target()]);
   const key = t => t.c.en + (t.s ? " " + t.s[1] : "");
   const said = t => t.s ? `the ${t.c.en} ${t.s[1]}` : T(t.c);
-  const order = r => r.length === 2 ? `Pop ${said(r[0])}, then ${said(r[1])}!` : (shapes ? `Pop ${said(r[0])}!` : phrase().pop(T(r[0].c)));
+  const order = r => r.length === 2 ? `Pop ${said(r[0])}, then ${said(r[1])}!` : (shapes ? `Pop ${said(r[0])}!` : tx("pop")(T(r[0].c)));
   const speed = [9000, 7000, 6000, 5000][lvl - 1] * (S.kid === "p4" ? 1.25 : 1);
   const every = [1300, 950, 800, 700][lvl - 1];
+  // what the child reads and hears, in the language being learnt (no French for the children);
+  // German and Luxembourgish "platzen" is intransitive: let the balloon burst. The order itself is written too (Kezhan: a chance to read), the small line says how to play
+  const TXT = {
+    en:{pop:c => `Pop the ${c} balloon!`, two:"Two balloons, in order!", one:"Pop the right balloon!", again:"Again"},
+    de:{pop:c => `Lass den Ballon platzen: ${c}!`, two:"Zwei Ballons, der Reihe nach!", one:"Lass den richtigen Ballon platzen!", again:"Nochmal"},
+    lb:{pop:c => `Looss de Ballon platzen: ${c}!`, two:"Zwee Ballonen, der Rei no!", one:"Looss de richtege Ballon platzen!", again:"Nach eng Kéier"},
+    zh:{pop:c => `把${c}的气球戳破！`, two:"两个气球，按顺序！", one:"戳破对的气球！", again:"再听一次"}
+  };
+  const tx = k => (TXT[langOf()] || TXT.en)[k];
   const res = []; let i = 0, step = 0, tries = 0, locked = false;
   startSession("ballons", "colors", total); const gen = GEN;
   const body = $("gameBody");
@@ -25,8 +34,8 @@ GAMES.ballons = function () {
   const now = () => rounds[i][step];
   const ask = () => {
     const r = rounds[i];
-    p.innerHTML = r.length === 2 ? `Deux ballons, dans l'ordre !<small>Écoute bien les deux</small>` : `Éclate le bon ballon !<small>Écoute bien</small>`;
-    row.innerHTML = ""; row.append(speakBtn(() => order(r), "Encore", langOf), bridgeBtn(r[0].c));
+    p.innerHTML = `🎈 ${order(r)}<small>${tx(r.length === 2 ? "two" : "one")}</small>`;
+    row.innerHTML = ""; row.append(speakBtn(() => order(r), tx("again"), langOf), bridgeBtn(r[0].c));
     renderDots(res, total, i); sayT(order(r)); tries = 0; locked = false; step = 0;
     if (TEST) document.body.dataset.target = key(now());
   };

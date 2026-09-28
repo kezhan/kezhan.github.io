@@ -25,19 +25,19 @@ registerGame({id:"emotions", em:"😀", name:"Feelings", desc:"How do you feel?"
     ["hungry", {en:"I didn't eat lunch today.", de:"Ich habe heute nicht zu Mittag gegessen.", lb:"Ech hunn haut net zu Mëtteg giess.", zh:"我今天没吃午饭。"}]
   ];
   const Q = {
-    en: {find: w => `Find ${w}!`, how: "How do I feel?"},
-    de: {find: w => `Zeig mir ${w}!`, how: "Wie fühle ich mich?"},
-    lb: {find: w => `Weis mer ${w}!`, how: "Wéi fillen ech mech?"},
-    zh: {find: w => `找到${w}！`, how: "我感觉怎么样？"}
+    en: {find: w => `Who is ${w}?`, how: "How do I feel?"},
+    de: {find: w => `Wer ist ${w}?`, how: "Wie fühle ich mich?"},
+    lb: {find: w => `Wien ass ${w}?`, how: "Wéi fillen ech mech?"},
+    zh: {find: w => `谁${w}？`, how: "我感觉怎么样？"}
   }[lang];
   const face = f => ({html: f.e, label: f[lang]});
   const rounds = pick(lvl <= 2 ? F.slice(0, lvl === 1 ? 4 : 8) : SIT, 8).map(x => {
     if (lvl <= 2) {
       const others = pick(F.slice(0, lvl === 1 ? 4 : 8).filter(f => f !== x), lvl === 1 ? 2 : 3);
-      return {lang, say: Q.find(x[lang]), show: "😀 😢 😠 😨", word: x.en, choices: [x, ...others].map(f => ({...face(f), ok: f === x}))};
+      return {lang, say: Q.find(x[lang]), show: Q.find(x[lang]), word: x.en, choices: [x, ...others].map(f => ({...face(f), ok: f === x}))};
     }
     const [feel, s] = x, right = by(feel), others = pick(F.filter(f => f !== right), 3);
-    if (lvl === 3) return {lang, say: `${s[lang]} ${Q.how}`, show: Q.how, word: feel, choices: [right, ...others].map(f => ({...face(f), ok: f === right}))};
+    if (lvl === 3) return {lang, say: `${s[lang]} ${Q.how}`, show: `${s[lang]}<small>${Q.how}</small>`, word: feel, choices: [right, ...others].map(f => ({...face(f), ok: f === right}))};
     return {lang, say: "", listen: `${s[lang]} ${Q.how}`, show: `<b>${s[lang]}</b><small>${Q.how}</small>`, word: feel,
       choices: [right, ...others].map(f => ({html: `<span style="font-family:var(--display)">${f[lang]}</span>`, small: true, ok: f === right}))};
   });

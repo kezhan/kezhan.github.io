@@ -16,9 +16,10 @@ registerGame({id:"calendrier", em:"📅", name:"Calendar", desc:"Days, months, s
   }[lang];
   const SEASONS = [["🌸", {en:"spring", de:"der Frühling", lb:"de Fréijoer", zh:"春天"}], ["☀️", {en:"summer", de:"der Sommer", lb:"de Summer", zh:"夏天"}],
     ["🍂", {en:"autumn", de:"der Herbst", lb:"den Hierscht", zh:"秋天"}], ["⛄", {en:"winter", de:"der Winter", lb:"de Wanter", zh:"冬天"}]];
+  // German "zeigen" takes the accusative: der Winter → den Winter
   const Q = {
     en: {find: s => `Find ${s}!`, after: d => `What comes after ${d}?`, before: d => `What comes before ${d}?`, today: "What day is it today?", tomorrow: "What day is it tomorrow?", monthAfter: m => `Which month comes after ${m}?`, feast: f => `In which month is ${f}?`},
-    de: {find: s => `Zeig mir ${s}!`, after: d => `Was kommt nach ${d}?`, before: d => `Was kommt vor ${d}?`, today: "Welcher Tag ist heute?", tomorrow: "Welcher Tag ist morgen?", monthAfter: m => `Welcher Monat kommt nach ${m}?`, feast: f => `In welchem Monat ist ${f}?`},
+    de: {find: s => `Zeig mir ${s.replace(/^der /, "den ")}!`, after: d => `Was kommt nach ${d}?`, before: d => `Was kommt vor ${d}?`, today: "Welcher Tag ist heute?", tomorrow: "Welcher Tag ist morgen?", monthAfter: m => `Welcher Monat kommt nach ${m}?`, feast: f => `In welchem Monat ist ${f}?`},
     lb: {find: s => `Weis mer ${s}!`, after: d => `Wat kënnt no ${d}?`, before: d => `Wat kënnt virun ${d}?`, today: "Wéi een Dag ass haut?", tomorrow: "Wéi een Dag ass muer?", monthAfter: m => `Wéi ee Mount kënnt no ${m}?`, feast: f => `A wéi engem Mount ass ${f}?`},
     zh: {find: s => `找到${s}！`, after: d => `${d}后面是哪一天？`, before: d => `${d}前面是哪一天？`, today: "今天是星期几？", tomorrow: "明天是星期几？", monthAfter: m => `${m}后面是几月？`, feast: f => `${f}在几月？`}
   }[lang];
@@ -30,7 +31,7 @@ registerGame({id:"calendrier", em:"📅", name:"Calendar", desc:"Days, months, s
   const rounds = [...Array(8)].map((_, k) => {
     if (lvl === 1) {
       const s = pick(SEASONS, 1)[0], others = pick(SEASONS.filter(x => x !== s), 2);
-      return {lang, say: Q.find(s[1][lang]), show: "🌸 ☀️ 🍂 ⛄", word: s[1].en, choices: [s, ...others].map(x => ({html: x[0], ok: x === s}))};
+      return {lang, say: Q.find(s[1][lang]), show: "📅 " + Q.find(s[1][lang]), word: s[1].en, choices: [s, ...others].map(x => ({html: x[0], ok: x === s}))};
     }
     if (lvl === 2) {
       const d = rnd(7), right = DAYS[(d + 1) % 7];

@@ -183,9 +183,8 @@ registerGame({id: K, em: "🧪", name: "Le labo des monstres", desc: "Écoute, f
     const L = langL(); said = L;
     again.innerHTML = reading ? "🔊" : `🔊 <span>${LABO.UI.again[L]}</span>`;
     bolt.innerHTML = `<b>⚡</b><span>${LABO.UI.alive[L]}</span>`;
-    // the little one cannot read: pictures and voice; Luxembourgish is always written (its voice says one word)
-    const see = L === "lb" || reading || kid === "p7" && list;
-    txt.innerHTML = see ? (list || lines()).map((l, j) => `<p class="${l.hd ? "hd" : ""}" data-j="${j}">${l.t}</p>`).join("") : `<span class="lab-ear">🧪 👂</span>`;
+    // always written, for both children and at every level (Kezhan: a chance to read), with the voice on top below level 4
+    txt.innerHTML = (list || lines()).map((l, j) => `<p class="${l.hd ? "hd" : ""}" data-j="${j}">${l.t}</p>`).join("");
   }
   async function talk(list){
     const my = ++talkId;

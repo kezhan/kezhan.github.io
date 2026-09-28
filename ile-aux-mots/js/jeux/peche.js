@@ -215,8 +215,8 @@ function picker(body, gen, go){
   const top = el("div", "pc-top"), row = el("div", "row");
   const spk = el("button", "speak chunky", "🔊 <span></span>");
   const texts = () => {
-    const pics = S.kid === "p4" && L() !== "lb";
-    bt.textContent = pics ? "🎣 ❓" : X().where; buoy.classList.toggle("pc-big", pics); spk.querySelector("span").textContent = X().again;
+    // always written, the little one included (Kezhan: a chance to read)
+    bt.textContent = "🎣 " + X().where; spk.querySelector("span").textContent = X().again;
   };
   spk.onclick = () => { texts(); say(X().where, L()); };
   row.append(spk);
@@ -257,11 +257,10 @@ registerGame({id: "peche", em: "🎣", name: "La Pêche aux mots", desc: "Attrap
     const P = makeScene(box, gen);
     let i = 0, cur = null, tries = 0, locked = false, fish = [], spk = null, hb = null;
     const helpLang = () => L() === "zh" ? "en" : "zh"; // the big one's help: Chinese, or English when he learns Chinese
-    // Luxembourgish has no voice: its sentence is always written; level 4 is read, never heard first
+    // the order is always written, for both children (Kezhan: a chance to read); level 4 is read, never heard first
     const texts = () => {
-      const l = L(), written = lvl === 4 || l === "lb";
-      bt.textContent = written ? order(cur, l) : "";
-      buoy.hidden = !written; // heard only: the voice button is enough
+      const l = L();
+      bt.textContent = order(cur, l);
       if (spk && voiced) spk.querySelector("span").textContent = X(l).again;
       if (hb) hb.textContent = helpLang() === "zh" ? "中文 ?" : "English ?";
     };

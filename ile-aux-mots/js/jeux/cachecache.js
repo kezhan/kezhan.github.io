@@ -48,7 +48,13 @@ registerGame({id:"cachecache", em:"🙈", name:"Hide & Seek", desc:"Where is the
   const name = a => lang === "en" ? `the ${a.en}` : a[lang];
   const sentence = (a, pl, prep) => lang === "zh" ? `${a.zh}${place(pl, prep)}。` : `${cap(name(a))} ${lang === "en" ? "is" : lang === "de" ? "ist" : "ass"} ${place(pl, prep)}.`;
   const where = a => ({en: `Where is ${name(a)}?`, de: `Wo ist ${a.de}?`, lb: `Wou ass ${a.lb}?`, zh: `${a.zh}在哪里？`})[lang];
-  const SURPRISES = [["🧦", "Oh, a sock!"], ["👻", "Boo!"], ["🍌", "A banana!"], ["🎈", "Pop!"], ["🧸", "Hello!"]];
+  // what hides in the empty places, said in the language being learnt
+  const SURPRISES = [
+    ["🧦", {en:"Oh, a sock!", de:"Oh, eine Socke!", lb:"Oh, eng Strëmp!", zh:"哦，一只袜子！"}], ["👻", {en:"Boo!", de:"Buh!", lb:"Buh!", zh:"哇！"}],
+    ["🍌", {en:"A banana!", de:"Eine Banane!", lb:"Eng Banann!", zh:"一根香蕉！"}], ["🎈", {en:"Pop!", de:"Plopp!", lb:"Plopp!", zh:"砰！"}],
+    ["🧸", {en:"Hello!", de:"Hallo!", lb:"Moien!", zh:"你好！"}]];
+  const FOUND = {en:"Peekaboo!", de:"Kuckuck!", lb:"Fonnt!", zh:"找到了！"};
+  const AGAIN = {en:"Again", de:"Nochmal", lb:"Nach eng Kéier", zh:"再听一次"};
   const nPlaces = [4, 6, 6, 6][lvl - 1], total = 6, res = [];
   startSession("cachecache", null, total); const gen = GEN;
   let i = 0;
@@ -64,10 +70,11 @@ registerGame({id:"cachecache", em:"🙈", name:"Hide & Seek", desc:"Where is the
     const asked = hidden[hidden.length - 1];
     const text = hidden.map(h => sentence(h.a, h.pl, h.prep)).join(" ") + " " + where(asked.a);
     const body = $("gameBody"); body.innerHTML = "";
-    const p = el("p", "prompt", lvl === 4 ? text : "🙈 👀"); body.append(p);
+    // always written (Kezhan: a chance to read); level 4 is read without the voice
+    const p = el("p", "prompt", lvl === 4 ? text : "🙈 " + text); body.append(p);
     const row = el("div", "row"); row.style.justifyContent = "center";
     if (lvl === 4) { const b = el("button", "chip", "🔊"); b.onclick = () => { G.hints++; say(text, lang); }; row.append(b); }
-    else row.append(speakBtn(() => text, "🔊", () => lang));
+    else row.append(speakBtn(() => text, AGAIN[lang], () => lang));
     body.append(row);
     const room = el("div", "piece"); body.append(room);
     let tries = 0, locked = false;
@@ -84,11 +91,12 @@ registerGame({id:"cachecache", em:"🙈", name:"Hide & Seek", desc:"Where is the
           locked = true; sfx.ok();
           const first = tries === 0; if (first) addStar();
           logRound(`${asked.a.en} ${asked.prep} ${pl.en}`, first, tries + 1, {lvl}); res.push(first ? 1 : 0); renderDots(res, total, -1);
-          await say(`${lang === "zh" ? "找到了！" : "Peekaboo!"} ${CRY[asked.a.en][LI[lang]]}`, lang === "lb" ? "de" : lang);
+          await say(`${FOUND[lang]} ${CRY[asked.a.en][LI[lang]]}`, lang === "lb" ? "de" : lang);
           i++; loops.push(setTimeout(round, 700));
         } else {
           tries++; sfx.ko();
-          say(inside ? CRY[inside.a.en][LI[lang]] : surprise[1], inside && lang !== "lb" ? lang : "en");
+          // Luxembourgish has no voice: the cries go through the German one, a surprise plays its lod.lu word when there is one
+          say(inside ? CRY[inside.a.en][LI[lang]] : surprise[1][lang], inside && lang === "lb" ? "de" : lang);
           loops.push(setTimeout(() => c.classList.remove("ouverte"), 1200));
           if (tries >= 2 && lvl === 1) cells[spots.indexOf(asked.pl)].classList.add("bob");
         }

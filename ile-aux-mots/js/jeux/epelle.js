@@ -194,7 +194,7 @@ registerGame({id: "epelle", em: "🐛", name: "Épelle", desc: "Écris le mot le
     let idx = 0, errs = 0, tries = 0;
     renderDots(res, total, i);
     body.innerHTML = "";
-    body.append(el("p", "prompt ep-prompt", small ? "👂 🐛 👆" : lv.pic ? tx.go : tx.dict));
+    body.append(el("p", "prompt ep-prompt", `🐛 ${lv.pic ? tx.go : tx.dict}`)); // written for both children (Kezhan: a chance to read)
     const row = el("div", "row"); row.style.justifyContent = "center";
     const again = el("button", "speak chunky", `🔊 <span>${tx.again}</span>`);
     again.onclick = () => { if (!busy && lang() !== L) return round(); G.replays++; ask(); };

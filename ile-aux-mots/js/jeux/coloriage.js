@@ -76,10 +76,10 @@ registerGame({id:"coloriage", em:"🖍️", name:"Colouring", desc:"Colour what 
     const parts = pick(partIds, lvl === 3 ? 2 : 1);
     todo = parts.map(part => ({part, col: pick(cols, 1)[0]}));
     const text = sentence(todo);
-    p.innerHTML = lvl === 4 ? `<b>${text}</b>` : "🖍️ 👂";
+    p.innerHTML = lvl === 4 ? `<b>${text}</b>` : `🖍️ ${text}`; // always written (Kezhan: a chance to read); level 4 without the voice
     row.innerHTML = "";
     if (lvl === 4) { const b = el("button", "chip", "🔊"); b.onclick = () => { G.hints++; say(text, lang); }; row.append(b); }
-    else row.append(speakBtn(() => text, "", () => lang));
+    else row.append(speakBtn(() => text, {en:"Again", de:"Nochmal", lb:"Nach eng Kéier", zh:"再听一次"}[lang], () => lang));
     tries = 0; marks();
     if (lvl !== 4) say(text, lang);
   };

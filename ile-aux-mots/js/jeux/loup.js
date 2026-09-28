@@ -74,7 +74,7 @@ registerGame({id:"loup", em:"🐺", name:"Mr Wolf", desc:"What's the time?", mul
   };
   const dinner = async () => { // the wolf turns round: two seconds to reach the burrow
     draw(true); sfx.ko(); speak(tx.dinner);
-    const b = el("button", "terrier chunky", tx.run); markOk(b); body.append(b);
+    const b = el("button", "terrier chunky", tx.run); markOk(b); body.append(el("p", "prompt", "🐺 " + tx.dinner), b);
     const safe = await new Promise(r => { b.onclick = () => r(true); loops.push(setTimeout(() => r(false), TEST ? 1500 : 2600)); });
     if (!alive(gen)) return;
     if (safe) { sfx.ok(); await speak(tx.safe); }

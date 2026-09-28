@@ -169,7 +169,7 @@ registerGame({id: "habille", em: "🧥", name: "Habille-moi !", desc: "Habille l
   const eyes = [...svg.querySelectorAll(".hb-eye")], pupils = [...svg.querySelectorAll(".hb-pupil")], cheeks = [...svg.querySelectorAll(".hb-cheek")];
   const armL = svg.querySelector(".hb-armL"), armR = svg.querySelector(".hb-armR"), snow = stage.querySelector(".hb-snow"), sun = stage.querySelector(".hb-sun"), popEl = stage.querySelector(".hb-pop");
   if (!fx.calm()) { snow.classList.add("go"); sun.classList.add("go"); }
-  const box = $("gameLangs");
+  const box = $("flagBar"); // the header flags: a tap repaints the clothes in the new language
   if (hbSync) box.removeEventListener("click", hbSync);
   hbSync = () => { if (alive(gen)) paint(); }; box.addEventListener("click", hbSync);
 
@@ -273,7 +273,8 @@ registerGame({id: "habille", em: "🧥", name: "Habille-moi !", desc: "Habille l
   function paint(){
     if (!cur) return;
     const L = hbLang();
-    bubble.innerHTML = lvl === 4 || L === "lb" ? (cur.lead ? `<small>${cur.lead[L]}</small>` : "") + `<b>${askText(L, cur.ts)}</b>` : `<span class="hb-ear">👂</span>`;
+    // always written, the little one included (Kezhan: a chance to read); level 4 is read without the voice
+    bubble.innerHTML = (cur.lead ? `<small>${cur.lead[L]}</small>` : "") + `<b>${askText(L, cur.ts)}</b>`;
   }
   rep.onclick = () => {
     if (!cur || !alive(gen)) return;

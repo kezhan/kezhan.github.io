@@ -45,7 +45,8 @@ registerGame({id:"suites", em:"🔁", name:"Patterns", desc:"What comes next?", 
   };
   const rounds = [...Array(8)].map(() => {
     const r = round(), ask = r.mid ? GAP[lang] : ASK[lang];
-    return {lang, say: r.spoken ? `${r.spoken}… ${ask}` : ask, show: show(r.items, r.gap), word: r.items.join(" ").replace(/<[^>]+>/g, ""),
+    return {lang, say: r.spoken ? `${r.spoken}… ${ask}` : ask, show: `🤔 ${ask}${show(r.items, r.gap)}`, // the question is written too (Kezhan: a chance to read)
+      word: r.items.join(" ").replace(/<[^>]+>/g, ""),
       choices: r.choices.map(c => ({html: c, ok: c === r.right}))};
   });
   runQuiz("suites", null, rounds);

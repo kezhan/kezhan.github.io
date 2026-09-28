@@ -30,7 +30,7 @@ registerGame({id:"pays", em:"🌍", name:"Flags", desc:"Countries of the world",
   const flagChoice = (right, n) => [right, ...pick(C.filter(c => c !== right), n - 1)].map(c => ({html: c.f, label: c[lang], ok: c === right}));
   const FIRST = [C[0], C[4], C[1], C[2]]; // the little one starts with Luxembourg, China, France, Germany
   const rounds = [...Array(8)].map((_, k) => {
-    if (lvl === 1) { const c = FIRST[k % 4]; return {lang, say: Q.flag(c[lang]), show: "🇱🇺 🇨🇳 🇫🇷 🇩🇪", word: c.en, choices: flagChoice(c, 3)}; }
+    if (lvl === 1) { const c = FIRST[k % 4]; return {lang, say: Q.flag(c[lang]), show: "🌍 " + Q.flag(c[lang]), word: c.en, choices: flagChoice(c, 3)}; }
     if (lvl === 2) { const c = pick(C, 1)[0]; return {lang, say: Q.flag(c[lang]), show: Q.flag(c[lang]), word: c.en, choices: flagChoice(c, 4)}; }
     if (lvl === 3) {
       const c = pick(C.filter(x => x.speak), 1)[0], l = LANGUES[c.speak][lang];

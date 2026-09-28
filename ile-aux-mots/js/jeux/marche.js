@@ -54,10 +54,10 @@ registerGame({id:"marche", em:"🧺", name:"Market", desc:"Sell fruit and count 
     const text = T2.order([...order].map(([it, n]) => qty(it, n)));
     const body = $("gameBody"); body.innerHTML = "";
     body.append(el("div", "client bob", pick(CUSTOMERS, 1)[0]));
-    // the little one hears the order first; the picture comes into the bubble after the voice
-    const bulle = el("div", "bulle-client chunky", lvl === 1 ? "💬" : text);
+    // the order is always written (Kezhan: a chance to read); at level 1 the pictures join it after the voice
+    const bulle = el("div", "bulle-client chunky", text);
     body.append(bulle);
-    const row = el("div", "row"); row.style.justifyContent = "center"; row.append(speakBtn(() => text, "", () => lang)); body.append(row);
+    const row = el("div", "row"); row.style.justifyContent = "center"; row.append(speakBtn(() => text, {en:"Again", de:"Nochmal", lb:"Nach eng Kéier", zh:"再听一次"}[lang], () => lang)); body.append(row);
     const basket = new Map(); let tries = 0, done = false;
     const panier = el("div", "panier"); const etal = el("div", "etal");
     const bell = el("button", "bigbtn chunky", "🔔"); bell.style.alignSelf = "center";
@@ -111,7 +111,7 @@ registerGame({id:"marche", em:"🧺", name:"Market", desc:"Sell fruit and count 
     body.append(etal, panier, tools, bell);
     drawBasket();
     await speak(text);
-    if (lvl === 1 && alive(gen)) bulle.innerHTML = [...order].map(([it, n]) => it.e.repeat(n)).join(" ");
+    if (lvl === 1 && alive(gen)) bulle.innerHTML = `${text}<br>${[...order].map(([it, n]) => it.e.repeat(n)).join(" ")}`;
   };
   round();
 });

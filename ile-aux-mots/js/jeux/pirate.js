@@ -222,7 +222,7 @@ registerGame({id:"pirate", em:"🏴‍☠️", name:"Le Robot pirate", desc:"Gui
     board.onpointerup = board.onpointercancel = () => { dragging = false; };
     cells.forEach((c, i) => c.onclick = () => { if (!dragged) toward(i, false); });
     return {key:r.key,
-      bubble:() => `<span class="pir-pic">🤖 ➜ ${tgt.e}</span>` + (little ? "" : `<b>${t(P.drive, tgt)}</b>`),
+      bubble:() => `<span class="pir-pic">🤖 ➜ ${tgt.e}</span><b>${t(P.drive, tgt)}</b>`, // always written, the little one included (Kezhan: a chance to read)
       say:() => speak(t(P.drive, tgt), [tgt.lb]),
       mark:() => { const w = path(isl, {x:bx, y:by}, r.tgt, p => at(isl, p.x, p.y) === "." && (!markAt(isl, p.x, p.y) || same(p, r.tgt))); mark(w && w.length ? cellOf(w[0]) : null); }};
   }
@@ -234,7 +234,7 @@ registerGame({id:"pirate", em:"🏴‍☠️", name:"Le Robot pirate", desc:"Gui
     const pad = {}, padEl = el("div", "pir-pad"), digBtn = el("button", "bigbtn chunky");
     const R2 = {key:r.key, hint:false,
       // the words stay hidden to be remembered, until a miss (in Luxembourgish, without a voice, always written)
-      bubble:() => R2.hint || lang === "lb" ? `<span class="pir-pic">${pic}</span>` + (little ? "" : `<b>${text()}</b>`) : `<span class="pir-pic">🦜 👂</span>` + (little ? "" : `<b>${t(P.listen)}</b>`),
+      bubble:() => R2.hint || lang === "lb" ? `<span class="pir-pic">${pic}</span><b>${text()}</b>` : `<span class="pir-pic">🦜 👂</span><b>${t(P.listen)}</b>`,
       say:() => lang === "lb" ? (SND.squawk(), Promise.resolve()) : say(text(), lang),
       mark:() => { const w = path(isl, {x:bx, y:by}, isl.goal, p => at(isl, p.x, p.y) === "."); mark(!w ? null : w.length ? pad[O.find(d => bx + D[d][0] === w[0].x && by + D[d][1] === w[0].y)] : digBtn); }};
     const miss = () => { tries++; R2.hint = true; relabel(); };
@@ -268,8 +268,8 @@ registerGame({id:"pirate", em:"🏴‍☠️", name:"Le Robot pirate", desc:"Gui
     const set = isl.turn ? ["fwd", "tl", "tr", "rep"] : ["up", "down", "left", "right", "rep"], pal = el("div", "pir-pal"), bar = el("div", "pir-prog"), run = el("div", "pir-row");
     const trash = el("button", "pir-trash chunky", "🗑️"), go = el("button", "bigbtn chunky"), pals = {};
     const R3 = {key:r.key, min:r.sol.length, prog:[],
-      bubble:() => (little || lang === "lb" ? `<span class="pir-pic">${picto(r)}</span>` : "") + (little ? "" : `<b>${clueText(r)}</b>`) + (isl.turn && !little ? `<small>${t(P.compass)}</small>` : ""),
-      goal:() => little ? `🃏 × ${r.sol.length}` : t(P.ui.challenge, r.sol.length),
+      bubble:() => (little || lang === "lb" ? `<span class="pir-pic">${picto(r)}</span>` : "") + `<b>${clueText(r)}</b>` + (isl.turn ? `<small>${t(P.compass)}</small>` : ""),
+      goal:() => `🃏 ${t(P.ui.challenge, r.sol.length)}`,
       say:() => speak(clueText(r), r.b ? [r.a.lb, r.b.lb] : [r.a.lb]),
       redraw:() => drawBar(),
       mark:() => { const p = R3.prog, bad = p.findIndex((c, j) => c !== r.sol[j]); mark(bad >= 0 ? bar.children[bad] : p.length < r.sol.length ? pals[r.sol[p.length]] : go); }};
@@ -330,7 +330,7 @@ registerGame({id:"pirate", em:"🏴‍☠️", name:"Le Robot pirate", desc:"Gui
     isl = r.isl; draw(); cellOf(isl.goal).append(el("span", "pir-chest", P.chest));
     const bar = el("div", "pir-prog"), chooser = el("div", "pir-row");
     const R4 = {key:r.key, phase:"predict", prog:r.bug,
-      bubble:() => little ? `<span class="pir-pic">${R4.phase === "predict" ? "🤖 ❓ 📍" : "🃏 ❓"}</span>` : `<b>${t(R4.phase === "predict" ? P.ui.where : P.ui.wrongCard)}</b>`,
+      bubble:() => (little ? `<span class="pir-pic">${R4.phase === "predict" ? "🤖 ❓ 📍" : "🃏 ❓"}</span>` : "") + `<b>${t(R4.phase === "predict" ? P.ui.where : P.ui.wrongCard)}</b>`,
       say:() => speak(t(R4.phase === "predict" ? P.ui.where : P.ui.wrongCard), []),
       redraw:() => drawBar(R4.prog),
       mark:() => mark(R4.phase === "predict" ? cellOf(r.end) : chooser.children.length ? [...chooser.children].find(b => b.dataset.c === r.sol[r.j]) : bar.children[r.j])};

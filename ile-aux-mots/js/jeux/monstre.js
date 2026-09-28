@@ -201,7 +201,7 @@ registerGame({id:"monstre", em:"😋", name:"Le Monstre affamé", desc:"Donne à
   // the monster's words in the language chosen now (the flags can change it mid-game)
   function paint(){
     const lang = L(), text = R.ask(lang);
-    bubble.innerHTML = ""; bubble.append(p4 && lang !== "lb" ? el("span", "mo-ear", "👂") : el("b", "", text));
+    bubble.innerHTML = ""; bubble.append(el("b", "", text)); // always written, the little one included (Kezhan: a chance to read)
     again.querySelector("span").textContent = reading ? "" : TX.again[lang];
     if (done) done.querySelector("span").textContent = TX.done[lang];
     R.items.forEach(it => { const b = R.btn.get(it); if (b.dataset.named) b.querySelector(".w").textContent = it.label(lang); });

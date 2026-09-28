@@ -7,20 +7,20 @@
 <link rel="apple-touch-icon" href="icones/icone-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
-<link rel="stylesheet" href="style.css?v=830400d">
+<link rel="stylesheet" href="style.css?v=a8ac18d">
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <h1>L'Île aux Mots</h1>
+      <h1 data-t="appTitle">L'Île aux Mots</h1>
       <span class="tag" id="langTag">English!</span>
     </div>
-    <button class="lock chunky" id="lockBtn" aria-label="Coin des parents : rester appuyé 2 secondes"><i class="fill" id="lockFill"></i><span>🔒 Parents · appui long</span></button>
+    <div class="flags" id="flagBar"></div>
+    <button class="lock chunky" id="lockBtn" data-t-aria="parentsAria" aria-label="Coin des parents : rester appuyé 2 secondes"><i class="fill" id="lockFill"></i><span data-t="parentsBtn">🔒 Parents · appui long</span></button>
   </header>
 
   <!-- HOME -->
   <main id="home" class="home">
     <div class="kids" id="kids"></div>
-    <div class="row langs" id="langs" aria-label="Langue à apprendre"></div>
     <p class="hint" id="homeHint">Choisis ton explorateur, puis une île !</p>
     <div class="map" id="map"></div>
     <p class="status" id="status"></p>
@@ -29,8 +29,8 @@
   <!-- THEME PICKER -->
   <section id="themes" class="paper stage" hidden>
     <div class="bar">
-      <button class="iconbtn chunky" data-home aria-label="Retour">🏠</button>
-      <h2 class="prompt" id="themeTitle">Quel monde ?</h2>
+      <button class="iconbtn chunky" data-home data-t-aria="back" aria-label="Retour">🏠</button>
+      <h2 class="prompt" id="themeTitle" data-t="whichWorld">Quel monde ?</h2>
       <span style="width:56px"></span>
     </div>
     <div class="map" id="themeGrid"></div>
@@ -39,9 +39,8 @@
   <!-- GAME -->
   <section id="game" class="paper stage" hidden>
     <div class="bar">
-      <button class="iconbtn chunky" id="quitBtn" aria-label="Quitter">🏠</button>
+      <button class="iconbtn chunky" id="quitBtn" data-t-aria="quit" aria-label="Quitter">🏠</button>
       <div class="dots" id="dots"></div>
-      <div class="row langs mini" id="gameLangs" aria-label="Changer de langue"></div>
       <div class="stars"><span>⭐</span><span id="gStars">0</span></div>
     </div>
     <div id="gameBody" style="display:flex;flex-direction:column;gap:14px"></div>
@@ -52,137 +51,141 @@
     <div class="won bob" id="endEmoji">🏆</div>
     <h2 class="prompt" id="endTitle">Bravo !</h2>
     <p class="muted" id="endSub"></p>
-    <h3 class="prompt" style="font-size:26px">Tu as aimé ?</h3>
+    <h3 class="prompt" style="font-size:26px" data-t="didYouLike">Tu as aimé ?</h3>
     <div class="faces" id="faces">
-      <button class="face chunky" data-r="3" aria-label="J'ai adoré">😍</button>
-      <button class="face chunky" data-r="2" aria-label="Bof">🙂</button>
-      <button class="face chunky" data-r="1" aria-label="Pas aimé">😴</button>
+      <button class="face chunky" data-r="3" data-t-aria="loved" aria-label="J'ai adoré">😍</button>
+      <button class="face chunky" data-r="2" data-t-aria="soso" aria-label="Bof">🙂</button>
+      <button class="face chunky" data-r="1" data-t-aria="notLiked" aria-label="Pas aimé">😴</button>
     </div>
     <div class="row" style="justify-content:center">
-      <button class="bigbtn chunky" id="againBtn">🔁 Encore</button>
-      <button class="bigbtn chunky" style="background:var(--sea-deep)" data-home>🏝️ Les îles</button>
+      <button class="bigbtn chunky" id="againBtn" data-t="again">🔁 Encore</button>
+      <button class="bigbtn chunky" style="background:var(--sea-deep)" data-home data-t="islands">🏝️ Les îles</button>
     </div>
   </section>
 
   <!-- PARENTS -->
   <section id="parent" class="paper parent" hidden>
     <div class="bar">
-      <h2>Coin des parents</h2>
-      <button class="iconbtn chunky" data-home aria-label="Retour">🏠</button>
+      <h2 data-t="parentsTitle">Coin des parents</h2>
+      <button class="iconbtn chunky" data-home data-t-aria="back" aria-label="Retour">🏠</button>
     </div>
-    <div class="note row" style="justify-content:space-between"><span id="storeInfo"></span><button class="chip" id="exportBtn" hidden>Exporter les retours</button></div>
+    <div class="note row" style="justify-content:space-between"><span id="storeInfo"></span><button class="chip" id="exportBtn" hidden data-t="exportBtn">Exporter les retours</button></div>
 
     <section>
-      <div class="switch"><button role="switch" id="presentSw" aria-checked="false" aria-label="Je joue avec eux"></button><span>Je joue avec eux en ce moment</span></div>
-      <p class="muted">Chaque partie est notée « avec parent » ou « seul ». Ça aide à voir ce qui marche sans vous.</p>
+      <div class="switch"><button role="switch" id="presentSw" aria-checked="false" data-t-aria="present" aria-label="Je joue avec eux"></button><span data-t="present">Je joue avec eux en ce moment</span></div>
+      <p class="muted" data-t="presentHelp">Chaque partie est notée « avec parent » ou « seul ». Ça aide à voir ce qui marche sans vous.</p>
     </section>
 
     <section>
-      <h3>Progression</h3>
+      <h3 data-t="progress">Progression</h3>
       <p class="muted" id="persistInfo"></p>
       <div class="row">
-        <button class="chip" id="installBtn" hidden>Installer l'application sur cet appareil</button>
-        <button class="chip" id="saveProg">Sauvegarder la progression</button>
-        <label class="chip" for="restoreProg" style="cursor:pointer">Restaurer une sauvegarde</label>
+        <button class="chip" id="installBtn" hidden data-t="install">Installer l'application sur cet appareil</button>
+        <button class="chip" id="saveProg" data-t="saveProg">Sauvegarder la progression</button>
+        <label class="chip" for="restoreProg" style="cursor:pointer" data-t="restoreProg">Restaurer une sauvegarde</label>
         <input type="file" id="restoreProg" accept="application/json,.json" hidden>
       </div>
     </section>
 
     <section>
-      <h3>Temps de jeu</h3>
-      <p class="muted">Où chaque enfant passe son temps, du jeu le plus joué au moins joué (sur cet appareil).</p>
+      <h3 data-t="playTime">Temps de jeu</h3>
+      <p class="muted" data-t="playTimeHelp">Où chaque enfant passe son temps, du jeu le plus joué au moins joué (sur cet appareil).</p>
       <div class="tablebox"><table id="timeTable"></table></div>
     </section>
 
     <section>
-      <h3>Niveaux</h3>
-      <p class="muted">Ils montent et descendent seuls selon les réussites. Vous pouvez les ajuster.</p>
+      <h3 data-t="levels">Niveaux</h3>
+      <p class="muted" data-t="levelsHelp">Ils montent et descendent seuls selon les réussites. Vous pouvez les ajuster.</p>
       <div class="tablebox"><table id="levelsTable"></table></div>
     </section>
 
     <section>
-      <h3>Les enfants</h3>
+      <h3 data-t="children">Les enfants</h3>
       <div class="row">
-        <label for="name7">7 ans</label><input type="text" id="name7" maxlength="20">
-        <label for="name4">4 ans</label><input type="text" id="name4" maxlength="20">
-        <button class="chip" id="saveNames">Enregistrer</button>
+        <label for="name7" data-t="years" data-t-arg="7">7 ans</label><input type="text" id="name7" maxlength="20">
+        <label for="name4" data-t="years" data-t-arg="4">4 ans</label><input type="text" id="name4" maxlength="20">
+        <button class="chip" id="saveNames" data-t="save">Enregistrer</button>
       </div>
     </section>
 
     <section>
-      <h3>Votre retour</h3>
-      <p class="muted">Ce qui a plu, ce qui a coincé, un bug, une idée. Claude lit ces notes pour améliorer le site.</p>
+      <h3 data-t="yourFeedback">Votre retour</h3>
+      <p class="muted" data-t="feedbackHelp">Ce qui a plu, ce qui a coincé, un bug, une idée. Claude lit ces notes pour améliorer le site.</p>
       <div class="row">
-        <label for="fbAct">Sur</label>
+        <label for="fbAct" data-t="about">Sur</label>
         <select id="fbAct"></select>
-        <label for="fbKid">Pour</label>
-        <select id="fbKid"><option value="both">les deux</option><option value="p7">7 ans</option><option value="p4">4 ans</option></select>
+        <label for="fbKid" data-t="forWhom">Pour</label>
+        <select id="fbKid"><option value="both" data-t="both">les deux</option><option value="p7" data-t="years" data-t-arg="7">7 ans</option><option value="p4" data-t="years" data-t-arg="4">4 ans</option></select>
       </div>
       <div class="row" id="fbTags"></div>
-      <textarea id="fbText" placeholder="Ex. : la petite a adoré les ballons mais ne comprend pas « purple »"></textarea>
-      <div class="row"><button class="bigbtn chunky" id="fbSend">Envoyer le retour</button></div>
+      <textarea id="fbText" data-t-ph="feedbackPh" placeholder="Ex. : la petite a adoré les ballons mais ne comprend pas « purple »"></textarea>
+      <div class="row"><button class="bigbtn chunky" id="fbSend" data-t="send">Envoyer le retour</button></div>
     </section>
 
     <section>
-      <h3>Ce qui marche</h3>
+      <h3 data-t="whatWorks">Ce qui marche</h3>
       <div class="tablebox"><table id="statsTable"></table></div>
-      <h3>Mots qui résistent</h3>
+      <h3 data-t="hardWords">Mots qui résistent</h3>
       <div class="row" id="hardWords"></div>
-      <h3>Derniers retours</h3>
+      <h3 data-t="lastNotes">Derniers retours</h3>
       <div id="notesList" style="display:flex;flex-direction:column;gap:8px"></div>
     </section>
   </section>
 </div>
 <div class="toast" id="toast" hidden></div>
-<script src="js/donnees.js?v=830400d"></script>
-<script src="js/noyau.js?v=830400d"></script>
-<script src="js/langues.js?v=830400d"></script>
-<script src="js/nombres.js?v=830400d"></script>
-<script src="js/anim.js?v=830400d"></script>
-<script src="js/jeux/imagier.js?v=830400d"></script>
-<script src="js/jeux/ecoute.js?v=830400d"></script>
-<script src="js/jeux/ballons.js?v=830400d"></script>
-<script src="js/jeux/compte.js?v=830400d"></script>
-<script src="js/jeux/memory.js?v=830400d"></script>
-<script src="js/jeux/simon.js?v=830400d"></script>
-<script src="js/jeux/repete.js?v=830400d"></script>
-<script src="js/jeux/_quiz.js?v=830400d"></script>
-<script src="js/jeux/formes.js?v=830400d"></script>
-<script src="js/jeux/contraires.js?v=830400d"></script>
-<script src="js/jeux/heure.js?v=830400d"></script>
-<script src="js/jeux/vraifaux.js?v=830400d"></script>
-<script src="js/jeux/alphabet.js?v=830400d"></script>
-<script src="js/jeux/manque.js?v=830400d"></script>
-<script src="js/contenus/labo.js?v=830400d"></script>
-<script src="js/jeux/labo.js?v=830400d"></script>
-<script src="js/contenus/detective.js?v=830400d"></script>
-<script src="js/jeux/detective.js?v=830400d"></script>
-<script src="js/contenus/pirate.js?v=830400d"></script>
-<script src="js/jeux/pirate.js?v=830400d"></script>
-<script src="js/contenus/devinettes.js?v=830400d"></script>
-<script src="js/jeux/devinettes.js?v=830400d"></script>
-<script src="js/contenus/epelle.js?v=830400d"></script>
-<script src="js/jeux/epelle.js?v=830400d"></script>
-<script src="js/contenus/phrases.js?v=830400d"></script>
-<script src="js/jeux/phrases.js?v=830400d"></script>
-<script src="js/contenus/monstre.js?v=830400d"></script>
-<script src="js/jeux/monstre.js?v=830400d"></script>
-<script src="js/contenus/taupes.js?v=830400d"></script>
-<script src="js/jeux/taupes.js?v=830400d"></script>
-<script src="js/contenus/peche.js?v=830400d"></script>
-<script src="js/jeux/peche.js?v=830400d"></script>
-<script src="js/contenus/cris.js?v=830400d"></script>
-<script src="js/jeux/cris.js?v=830400d"></script>
-<script src="js/contenus/habille.js?v=830400d"></script>
-<script src="js/jeux/habille.js?v=830400d"></script>
-<script src="js/jeux/loup.js?v=830400d"></script>
-<script src="js/jeux/cachecache.js?v=830400d"></script>
-<script src="js/jeux/machine.js?v=830400d"></script>
-<script src="js/jeux/suites.js?v=830400d"></script>
-<script src="js/jeux/calendrier.js?v=830400d"></script>
-<script src="js/jeux/emotions.js?v=830400d"></script>
-<script src="js/jeux/pays.js?v=830400d"></script>
-<script src="js/jeux/marche.js?v=830400d"></script>
-<script src="js/jeux/coloriage.js?v=830400d"></script>
-<script src="js/parents.js?v=830400d"></script>
-<script src="js/demarrage.js?v=830400d"></script>
+<script src="js/donnees.js?v=a8ac18d"></script>
+<script src="js/noyau.js?v=a8ac18d"></script>
+<script src="js/langues.js?v=a8ac18d"></script>
+<script src="js/textes.js?v=a8ac18d"></script>
+<script src="js/interface.js?v=a8ac18d"></script>
+<script src="js/nombres.js?v=a8ac18d"></script>
+<script src="js/anim.js?v=a8ac18d"></script>
+<script src="js/drapeaux.js?v=a8ac18d"></script>
+<script src="js/jeux/imagier.js?v=a8ac18d"></script>
+<script src="js/jeux/ecoute.js?v=a8ac18d"></script>
+<script src="js/jeux/ballons.js?v=a8ac18d"></script>
+<script src="js/jeux/compte.js?v=a8ac18d"></script>
+<script src="js/jeux/memory.js?v=a8ac18d"></script>
+<script src="js/jeux/simon.js?v=a8ac18d"></script>
+<script src="js/jeux/repete.js?v=a8ac18d"></script>
+<script src="js/jeux/_quiz.js?v=a8ac18d"></script>
+<script src="js/jeux/formes.js?v=a8ac18d"></script>
+<script src="js/jeux/contraires.js?v=a8ac18d"></script>
+<script src="js/jeux/heure.js?v=a8ac18d"></script>
+<script src="js/jeux/vraifaux.js?v=a8ac18d"></script>
+<script src="js/jeux/alphabet.js?v=a8ac18d"></script>
+<script src="js/jeux/manque.js?v=a8ac18d"></script>
+<script src="js/contenus/labo.js?v=a8ac18d"></script>
+<script src="js/jeux/labo.js?v=a8ac18d"></script>
+<script src="js/contenus/detective.js?v=a8ac18d"></script>
+<script src="js/jeux/detective.js?v=a8ac18d"></script>
+<script src="js/contenus/pirate.js?v=a8ac18d"></script>
+<script src="js/jeux/pirate.js?v=a8ac18d"></script>
+<script src="js/contenus/devinettes.js?v=a8ac18d"></script>
+<script src="js/jeux/devinettes.js?v=a8ac18d"></script>
+<script src="js/contenus/epelle.js?v=a8ac18d"></script>
+<script src="js/jeux/epelle.js?v=a8ac18d"></script>
+<script src="js/contenus/phrases.js?v=a8ac18d"></script>
+<script src="js/jeux/phrases.js?v=a8ac18d"></script>
+<script src="js/contenus/monstre.js?v=a8ac18d"></script>
+<script src="js/jeux/monstre.js?v=a8ac18d"></script>
+<script src="js/contenus/taupes.js?v=a8ac18d"></script>
+<script src="js/jeux/taupes.js?v=a8ac18d"></script>
+<script src="js/contenus/peche.js?v=a8ac18d"></script>
+<script src="js/jeux/peche.js?v=a8ac18d"></script>
+<script src="js/contenus/cris.js?v=a8ac18d"></script>
+<script src="js/jeux/cris.js?v=a8ac18d"></script>
+<script src="js/contenus/habille.js?v=a8ac18d"></script>
+<script src="js/jeux/habille.js?v=a8ac18d"></script>
+<script src="js/jeux/loup.js?v=a8ac18d"></script>
+<script src="js/jeux/cachecache.js?v=a8ac18d"></script>
+<script src="js/contenus/machine.js?v=a8ac18d"></script>
+<script src="js/jeux/machine.js?v=a8ac18d"></script>
+<script src="js/jeux/suites.js?v=a8ac18d"></script>
+<script src="js/jeux/calendrier.js?v=a8ac18d"></script>
+<script src="js/jeux/emotions.js?v=a8ac18d"></script>
+<script src="js/jeux/pays.js?v=a8ac18d"></script>
+<script src="js/jeux/marche.js?v=a8ac18d"></script>
+<script src="js/jeux/coloriage.js?v=a8ac18d"></script>
+<script src="js/parents.js?v=a8ac18d"></script>
+<script src="js/demarrage.js?v=a8ac18d"></script>

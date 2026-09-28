@@ -210,7 +210,7 @@ registerGame({id:ID, em:"🔮", name:"Devinettes", desc:"Écoute les indices, tr
     const grid = el("div", "dv-grid" + (opts.length > 4 ? " n6" : ""));
     scene.append(mon.box, box); wrap.append(scene, again, grid); body.append(wrap);
     // texts in the language chosen now (the flags in the bar may switch it mid-round)
-    const reads = () => !p4 || lng() === "lb"; // no voice in Luxembourgish: always written
+    const reads = () => true; // clues and question always written, the little one included (Kezhan: a chance to read)
     const paint = () => {
       bubbles.forEach((b, k) => {
         const ic = lvl <= 2 ? icon(icons[idx[k]]) : reads() ? "" : "👂";

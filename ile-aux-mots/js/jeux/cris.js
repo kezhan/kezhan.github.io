@@ -189,8 +189,9 @@ addStyle(`
 
     function headline(r, tx){
       const a = r.a, s = a && a.s[L];
-      if (r.t === "hear") return ["🔊 " + mark(cap(s), L, "!"), p4 ? "" : tx.who(s)];
-      if (r.t === "silly") return [p4 && lvl <= 2 ? "🤔 👍 👎" : cap(tx.silly(nm(a, L), r.claim)), ""];
+      // the question is always written, the little one included (Kezhan: a chance to read)
+      if (r.t === "hear") return ["🔊 " + mark(cap(s), L, "!"), tx.who(s)];
+      if (r.t === "silly") return ["🤔 " + cap(tx.silly(nm(a, L), r.claim)), "👍 👎"];
       if (r.t === "what") return [cap(tx.what(nm(a, L))), ""];
       if (r.t === "who") return [cap(tx.who(s)), ""];
       if (r.t === "verb") return [cap(tx.verbQ(a.v[L])), ""];

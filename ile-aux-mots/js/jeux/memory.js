@@ -23,8 +23,16 @@ GAMES.memory = function (theme) {
     {w, kind: twoWords ? "help" : "pic"},
     {w, kind: lvl === 1 ? "pic" : "word"}
   ]));
+  // what the child reads, in the language being learnt (no French for the children)
+  const TXT = {
+    en:{same:"Find the two that match!", help:"Match the word and its translation!", word:"Find the picture and its word!"},
+    de:{same:"Finde die zwei gleichen Karten!", help:"Finde das Wort und seine Übersetzung!", word:"Finde das Bild und sein Wort!"},
+    lb:{same:"Fann déi zwou gläich Kaarten!", help:"Fann d'Wuert a seng Iwwersetzung!", word:"Fann d'Bild a säi Wuert!"},
+    zh:{same:"找出两张一样的卡片！", help:"找出词语和它的翻译！", word:"找出图片和它的词语！"}
+  };
+  const tx = TXT[langOf()] || TXT.en;
   const body = $("gameBody");
-  body.append(el("p", "prompt", lvl === 1 ? "Trouve les deux pareils !" : twoWords ? "Relie le mot et sa traduction !" : "Trouve l'image et son mot !"));
+  body.append(el("p", "prompt", lvl === 1 ? tx.same : twoWords ? tx.help : tx.word));
   const grid = el("div", "grid-cards"); body.append(grid);
   let open = [], found = 0, busy = false, misses = 0;
   const res = [];
