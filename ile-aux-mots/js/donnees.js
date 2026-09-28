@@ -203,8 +203,8 @@ const ACTS = [
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const MIC_OK = !!SR && !window.claude && window.isSecureContext;
 const KID_DEFAULT = {
-  p7:{name:"Le grand", age:7, ava:"🦊", bridge:"zh", choices:4, showWord:true},
-  p4:{name:"La petite", age:4, ava:"🐣", bridge:"fr", choices:3, showWord:false}
+  p7:{name:"Le grand", ava:"🦊", bridge:"zh", choices:4, showWord:true},
+  p4:{name:"La petite", ava:"🐣", bridge:"fr", choices:3, showWord:false}
 };
 const FB_TAGS = ["Adoré","Trop facile","Trop dur","Ennui","Son / voix","Bug","Idée"];
 

@@ -14,7 +14,6 @@ const UI = {
   hello:        {en:n => `Hello ${n}!`, de:n => `Hallo ${n}!`, lb:n => `Moien ${n}!`, zh:n => `你好，${n}！`},
   bigKid:       {en:"The big one", de:"Der Große", lb:"De Groussen", zh:"哥哥"},
   littleKid:    {en:"The little one", de:"Die Kleine", lb:"D'Kleng", zh:"妹妹"},
-  years:        {en:n => `${n} years`, de:n => `${n} Jahre`, lb:n => `${n} Joer`, zh:n => `${n}岁`},
   nextSticker:  {en:n => `next sticker in ${n}`, de:n => `nächster Sticker in ${n}`, lb:n => `nächste Sticker an ${n}`, zh:n => `再得${n}颗星换贴纸`},
   lvl:          {en:n => `Lvl ${n}`, de:n => `Stufe ${n}`, lb:n => `Niveau ${n}`, zh:n => `第${n}级`},
   isNew:        {en:"New!", de:"Neu!", lb:"Nei!", zh:"新！"},

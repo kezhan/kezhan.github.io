@@ -194,7 +194,7 @@ function renderHome(){
     const b = el("button","kid chunky");
     b.setAttribute("aria-pressed", String(S.kid === k));
     b.innerHTML = `<span class="ava">${c.ava}</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0">
-      <span class="nm"></span><span class="meta">${tx("years", c.age)} · ⭐ ${st} · ${tx("nextSticker", 5 - st%5)}</span>
+      <span class="nm"></span><span class="meta">⭐ ${st} · ${tx("nextSticker", 5 - st%5)}</span>
       <span class="stickers">${STICKERS.slice(0, Math.min(got, STICKERS.length)).join("")}</span></span>`;
     b.querySelector(".nm").textContent = kidName(k);
     b.onclick = () => { S.kid = k; saveLocal(); sfx.tap(); renderHome(); sayT(tx("hello", kidName(k))); };
@@ -265,7 +265,7 @@ function adjustLevel(g){
 }
 function sessionDoc(g){
   return {
-    kid:g.kid, age:kidCfg(g.kid).age, act:g.act, theme:g.theme, lang:langOf(g.kid), lvl:g.lvl, lvlAfter:g.levelUp || g.levelDown || g.lvl, withParent:g.present,
+    kid:g.kid, act:g.act, theme:g.theme, lang:langOf(g.kid), lvl:g.lvl, lvlAfter:g.levelUp || g.levelDown || g.lvl, withParent:g.present,
     at:new Date(g.t0).toISOString(), t:g.t0, secs:Math.round(((g.tEnd||Date.now()) - g.t0)/1000),
     completed:g.done, planned:g.total, played:g.rounds.length,
     firstTry:g.rounds.filter(r => r.ok).length,
