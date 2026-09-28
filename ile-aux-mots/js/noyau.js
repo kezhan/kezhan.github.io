@@ -144,6 +144,7 @@ function say(text, lang, rate){
     if (lang === "lb") return playLb(text).then(res);
     if (!("speechSynthesis" in window)) return res();
     try {
+      const busy = speechSynthesis.speaking || speechSynthesis.pending;
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = LANG[lang]; const v = voiceFor(lang); if (v) u.voice = v;
@@ -151,7 +152,9 @@ function say(text, lang, rate){
       let done = false; const fin = () => { if (!done) { done = true; res(); } };
       // safety net for a lost onend, long enough for a slow sentence: a fixed 5 s cut long riddles in the middle
       u.onend = fin; u.onerror = fin; setTimeout(fin, 3000 + text.length * 110 / u.rate);
-      speechSynthesis.speak(u);
+      // Chrome drops an utterance spoken in the same instant as cancel(): wait a little when something was playing
+      const go = () => { try { speechSynthesis.resume(); speechSynthesis.speak(u); } catch(e) { fin(); } };
+      if (busy) setTimeout(go, 80); else go();
     } catch(e) { res(); }
   });
 }
@@ -162,6 +165,7 @@ let ac;
 function tone(freqs, dur=.12, type="triangle"){
   try {
     ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === "suspended") ac.resume(); // Android keeps a context born outside a tap silent until resumed
     const t = ac.currentTime;
     freqs.forEach((f,i) => {
       const o = ac.createOscillator(), g = ac.createGain();
