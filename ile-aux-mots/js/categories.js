@@ -5,6 +5,8 @@ const CATS = [
   {id:"mots",    em:"🗣️", t:{en:"Words", de:"Wörter", lb:"Wierder", zh:"词语"}},
   {id:"nombres", em:"🔢", t:{en:"Numbers & logic", de:"Zahlen & Logik", lb:"Zuelen & Logik", zh:"数字和逻辑"}},
   {id:"monde",   em:"🌍", t:{en:"The world", de:"Die Welt", lb:"D'Welt", zh:"世界"}},
+  {id:"sciences", em:"🔬", t:{en:"Science", de:"Forschen", lb:"Fuerschen", zh:"科学"}},
+  {id:"musique", em:"🎵", t:{en:"Music & dance", de:"Musik & Tanz", lb:"Musek & Danz", zh:"音乐和舞蹈"}},
   {id:"bouger",  em:"🎮", t:{en:"Move & play", de:"Bewegen & spielen", lb:"Bewegen & spillen", zh:"动一动，玩一玩"}},
   {id:"creer",   em:"🎨", t:{en:"Create", de:"Gestalten", lb:"Gestalten", zh:"创作"}}
 ];
