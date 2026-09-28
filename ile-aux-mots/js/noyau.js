@@ -184,6 +184,7 @@ $("quitBtn").onclick = goHome;
 function el(tag, cls, html){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
 
 function renderHome(){
+  showLangTag();
   const kids = $("kids"); kids.innerHTML = "";
   ["p7","p4"].forEach(k => {
     const c = kidCfg(k), st = S.prof[k].stars, got = Math.floor(st/5);

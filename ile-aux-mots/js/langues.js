@@ -19,7 +19,9 @@ function wordsOf(theme, lvl){
   const all = THEMES[theme].words, ws = all.filter(w => (w.lvl || 1) <= Math.min(3, lvl || 1));
   return ws.length >= 4 ? ws : all;
 }
-function setLang(kid, lang){ S.prof[kid].lang = lang; saveProfile(kid); }
+function setLang(kid, lang){ S.prof[kid].lang = lang; saveProfile(kid); showLangTag(); }
+// the badge next to the title names the language the selected child is learning
+function showLangTag(){ const t = $("langTag"); if (t) t.textContent = LANGS[langOf()].label + "!"; }
 function praiseT(){ const p = phrase().praise; return p[rnd(p.length)]; }
 // help language: the one the child knows, never the one being learnt (null = no help needed)
 function bridgeLang(kid){ kid = kid || S.kid; const b = kidCfg(kid).bridge; if (!LANGS[b]) return null; return b !== langOf(kid) ? b : "en"; }
