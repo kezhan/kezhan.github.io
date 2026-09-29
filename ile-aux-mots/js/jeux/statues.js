@@ -171,7 +171,7 @@ addStyle(`
 @media (prefers-reduced-motion:reduce){.st-stage *,.st-hold i{animation:none !important}}
 `);
 
-registerGame({id:ID, em:"💃", name:"Les statues musicales", desc:"Danse, puis fige-toi quand la musique s'arrête", multi:true, cat:"bouger",
+registerGame({id:ID, em:"💃", name:"Les statues musicales", desc:"Danse, puis fige-toi quand la musique s'arrête", multi:true, cat:"musique",
   title:{en:"Musical statues", de:"Stopptanz", lb:"Musikalesch Statuen", zh:"音乐木头人"},
   sub:{en:"Dance, then freeze!", de:"Tanz, dann Stopp!", lb:"Danz, an dann: Stopp!", zh:"跳舞，然后定住！"}}, function () {
   const lvl = levelOf(ID), total = 6, res = [];

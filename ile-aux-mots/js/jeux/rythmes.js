@@ -111,7 +111,7 @@ addStyle(`
 @keyframes ry-pulse{from{transform:translate(-50%,-50%) scale(.86)} to{transform:translate(-50%,-50%) scale(1.08)}}
 `);
 
-registerGame({id:ID, em:"🥁", name:"Les tambours à rythmes", multi:true, cat:"bouger",
+registerGame({id:ID, em:"🥁", name:"Les tambours à rythmes", multi:true, cat:"musique",
   title:{en:"Rhythm drums", de:"Rhythmus-Trommeln", lb:"Rhythmus-Trommen", zh:"节奏小鼓"},
   sub:{en:"Listen and play it back!", de:"Hör zu und spiel nach!", lb:"Lauschter a spill no!", zh:"听一听，敲一敲！"}}, function () {
   const lang = ["en","de","lb","zh"].includes(langOf()) ? langOf() : "en", X = RY[lang];
