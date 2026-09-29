@@ -6,6 +6,9 @@ function speedOf(kid){ const v = S.prof[kid || S.kid].speed; return SPEEDS[v] ? 
 function voiceRate(){ return SPEEDS[speedOf()].rate; }
 // lod.lu recordings play at natural speed at 🐇, slower in step below (the pitch is kept)
 function audioRate(){ return voiceRate() / SPEEDS[SPEEDS.length - 1].rate; }
+// Azure recordings (js/voix_lecture.js) are made a little slow: 🐇 plays them as they are, 🐢 at 0.875, 🐌 at 0.75,
+// and never under 0.7, where the stretched sound gets rough (a slower rate asked by a game stops there)
+function fileRate(rate){ return Math.min(1.25, Math.max(0.7, 1 + (rate - SPEEDS[SPEEDS.length - 1].rate) * 5 / 6)); }
 
 addStyle(`.speeds{display:flex; gap:4px}
   .speed{width:48px; height:44px; padding:0; font-size:24px; border:3px solid var(--ink); border-radius:10px; background:#fff;

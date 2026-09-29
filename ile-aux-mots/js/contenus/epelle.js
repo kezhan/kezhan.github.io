@@ -1,12 +1,12 @@
 /* L'Île aux Mots : contenus du jeu « Épelle ». Consignes et répliques de la chenille dans les quatre langues apprises
    (jamais de français pour l'enfant), mots en plus du lexique, pinyin, lettres et caractères qui se ressemblent.
-   Luxembourgeois vérifié sur lod.lu : schreif! (SCHREIWEN1), hëllef! (HELLEFEN1), lauschter! (LAUSCHTEREN1), d'Raup (RAUP1),
-   « wéi schreift een dat Wuert? » (exemple de SCHREIWEN1), hoppla, nee, lecker, wonnerbar, geschriwwen. */
+   Luxembourgeois vérifié sur lod.lu : buschtawéier! (BUSCHTAWEIEREN1), schreif! (SCHREIWEN1, aussi « to spell »), hëllef! (HELLEFEN1),
+   lauschter! (LAUSCHTEREN1), d'Raup (RAUP1), d'Wuert (WUERT2), o (O1), hoppla, nee, lecker, wonnerbar, geschriwwen. */
 const EPELLE = {
   txt: {
     en: {title: "Spell it!", sub: "Help the caterpillar spell the word", go: "Spell the word!", dict: "Listen and spell!", again: "Again", hihi: "Hee hee!"},
     de: {title: "Buchstabier mal!", sub: "Hilf der Raupe beim Schreiben", go: "Schreib das Wort!", dict: "Hör zu und schreib!", again: "Nochmal", hihi: "Hihi!", art: "Der, die oder das?"},
-    lb: {title: "Schreif d'Wuert!", sub: "Hëllef der Raup!", go: "Wéi schreift een dat Wuert?", dict: "Lauschter a schreif!", again: "Nach eng Kéier", hihi: "Hihi!"},
+    lb: {title: "Buschtawéier et!", sub: "Hëllef der Raup, d'Wuert ze schreiwen", go: "Schreif d'Wuert!", dict: "Lauschter a schreif!", again: "Nach eng Kéier", hihi: "Hihi!"},
     zh: {title: "拼一拼", sub: "帮毛毛虫拼出词语", go: "拼出这个词！", dict: "听一听，拼出来！", again: "再听一次", hihi: "嘻嘻！"}
   },
   // what the big one hears at the start of a word: f = the word as in the lexicon (with its article), b = without it
@@ -19,7 +19,7 @@ const EPELLE = {
   oops: {
     en: ["Yuck!", "Oops!", "Not that one!", "Bleh!", "Nope!"],
     de: ["Igitt!", "Hoppla!", "Nicht der!", "Bäh!", "Oh nein!"],
-    lb: ["Hoppla!", "Oh nee!", "Nee!"],
+    lb: ["Hoppla!", "O nee!", "Nee!"],
     zh: ["哎呀！", "不对哦！", "呸呸！", "再试试！"]
   },
   yum: {

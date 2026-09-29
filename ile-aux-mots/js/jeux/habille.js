@@ -102,8 +102,8 @@ function npDe(t, acc, colour){
   const a = t.c.de, end = H.deFixed.includes(a) ? "" : g === "pl" || (g === "m" && acc) ? "en" : "e";
   return `${art} ${a}${end} ${n}`;
 }
-// Eifel rule: a final n stays only before a vowel or d, t, z, h, n
-const eifel = (w, next) => /n$/.test(w) && !/^[aeiouäëéèdtzhn]/i.test(next) ? w.slice(0, -1) : w;
+// Eifel rule: a final n stays only before a vowel or d, t, z, h, n; "orangen" then becomes "orangë" (lod.lu: en orangë Pullover)
+const eifel = (w, next) => /n$/.test(w) && !/^[aeiouäëéèdtzhn]/i.test(next) ? (w === "orangen" ? "orangë" : w.slice(0, -1)) : w;
 function npLb(t, colour){
   if (!colour) return t.g.lb;
   const g = H.gear[t.g.en].lb, a = H.lbAdj[t.c.en][["m", "f", "n", "pl"].indexOf(g)], n = bare(t.g.lb);

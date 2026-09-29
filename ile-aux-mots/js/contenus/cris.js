@@ -3,9 +3,10 @@
    nz: its cartoon noise made with Web Audio, [wave, from Hz, to Hz, seconds, wobble Hz, wobble depth, volume, pause after (negative overlaps)].
    s: the sound in each language; v: the verb ("the dog barks"); zk: the name a Chinese child uses (小狗); mv: its dance.
    Luxembourgish sounds are checked, never guessed: the imperative of the lod.lu verb, as German does (miauen → miau,
-   muen → mu, mäen → mä, quaken → quak, grunzen → grunz, piipsen → piips, jiipsen → jiips, summen → summ, wiheren → wiher),
+   muen → mu, mäen → mä, quaken → quak, grunzen → grunz, piipsen → piips, jiipsen → jiips, summen → summ, wiheren → wiher, zischen → zisch),
    or lb.wikipedia.org (Wauwau, Kikeriki, Uhu). null: no checked sound, the animal stays out of the game in that language.
-   Luxembourgish verbs from lod.lu: billen, miauen, muen, grunzen, quaken, mäen, gackeren, kréinen, wiheren, piipsen, jiipsen, summen, brëllen. */
+   Luxembourgish verbs from lod.lu: billen, miauen, muen, grunzen, quaken, mäen, gackeren, kréinen, wiheren, piipsen, jiipsen, summen, brëllen, zischen.
+   Not on lod.lu nor lb.wikipedia: the hen's "gack gack" (lb.wikipedia only gives the verb gackeren). */
 const CRIS_DATA = {animals: [
   {k:"dog", nz:[["square",420,200,.12,0,0,.2,.09],["square",460,210,.14]], e:"🐶", lvl:1, lex:"dog", zk:"小狗", mv:"wag",
     s:{en:"woof woof", de:"wau wau", lb:"wau wau", zh:"汪汪"}, v:{en:"barks", de:"bellt", lb:"billt"}},
@@ -36,11 +37,11 @@ const CRIS_DATA = {animals: [
   {k:"lion", nz:[["sawtooth",140,70,1,22,18,.3,-1],["noise",300,300,.8,0,0,.12]], e:"🦁", lvl:2, lex:"lion", zk:"狮子", mv:"shake",
     s:{en:"roar", de:"grrr", lb:"grrr", zh:"嗷呜"}, v:{en:"roars", de:"brüllt", lb:"brëllt"}},
   {k:"owl", nz:[["sine",430,380,.3,0,0,.3,.12],["sine",430,360,.5,0,0,.3]], e:"🦉", lvl:2, lex:"owl", zk:"猫头鹰", mv:"spin",
-    s:{en:"hoo hoo", de:"schuhu", lb:"uhu", zh:"咕咕"}, v:{en:"hoots"}},
+    s:{en:"hoot hoot", de:"schuhu", lb:"uhu", zh:"咕咕"}, v:{en:"hoots"}},
   {k:"bee", nz:[["sawtooth",210,230,1.1,28,12,.12]], e:"🐝", lvl:2, n:{en:"bee", de:"die Biene", lb:"d'Bei", zh:"蜜蜂"}, zk:"小蜜蜂", mv:"fly",
     s:{en:"buzz", de:"summ summ", lb:"summ summ", zh:"嗡嗡"}, v:{en:"buzzes", de:"summt", lb:"summt"}},
   {k:"snake", nz:[["noise",5000,5000,1,0,0,.15]], e:"🐍", lvl:2, lex:"snake", zk:"小蛇", mv:"slither",
-    s:{en:"hiss", de:"zisch", lb:"sss", zh:"嘶嘶"}, v:{en:"hisses", de:"zischt"}},
+    s:{en:"hiss", de:"zisch", lb:"zisch", zh:"嘶嘶"}, v:{en:"hisses", de:"zischt", lb:"zischt"}},
   {k:"wolf", nz:[["sine",330,660,.6,0,0,.25],["sine",660,420,1,5,12,.25]], e:"🐺", lvl:2, n:{en:"wolf", de:"der Wolf", lb:"de Wollef", zh:"狼"}, zk:"大灰狼", mv:"puff",
     s:{en:"awoooo", de:"auuuu", lb:null, zh:"嗷呜"}, v:{en:"howls", de:"heult"}},
   {k:"bear", nz:[["sawtooth",95,70,.9,18,10,.3]], e:"🐻", lvl:2, lex:"bear", zk:"熊", mv:"stomp",
@@ -69,10 +70,11 @@ const CRIS_TXT = {
     thats: n => `Das ist ${n}!`, verbQ: v => `Wer ${v}?`, verbA: (n, v) => `${n} ${v}!`, langQ: (n, s) => `In welcher Sprache macht ${n} ${s}?`,
     yes: "Ja", no: "Nein", band: "Hör mal, die Tierband!", bandAsk: "Wer singt? Tippe sie der Reihe nach an!", bandDone: "Was für ein Konzert!", again: "Nochmal",
     praise: ["Super!", "Toll!", "Richtig!", "Prima!", "Sehr gut!"]},
-  // lod.lu: wien (who), soen → seet, lauschteren → lauschter!, sangen → séngt, Sprooch (f), Concert (m)
+  // lod.lu: wien (who), soen → seet, lauschteren → lauschter! (transitive: de Radio lauschteren), sangen → séngt, Sprooch (f), Concert (m),
+  // Band (f, the music band), tippen → tipp! (to touch), der Rei no (one after the other)
   lb: {who: s => `Wien seet ${s}?`, what: n => `Wat seet ${n}?`, says: (n, s) => `${n} seet ${s}!`, silly: (n, s) => `Seet ${n} ${s}?`,
     thats: n => `Dat ass ${n}!`, verbQ: v => `Wien ${v}?`, verbA: (n, v) => `${n} ${v}!`, langQ: (n, s) => `A wéi enger Sprooch seet ${n} ${s}?`,
-    yes: "Jo", no: "Neen", band: "Lauschter gutt!", bandAsk: "Wien séngt? Eent, zwee, dräi!", bandDone: "Wat e Concert!", again: "Nach eng Kéier",
+    yes: "Jo", no: "Neen", band: "Lauschter d'Band!", bandAsk: "Wien séngt? Tipp se der Rei no!", bandDone: "Wat e Concert!", again: "Nach eng Kéier",
     praise: ["Super!", "Bravo!", "Richteg!", "Flott!", "Ganz gutt!"]},
   zh: {who: s => `谁在${s}叫？`, what: n => `${n}怎么叫？`, says: (n, s) => `${n}${s}叫！`, silly: (n, s) => `${n}会${s}叫吗？`,
     thats: n => `这是${n}！`, verbQ: null, verbA: null, langQ: (n, s) => `哪种语言里，${n}这样叫：“${s}”？`,

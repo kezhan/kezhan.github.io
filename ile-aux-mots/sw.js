@@ -12,6 +12,8 @@ self.addEventListener("fetch", ev => {
   const ownFile = url.origin === location.origin;
   const font = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";
   if (!ownFile && !font) return;
+  // recordings (audio/): the player asks for a byte range, whose partial answer cannot be cached, so the whole file is fetched
+  if (ownFile && url.pathname.includes("/audio/")) return ev.respondWith(wholeFile(url.href));
   ev.respondWith((async () => {
     const cache = await caches.open(CACHE);
     try {
@@ -26,3 +28,16 @@ self.addEventListener("fetch", ev => {
     }
   })());
 });
+
+async function wholeFile(href){
+  const cache = await caches.open(CACHE);
+  try {
+    const res = await fetch(href);
+    if (res.status === 200) cache.put(href, res.clone());
+    return res;
+  } catch (e) {
+    const hit = await cache.match(href, {ignoreSearch: true});
+    if (hit) return hit;
+    throw e;
+  }
+}

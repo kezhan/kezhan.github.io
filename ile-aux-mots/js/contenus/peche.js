@@ -1,11 +1,11 @@
 /* L'Île aux Mots : contenu de « La Pêche aux mots » (jeu peche).
    Ce que l'enfant voit et entend, en anglais, allemand, luxembourgeois et chinois, jamais en français ;
    les mots de la mer absents du lexique ; les dessins SVG (capitaine, poisson, seau, bouée).
-   Allemand : le lexique donne le nominatif, pecheAcc fait l'accusatif (der → den).
+   Allemand : le lexique donne le nominatif, pecheAcc fait l'accusatif avec deAkk (der → den, noms faibles : den Löwen).
    Luxembourgeois vérifié sur lod.lu (fänk!, huel!, wëll, wat fir e, Zuel, mol, Äntwert, Stiwwel, Dous, Krabb, Hai,
    Crevette, Tëntefësch, Muschel, Anker, Schëff, Insel, Well, Plage, Aangel, kribbelen, gefaangen, Fang) ;
    le mot du lexique reste entier dans la phrase pour que son enregistrement lod.lu soit joué, règle de l'Eifel par pecheEifel. */
-const pecheAcc = w => w.replace(/^der /, "den "); // German accusative, masculine only
+const pecheAcc = w => deAkk(w); // German accusative: den Hund, and weak nouns den Löwen, den Affen (js/langues.js)
 // Luxembourgish Eifel rule: a final n stays only before a vowel or d, t, z, h, n
 const pecheEifel = (w, next) => /n$/.test(w) && !/^[aeiouäéëdtzhn]/i.test(next) ? w.slice(0, -1) : w;
 
@@ -46,14 +46,14 @@ const PECHE_TXT = {
     thats: w => `Dat ass ${w}.`, thatsColor: c => `Dee Fësch ass ${c}.`, thatsAction: v => `Dee Fësch wëll ${v}.`, thatsNumber: n => `Dat ass ${n}.`,
     praise: ["Gutt gefaangen!", "Wat e Fang!", "Super!", "Bravo!", "Flott!", "Jo!"],
     nope: ["Ech net!", "Blubb!", "Nee!", "Dat kribbelt!", "Hihi!", "Ech sinn et net!"],
-    captain: ["Ahoi!", "Ech hu Fësch gär!", "Hihi, dat kribbelt!", "Wou sinn d'Fësch?", "Blubb, blubb!", "Wat e schéinen Dag!"],
+    captain: ["Ahoi!", "Ech fëschen esou gär!", "Hihi, dat kribbelt!", "Wou sinn d'Fësch?", "Blubb, blubb!", "Wat e schéinen Dag!"],
     sneeze: "Hatschi!",
-    junk: {boot: "Oh nee! En ale Stiwwel!", can: "Oh nee! Eng al Dous!", umbrella: "Oh nee! En ale Prabbeli!"}
+    junk: {boot: "Eekleg! En ale Stiwwel!", can: "Eekleg! Eng al Dous!", umbrella: "Oh nee! En ale Prabbeli!"}
   },
   zh: {
     title: "钓单词", sub: "把对的鱼钓上来！", again: "再听一次",
     hello: "你好！我们去钓鱼吧！", where: "我们去哪儿钓鱼？",
-    catch: [w => `把${w}钓上来！`, w => `快，钓起${w}！`, w => `把${w}从水里钓出来！`, w => `我要${w}！`],
+    catch: [w => `把${w}钓上来！`, w => `快，把${w}钓上来！`, w => `把${w}从水里钓出来！`, w => `我要${w}！`],
     color: c => `哪条鱼是${c}的？`, action: v => `哪条鱼想${v}？`,
     number: n => `把数字${n}钓上来！`, times: (a, b) => `${a}乘${b}等于几？`, result: (a, b, c) => `${a}乘${b}等于${c}！`,
     thats: w => `这是${w}。`, thatsColor: c => `这条鱼是${c}的。`, thatsAction: v => `这条鱼想${v}。`, thatsNumber: n => `这是${n}。`,

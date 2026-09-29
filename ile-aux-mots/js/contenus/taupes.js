@@ -3,16 +3,17 @@
    [singular, plural] when the sentence changes with the number (Where is / Where are).
    Luxembourgish checked on lod.lu: fänken (fänk!), sichen (sich!), weisen (weis!), hunn (hues, huet), fannen (fonnt),
    erwëschen (erwëscht), lauschteren (lauschter!), liesen (lies!), klappen (klapp!), Maulef, Wuert (Wierder), lues, ze, dach,
-   neen, net, midd, juppi, hoppla, äddi, allez, chapeau, salut, moien, wonnerbar, genial, bravo, richteg, flott, falsch (falschen).
+   neen, net, midd, juppi, hoppla, äddi, allez, prett, chapeau, salut, moien, wonnerbar, genial, bravo, richteg (de richtege Maulef),
+   flott, falsch (falschen), klappen op (klopfen auf), fänken (gefaangen), Hoer (singulier et pluriel : Wou sinn d'Hoer?).
    Eifel rule kept: "Wou sinn d'…", "Ech hunn d'…" (n before d), "Ech si midd" (no n before m), "Falsche Maulef". */
 const TAUPES_C = {
   title: {en:"Mole Bop!", de:"Hau den Maulwurf!", lb:"Klapp de Maulef!", zh:"打地鼠"},
-  sub: {en:"Listen and bop the right mole!", de:"Hör zu und klopf auf den richtigen Maulwurf!", lb:"Lauschter a klapp!", zh:"听一听，打对的地鼠！"},
+  sub: {en:"Listen and bop the right mole!", de:"Hör zu und klopf auf den richtigen Maulwurf!", lb:"Lauschter a klapp op de richtege Maulef!", zh:"听一听，打对的地鼠！"},
   again: {en:"Again", de:"Nochmal", lb:"Nach eng Kéier", zh:"再听一次"},
   listen: {en:"Listen!", de:"Hör zu!", lb:"Lauschter!", zh:"听一听！"},
   read: {en:"Read and bop!", de:"Lies und klopf!", lb:"Lies a klapp!", zh:"读一读，打一打！"},
   two: {en:"Two words!", de:"Zwei Wörter!", lb:"Zwee Wierder!", zh:"两个词！"},
-  ready: {en:"Ready? Go!", de:"Achtung, fertig, los!", lb:"Allez!", zh:"准备好了吗？开始！"},
+  ready: {en:"Ready? Go!", de:"Achtung, fertig, los!", lb:"Prett? Allez!", zh:"准备好了吗？开始！"},
   bonus: {en:"Bonus!", de:"Bonus!", lb:"Bonus!", zh:"奖励！"},
 
   // what the voice asks, one sentence per round
@@ -74,13 +75,14 @@ const TAUPES_C = {
   // German weak masculine nouns: the accusative takes -n or -en (den Löwen, den Affen)
   acc: {"der Löwe":"den Löwen", "der Affe":"den Affen", "der Elefant":"den Elefanten", "der Bär":"den Bären",
         "der Astronaut":"den Astronauten", "der Polizist":"den Polizisten", "der Pilot":"den Piloten", "der Bauer":"den Bauern"},
-  // words that sound or look alike in each language: traps from level 3 (English keys of the lexicon)
+  // words that sound or look alike in each language: traps from level 3 (English keys of the lexicon).
+  // Never two words that sound the same: de Bier (bear) and d'Bier (pear) have one lod.lu recording each, heard alike.
   twins: {
     en:[["mouse","house"], ["bear","pear","hair","ear"], ["car","star"], ["cake","snake"], ["cat","hat","cap"], ["boat","coat"],
         ["cow","owl"], ["leg","egg"], ["frog","dog"], ["tree","key"], ["arm","farmer"], ["book","cook"], ["rice","ice cream"]],
     de:[["mouse","house"], ["mouth","moon","dog"], ["hat","dog"], ["leg","pig"], ["cow","shoes"], ["ball","whale"], ["ice cream","rice"],
         ["cat","cap"], ["fish","frog"], ["nose","trousers"], ["book","cake"]],
-    lb:[["mouse","house"], ["mouth","moon"], ["bear","pear"], ["cat","cap"], ["ball","whale"], ["dog","hand","chicken"], ["fish","frog"],
+    lb:[["mouse","house"], ["mouth","moon"], ["cat","cap"], ["ball","whale"], ["dog","hand","chicken"], ["fish","frog"],
         ["bread","boat"], ["egg","leg"], ["cake","book"], ["train","tongue"]],
     zh:[["glasses","eyes"], ["book","tree","hand"], ["cat","hat","owl"], ["chicken","egg"], ["duck","tooth","cap"], ["cow","milk"],
         ["mouse","tiger","teacher"], ["elephant","brain"], ["watermelon","tomato"], ["plane","pilot"], ["bus","car","train","bike"],

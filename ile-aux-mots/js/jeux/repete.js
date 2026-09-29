@@ -21,11 +21,13 @@ const REPETE_TXT = {
     denied:"话筒被拒绝了：请在浏览器里允许使用", offline:"语音识别需要联网"}
 };
 GAMES.repete = function (theme) {
-  const small = S.kid === "p4", total = small ? 5 : 8, res = [];
+  const small = S.kid === "p4", res = [];
   const lvl = levelOf("repete");
   const tx = k => (REPETE_TXT[langOf()] || REPETE_TXT.en)[k];
   const micOn = () => MIC_OK && !!REPETE_SR[langOf()]; // no recognition in Luxembourgish: the parent judges
-  let words = pick(wordsOf(theme, lvl).filter(w => lvl < 3 || !/s$/.test(w.en) || w.en === "bus"), total);
+  let words = pick(wordsOf(theme, lvl).filter(w => lvl < 3 || !/s$/.test(w.en) || w.en === "bus"), small ? 5 : 8);
+  // a small theme may hold fewer words at this level: as many rounds as words, never an empty one
+  const total = words.length;
   // English levels 3-4: word groups ("an orange cat"), then short sentences ("I can see a red bus.")
   if (langOf() === "en" && lvl >= 3 && theme !== "colors" && theme !== "actions") {
     const cols = wordsOf("colors", 2);

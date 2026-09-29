@@ -114,7 +114,8 @@ addStyle(`
 .hint .tp-glow{opacity:.8; animation:tp-glow .8s ease-in-out infinite alternate}
 .tp-bw{position:absolute; bottom:calc(var(--tp-w) * 1.28 + 26px); z-index:5; width:max-content; max-width:150px; pointer-events:none}
 .tp-bw.l{left:-2px} .tp-bw.r{right:-2px} .tp-bw.m{left:50%; transform:translateX(-50%)}
-.tp-bub{position:relative; padding:4px 9px; background:#fff; border:3px solid var(--ink); border-radius:14px; box-shadow:2px 3px 0 var(--ink); font-family:var(--display); font-weight:600; font-size:15px; line-height:1.15; text-align:center; opacity:0; transition:opacity .25s}
+.tp-bub{position:relative; padding:4px 9px; background:#fff; border:3px solid var(--ink); border-radius:14px; box-shadow:2px 3px 0 var(--ink); font-family:var(--display); font-weight:600; font-size:15px; line-height:1.15; text-align:center; opacity:0; transition:opacity .25s;
+  word-break:keep-all; overflow-wrap:anywhere} /* Chinese: a word is not cut in two (老鼠), the line breaks after ！ or ， */
 .tp-bub::after{content:""; position:absolute; bottom:-8px; left:calc(50% - 6px); width:10px; height:10px; background:#fff; border-right:3px solid var(--ink); border-bottom:3px solid var(--ink); transform:rotate(45deg)}
 .l .tp-bub::after{left:26%} .r .tp-bub::after{left:auto; right:26%}
 .tp-mallet{position:absolute; right:-6px; top:0; z-index:6; font-size:calc(var(--tp-w) * .52); line-height:1; transform-origin:85% 85%; opacity:0; pointer-events:none}
@@ -339,7 +340,9 @@ registerGame({id:ID, em:"🔨", name:"Tape-taupes", desc:"Tape la taupe qui tien
   }
   // a wrong picture; from level 3 often one that sounds or looks like the wanted word
   function other(upW = []){
-    const t = target(), ok = w => w && !t.includes(w) && !upW.includes(w);
+    // never a word heard exactly like the wanted one (lb: de Bier, the bear, and d'Bier, the pear)
+    const sound = w => (w[LG()] || "").toLowerCase().replace(/^(der|die|das|den|de|d')\s*/, "");
+    const t = target(), ok = w => w && !t.includes(w) && !upW.includes(w) && !t.some(x => sound(x) === sound(w));
     const twins = lvl >= 3 ? t.flatMap(w => (C.twins[LG()] || []).filter(g => g.includes(w.en)).flat()).map(k => byEn[k]).filter(ok) : [];
     if (twins.length && Math.random() < .5) return any(twins);
     const o = pool.filter(ok);

@@ -51,12 +51,13 @@ const anim = (e, k, o) => e && !calm() ? e.animate(k, typeof o === "number" ? {d
 function voice(l, tone){
   const L = langL();
   if (L === "lb") return l.k ? say(l.k, "lb") : Promise.resolve();
-  if (!tone || TEST || !("speechSynthesis" in window)) return say(l.t, L);
+  // a recorded Azure voice wins over the monster's tone: fluid on every device
+  if (!tone || TEST || !("speechSynthesis" in window) || (typeof voixFiles === "function" && voixFiles(l.t, L))) return say(l.t, L);
   return new Promise(res => {
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(l.t), v = voiceFor(L); let done = false; const fin = () => { if (!done) { done = true; res(); } };
-      u.lang = LANG[L]; if (v) u.voice = v; u.pitch = tone.p; u.rate = tone.r; u.onend = u.onerror = fin; loops.push(setTimeout(fin, 6000));
+      u.lang = LANG[L]; if (v) u.voice = v; u.pitch = tone.p; u.rate = tone.r * voiceRate() / 0.8; u.onend = u.onerror = fin; loops.push(setTimeout(fin, 3000 + l.t.length * 110 / u.rate));
       speechSynthesis.speak(u);
     } catch (e) { res(); }
   });
@@ -71,7 +72,7 @@ const ZK = "iam.labo", zooAll = () => { try { return JSON.parse(localStorage.get
 const zooAdd = (kid, z) => { try { const a = zooAll(); a[kid] = [...(a[kid] || []), z].slice(-12); localStorage.setItem(ZK, JSON.stringify(a)); } catch (e) {} };
 registerGame({id: K, em: "🧪", name: "Le labo des monstres", desc: "Écoute, fabrique le monstre, il prend vie", multi: true,
   title: {en: "Monster Lab", de: "Monsterlabor", lb: "Monsterlabo", zh: "怪兽实验室"},
-  sub: {en: "Build the monster you hear!", de: "Bau das Monster, das du hörst!", lb: "Bau d'Monster, dat s de héiers!", zh: "听一听，做出你的怪兽！"}}, function () {
+  sub: {en: "Build the monster you hear!", de: "Bau das Monster, das du hörst!", lb: "Bau d'Monster, dat s de héiers!", zh: "做出你听到的怪兽！"}}, function () {
   const lvl = levelOf(K), kid = S.kid, gen = GEN, reading = lvl === 4 && kid === "p7";
   const plan = lvl === 4 ? ["build", "which", "build", "which"] : ["build", "build", "build", "build"], total = plan.length, res = [];
   startSession(K, null, total);

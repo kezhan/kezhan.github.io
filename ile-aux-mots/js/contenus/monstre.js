@@ -7,18 +7,18 @@ const MONSTRE_TXT = {
   sub: {en:"Feed the monster!", de:"Füttere das Monster!", lb:"Fidder d'Monster!", zh:"喂小怪兽吃东西！"},
   again: {en:"Again", de:"Nochmal", lb:"Nach eng Kéier", zh:"再听一次"},
   done: {en:"Done!", de:"Fertig!", lb:"Fäerdeg!", zh:"好了！"},
-  // x: what the monster wants, already in the right case (German accusative, "den Käse")
+  // x: what the monster wants, already in the right case (German accusative, "den Käse"); the same order in every language
   ask: {
-    en: [x => `Give me ${x}!`, x => `I want ${x}!`, x => `I'm hungry! Give me ${x}!`, x => `Mmm, ${x}, please!`, x => `Feed me ${x}!`],
+    en: [x => `Give me ${x}!`, x => `I want ${x}!`, x => `I'm hungry! Give me ${x}!`, x => `Mmm, ${x}, please!`, x => `I'd like ${x}!`],
     de: [x => `Gib mir ${x}!`, x => `Ich will ${x}!`, x => `Ich habe Hunger! Gib mir ${x}!`, x => `Mmm, ${x}, bitte!`, x => `Ich möchte ${x}!`],
     lb: [x => `Gëff mer ${x}!`, x => `Ech wëll ${x}!`, x => `Ech hunn Honger! Gëff mer ${x}!`, x => `Mmm, ${x}, wannechgelift!`, x => `Ech hätt gär ${x}!`],
-    zh: [x => `给我${x}！`, x => `我要${x}！`, x => `我饿了！给我${x}！`, x => `嗯，我想要${x}！`, x => `请给我${x}！`]
+    zh: [x => `给我${x}！`, x => `我要${x}！`, x => `我饿了！给我${x}！`, x => `嗯，请给我${x}！`, x => `我想要${x}！`]
   },
   // level 3: two foods, in this order
   order: {
     en: [(a, b) => `First ${a}, then ${b}!`, (a, b) => `${a.charAt(0).toUpperCase() + a.slice(1)} first, and then ${b}!`],
     de: [(a, b) => `Zuerst ${a}, dann ${b}!`, (a, b) => `Erst ${a} und dann ${b}!`],
-    lb: [(a, b) => `Fir d'éischt ${a}, dann ${b}!`, (a, b) => `Ech wëll fir d'éischt ${a} an dann ${b}!`],
+    lb: [(a, b) => `Fir d'éischt ${a}, dann ${b}!`, (a, b) => `Fir d'éischt ${a} an dann ${b}!`],
     zh: [(a, b) => `先给我${a}，再给我${b}！`, (a, b) => `先给我${a}，然后给我${b}！`]
   },
   firstThe: {en: a => `No, no! First ${a}!`, de: a => `Nein, nein! Zuerst ${a}!`, lb: a => `Neen, neen! Fir d'éischt ${a}!`, zh: a => `不对不对！先给我${a}！`},
@@ -34,11 +34,11 @@ const MONSTRE_TXT = {
   hungry: {en:"I'm hungry!", de:"Ich habe Hunger!", lb:"Ech hunn Honger!", zh:"我饿了！"},
   tickle: {
     en: ["Hee hee! That tickles!", "Ha ha ha! Stop it!"], de: ["Hihi! Das kitzelt!", "Haha! Hör auf!"],
-    lb: ["Hihi! Dat kribbelt!", "Hahaha! Dat kribbelt esou!"], zh: ["嘻嘻，好痒！", "哈哈哈！别闹了！"]
+    lb: ["Hihi! Dat kribbelt!", "Hahaha! Hal op!"], zh: ["嘻嘻，好痒！", "哈哈哈！别闹了！"]
   },
   belly: {en:"My tummy!", de:"Mein Bauch!", lb:"Mäi Bauch!", zh:"我的肚子！"},
   tooMany: {en:"Oh no! Too many! My tummy hurts!", de:"Oh nein! Zu viele! Mein Bauch tut weh!", lb:"Oh neen! Ze vill! Mäi Bauch deet wéi!", zh:"哎呀！太多了！我肚子疼！"},
-  more: {en:"More, please!", de:"Mehr, bitte!", lb:"Nach méi, wannechgelift!", zh:"还要，还要！"},
+  more: {en:"More, please!", de:"Mehr, bitte!", lb:"Nach méi, wannechgelift!", zh:"请再给我一些！"},
   and: {en:"and", de:"und", lb:"an", zh:"和"} // Luxembourgish "an" follows the Eifel rule (a véier, an aacht)
 };
 
@@ -65,7 +65,7 @@ const MONSTRE_LB_ADJ = {
 const MONSTRE_COUNT = [
   {w:"apple", pl:"apples", de:"Äpfel", lb:"Äppel", g:"m", cl:"个"},
   {w:"banana", pl:"bananas", de:"Bananen", lb:"Banannen", g:"f", cl:"根"},
-  {w:"strawberry", pl:"strawberries", de:"Erdbeeren", lb:"Äerdbieren", g:"f", cl:"个"},
+  {w:"strawberry", pl:"strawberries", de:"Erdbeeren", lb:"Äerdbieren", g:"f", cl:"颗"},
   {w:"orange", pl:"oranges", de:"Orangen", lb:"Orangen", g:"f", cl:"个"},
   {w:"pear", pl:"pears", de:"Birnen", lb:"Bieren", g:"f", cl:"个"},
   {w:"cherries", pl:"cherries", de:"Kirschen", lb:"Kiischten", g:"f", cl:"颗"},

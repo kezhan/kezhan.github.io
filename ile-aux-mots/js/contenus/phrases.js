@@ -2,8 +2,12 @@
    Une phrase par ligne, avec l'ordre des mots propre à chaque langue (verbe en deuxième position en allemand et en luxembourgeois).
    Mots séparés par des espaces, en chinois aussi (découpe en mots) ; "_" colle un mot en plusieurs morceaux (next_to, ice_cream).
    e : image (emoji séparés par des espaces, le premier joue la phrase) ; o : placement de l'image (on, under, next, in, over, front, between) ;
-   a : animation ; l : 1 (trois mots), 2 (adjectifs), 3 (prépositions) ; x : le mot en trop du niveau 4, en|de|lb|zh.
-   Luxembourgeois vérifié sur lod.lu, règle de l'Eifel comprise (Ech iesse Brout, Kazen drénke Mëllech, e grousse Stär). */
+   a : animation ; l : 1 (trois mots), 2 (adjectifs), 3 (prépositions) ; x : le mot en trop du niveau 4, en|de|lb|zh ;
+   alt : les autres ordres justes avec les mêmes étiquettes, acceptés par le jeu (next_to et between sont symétriques).
+   Une seule phrase juste sinon : le premier mot porte la majuscule, et un sujet au pluriel sans article (Katzen trinken Milch)
+   laisserait l'objet passer devant (Milch trinken Katzen), d'où les sujets au singulier avec article.
+   Luxembourgeois vérifié sur lod.lu, règle de l'Eifel comprise (Ech iesse Brout, D'Kaz drénkt Mëllech, e grousse Stär ;
+   Kanéngchen est féminin ; leeën : leet ; rutschen : rutscht). */
 const phrasesData = {
   title: {en: "Word Parade", de: "Wörterparade", lb: "Wierderparad", zh: "词语排排队"},
   sub: {en: "Build the sentence!", de: "Bau den Satz!", lb: "Bau de Saz!", zh: "把句子排好！"},
@@ -13,7 +17,7 @@ const phrasesData = {
     de: {listen: "Hör zu und bau den Satz!", look: "Schau! Bau den Satz.", extra: "Ein Wort ist zu viel!", again: "Nochmal",
       praise: ["Toller Satz!", "Super!", "Richtig!", "Prima!", "Sehr gut!"], oops: "Hoppla!", sneeze: "Hatschi!", burp: "Rülps!"},
     lb: {listen: "Lauschter a bau de Saz!", look: "Kuck! Bau de Saz.", extra: "Ee Wuert ass ze vill!", again: "Nach eng Kéier",
-      praise: ["Super!", "Bravo!", "Richteg!", "Flott!", "Ganz gutt!"], oops: "Hoppla!", sneeze: "🤧", burp: "💨"},
+      praise: ["Super!", "Bravo!", "Richteg!", "Flott!", "Ganz gutt!"], oops: "Hoppla!", sneeze: "Hatschi!", burp: "Hoppla!"},
     zh: {listen: "听一听，把句子排好！", look: "看图，把句子排好！", extra: "有一个词是多余的！", again: "再听一次",
       praise: ["太棒了！", "真棒！", "对了！", "好厉害！", "句子排好了！"], oops: "哎呀！", sneeze: "阿嚏！", burp: "嗝！"}
   },
@@ -22,9 +26,9 @@ const phrasesData = {
     "🙋 I ich ech 我", "👫 we wir mir 我们", "👧 she sie si 她", "1️⃣ a ein einen eine e eng 一个 一辆 一颗 一只 一顶", "👈 my mein mäin 我的",
     "🏃 runs rennt leeft 跑", "😴 sleeps schläft schléift 睡觉 sleeping schlafen schlofen", "🦘 jumps springt spréngt 跳",
     "🎤 sings singt séngt 唱歌", "🏊 swim swims swimming schwimmt schwimmen schwëmmt schwammen 游泳 游", "📢 roars brüllt brëllt 吼叫 叫",
-    "🍽️ eat eats esse frisst fressen iesse frësst friesse 吃", "🥤 drink trinke trinken drénke 喝", "💃 dance tanzen danzen 跳舞",
+    "🍽️ eat eats esse frisst fressen iesse frësst friesse 吃", "🥤 drink drinks trinke trinkt trinken drénke drénkt 喝", "💃 dance tanzen danzen 跳舞",
     "🤝 together zusammen zesummen 一起", "🤸 play spielen spille 玩", "❤️ love liebe gär 喜欢", "🗯️ barks bellt billt 汪汪",
-    "💪 can kann ka können kënne 会", "✈️ fly fliegen fléien 飞", "⬇️ lay legen leeën under unter ënner 下 下面",
+    "💪 can kann ka können kënne 会", "✈️ fly fliegen fléien 飞", "⬇️ lays legt leet under unter ënner 下 下面",
     "⬆️ on auf op um 上 上面", "👀 see sehe gesinn 看见", "🤲 have has habe hat hunn huet 有",
     "😀 happy glücklich frou 开心", "😂 funny lustig witzeg 好玩", "😢 sad traurig traureg 难过",
     "🏔️ big groß großen großer grouss grousse 大", "🤏 small klein kleinen kleiner kleng klenge 小",
@@ -34,7 +38,7 @@ const phrasesData = {
     "🟢 green grünen gréng grénge 绿色的", "🟡 yellow gelb giel 黄色的", "⚫ black schwarz schwaarz 黑色的",
     "⚪ white weiß wäiss 白色的", "💗 pink rosa 粉色的", "2️⃣ two zwei zwou 两只", "3️⃣ three drei dräi 三只",
     "🐶 dogs 小狗", "🐻 Bier 小熊", "🐦 birds Vögel Vullen Vulle 小鸟", "🐟 小鱼", "🐮 cows Kühe Kéi", "🐵 monkeys Affen Afen Afe",
-    "🍌 bananas Bananen Banannen", "🐔 hens Hühner Hénger 母鸡", "🥚 eggs Eier Eeër 蛋", "🐰 rabbits Kanéngercher",
+    "🍌 bananas Bananen Banannen", "🐔 hen 母鸡", "🥚 eggs Eier Eeër 蛋", "🐰 rabbits Kanéngercher",
     "🥕 carrots Karotten Muerten", "🌱 grass Gras 草", "🐱 cats Katzen Kazen 小猫", "🐷 小猪", "🎈 balloon Ballon 气球",
     "🧢 cap Kappe Kap 帽子", "🚕 taxi 出租车", "🛏️ bed Bett 床", "🪑 chair Stuhl Stull 椅子", "📦 box Kiste Këscht 箱子",
     "🌊 water Wasser Waasser 水 sea Meer Mier 海 pond Teich Weier 池塘", "🍽️ plate Teller 盘子", "🛁 bath Badewanne Bidden 浴缸", "🧊 ice Äis 冰"
@@ -50,14 +54,14 @@ const phrasesData = {
     {l: 1, e: "🐶", a: "bark", en: "The dog barks.", de: "Der Hund bellt.", lb: "Den Hond billt.", zh: "小狗 汪汪 叫。"},
     {l: 1, e: "🧒 🍞", a: "eat", en: "I eat bread.", de: "Ich esse Brot.", lb: "Ech iesse Brout.", zh: "我 吃 面包。"},
     {l: 1, e: "🧒 🥛", a: "drink", en: "I drink milk.", de: "Ich trinke Milch.", lb: "Ech drénke Mëllech.", zh: "我 喝 牛奶。"},
-    {l: 1, e: "🐱 🥛", a: "drink", en: "Cats drink milk.", de: "Katzen trinken Milch.", lb: "Kazen drénke Mëllech.", zh: "小猫 喝 牛奶。"},
+    {l: 1, e: "🐱 🥛", a: "drink", en: "The cat drinks milk.", de: "Die Katze trinkt Milch.", lb: "D'Kaz drénkt Mëllech.", zh: "小猫 喝 牛奶。"},
     {l: 1, e: "🐮 🌱", a: "eat", en: "The cow eats grass.", de: "Die Kuh frisst Gras.", lb: "D'Kou frësst Gras.", zh: "奶牛 吃 草。"},
-    {l: 1, e: "🐵 🍌", a: "eat", en: "Monkeys eat bananas.", de: "Affen fressen Bananen.", lb: "Afe friesse Banannen.", zh: "猴子 吃 香蕉。"},
-    {l: 1, e: "🐰 🥕", a: "eat", en: "Rabbits eat carrots.", de: "Kaninchen fressen Karotten.", lb: "Kanéngercher friesse Muerten.", zh: "兔子 吃 胡萝卜。"},
-    {l: 1, e: "🐔", a: "lay", en: "Hens lay eggs.", de: "Hühner legen Eier.", lb: "Hénger leeën Eeër.", zh: "母鸡 下 蛋。"},
+    {l: 1, e: "🐵 🍌", a: "eat", en: "The monkey eats bananas.", de: "Der Affe frisst Bananen.", lb: "Den Af frësst Banannen.", zh: "猴子 吃 香蕉。"},
+    {l: 1, e: "🐰 🥕", a: "eat", en: "The rabbit eats carrots.", de: "Das Kaninchen frisst Karotten.", lb: "D'Kanéngchen frësst Muerten.", zh: "兔子 吃 胡萝卜。"},
+    {l: 1, e: "🐔", a: "lay", en: "The hen lays eggs.", de: "Das Huhn legt Eier.", lb: "D'Hong leet Eeër.", zh: "母鸡 下 蛋。"},
     {l: 1, e: "⚽ 👫", a: "roll", en: "We play ball.", de: "Wir spielen Ball.", lb: "Mir spille Ball.", zh: "我们 玩 球。"},
     {l: 1, e: "💃 🕺", a: "dance", en: "We dance together.", de: "Wir tanzen zusammen.", lb: "Mir danzen zesummen.", zh: "我们 一起 跳舞。"},
-    {l: 1, e: "🧒 🍦", a: "love", en: "I love ice_cream.", de: "Ich liebe Eis.", lb: "Ech iesse gär Glace.", zh: "我 喜欢 冰淇淋。"},
+    {l: 1, e: "🧒 🍦", a: "love", en: "I love ice_cream.", de: "Ich liebe Eis.", lb: "Ech iesse gär Glace.", zh: "我 喜欢 冰淇淋。", alt: {lb: "Ech iesse Glace gär."}},
     {l: 1, e: "🏊", a: "swim", en: "I can swim.", de: "Ich kann schwimmen.", lb: "Ech ka schwammen.", zh: "我 会 游泳。"},
     {l: 1, e: "🐦 🐦", a: "fly", en: "Birds can fly.", de: "Vögel können fliegen.", lb: "Vulle kënne fléien.", zh: "小鸟 会 飞。"},
     // level 2: four or five words, the adjective comes before the noun
@@ -74,7 +78,7 @@ const phrasesData = {
     {l: 2, e: "🐯", a: "run", en: "The tiger is fast.", de: "Der Tiger ist schnell.", lb: "Den Tiger ass séier.", zh: "老虎 跑得 很 快。", x: "slow|langsam|lues|慢"},
     {l: 2, e: "🐢", a: "crawl", en: "The turtle is slow.", de: "Die Schildkröte ist langsam.", lb: "D'Schildkröt ass lues.", zh: "乌龟 爬得 很 慢。", x: "fast|schnell|séier|快"},
     {l: 2, e: "🐷", a: "roll", en: "The pig is dirty.", de: "Das Schwein ist schmutzig.", lb: "D'Schwäin ass dreckeg.", zh: "小猪 很 脏。", x: "blue|blau|blo|蓝色的"},
-    {l: 2, e: "🐵", a: "laugh", en: "The monkey is funny.", de: "Der Affe ist lustig.", lb: "Den Af ass witzeg.", zh: "猴子 很 好玩。", x: "sad|traurig|traureg|难过"},
+    {l: 2, e: "🐵", a: "laugh", en: "The monkey is funny.", de: "Der Affe ist lustig.", lb: "Den Af ass witzeg.", zh: "猴子 很 好玩。", x: "yellow|gelb|giel|黄色的"},
     {l: 2, e: "🐶", a: "dance", en: "My dog is happy.", de: "Mein Hund ist glücklich.", lb: "Mäin Hond ass frou.", zh: "我的 小狗 很 开心。", x: "sad|traurig|traureg|难过"},
     {l: 2, e: "🐱 🐱", a: "hop", en: "I have two cats.", de: "Ich habe zwei Katzen.", lb: "Ech hunn zwou Kazen.", zh: "我 有 两只 猫。", x: "three|drei|dräi|三只"},
     {l: 2, e: "🚗", a: "drive", en: "I have a red car.", de: "Ich habe ein rotes Auto.", lb: "Ech hunn e rouden Auto.", zh: "我 有 一辆 红色的 汽车。", x: "blue|blaues|bloen|蓝色的"},
@@ -90,19 +94,23 @@ const phrasesData = {
     {l: 3, e: "🐟 🌊", o: "in", a: "swim", en: "The fish swims in the water.", de: "Der Fisch schwimmt im Wasser.", lb: "De Fësch schwëmmt am Waasser.", zh: "小鱼 在 水 里 游。", x: "cat|Katze|Kaz|小猫"},
     {l: 3, e: "🦆 🌊", o: "on", a: "swim", en: "The duck swims on the pond.", de: "Die Ente schwimmt auf dem Teich.", lb: "D'Int schwëmmt um Weier.", zh: "鸭子 在 池塘 里 游泳。", x: "frog|Frosch|Fräsch|青蛙"},
     {l: 3, e: "🐸 🌊", o: "in", a: "splash", en: "The frog jumps into the water.", de: "Der Frosch springt ins Wasser.", lb: "De Fräsch spréngt an d'Waasser.", zh: "青蛙 跳 进 水 里。", x: "bird|Vogel|Vull|小鸟"},
-    {l: 3, e: "⚽ 📦", o: "next", a: "roll", en: "The ball is next_to the box.", de: "Der Ball liegt neben der Kiste.", lb: "De Ball läit nieft der Këscht.", zh: "球 在 箱子 旁边。", x: "under|unter|ënner|下面"},
-    {l: 3, e: "🐮 🐴", o: "next", a: "dance", en: "The cow stands next_to the horse.", de: "Die Kuh steht neben dem Pferd.", lb: "D'Kou steet nieft dem Päerd.", zh: "奶牛 站 在 马 旁边。", x: "pig|Schwein|Schwäin|猪"},
+    {l: 3, e: "⚽ 📦", o: "next", a: "roll", en: "The ball is next_to the box.", de: "Der Ball liegt neben der Kiste.", lb: "De Ball läit nieft der Këscht.", zh: "球 在 箱子 旁边。", x: "under|unter|ënner|下面",
+      alt: {en: "The box is next_to the ball.", zh: "箱子 在 球 旁边。"}},
+    {l: 3, e: "🐮 🐴", o: "next", a: "dance", en: "The cow stands next_to the horse.", de: "Die Kuh steht neben dem Pferd.", lb: "D'Kou steet nieft dem Päerd.", zh: "奶牛 站 在 马 旁边。", x: "pig|Schwein|Schwäin|猪",
+      alt: {en: "The horse stands next_to the cow.", zh: "马 站 在 奶牛 旁边。"}},
     {l: 3, e: "🐵 🐘", o: "on", a: "hop", en: "The monkey sits on the elephant.", de: "Der Affe sitzt auf dem Elefanten.", lb: "Den Af sëtzt um Elefant.", zh: "猴子 坐 在 大象 身上。", x: "lion|Löwen|Léiw|狮子"},
     {l: 3, e: "🍎 🎒", o: "in", a: "hop", en: "The apple is in my backpack.", de: "Der Apfel ist in meinem Rucksack.", lb: "Den Apel ass a mengem Rucksak.", zh: "苹果 在 我的 书包 里。", x: "banana|Banane|Banann|香蕉"},
     {l: 3, e: "☀️ 🏠", o: "over", a: "shine", en: "The sun is over the house.", de: "Die Sonne ist über dem Haus.", lb: "D'Sonn ass iwwer dem Haus.", zh: "太阳 在 房子 上面。", x: "moon|Mond|Mound|月亮"},
     {l: 3, e: "🚗 🏠", o: "front", a: "drive", en: "The car is in_front_of the house.", de: "Das Auto steht vor dem Haus.", lb: "Den Auto steet virum Haus.", zh: "汽车 停 在 房子 前面。", x: "bus|Bus|Bus|公交车"},
     {l: 3, e: "🐰 ☂️", o: "under", a: "rain", en: "The rabbit is under the umbrella.", de: "Das Kaninchen ist unter dem Regenschirm.", lb: "D'Kanéngchen ass ënner dem Prabbeli.", zh: "兔子 在 雨伞 下面。", x: "on|auf|op|上面"},
-    {l: 3, e: "🐧 🧊", o: "on", a: "slide", en: "The penguin slides on the ice.", de: "Der Pinguin rutscht auf dem Eis.", lb: "De Pinguin ass um Äis.", zh: "企鹅 在 冰 上 滑。", x: "swims|schwimmt|schwëmmt|游"},
+    {l: 3, e: "🐧 🧊", o: "on", a: "slide", en: "The penguin slides on the ice.", de: "Der Pinguin rutscht auf dem Eis.", lb: "De Pinguin rutscht um Äis.", zh: "企鹅 在 冰 上 滑。", x: "swims|schwimmt|schwëmmt|游"},
     {l: 3, e: "🏊 🌊", o: "in", a: "swim", en: "We are swimming in the sea.", de: "Wir schwimmen im Meer.", lb: "Mir schwammen am Mier.", zh: "我们 在 海 里 游泳。", x: "sleeping|schlafen|schlofen|睡觉"},
     {l: 3, e: "🍰 🍽️", o: "on", a: "grow", en: "The cake is on the plate.", de: "Der Kuchen ist auf dem Teller.", lb: "De Kuch ass um Teller.", zh: "蛋糕 在 盘子 上。", x: "bread|Brot|Brout|面包"},
     {l: 3, e: "🦋 🌸", o: "on", a: "fly", en: "The butterfly sits on the flower.", de: "Der Schmetterling sitzt auf der Blume.", lb: "De Päiperlek sëtzt op der Blumm.", zh: "蝴蝶 停 在 花 上。", x: "bird|Vogel|Vull|小鸟"},
     {l: 3, e: "🐔 🚗", o: "on", a: "hop", en: "The chicken sits on the car.", de: "Das Huhn sitzt auf dem Auto.", lb: "D'Hong sëtzt um Auto.", zh: "母鸡 坐 在 汽车 上。", x: "under|unter|ënner|下"},
     {l: 3, e: "🐙 🛁", o: "in", a: "wiggle", en: "The octopus is in the bath.", de: "Der Oktopus ist in der Badewanne.", lb: "Den Oktopus ass an der Bidden.", zh: "章鱼 在 浴缸 里。", x: "fish|Fisch|Fësch|鱼"},
-    {l: 3, e: "⚽ 🐶 🐱", o: "between", a: "roll", en: "The ball is between the dog and the cat.", de: "Der Ball liegt zwischen dem Hund und der Katze.", lb: "De Ball läit tëscht dem Hond an der Kaz.", zh: "球 在 小狗 和 小猫 中间。", x: "horse|Pferd|Päerd|马"}
+    {l: 3, e: "⚽ 🐶 🐱", o: "between", a: "roll", en: "The ball is between the dog and the cat.", de: "Der Ball liegt zwischen dem Hund und der Katze.", lb: "De Ball läit tëscht dem Hond an der Kaz.", zh: "球 在 小狗 和 小猫 中间。", x: "horse|Pferd|Päerd|马",
+      alt: {en: "The ball is between the cat and the dog.", de: "Der Ball liegt zwischen der Katze und dem Hund.",
+        lb: "De Ball läit tëscht der Kaz an dem Hond.", zh: "球 在 小猫 和 小狗 中间。"}}
   ]
 };

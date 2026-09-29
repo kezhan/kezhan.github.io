@@ -270,7 +270,7 @@ registerGame({id:ID, em:"🔮", name:"Devinettes", desc:"Écoute les indices, tr
         mon.pfff(); if (!calm) puff(c, "💫");
         if (!calm) em.animate([{transform: "none"}, {transform: "rotate(-25deg) scale(.8)"}, {transform: "rotate(20deg) scale(.85)"}, {transform: "rotate(-10deg)"}, {transform: "none"}], {duration: 600});
         if (tries >= 2 && p4) cards[opts.indexOf(a)].classList.add("bob"); // never let the little one stall
-        await say(ui("no", word(w)), lng());
+        await say(ui((DEVINETTES_PL[lng()] || []).includes(w.en) ? "nos" : "no", word(w)), lng()); // "those are the grapes"
         if (my === token && lvl <= 2 && !locked && alive(gen)) readAll(); // the little ones hear the clues again
       }
     };

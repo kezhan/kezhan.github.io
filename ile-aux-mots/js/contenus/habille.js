@@ -1,9 +1,10 @@
 /* L'Île aux Mots : contenus du jeu « habille » (Habille-moi !), en anglais, allemand, luxembourgeois et chinois.
-   Luxembourgish checked on lod.lu: adjective declension (rout: rouden m, rout f/n/pl), noun genders, Eifel rule,
-   verbs (ech wëll, ech brauch, gëff mer, ech hätt gär), situation words (schneit, reent, Bësch, Schnéimännchen m...). */
+   Luxembourgish checked on lod.lu: adjective declension (rout: rouden m, rout f/n/pl), noun genders, Eifel rule
+   (orangen before a consonant is written orangë: en orangë Pullover), verbs (ech wëll, ech brauch, gëff mer, ech hätt gär,
+   undoen: do mech un), situation words (schneit, reent, Bësch, Schnéimännchen m, Kiermes f, Schi...). */
 const HABILLE_TXT = {
-  title: {en: "Dress me up!", de: "Zieh mich an!", lb: "Meng Kleeder", zh: "帮我穿衣服"},
-  sub: {en: "Brr! I'm cold!", de: "Brr! Mir ist kalt!", lb: "Brr! Et ass mer kal!", zh: "好冷！快帮帮我！"},
+  title: {en: "Dress me up!", de: "Zieh mich an!", lb: "Do mech un!", zh: "帮我穿衣服！"},
+  sub: {en: "Brr! I'm cold!", de: "Brr! Mir ist kalt!", lb: "Brr! Et ass mer kal!", zh: "嘶，我好冷！"},
   // per garment (English word of the lexicon): place on the body, German and Luxembourgish gender,
   // Chinese measure word and verb (戴 for what sits on the head or hands, 穿 for what you get into, 系 for a tie)
   gear: {
@@ -32,10 +33,11 @@ const HABILLE_TXT = {
   deFixed: ["orange", "rosa", "lila"],
   // the critter asks; {x} is the accusative noun phrase ("den roten Hut", "de rouden Hutt", "那顶红色的帽子")
   ask: {
-    en: ["I want {x}!", "Can I have {x}, please?", "Give me {x}, please!", "I need {x}!"],
-    de: ["Ich möchte {x}!", "Gib mir bitte {x}!", "Ich brauche {x}!", "Bring mir bitte {x}!"],
-    lb: ["Ech wëll {x}!", "Gëff mer {x}!", "Ech brauch {x}!", "Ech hätt gär {x}!"],
-    zh: ["我要{x}！", "请给我{x}！", "我想要{x}！", "我需要{x}！"]
+    // the same order in every language: the flags repaint the bubble in the middle of a round
+    en: ["I want {x}!", "Give me {x}, please!", "I need {x}!", "I'd like {x}, please!"],
+    de: ["Ich will {x}!", "Gib mir bitte {x}!", "Ich brauche {x}!", "Ich hätte gern {x}!"],
+    lb: ["Ech wëll {x}!", "Gëff mer {x}, wannechgelift!", "Ech brauch {x}!", "Ech hätt gär {x}!"],
+    zh: ["我要{x}！", "请给我{x}！", "我需要{x}！", "我想要{x}！"]
   },
   and: {en: " and ", de: " und ", lb: " an ", zh: "和"},
   list: {en: ", ", de: ", ", lb: ", ", zh: "、"},
@@ -55,7 +57,7 @@ const HABILLE_TXT = {
     en: ["Brr! I'm cold!", "Brr! So cold!", "My nose is cold!", "I'm freezing!"],
     de: ["Brr! Mir ist kalt!", "Brr! So kalt!", "Meine Nase ist kalt!", "Ich friere!"],
     lb: ["Brr! Et ass mer kal!", "Brr! Sou kal!", "Meng Nues ass kal!", "Ech fréieren!"],
-    zh: ["好冷！", "好冷好冷！", "我的鼻子好冷！", "我快冻僵了！"]
+    zh: ["嘶，我好冷！", "好冷好冷！", "我的鼻子好冷！", "我快冻僵了！"]
   },
   tickle: {
     en: ["Hee hee! That tickles!", "Hee hee hee!", "Stop it! Hee hee!"],
@@ -72,7 +74,7 @@ const HABILLE_TXT = {
   show: {
     en: ["Ta-da! Look at me!", "Ta-da! I'm not cold any more!"],
     de: ["Tadaa! Schau mich an!", "Tadaa! Jetzt friere ich nicht mehr!"],
-    lb: ["Tadaa! Kuck, wéi schick ech sinn!", "Tadaa! Elo ass mer net méi kal!"],
+    lb: ["Tadaa! Kuck mech!", "Tadaa! Elo ass mer net méi kal!"],
     zh: ["当当！看看我！", "当当！我一点儿也不冷了！"]
   },
   pop: {
@@ -85,10 +87,10 @@ const HABILLE_TXT = {
     ["Oh no, it's raining!", "Oh nein, es regnet!", "Oh nee, et reent!", "哎呀，下雨了！", "boots coat hat cap trousers socks"],
     ["Hooray, the sun is shining!", "Juhu, die Sonne scheint!", "Hurra, d'Sonn schéngt!", "太好了，出太阳了！", "T-shirt cap glasses dress shoes hat"],
     ["We're going to a party!", "Wir gehen auf eine Party!", "Mir ginn op eng Party!", "我们去参加派对！", "tie dress shoes hat glasses socks T-shirt trousers"],
-    ["Time for school!", "Zeit für die Schule!", "Mir ginn an d'Schoul!", "该上学了！", "T-shirt trousers shoes socks coat cap dress"],
+    ["Time for school!", "Zeit für die Schule!", "Zäit fir d'Schoul!", "该上学了！", "T-shirt trousers shoes socks coat cap dress"],
     ["Whoosh! It's so windy!", "Huiii! Es ist so windig!", "Huiii! Wat e Wand!", "呼呼，风好大！", "scarf coat cap trousers gloves boots"],
     ["It's Grandma's birthday!", "Oma hat Geburtstag!", "D'Boma huet Gebuertsdag!", "今天是奶奶的生日！", "tie dress shoes hat glasses socks trousers T-shirt"],
-    ["Let's go for a walk in the forest!", "Wir gehen im Wald spazieren!", "Mir ginn an de Bësch spadséieren!", "我们去森林里散步吧！", "boots trousers coat cap socks scarf hat"],
+    ["Let's go for a walk in the forest!", "Wir gehen im Wald spazieren!", "Mir ginn am Bësch spadséieren!", "我们去森林里散步吧！", "boots trousers coat cap socks scarf hat"],
     ["Let's play football!", "Wir spielen Fußball!", "Mir spille Fussball!", "我们去踢足球吧！", "T-shirt shoes socks cap trousers"],
     ["Let's go to the park!", "Wir gehen in den Park!", "Mir ginn an de Park!", "我们去公园玩吧！", "T-shirt trousers shoes cap coat dress glasses socks"],
     ["Let's go to the zoo!", "Wir gehen in den Zoo!", "Mir ginn an den Zoo!", "我们去动物园吧！", "cap T-shirt shoes glasses trousers dress hat"],

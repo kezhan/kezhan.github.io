@@ -19,7 +19,7 @@ const talk = (text, lbw, max = 3000) => Promise.race([speak(text, lbw), wait(max
 addStyle(`
 .pir{display:flex; flex-direction:column; gap:12px} .pir-top{display:flex; align-items:center; gap:14px; position:relative}
 .pir-parrot{font-size:50px; width:68px; height:68px; flex:none; display:grid; place-items:center; animation:pir-bob 2.2s ease-in-out infinite}
-.pir-bubble{flex:1; min-width:0; min-height:68px; position:relative; background:#fff; border:3px solid var(--ink); border-radius:18px; padding:8px 12px; text-align:center; font-family:var(--display); font-weight:600; font-size:20px; line-height:1.25; display:flex; flex-direction:column; justify-content:center; gap:4px}
+.pir-bubble{flex:1; min-width:0; min-height:68px; position:relative; background:#fff; border:3px solid var(--ink); border-radius:18px; padding:8px 12px; text-align:center; font-family:var(--display); font-weight:600; font-size:20px; line-height:1.25; display:flex; flex-direction:column; justify-content:center; gap:4px; word-break:keep-all; overflow-wrap:anywhere} /* Chinese: 两格 stays whole, the line breaks after ！ */
 .pir-bubble::before{content:""; position:absolute; left:-15px; top:50%; margin-top:-9px; border:9px solid transparent; border-right:12px solid var(--ink); border-left:0}
 .pir-bubble b{font-weight:600} .pir-bubble small{font-size:15px; color:var(--ink-soft)} .pir-pic{font-size:30px; line-height:1.15}
 .pir-psay{position:absolute; left:36px; top:-16px; z-index:5; max-width:220px; background:var(--sun); border:2px solid var(--ink); border-radius:14px; padding:4px 10px; font-family:var(--display); font-weight:600; font-size:16px; opacity:0; pointer-events:none}
@@ -230,7 +230,8 @@ registerGame({id:"pirate", em:"🏴‍☠️", name:"Le Robot pirate", desc:"Gui
   /* ---------- level 2: the parrot dictates, arrows then dig; footprints show the way ---------- */
   function listen(){
     const r = P.isle.listen(k < 3 ? 2 : 3); isl = r.isl; draw();
-    const text = () => r.plan.map(([d, n]) => t(P.step, d, n)).join(" ") + " " + t(P.dig), pic = r.plan.map(([d, n]) => P.cards[d].i.repeat(n)).join(" ") + " 🪏";
+    const sp = () => lang === "zh" ? "" : " "; // Chinese puts no space between sentences
+    const text = () => r.plan.map(([d, n]) => t(P.step, d, n)).join(sp()) + sp() + t(P.dig), pic = r.plan.map(([d, n]) => P.cards[d].i.repeat(n)).join(" ") + " 🪏";
     const pad = {}, padEl = el("div", "pir-pad"), digBtn = el("button", "bigbtn chunky");
     const R2 = {key:r.key, hint:false,
       // the words stay hidden to be remembered, until a miss (in Luxembourgish, without a voice, always written)

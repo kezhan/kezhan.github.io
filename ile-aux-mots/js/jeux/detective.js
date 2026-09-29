@@ -25,18 +25,18 @@ const clueKey = c => ({pos:c.a.id, neg:"not " + c.a.id, and:`${c.a.id} and ${c.b
 /* ---------- voice: the owl, the suspects and the thief each get their own pitch ---------- */
 function talk(text, who = "owl", keys){
   const L = lang();
-  if (TEST) { S.lastSaid = text; return Promise.resolve(); }
   if (L === "lb") return (keys && keys.length ? keys : [text]).reduce((p, k) => p.then(() => say(k, "lb")), Promise.resolve());
-  if (!("speechSynthesis" in window)) return Promise.resolve();
+  // a recorded Azure voice is fluid on every device: it wins over the character's pitch (in #test, say() notes the line)
+  if (TEST || (typeof voixFiles === "function" && voixFiles(text, L)) || !("speechSynthesis" in window)) return say(text, L);
   return new Promise(res => {
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text), v = voiceFor(L);
       u.lang = LANG[L]; if (v) u.voice = v;
       u.pitch = {owl:1.3, kid:1.6, thief:1.9}[who] || 1.1;
-      u.rate = (S.kid === "p4" ? .8 : .92) * (who === "kid" ? 1.1 : 1);
+      u.rate = voiceRate() * (who === "kid" ? 1.1 : 1);   // the speed the child chose (🐌 🐢 🐇)
       let done = false; const fin = () => { if (!done) { done = true; res(); } };
-      u.onend = fin; u.onerror = fin; loops.push(setTimeout(fin, 7000));
+      u.onend = fin; u.onerror = fin; loops.push(setTimeout(fin, 3000 + text.length * 110 / u.rate));
       speechSynthesis.speak(u);
     } catch(e) { res(); }
   });

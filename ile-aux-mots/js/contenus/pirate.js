@@ -6,8 +6,9 @@
    Luxembourgeois vérifié sur lod.lu : Schatz, Feld/Felder, no uewen, no ënnen, no lénks, no riets (LENKS2, RIETS2), riichtaus,
    dréinen, gruewen (gruef!), fueren (fuer!), goen (géi!), huelen (huel!), fannen (fann!, fonnt), bleiwen, stoen, Këscht, zou, Fiels,
    Kaart/Kaarten, dräimol, packen, nërdlech/südlech/ëstlech/westlech vun, iwwer, ënner, tëscht, Norden, Osten, Süden, Westen,
-   Papagei, Pirat, Kapitän, Matrous, Kichelchen, Siicht, kribbelen, pardon, nolauschteren (lauschter no!), platschen, flott,
-   genre des repères (Kanéngchen est féminin), et les trésors : Kompass, Kroun, Diamant, Rank, Muschel, Anker, Teleskop, Klack,
+   Papagei, Pirat, Kapitän, Matrous, Kichelchen (m), Siicht, kribbelen, pardon, nolauschteren (lauschter no!), gescheit, allez, just (nur),
+   dréinen (intransitif : die Richtung ändern), dohin, Teleskop (m), Coupe (Pokal), Mënz ; pas de Goldmënz dans le LOD, d'où « Mënz aus Gold » ;
+   « Platsch », « Hatschi », « Ahoi » sont des onomatopées absentes du LOD. Le genre des repères (Kanéngchen est féminin), et les trésors : Kompass, Kroun, Diamant, Rank, Muschel, Anker, Teleskop, Klack,
    Teddybier, Trompett, Pärel, Mënz, Sandauer, Coupe, Fändel, Dinosaurier. Règle de l'Eifel : e Kompass, en Anker, e Fiels. */
 const PIRATE = (() => {
   // landmarks: English key of the lexicon, Luxembourgish gender (lod.lu) for the dative
@@ -69,7 +70,7 @@ const PIRATE = (() => {
     },
     ui: {
       again: {en:"Again", de:"Nochmal", lb:"Nach eng Kéier", zh:"再听一次"},
-      go: {en:"Go!", de:"Los!", lb:"Lass!", zh:"出发！"},
+      go: {en:"Go!", de:"Los!", lb:"Allez!", zh:"出发！"}, // lod.lu: "lass" is an adjective (los), "allez" the call to start
       challenge: {en:n => `Can you do it with ${n} cards?`, de:n => `Schaffst du es mit ${n} Karten?`, lb:n => `Packs du et mat ${n} Kaarten?`, zh:n => `你能只用${n}张卡片吗？`},
       bonus: {en:n => `Only ${n} cards! Bonus star!`, de:n => `Nur ${n} Karten! Ein Extrastern!`, lb:n => `Just ${n} Kaarten! Nach e Stär!`, zh:n => `只用了${n}张卡片！再奖励一颗星！`},
       where: {en:"Where will the robot stop?", de:"Wo bleibt der Roboter stehen?", lb:"Wou bleift de Roboter stoen?", zh:"机器人会停在哪里？"},
@@ -80,7 +81,7 @@ const PIRATE = (() => {
       notHere: {en:"Arr! Not here!", de:"Arr! Nicht hier!", lb:"Arr! Net hei!", zh:"啊！不在这里！"},
       locked: {en:"The chest is locked! Get the key first!", de:"Die Truhe ist zu! Hol zuerst den Schlüssel!",
         lb:"D'Këscht ass zou! Huel fir d'éischt de Schlëssel!", zh:"箱子锁着呢！先去拿钥匙！"},
-      key: {en:"Got the key!", de:"Da ist der Schlüssel!", lb:"Hei ass de Schlëssel!", zh:"拿到钥匙了！"},
+      key: {en:"I've got the key!", de:"Ich habe den Schlüssel!", lb:"Ech hunn de Schlëssel!", zh:"拿到钥匙了！"},
       rock: {en:"Beep beep! A rock!", de:"Piep piep! Ein Felsen!", lb:"Biip biip! E Fiels!", zh:"嘀嘀！有石头！"},
       beep: {en:"Beep beep!", de:"Piep piep!", lb:"Biip biip!", zh:"嘀嘀！"},
       splash: {en:"Splash! Hello, octopus!", de:"Platsch! Hallo, Oktopus!", lb:"Platsch! Moien, Oktopus!", zh:"扑通！你好，章鱼！"},
@@ -119,7 +120,7 @@ const PIRATE = (() => {
       {en:"Hello, sailor!", de:"Hallo, Matrose!", lb:"Moien, Matrous!", zh:"你好，水手！"},
       {en:"I love treasure!", de:"Ich liebe Schätze!", lb:"Ech hu Schätz gär!", zh:"我最爱宝藏了！"},
       {en:"Dig, dig, dig!", de:"Grab, grab, grab!", lb:"Gruef, gruef, gruef!", zh:"挖呀挖呀挖！"},
-      {en:"What a clever robot!", de:"Was für ein kluger Roboter!", lb:"Wat e flotte Roboter!", zh:"好聪明的机器人！"},
+      {en:"What a clever robot!", de:"Was für ein kluger Roboter!", lb:"Wat e gescheite Roboter!", zh:"好聪明的机器人！"},
       {en:"Hello, hello!", de:"Hallo, hallo!", lb:"Moien, moien!", zh:"你好，你好！"}
     ],
     // the robot, when touched: s = its sound, a = its move

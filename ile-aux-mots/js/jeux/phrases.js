@@ -247,6 +247,8 @@ registerGame({id: "phrases", em: "🎺", name: "Phrases", desc: "Remets les mots
     if (!alive(gen)) return;
     if (i >= total) return finish();
     const me = ++rid, it = items[i], L = cur(), {toks, p} = parse(it[L]), text = joinS(toks, p, L);
+    // every right order with the same tags (it.alt: "next to", "between" go both ways); those still possible so far
+    let ways = [toks, ...[].concat((it.alt || {})[L] || []).map(s => parse(s).toks)];
     const live = () => me === rid && alive(gen);
     let pos = 0, tries = again ? again.tries : 0, miss = 0, locked = false, idle = 0;
     renderDots(res, total, i);
@@ -275,13 +277,13 @@ registerGame({id: "phrases", em: "🎺", name: "Phrases", desc: "Remets les mots
     if (xw && !toks.includes(xw)) words.push(xw);
     let order = shuffle(words);
     for (let k = 0; k < 9 && order.join("|") === words.join("|"); k++) order = shuffle(words);
-    const next = () => tiles.find(t => !t.dataset.placed && t._w === toks[pos]);
+    const next = () => tiles.find(t => !t.dataset.placed && t._w === ways[0][pos]);
     const markNext = () => { if (!TEST) return; tiles.forEach(t => delete t.dataset.ok); markOk(next()); };
     const hint = () => { const n = next(); if (n) n.classList.add("hint"); };
     // the little one gets a nudge when nothing happens for a while
     const nudge = () => {
       clearTimeout(idle); if (!p4 || TEST) return;
-      idle = setTimeout(() => { if (live() && !locked) { hint(); sayIn(toks[pos], L); nudge(); } }, 9000); loops.push(idle);
+      idle = setTimeout(() => { if (live() && !locked) { hint(); sayIn(ways[0][pos], L); nudge(); } }, 9000); loops.push(idle);
     };
     const tiles = order.map((w, k) => {
       const b = el("button", "ph-w"), pic = pics ? picOf(w, L) : ""; b._w = w;
@@ -296,8 +298,9 @@ registerGame({id: "phrases", em: "🎺", name: "Phrases", desc: "Remets les mots
       G.taps++; nudge();
       if (b.dataset.placed) { if (!calm()) fx.bounce(b); sayIn(b._w, L); return; }
       if (locked) return;
-      if (b._w === toks[pos]) {
-        b.dataset.placed = "1"; delete b.dataset.ok; b.classList.remove("hint", "ko"); b.classList.add("yay");
+      const fit = ways.filter(o => o[pos] === b._w);
+      if (fit.length) {
+        ways = fit; b.dataset.placed = "1"; delete b.dataset.ok; b.classList.remove("hint", "ko"); b.classList.add("yay");
         SND.note(pos);
         const slot = slots[pos++]; miss = 0;
         fly(b, slot, () => { if (!calm()) { const r = b.getBoundingClientRect(); fx.sparkle(r.left + r.width / 2, r.top + r.height / 2, 6); } });
@@ -308,7 +311,7 @@ registerGame({id: "phrases", em: "🎺", name: "Phrases", desc: "Remets les mots
         b.classList.remove("ko"); void b.offsetWidth; b.classList.add("ko");
         loops.push(setTimeout(() => b.classList.remove("ko"), 900));
         fx.wrong(); SND.pouet(); oops(b, L);
-        if (p4 || miss >= 2) { hint(); if (p4) sayIn(toks[pos], L); }
+        if (p4 || miss >= 2) { hint(); if (p4) sayIn(ways[0][pos], L); }
       }
     };
     const complete = async () => {
@@ -327,7 +330,7 @@ registerGame({id: "phrases", em: "🎺", name: "Phrases", desc: "Remets les mots
         (ACTS[it.a] || ACTS.hop)(main, sc, sc.clientWidth * .75);
         if (Math.random() < .3) loops.push(setTimeout(() => live() && gag(main, sc, L), 1900));
       }
-      await sayIn(text, L);
+      await sayIn(joinS(ways[0], p, L), L); // the sentence as the child built it
       if (!live()) return;
       await wait(TEST ? 0 : 1000);
       if (!live()) return;

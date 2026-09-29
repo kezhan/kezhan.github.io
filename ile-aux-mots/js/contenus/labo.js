@@ -1,7 +1,7 @@
 /* L'Île aux Mots : contenu du « Labo des monstres » (jeu labo).
    Pièces du monstre et phrases générées en anglais, allemand, luxembourgeois et chinois, jamais en français.
    Allemand : accusatif après haben, geben, tragen, halten (einen Hut, ein großes Auge), datif après in (in der linken Hand).
-   Luxembourgeois vérifié sur lod.lu (Aen, Äerm, Been, Oueren, grousst, lénkser, Kroun, Punkten, Sträifen, repsen...),
+   Luxembourgeois vérifié sur lod.lu (Aen, Äerm, Been, Oueren, grousst, lénkser, Kroun, Punkten, Sträifen, repsen, béis : « rosen » n'y est pas un adjectif...),
    règle de l'Eifel ; k = mot du lexique que say(k, "lb") fait entendre (enregistrement lod.lu).
    Chinois : 两 devant un classificateur (两只眼睛, 两条腿), 一顶帽子, 一副眼镜, 一根香蕉. */
 const LABO = (() => {
@@ -24,7 +24,7 @@ const LABO = (() => {
     happy:  {e: "😀", en: "happy", de: "fröhlich", lb: "frou", zh: "开心", k: "laachen"},
     sad:    {e: "😢", en: "sad", de: "traurig", lb: "traureg", zh: "难过", k: "kräischen"},
     sleepy: {e: "😴", en: "sleepy", de: "müde", lb: "midd", zh: "困", k: "schlofen"},
-    angry:  {e: "😠", en: "angry", de: "wütend", lb: "rosen", zh: "生气"},
+    angry:  {e: "😠", en: "angry", de: "wütend", lb: "béis", zh: "生气"},
     scared: {e: "😨", en: "scared", de: "Angst", lb: "Angscht", zh: "害怕"}
   };
   const HAT = {
@@ -156,7 +156,7 @@ const LABO = (() => {
     {en: "I love you!", de: "Ich hab dich lieb!", lb: "Ech hunn dech gär!", zh: "我喜欢你！"},
     {en: "Let's dance!", de: "Komm, wir tanzen!", lb: "Komm, mir danzen!", zh: "我们来跳舞吧！", k: "danzen"},
     {en: "Tickle me!", de: "Kitzel mich!", lb: "Këddel mech!", zh: "挠挠我！"},
-    {en: "Boo! Are you scared?", de: "Buh! Hast du Angst?", lb: "Hues du Angscht?", zh: "哇！你害怕吗？"},
+    {en: "Boo! Are you scared?", de: "Buh! Hast du Angst?", lb: "Buh! Hues du Angscht?", zh: "哇！你害怕吗？"},
     {en: "Hooray! I'm alive!", de: "Hurra! Ich lebe!", lb: "Hurra! Ech liewen!", zh: "耶！我活了！"},
     {en: "I want to play!", de: "Ich will spielen!", lb: "Ech wëll spillen!", zh: "我想玩！"},
     {en: "Bye-bye! I'm going to the zoo!", de: "Tschüss! Ich gehe in den Zoo!", lb: "Äddi! Ech ginn an den Zoo!", zh: "拜拜！我去动物园啦！"},
@@ -169,7 +169,7 @@ const LABO = (() => {
     happy:  {en: "Ha ha ha! I'm so happy!", de: "Hahaha! Ich bin so fröhlich!", lb: "Ech wëll laachen! Hahaha!", zh: "哈哈哈！我好开心！", k: "laachen", p: 1.6, r: 1.1},
     sad:    {en: "Sniff... I'm so sad.", de: "Schnief... Ich bin so traurig.", lb: "Ech wëll kräischen...", zh: "呜呜……我好难过。", k: "kräischen", p: .6, r: .8},
     sleepy: {en: "Yawn... Good night!", de: "Gähn... Gute Nacht!", lb: "Ech wëll schlofen! Gutt Nuecht!", zh: "哈欠……晚安！", k: "schlofen", p: .8, r: .75},
-    angry:  {en: "Grrr! I'm angry!", de: "Grrr! Ich bin wütend!", lb: "Grrr! Ech si rosen!", zh: "哼！我生气了！", p: .5, r: 1},
+    angry:  {en: "Grrr! I'm angry!", de: "Grrr! Ich bin wütend!", lb: "Grrr! Ech si béis!", zh: "哼！我生气了！", p: .5, r: 1},
     scared: {en: "Eek! Help!", de: "Iiih! Hilfe!", lb: "Hëllef! Ech hunn Angscht!", zh: "啊！救命啊！", p: 1.9, r: 1.4}
   };
   // silly names: 40 syllables that rhyme (Blobby Wobby); in Chinese a doubled sound (圆泡泡怪)

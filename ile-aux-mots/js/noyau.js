@@ -87,7 +87,7 @@ async function flushPending(){
   const items = S.pending.splice(0); saveLocal();
   for (const it of items) await record(it.kind, it.id, it.data);
 }
-function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words, scores:S.prof[k].scores, levels:S.prof[k].levels, lang:S.prof[k].lang || "en"}).catch(()=>{}); }
+function saveProfile(k){ saveLocal(); if (Store.mode !== "local") Store.put("profiles", k, {stars:S.prof[k].stars, words:S.prof[k].words, scores:S.prof[k].scores, levels:S.prof[k].levels, lang:S.prof[k].lang || "en", speed:speedOf(k)}).catch(()=>{}); }
 function saveConfig(){ saveLocal(); if (Store.mode !== "local") Store.put("config", "main", {names:S.names, present:S.present}).catch(()=>{}); }
 
 async function connect(){
@@ -101,7 +101,7 @@ async function connect(){
     const [cfg, a, b] = await Promise.all([Store.get("config","main"), Store.get("profiles","p7"), Store.get("profiles","p4")]);
     if (cfg) { Object.assign(S.names, cfg.names||{}); S.present = !!cfg.present; } else saveConfig();
     [["p7",a],["p4",b]].forEach(([k,d]) => {
-      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{})), scores:JSON.parse(JSON.stringify(d.scores||{})), levels:JSON.parse(JSON.stringify(d.levels||{})), lang:d.lang || "en"};
+      if (d) S.prof[k] = {stars:d.stars||0, words:JSON.parse(JSON.stringify(d.words||{})), scores:JSON.parse(JSON.stringify(d.scores||{})), levels:JSON.parse(JSON.stringify(d.levels||{})), lang:d.lang || "en", speed:d.speed};
       else saveProfile(k);
     });
     await flushPending();
@@ -140,6 +140,8 @@ function markOk(elm){ if (TEST && elm) elm.dataset.ok = "1"; return elm; }
 function say(text, lang, rate){
   lang = lang || langOf();
   return new Promise(res => {
+    // en, de, zh: the Azure recording when it exists (js/voix_lecture.js); in #test, the line is noted in S.said
+    if (typeof playVoix === "function" && playVoix(text, lang, rate, res)) return;
     if (TEST) { S.lastSaid = text; S.lastLang = lang; return res(); }
     if (lang === "lb") return playLb(text).then(res);
     if (!("speechSynthesis" in window)) return res();
