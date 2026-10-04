@@ -6,9 +6,10 @@
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="15" fill="url(#bc-favicon-fond)"/>
-  <!-- Calé sur la grille de 4 : chaque bord tombe sur un pixel entier à 16 et 32 px.
-       La couche du haut est plus soutenue que dans la marque : à 16 px, l'oeil ne voit plus
-       que l'écart de clarté avec le blanc, et il faut qu'il reste net. -->
-  <path d="M20 12H36a8 8 0 0 1 0 16H20z" fill="#A7BEF2"/>
-  <path d="M20 32H38a10 10 0 0 1 0 20H20z" fill="#FFFFFF"/>
+  <!-- Calé sur la grille de 4 : le fût tombe sur des pixels entiers à 16 et 32 px. La branche du
+       haut est plus soutenue que dans la marque : à 16 px, l'oeil ne voit plus que l'écart de
+       clarté avec le blanc, et il faut qu'il reste net. -->
+  <path d="M30 34L44 20" stroke="#A7BEF2" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <path d="M32 32L45 46" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <path d="M20 12h12v40H20z" fill="#FFFFFF"/>
 </svg>
