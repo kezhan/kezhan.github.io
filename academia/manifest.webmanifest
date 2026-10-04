@@ -1,0 +1,16 @@
+{
+  "name": "Académia",
+  "short_name": "Académia",
+  "description": "Le monde où l'on apprend en s'amusant : des compagnons, des combats où chaque attaque est une question.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#2B1E5C",
+  "theme_color": "#2B1E5C",
+  "icons": [
+    {"src": "icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

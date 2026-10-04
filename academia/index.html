@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Académia</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2B1E5C">
+<link rel="icon" href="icones/icone-192.png">
+<link rel="apple-touch-icon" href="icones/icone-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&display=swap">
+<link rel="stylesheet" href="style.css?v=bd234840">
+<link rel="stylesheet" href="style_combat.css?v=bd234840">
+</head>
+<body>
+<!-- the game world (Phaser) fills the screen; menus sit on top of it -->
+<div id="jeu"></div>
+
+<header class="barre" id="barre" hidden>
+  <div class="gardien"><img id="gPortrait" alt=""><span id="gNom"></span><span class="pastille">✨ <b id="gEtincelles">0</b></span></div>
+  <button class="rond" id="btnEquipe" aria-label="Mon équipe">🎒</button>
+</header>
+
+<!-- PROFILES -->
+<main id="accueil" class="ecran plein">
+  <h1 class="titre">Académia</h1>
+  <p class="sous">Le monde où l'on apprend en s'amusant</p>
+  <div class="profils" id="profils"></div>
+  <button class="gros" id="btnNouveau">✨ Nouveau Gardien</button>
+</main>
+
+<!-- NEW GUARDIAN: name, age, hero -->
+<section id="creation" class="ecran plein" hidden>
+  <h2 class="titre2">Qui es-tu, Gardien ?</h2>
+  <div class="carte">
+    <label class="etiquette" for="nomGardien">Ton prénom</label>
+    <input class="nom" id="nomGardien" maxlength="16" autocomplete="off" enterkeyhint="done" placeholder="Prénom">
+    <label class="etiquette">Ton âge</label>
+    <div class="ages" id="ages"></div>
+    <label class="etiquette">Ton héros</label>
+    <div class="heros" id="heros"></div>
+  </div>
+  <div class="ligne"><button class="moyen gris" data-retour>⬅</button><button class="gros" id="btnCreer" disabled>C'est parti !</button></div>
+</section>
+
+<!-- FIRST COMPANION -->
+<section id="choix" class="ecran plein" hidden>
+  <h2 class="titre2">Choisis ton premier compagnon</h2>
+  <p class="sous" id="choixSous"></p>
+  <div class="starters" id="starters"></div>
+</section>
+
+<!-- BATTLE: the scene is drawn by Phaser; life boxes, messages, questions and attacks on top -->
+<section id="combat" class="ecran" hidden>
+  <div class="etat lui" id="etatLui"><b></b><span class="niv"></span><div class="pv"><i></i></div></div>
+  <div class="etat moi" id="etatMoi"><b></b><span class="niv"></span><div class="pv"><i></i></div><small class="pvtxt"></small></div>
+  <div class="bulle" id="bulleCombat" hidden></div>
+  <div class="panneau cache" id="panneau"></div>
+</section>
+
+<!-- END OF A FIGHT -->
+<section id="fin" class="ecran voile" hidden>
+  <div class="carte fin" id="finCarte"></div>
+</section>
+
+<!-- TEAM -->
+<section id="equipe" class="ecran voile" hidden>
+  <div class="carte large">
+    <div class="entete"><h2 class="titre3">🎒 Mon équipe</h2><button class="rond" id="btnFermerEquipe" aria-label="Fermer">✖</button></div>
+    <div class="liste-equipe" id="listeEquipe"></div>
+    <div class="ligne"><button class="joker" id="btnChanger">👤 Changer de Gardien</button></div>
+  </div>
+</section>
+
+<!-- DIALOGUE WITH A VILLAGER -->
+<div class="dialogue" id="dialogue" hidden>
+  <img id="dlgPortrait" alt="">
+  <div class="dlg-corps"><b id="dlgNom"></b><p id="dlgTexte"></p><div class="dlg-choix" id="dlgChoix"></div></div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/phaser/phaser.min.js"></script>
+<script src="js/outils.js?v=bd234840"></script>
+<script src="js/etat.js?v=bd234840"></script>
+<script src="js/voix.js?v=bd234840"></script>
+<script src="js/compagnons.js?v=bd234840"></script>
+<script src="js/questions/maths.js?v=bd234840"></script>
+<script src="js/questions/maths_mult.js?v=bd234840"></script>
+<script src="js/questions/logique.js?v=bd234840"></script>
+<script src="js/questions.js?v=bd234840"></script>
+<script src="js/adaptatif.js?v=bd234840"></script>
+<script src="js/sprite_dom.js?v=bd234840"></script>
+<script src="js/question_vue.js?v=bd234840"></script>
+<script src="js/combat.js?v=bd234840"></script>
+<script src="js/progression.js?v=bd234840"></script>
+<script src="js/equipe.js?v=bd234840"></script>
+<script src="js/accueil.js?v=bd234840"></script>
+<script src="js/jeu/carte.js?v=bd234840"></script>
+<script src="js/jeu/chargement.js?v=bd234840"></script>
+<script src="js/jeu/monde.js?v=bd234840"></script>
+<script src="js/jeu/fond_combat.js?v=bd234840"></script>
+<script src="js/jeu/scene_combat.js?v=bd234840"></script>
+<script src="js/jeu/lanceur.js?v=bd234840"></script>
+<script src="js/demarrage.js?v=bd234840"></script>
+</body>
+</html>
