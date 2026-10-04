@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Belval Courtage, espace courtier</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Les blocs POLICES, MARQUE et CONTENU, chacun entre ses deux commentaires, servent l'aperçu
+     local (porte.html ouverte du disque) ; _outils/publier.py les remplace par la version
+     publiée : les polices de index.html, la marque en ligne, le contenu chiffré. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="porte.css">
+<link rel="stylesheet" href="porte_scene.css">
+</head>
+<!-- La porte de l'espace publié (porte/porte.js) : écrite dans rag, espace_courtier/porte/,
+     publiée par _outils/publier.py. Le reste de l'espace est chiffré dans contenu.js. -->
+<body class="porte">
+<div class="porte-page" id="porte" hidden>
+  <section class="porte-gauche" aria-labelledby="porteAccroche">
+    <div class="porte-marque"><span class="porte-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bc-marque-fond" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2957C8"/>
+      <stop offset="1" stop-color="#173888"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#bc-marque-fond)"/>
+  <!-- Le B est décalé d'une unité vers la droite : le fût droit pèse plus que les bouts ronds. -->
+  <!-- L'excédent : la couche du haut, plus courte. -->
+  <path d="M20.5 14H34.25a6.75 6.75 0 0 1 0 13.5H20.5z" fill="#B9CBF5"/>
+  <!-- La première ligne : la couche du bas, la plus large. -->
+  <path d="M20.5 31.5H38.25a8.25 8.25 0 0 1 0 16.5H20.5z" fill="#FFFFFF"/>
+</svg></span>
+      <span class="porte-nom"><b>Belval Courtage</b><span>Espace courtier · grands comptes</span></span></div>
+    <div class="porte-accroche">
+      <h2 class="porte-titre" id="porteAccroche">Vos grands comptes,<br><span>au même endroit, au bon prix.</span></h2>
+      <p class="porte-sous">L'IA lit les contrats, suit les sites et compare les offres : chaque renouvellement se prépare avec les bons chiffres.</p>
+      <div class="porte-lancer-l">
+        <button type="button" class="porte-lancer" id="porteLancer" aria-describedby="porteLancerN">
+          <span class="porte-lancer-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6.5v11l9-5.5z"/></svg></span>
+          <span class="porte-lancer-t">Lancer la présentation</span><i class="porte-roue" aria-hidden="true"></i></button>
+        <span class="porte-lancer-n" id="porteLancerN">En plein écran, commentée, elle défile seule.</span>
+        <span class="porte-lancer-info" id="porteLancerInfo" role="status"></span>
+      </div>
+    </div>
+    <!-- L'illustration : ce que l'espace fait pour un courtier de grands comptes. Décorative ;
+         des libellés génériques, rien des données de l'espace (la porte est publique). -->
+    <div class="psc" id="porteScene" aria-hidden="true">
+      <div class="psc-scene">
+        <svg class="psc-monde" viewBox="0 0 860 440">
+          <defs><linearGradient id="pscTeinte" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="860" y2="0"><stop offset="0" stop-color="#2957C8"/><stop offset="1" stop-color="#6A3FB5"/></linearGradient></defs>
+          <g class="psc-points" id="pscPoints"></g>
+        </svg>
+        <!-- Les sites sur un calque à part : ce qui pulse ne repeint pas les points de la carte. -->
+        <svg class="psc-monde" viewBox="0 0 860 440">
+          <defs><radialGradient id="pscOrage"><stop offset="0" stop-color="#F59E0B" stop-opacity=".34"/><stop offset="1" stop-color="#F59E0B" stop-opacity="0"/></radialGradient></defs>
+          <g id="pscSites"></g>
+        </svg>
+
+        <div class="psc-groupe" style="--d:0s;--e:.35s">
+          <div class="psc-carte psc-doc">
+            <div class="psc-tete"><span class="psc-ic psc-ic-bleu"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg></span>
+              <b>Contrat dommages</b><em>Page 4</em></div>
+            <div class="psc-page">
+              <p class="psc-art">Article 6. Montants garantis</p>
+              <i class="psc-l" style="--w:94%"></i><i class="psc-l" style="--w:78%"></i>
+              <p class="psc-lu" id="pscLu1">Limite contractuelle : 80 000 000 €</p>
+              <i class="psc-l" style="--w:88%"></i><i class="psc-l" style="--w:62%"></i>
+              <p class="psc-lu" id="pscLu2">Franchise générale : 175 000 €</p>
+              <i class="psc-l" style="--w:90%"></i><i class="psc-l" style="--w:70%"></i>
+            </div>
+          </div>
+          <svg class="psc-liens" viewBox="0 0 860 440"><path id="pscLien1" d=""/><path id="pscLien2" d=""/></svg>
+          <div class="psc-carte psc-champs">
+            <p class="psc-sur">Lu par l'IA</p>
+            <div class="psc-champ" id="pscChamp1"><span>Limite contractuelle</span><b>80 M€</b>
+              <small><svg viewBox="0 0 12 12"><path d="M3 6.2l2 2L9 4"/></svg>lu page 4</small></div>
+            <div class="psc-champ" id="pscChamp2"><span>Franchise</span><b>175 k€</b>
+              <small><svg viewBox="0 0 12 12"><path d="M3 6.2l2 2L9 4"/></svg>lu page 4</small></div>
+          </div>
+        </div>
+
+        <div class="psc-carte psc-alerte" style="--d:-2.4s;--e:.2s">
+          <span class="psc-ic psc-ic-ambre"><svg viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4.5M12 17.2v.3"/></svg></span>
+          <span><b>Alerte tempête</b><small>Entrepôt, Rotterdam · rafales à 130 km/h</small></span>
+        </div>
+
+        <div class="psc-carte psc-chat" style="--d:-3.6s;--e:.5s">
+          <div class="psc-tete"><span class="psc-ic psc-ic-violet"><svg viewBox="0 0 24 24"><path d="M11 3.2l1.45 4.05a3 3 0 0 0 1.8 1.8L18.3 10.5l-4.05 1.45a3 3 0 0 0-1.8 1.8L11 17.8l-1.45-4.05a3 3 0 0 0-1.8-1.8L3.7 10.5l4.05-1.45a3 3 0 0 0 1.8-1.8z"/></svg></span>
+            <b>Assistant</b></div>
+          <p class="psc-q">Quelle franchise pour l'entrepôt de Rotterdam ?</p>
+          <p class="psc-r">175 000 € par sinistre.<span class="psc-src">Contrat dommages, page 4</span></p>
+        </div>
+
+        <div class="psc-carte psc-offres" style="--d:-4.8s;--e:.65s">
+          <div class="psc-tete"><span class="psc-ic psc-ic-vert"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/></svg></span>
+            <b>Offres reçues</b><em>Renouvellement</em></div>
+          <div class="psc-offre"><span>Offre A</span><b>1,42 M€</b><i style="--w:92%"></i></div>
+          <div class="psc-offre psc-mieux"><span>Offre B<em>Meilleure offre</em></span><b>1,18 M€</b><i style="--w:76%"></i></div>
+          <div class="psc-offre"><span>Offre C</span><b>1,35 M€</b><i style="--w:87%"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="porte-droite">
+    <form class="porte-carte" id="porteForm" autocomplete="on" novalidate>
+      <span class="porte-fin-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/></svg></span>
+      <h1 id="porteTitre">Connexion</h1>
+      <p class="porte-texte" id="porteTexte">Entrez le mot de passe qui vous a été transmis.</p>
+      <div class="porte-ident" id="porteIdent">
+        <label class="porte-label" for="porteQui">Identifiant</label>
+        <div class="porte-champ"><svg class="porte-champ-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
+          <input id="porteQui" name="username" type="email" autocomplete="username" spellcheck="false" autocapitalize="off"
+          value="camille.arnaud@belval-courtage.fr"></div>
+      </div>
+      <label class="porte-label" id="porteLabel" for="porteMdp">Mot de passe</label>
+      <div class="porte-champ"><svg class="porte-champ-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+        <input id="porteMdp" name="password" type="password" autocomplete="current-password" spellcheck="false" autocapitalize="off">
+        <button type="button" class="porte-voir" id="porteVoir" aria-label="Afficher le mot de passe" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="porte-voir-barre" d="M4 4l16 16"/></svg></button>
+      </div>
+      <p class="porte-maj" id="porteMaj" hidden>Majuscules activées</p>
+      <div class="porte-options">
+        <label class="porte-rester"><input type="checkbox" id="porteRester"> Rester connecté</label>
+        <button type="button" class="porte-oubli" id="porteOubli">Mot de passe oublié ?</button>
+      </div>
+      <button class="porte-btn" type="submit" id="porteOk"><span class="porte-btn-t">Se connecter</span><i class="porte-roue" aria-hidden="true"></i></button>
+      <p class="porte-erreur" id="porteErreur" role="alert" hidden></p>
+      <p class="porte-note" id="porteNote"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        Accès de démonstration : cinq heures d'utilisation.</p>
+    </form>
+    <p class="porte-pied"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+      Belval Courtage<span aria-hidden="true">·</span>Accès réservé</p>
+  </section>
+</div>
+<script src="contenu.js"></script>
+<!-- La scène d'abord : elle est à l'échelle avant que porte.js montre la porte. -->
+<script src="porte_scene.js"></script>
+<script src="porte.js"></script>
+</body>
+</html>

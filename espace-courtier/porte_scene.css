@@ -1,0 +1,110 @@
+/* L'illustration de la porte : ce que l'espace fait pour un courtier de grands comptes, en une
+   scène de cartes posées sur la carte du monde. Un contrat dont l'IA a lu deux lignes, une
+   alerte climat sur un site, une question à l'assistant, des offres comparées.
+
+   La scène est dessinée sur 860 × 440 et mise à l'échelle de la place qu'elle a
+   (porte_scene.js) : le dessin reste net à toutes les tailles. Les couleurs sont celles
+   de la charte. Rien ne bouge quand le système demande moins d'animations. */
+.psc { position:relative; flex:1 1 0; min-height:220px; margin:clamp(14px,3.4vh,34px) calc(-1 * var(--p-marge)) 0; }
+.psc-scene { position:absolute; left:0; top:0; width:860px; height:440px; transform-origin:0 0;
+  font:11px/1.4 system-ui,"Segoe UI",Roboto,Arial,sans-serif; color:#14263B; }
+
+/* ---- La carte du monde, ses sites, l'alerte ---- */
+.psc-monde { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.psc-points path { fill:none; stroke:url(#pscTeinte); stroke-width:2.9; stroke-linecap:round; }
+.psc-halo { fill:#2957C8; opacity:.18; }
+.psc-site { fill:#2957C8; stroke:#fff; stroke-width:1.6; }
+.psc-orage { fill:url(#pscOrage); }
+.psc-site-alerte { fill:#E07B0B; stroke:#fff; stroke-width:1.8; }
+.psc-trait { fill:none; stroke:#E07B0B; stroke-opacity:.55; stroke-width:1.2; stroke-dasharray:2 3; }
+.psc-onde { fill:none; stroke:#E07B0B; stroke-width:1.5; transform-box:fill-box; transform-origin:center;
+  animation:psc-onde 2.8s cubic-bezier(.2,.6,.3,1) infinite; }
+.psc-onde + .psc-onde { animation-delay:1.4s; }
+.psc-respire { animation:psc-respire 3.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+@keyframes psc-onde { 0% { transform:scale(.6); opacity:.95; } 100% { transform:scale(3.2); opacity:0; } }
+@keyframes psc-respire { 0%,100% { transform:scale(1); opacity:.16; } 50% { transform:scale(1.5); opacity:.06; } }
+
+/* ---- Les cartes ---- */
+.psc-carte { position:absolute; box-sizing:border-box; background:#fff; border:1px solid rgba(20,38,59,.08); border-radius:14px;
+  box-shadow:0 1px 2px rgba(20,38,59,.06), 0 16px 36px -16px rgba(23,56,136,.34), 0 34px 64px -34px rgba(23,56,136,.28);
+  animation:psc-entre .8s cubic-bezier(.2,.8,.2,1) var(--e,.2s) both, psc-flotte 8s ease-in-out var(--d,0s) infinite; }
+.psc-groupe { position:absolute; inset:0; animation:psc-entre .8s cubic-bezier(.2,.8,.2,1) var(--e,.2s) both, psc-flotte 8s ease-in-out var(--d,0s) infinite; }
+.psc-groupe .psc-carte { animation:none; }
+.psc-monde { animation:psc-parait 1.2s ease both; }
+/* L'entrée glisse par `translate`, le flottement par `transform` : les deux s'ajoutent. */
+@keyframes psc-entre { from { opacity:0; translate:0 18px; } }
+@keyframes psc-parait { from { opacity:0; } }
+@keyframes psc-flotte { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+.psc-tete { display:flex; align-items:center; gap:8px; }
+.psc-tete b { font:600 13px/1.2 "Barlow",system-ui,sans-serif; letter-spacing:.005em; }
+.psc-tete em { margin-left:auto; padding:2px 8px; border-radius:999px; background:#F1F4F9; color:#5F6E86; font:600 9.5px/1.4 system-ui,"Segoe UI",sans-serif; font-style:normal; }
+.psc-ic { width:24px; height:24px; flex:none; border-radius:7px; display:flex; align-items:center; justify-content:center; }
+.psc-ic svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.psc-ic-bleu { background:#EAEEFA; color:#2957C8; }
+.psc-ic-ambre { background:#FEF0DC; color:#B45309; }
+.psc-ic-vert { background:#E0F3EE; color:#0B7A62; }
+.psc-ic-violet { background:linear-gradient(135deg,#7D52D3,#5A33A6); color:#fff; box-shadow:0 2px 6px rgba(106,63,181,.35); }
+.psc-ic-violet svg { fill:currentColor; stroke:none; }
+.psc-sur { margin:0 0 4px; font:700 8.5px/1 system-ui,"Segoe UI",sans-serif; letter-spacing:.14em; text-transform:uppercase; color:#6A3FB5; }
+
+/* Le contrat, deux lignes lues, et ce que l'IA en a tiré. */
+.psc-doc { left:24px; top:128px; width:232px; padding:12px 14px 12px; }
+.psc-page { margin-top:10px; padding-top:9px; border-top:1px solid #EEF1F6; font:10px/1.5 Cambria,Charter,"Times New Roman",serif; color:#3A4658; }
+.psc-art { margin:0 0 7px; font:700 9.5px/1.3 system-ui,"Segoe UI",sans-serif; letter-spacing:.02em; color:#14263B; }
+.psc-l { display:block; width:var(--w); height:5px; margin:6px 0; border-radius:3px; background:#E8ECF3; }
+/* Le reflet passe sous le texte (isolation, z-index -1) : la ligne reste nette pendant qu'il passe. */
+.psc-lu { position:relative; isolation:isolate; margin:7px -6px; padding:3px 6px 3px 9px; border-radius:4px; overflow:hidden; background:#FFF6D6;
+  box-shadow:inset 2.5px 0 0 #D97706; color:#14263B; }
+.psc-lu::after { content:""; position:absolute; inset:0 0 0 3px; z-index:-1; background:linear-gradient(100deg,transparent 15%,rgba(255,255,255,.95) 50%,transparent 85%);
+  transform:translateX(-110%); animation:psc-balaye 6s ease-in-out infinite; }
+#pscLu2::after { animation-delay:.45s; }
+@keyframes psc-balaye { 0%,58% { transform:translateX(-110%); } 82%,100% { transform:translateX(110%); } }
+.psc-liens { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.psc-liens path { fill:none; stroke:#7B57C9; stroke-width:1.5; stroke-dasharray:3 3.5; animation:psc-flux 1.4s linear infinite; }
+.psc-bout { fill:#fff; stroke:#7B57C9; stroke-width:1.5; }
+@keyframes psc-flux { to { stroke-dashoffset:-13; } }
+.psc-champs { left:296px; top:208px; width:178px; padding:10px 12px 6px; }
+.psc-champ { display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:8px; padding:6px 0 5px; border-top:1px solid #EEF1F6; }
+.psc-champ:first-of-type { border-top:0; }
+.psc-champ span { font-size:10px; color:#56667E; }
+.psc-champ b { grid-row:span 2; align-self:center; font:700 15px/1 "Barlow",system-ui,sans-serif; font-variant-numeric:tabular-nums; }
+.psc-champ small { display:flex; align-items:center; gap:4px; margin-top:2px; font-size:9px; font-weight:600; color:#0B7A62; }
+.psc-champ small svg { width:11px; height:11px; border-radius:50%; background:#0B7A62; fill:none; stroke:#fff; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+/* L'alerte, posée à côté du site qu'elle touche. */
+.psc-alerte { left:466px; top:22px; display:flex; align-items:center; gap:10px; padding:9px 14px 9px 10px; }
+.psc-alerte b { display:block; font:600 13px/1.2 "Barlow",system-ui,sans-serif; }
+.psc-alerte small { display:block; margin-top:2px; font-size:10px; color:#5F6E86; white-space:nowrap; }
+
+/* L'assistant : une question, une réponse qui dit d'où elle vient. */
+.psc-chat { left:618px; top:94px; width:218px; padding:12px; }
+.psc-q { margin:10px 0 0 28px; padding:7px 10px; border-radius:12px 12px 3px 12px; background:#2957C8; color:#fff; font-size:10.5px; line-height:1.4; }
+.psc-r { margin:7px 18px 0 0; padding:7px 10px 8px; border-radius:12px 12px 12px 3px; background:#F2F4F9; font-size:10.5px; line-height:1.4; }
+.psc-src { display:table; margin-top:5px; padding:1px 7px; border-radius:999px; background:#fff; border:1px solid #DCE3F0; color:#2957C8; font-size:8.8px; font-weight:600; }
+
+/* Les offres reçues : le libellé et la prime, puis la barre ; la meilleure en vert. */
+.psc-offres { left:566px; top:262px; width:252px; padding:12px 12px 10px; }
+.psc-offre { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; row-gap:5px; margin-top:4px; padding:5px 8px 7px; border-radius:9px; font-size:10.5px; }
+.psc-tete + .psc-offre { margin-top:8px; }
+.psc-offre span { display:flex; align-items:center; gap:6px; color:#56667E; }
+.psc-offre b { font:600 12px/1 "Barlow",system-ui,sans-serif; font-variant-numeric:tabular-nums; }
+.psc-offre i { grid-column:1 / -1; height:5px; border-radius:3px; background:linear-gradient(90deg,#BCCBEE var(--w),#EDF0F6 var(--w)); }
+.psc-mieux { background:#ECF7F3; box-shadow:inset 0 0 0 1px rgba(11,122,98,.18); }
+.psc-mieux span, .psc-mieux b { color:#0A5F4D; font-weight:700; }
+.psc-mieux i { background:linear-gradient(90deg,#0B7A62 var(--w),#D3EBE4 var(--w)); }
+.psc-mieux em { padding:1px 7px; border-radius:999px; background:#0B7A62; color:#fff; font:700 8.5px/1.4 system-ui,"Segoe UI",sans-serif; font-style:normal; }
+
+/* Un panneau plus étroit : les cartes de droite se rapprochent, la scène grandit d'autant. */
+@media (max-width:1180px){
+  .psc-chat { left:566px; }
+  .psc-offres { left:520px; }
+}
+/* Sur un téléphone, un bandeau : la carte en gros plan sur l'alerte, sans les autres cartes. */
+@media (max-width:900px){
+  .psc { --psc-couvre:1; --psc-zoom:1.7; flex:none; height:clamp(150px,34vw,260px); min-height:0; margin-top:6px; overflow:hidden; }
+  .psc-groupe, .psc-chat, .psc-offres { display:none; }
+}
+@media (prefers-reduced-motion:reduce){
+  .psc-carte, .psc-groupe, .psc-monde, .psc-lu::after, .psc-liens path, .psc-onde, .psc-respire { animation:none; }
+  .psc-onde { opacity:.5; transform:scale(1.8); }
+}
