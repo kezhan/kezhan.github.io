@@ -2,8 +2,10 @@
    la boîte de dialogue des habitants (portrait, texte lu à voix haute, toucher pour continuer). */
 // the canvas has RATIO pixels per CSS pixel (js/jeu/qualite.js) and is shown at the window's size: sharp drawings on a tablet
 const tailleToile = () => [Math.round(innerWidth * RATIO), Math.round(innerHeight * RATIO)];
+// a picture that never came is drawn as nothing, never as the engine's black square with a green cross
+const TRANSPARENT = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAC0lEQVR4nGNgQAcAABIAAXfx+gAAAAAASUVORK5CYII=";
 const JEU = new Phaser.Game({
-  type: Phaser.AUTO, parent: "jeu", backgroundColor: "#2B1E5C",
+  type: Phaser.AUTO, parent: "jeu", backgroundColor: "#2B1E5C", images: {missing: TRANSPARENT},
   scale: {mode: Phaser.Scale.NONE, width: tailleToile()[0], height: tailleToile()[1], zoom: 1 / RATIO},
   scene: [Chargement, Monde, SceneCombat]
 });
@@ -45,10 +47,16 @@ function retourMonde(resultat){
   if (JEU.scene.isSleeping("monde")) JEU.scene.wake("monde");
   if (m && m.apresCombat) m.apresCombat(resultat || {gagne: false});
 }
+// a face in the interface: asked again twice (slow network) under a new address
+function imageReessayee(img, url){
+  let n = 0;
+  img.onerror = () => { if (++n < ESSAIS_MAX) img.src = `${url}?essai=${n}`; else { img.onerror = null; ECHECS.add(url.split("/").pop()); } };
+  img.src = url;
+}
 function majBarre(){
   const p = P(); if (!p) return;
   $("gNom").textContent = p.nom; $("gEtincelles").textContent = p.etincelles;
-  $("gPortrait").src = `${DOSSIER_HD}/portraits/${herosHD(p)}.png`;
+  imageReessayee($("gPortrait"), `${DOSSIER_HD}/portraits/${herosHD(p)}.png`);
 }
 
 // a house: its boss waits once four Ombres of the tall grass nearby are beaten
@@ -67,7 +75,7 @@ function dialogue(nom, portrait, lignes, choix){
   const d = $("dialogue"), t = $("dlgTexte"), b = $("dlgChoix");
   d.hidden = false; $("dlgNom").textContent = nom;
   const img = $("dlgPortrait"); img.hidden = !portrait;
-  if (portrait) img.src = `${DOSSIER_HD}/portraits/${portrait}.png`;   // a villager's key
+  if (portrait) imageReessayee(img, `${DOSSIER_HD}/portraits/${portrait}.png`);   // a villager's key
   let i = 0;
   const fermer = apres => { d.hidden = true; d.onclick = null; taire(); window.__calme = performance.now() + 250; if (apres) apres(); };
   const afficher = () => {

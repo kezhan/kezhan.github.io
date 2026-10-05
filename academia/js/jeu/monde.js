@@ -7,6 +7,7 @@ class Monde extends Phaser.Scene {
   constructor(){ super("monde"); }
   // the high-definition drawings this village needs: hero, villagers, companion, every Ombre, the effects
   preload(){
+    reessayerImages(this);
     const a = actif();
     chargerAtlas(this, [herosHD(P()), "sage", "hugo", "paco", a && cleDe(a), ...Object.values(CLES_OMBRES)]);
     chargerEffetsHD(this.load, QUALITE);

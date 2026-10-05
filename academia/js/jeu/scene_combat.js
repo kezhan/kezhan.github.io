@@ -6,7 +6,10 @@
 class SceneCombat extends Phaser.Scene {
   constructor(){ super("combat"); }
   init(d){ this.d = d; }
-  preload(){ chargerAtlas(this, [cleDe(this.d.c), this.d.o.cle]); chargerFondsHD(this.load, QUALITE); chargerEffetsHD(this.load, QUALITE); }
+  preload(){
+    reessayerImages(this);
+    chargerAtlas(this, [cleDe(this.d.c), this.d.o.cle]); chargerFondsHD(this.load, QUALITE); chargerEffetsHD(this.load, QUALITE);
+  }
   create(){
     const {c, o, region} = this.d, w = this.scale.width, h = this.scale.height, r = RATIO;
     const portrait = h > w * 1.1, part = portrait ? .5 : .58, hs = Math.round(h * part);
@@ -20,8 +23,8 @@ class SceneCombat extends Phaser.Scene {
     // the creatures, feet on their stands
     this.lui = this.creature(o.cle, "face", L.lui, hs * (o.boss ? .5 : .4));
     this.moi = this.creature(cleDe(c), "dos", L.moi, hs * .44 * [1, 1.08, 1.16][stade(c) - 1]);
-    if (this.lui.preFX) this.lui.preFX.addGlow(o.boss ? 0xFF5EC9 : 0x7B4DFF, 3, 0, false, .1, 10);
-    if (stade(c) === 3 && this.moi.preFX) this.moi.preFX.addGlow(0xFFD45C, 3, 0);
+    halo(this, this.lui, o.boss ? 0xFF5EC9 : 0x7B4DFF, 1.06, .55);   // js/jeu/sprites_hd.js
+    if (stade(c) === 3) halo(this, this.moi, 0xFFD45C, 1.06, .5);
     this.base = {lui: {x: this.lui.x, y: this.lui.y}, moi: {x: this.moi.x, y: this.moi.y}};
     this.pret = true;
     if (!TEST && !this.d.vu) {   // entrance: the companion runs in, the Ombre rises from a puff of smoke
@@ -39,14 +42,20 @@ class SceneCombat extends Phaser.Scene {
     this.scale.on("resize", taille);
     this.events.once("shutdown", () => { this.pret = false; this.scale.off("resize", taille); });
   }
-  // a creature: its drawing in pose `vue` (face or back), feet on its stand, a soft shadow under it
+  // a creature: its drawing in pose `vue` (face or back), feet on its stand, a soft shadow under it; a drawing not
+  // there yet (slow network) is waited for, the creature stays invisible meanwhile (js/jeu/sprites_hd.js, quandAtlas)
   creature(cle, vue, p, hauteur){
-    const t = this.textures.get("hd_" + cle);
-    const s = this.add.sprite(p.x, p.y + p.ry * .35, "hd_" + cle, t.has(vue) ? vue : "face").setOrigin(.5, 1);
-    s.base = hauteur / s.height; s.setScale(s.base); s.hd = cle; s.vue = s.frame.name;
-    s.setDepth(5);
-    this.add.graphics().setDepth(4).fillStyle(0x000000, .18).fillEllipse(p.x, p.y + p.ry * .3, s.displayWidth * .75, p.ry * .7);
-    if (!TEST) s.souffle = this.tweens.add({targets: s, scaleY: s.base * 1.03, scaleX: s.base * .985, duration: 1000, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
+    const s = this.add.sprite(p.x, p.y + p.ry * .35, "__DEFAULT").setOrigin(.5, 1).setDepth(5);
+    s.base = 1; s.hd = cle; s.vue = vue;
+    const ombre = this.add.graphics().setDepth(4);
+    quandAtlas(this, cle, () => {
+      if (!s.active) return;
+      const t = this.textures.get("hd_" + cle);
+      s.setTexture("hd_" + cle, t.has(vue) ? vue : "face").setScale(1);
+      s.base = hauteur / s.height; s.setScale(s.base); s.vue = s.frame.name;
+      ombre.clear().fillStyle(0x000000, .18).fillEllipse(p.x, p.y + p.ry * .3, s.displayWidth * .75, p.ry * .7);
+      if (!TEST) s.souffle = this.tweens.add({targets: s, scaleY: s.base * 1.03, scaleX: s.base * .985, duration: 1000, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
+    });
     return s;
   }
   pose(cible, nom){   // a high-definition expression, when that drawing has it

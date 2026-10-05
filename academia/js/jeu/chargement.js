@@ -11,6 +11,7 @@ const DIRS = ["bas", "haut", "gauche", "droite"];
 class Chargement extends Phaser.Scene {
   constructor(){ super("chargement"); }
   preload(){
+    reessayerImages(this);
     chargerAtlas(this, ["sage", "hugo", "paco", ...Object.values(CLES_OMBRES)]);
     chargerEffetsHD(this.load, QUALITE);
     chargerFondsHD(this.load, QUALITE);

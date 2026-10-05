@@ -34,5 +34,13 @@ function ouvrirEquipe(){
     }
     fiche.append(corps); l.append(fiche);
   });
+  majDiagnostic();
+}
+// for the grown-ups: how the pictures are drawn, and any that could not be loaded
+function majDiagnostic(){
+  const r = JEU.renderer, moteur = r && r.type === Phaser.WEBGL ? `WebGL ${TEXTURE_MAX}` : "sans carte graphique";
+  const manque = [...ECHECS];
+  $("diagImages").textContent = `Images ${QUALITE === "hd" ? "haute définition" : "légères"} · ${moteur} · `
+    + (manque.length ? `dessins non chargés : ${manque.join(", ")} (réseau ?)` : "tous les dessins sont chargés");
 }
 function fermerEquipe(){ window.__calme = performance.now() + 250; montrer("monde"); }

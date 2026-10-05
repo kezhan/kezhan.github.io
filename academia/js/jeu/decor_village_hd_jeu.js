@@ -134,7 +134,9 @@ const VILLAGE_HD_JEU = (() => {
         for (let i = liste.length - 1; i >= 0; i--) {
           const {s: p, o: q} = liste[i];
           if (!p.active || !p.scene) { q.destroy(); liste.splice(i, 1); continue; }
-          q.setPosition(p.x, p.y + 1.2).setDepth(p.depth - .5).setVisible(p.visible).setAlpha(.22 * p.alpha);   // half of it under the feet
+          const dessin = p.texture.key !== "__DEFAULT";   // a character still waiting for its drawing casts no shadow
+          if (dessin && q.largeur !== p.displayWidth) { q.largeur = p.displayWidth; q.setDisplaySize(Math.max(8, Math.min(17, Math.abs(p.displayWidth) * .75)), 4); }
+          q.setPosition(p.x, p.y + 1.2).setDepth(p.depth - .5).setVisible(p.visible && dessin).setAlpha(.22 * p.alpha);   // half of it under the feet
         }
       };
       scene.events.on("update", suivre);

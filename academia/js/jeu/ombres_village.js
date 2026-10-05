@@ -28,7 +28,7 @@ class OmbresVillage {
     const o = {region, x: c.x, y: c.y};
     o.s = spriteCreature(this.s, qui.cle, c.x, c.y).setDepth(profondeur(c.y));
     ombreAuSolHD(this.s, o.s);
-    if (o.s.preFX) o.s.preFX.addGlow(0x7B4DFF, 2, 0, false, .1, 6);
+    halo(this.s, o.s, 0x7B4DFF, 1.14, .6);   // its violet glow (js/jeu/sprites_hd.js)
     o.s.setAlpha(0); this.s.tweens.add({targets: o.s, alpha: 1, duration: TEST ? 1 : 400});
     if (bouffee) this.fumee(o);
     this.liste.push(o);

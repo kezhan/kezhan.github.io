@@ -56,6 +56,7 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .profil span{flex:1} .profil b{font:700 24px var(--titre); display:block} .profil small{color:#5d5585}
 #btnNouveau{display:flex; margin:22px auto}
 .version{position:fixed; right:12px; bottom:8px; margin:0; color:rgba(255,255,255,.55); font-size:13px}
+.diag{margin:4px 0 0; text-align:center; color:#7a7299; font-size:13px}
 .nom{width:100%; min-height:58px; border-radius:16px; background:#fff; border:3px solid var(--encre); font:700 30px var(--titre); padding:0 14px; color:var(--encre)}
 .ages{display:grid; grid-template-columns:repeat(9, minmax(0, 62px)); gap:8px}   /* 5 then 4 on a phone */
 .heros{display:grid; grid-template-columns:repeat(7, minmax(0, 92px)); gap:8px}   /* all on one line, 4 then 3 on a phone */
