@@ -164,6 +164,8 @@ body.porte [hidden] { display:none !important; }
 .porte-erreur.info { background:var(--p-bleu-w); color:var(--p-doux); }
 .porte-erreur[hidden], .porte-maj[hidden], .porte-note[hidden] { display:none; }
 .porte-note { display:flex; align-items:center; justify-content:center; gap:7px; margin:20px 0 0; color:var(--p-pale); font-size:12.5px; }
+/* Sans durée à dire, la note garde sa hauteur, sans rien montrer (js/porte.js, montrer). */
+.porte-note-vide { visibility:hidden; min-height:17px; }
 .porte-note svg, .porte-pied svg { width:15px; height:15px; flex:none; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .porte-pied { display:flex; align-items:center; gap:7px; margin:20px 0 0; font-size:12px; color:#8592A6; }
 .porte-pied svg { width:13px; height:13px; }

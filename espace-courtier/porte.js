@@ -12,9 +12,12 @@
    seulement (le bloc #porteDonnees), jamais dans rag ; celui de l'accès complet n'est écrit nulle
    part.
 
-   Deux mots de passe ouvrent le même contenu : celui de la démonstration, limitée à cinq heures
-   d'utilisation par navigateur, et celui d'un accès complet. L'auteur : « limiter la démo à 5h ?
-   et dire que si les gens veulent plus, faut demander un accès ». Le temps ne court que pendant
+   Deux mots de passe ouvrent le même contenu : celui de la démonstration et celui d'un accès
+   complet. La démonstration a été limitée à cinq heures d'utilisation par navigateur (l'auteur :
+   « limiter la démo à 5h ? et dire que si les gens veulent plus, faut demander un accès »), puis
+   ne l'est plus (le 05-10 : « tu peux supprimer la limitation de 5h ») : `limite_s` vaut 0
+   (_outils/publier.py), rien ne se compte et la porte ne parle d'aucune durée. La mécanique reste,
+   pour une limite qu'on remettrait. Avec une limite, le temps ne court que pendant
    qu'on se sert de l'espace (page affichée, un geste dans les cinq dernières minutes, ou la voix
    qui parle) ; il est gardé dans le stockage du navigateur et dans un cookie, et le plus grand
    des deux fait foi.
@@ -260,10 +263,16 @@ function montrer(etat, erreur){
   document.body.classList.toggle("porte-fin", fin);
   $("porteTitre").textContent = fin ? "Votre démonstration est terminée" : "Connexion";
   $("porteTexte").innerHTML = fin
-    ? "Les cinq heures de démonstration ont été utilisées sur ce navigateur. Pour continuer, <b>demandez un accès</b> à la personne qui vous a transmis ce lien, puis entrez-le ici."
+    ? `Les ${duree(LIMITE)} de démonstration ont été utilisées sur ce navigateur. Pour continuer, <b>demandez un accès</b> à la personne qui vous a transmis ce lien, puis entrez-le ici.`
     : consigne();
   $("porteLabel").textContent = fin ? "Code d'accès" : "Mot de passe";
+  // La durée de la démonstration ne se dit que s'il y en a une (`limite_s`, _outils/publier.py). Sans
+  // elle, la note garde sa place, vide : le formulaire ne descend pas, et la liste des rôles s'ouvre
+  // toujours sous son champ à la taille de l'auteur (1271 × 637).
+  const sansDuree = SANS_LIMITE || APERCU;
   $("porteNote").hidden = fin;
+  $("porteNote").classList.toggle("porte-note-vide", sansDuree);
+  $("porteNoteT").textContent = sansDuree ? "" : `Accès de démonstration : ${duree(LIMITE)} d'utilisation.`;
   preremplir(!fin);
   dire(erreur || "");
   $("porte").hidden = false;
