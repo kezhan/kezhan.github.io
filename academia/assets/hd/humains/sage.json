@@ -311,13 +311,205 @@
     "x": 0.5,
     "y": 1
    }
+  },
+  "face_marche0": {
+   "frame": {
+    "x": 1098,
+    "y": 197,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_marche1": {
+   "frame": {
+    "x": 0,
+    "y": 394,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_marche2": {
+   "frame": {
+    "x": 183,
+    "y": 394,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_marche3": {
+   "frame": {
+    "x": 366,
+    "y": 394,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos_marche0": {
+   "frame": {
+    "x": 549,
+    "y": 394,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos_marche1": {
+   "frame": {
+    "x": 732,
+    "y": 394,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos_marche2": {
+   "frame": {
+    "x": 915,
+    "y": 394,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos_marche3": {
+   "frame": {
+    "x": 1098,
+    "y": 394,
+    "w": 181,
+    "h": 195
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 195
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 195
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
   }
  },
  "meta": {
   "image": "sage.png",
   "size": {
    "w": 1281,
-   "h": 394
+   "h": 591
   },
   "scale": "1",
   "app": "academia hd vectoriel (Kenney CC0)"

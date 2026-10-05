@@ -1,5 +1,7 @@
-/* Académia : chargement des images et création des animations (pack Ninja Adventure, CC0).
-   Personnages et monstres : planches de 4 colonnes (bas, haut, gauche, droite) et une ligne par image de marche. */
+/* Académia : chargement des images, pendant que l'enfant choisit son prénom. Ce que tout village et tout combat
+   montrent, en haute définition (js/jeu/qualite.js) : habitants, Ombres, effets, décors de combat. En secours tant
+   qu'un dessin manque, le pixel art du pack Ninja Adventure (CC0) : planches de 4 colonnes (bas, haut, gauche,
+   droite) et une ligne par image de marche. */
 const HEROS = [6, 17, 16, 25, 12, 19, 2];          // the child chooses one
 const herosDe = p => p && HEROS.includes(p.heros) ? p.heros : HEROS[0];
 // the same heroes drawn in high definition, in the same order (a saved choice keeps its hero)
@@ -12,21 +14,18 @@ const DIRS = ["bas", "haut", "gauche", "droite"];
 class Chargement extends Phaser.Scene {
   constructor(){ super("chargement"); }
   preload(){
+    chargerAtlas(this, ["sage", "hugo", "paco", ...Object.values(CLES_OMBRES)]);
+    chargerEffetsHD(this.load, QUALITE);
+    chargerFondsHD(this.load, QUALITE);
     this.load.image("decor", "assets/decor.png");
-    this.load.spritesheet("tuiles", "assets/decor.png", {frameWidth: 16, frameHeight: 16});   // single tiles, for the battle backdrops
-    [...new Set([...HEROS, ...PNJ])].forEach(i => {
-      this.load.spritesheet("perso" + i, `assets/personnages/${i}.png`, {frameWidth: 16, frameHeight: 16});
-      this.load.image("portrait" + i, `assets/portraits/${i}.png`);
-    });
+    [...new Set([...HEROS, ...PNJ])].forEach(i => this.load.spritesheet("perso" + i, `assets/personnages/${i}.png`, {frameWidth: 16, frameHeight: 16}));
     MONSTRES.forEach(i => this.load.spritesheet("monstre" + i, `assets/monstres/${i}.png`, {frameWidth: 16, frameHeight: 16}));
-    [2, 3, 7, 11, 12, 18, 20].forEach(i => this.load.spritesheet("effet" + i, `assets/effets/${i}.png`, {frameWidth: 32, frameHeight: 32}));
   }
   create(){
     const marche = (cle, lignes) => DIRS.forEach((d, k) => this.anims.create({
       key: `${cle}-${d}`, frames: lignes.map(r => ({key: cle, frame: r * 4 + k})), frameRate: 8, repeat: -1}));
     [...new Set([...HEROS, ...PNJ])].forEach(i => marche("perso" + i, [0, 1, 2, 3]));
     MONSTRES.forEach(i => marche("monstre" + i, [0, 1, 2, 3]));
-    [2, 3, 7, 11, 12, 18, 20].forEach(i => this.anims.create({key: "effet" + i, frames: this.anims.generateFrameNumbers("effet" + i), frameRate: 16}));
     window.__jeuPret = true;
     document.dispatchEvent(new Event("jeu-pret"));
   }

@@ -1,8 +1,12 @@
-/* Académia : la carte du village, construite en code à partir de la planche de décor du pack (cases de 16 px,
-   28 colonnes). Une maison par matière, sa porte, une touffe d'herbes hautes où rôdent les Ombres. */
+/* Académia : la carte du village, construite en code. Une maison par matière, sa porte, une touffe d'herbes hautes
+   où rôdent les Ombres. Elle se lit de deux façons : en cases de la planche pixel du pack (sol, objets : cases de
+   16 px, 28 colonnes), et en éléments (chemins, place, maisons, arbres, mare, fleurs, touffes) que le rendu en
+   haute définition dessine (js/jeu/decor_village_hd.js). Les grilles bloque, herbe, maison et portes servent aux deux. */
 const CASE = 16, COLS_DECOR = 28;
 const T = (c, r) => r * COLS_DECOR + c;          // tile index in assets/decor.png
 const LARG = 44, HAUT = 32;
+// drawing order by row: whoever stands lower on the map is in front (objects: their last row; tall grass hides feet: +8)
+const profondeur = (ligne, decalage = 5) => 100 + 10 * ligne + decalage;
 
 // ground and multi-tile pieces of the sheet (column, row, width, height)
 const SOL = {herbe: [T(22, 11), T(22, 11), T(22, 11), T(22, 11)], sable: [T(22, 6), T(22, 6), T(22, 6)], place: T(19, 12)};
@@ -18,11 +22,19 @@ const HERBES = [T(10, 16), T(9, 15)];
 function construireCarte(){
   const grille = (v) => Array.from({length: HAUT}, () => Array(LARG).fill(v));
   const sol = grille(0), objets = grille(-1), bloque = grille(false), herbe = grille(null), maison = grille(null);
+  // the same map as elements, in tiles: {type, x, y, w, h, ...} (type: chemin, place, maison, arbre, bordure, rochers, mare, barque, panneau, fleur, touffe)
+  const elements = [];
   const hasard = (x, y) => Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;   // same map every time
   for (let y = 0; y < HAUT; y++) for (let x = 0; x < LARG; x++) sol[y][x] = SOL.herbe[Math.floor(hasard(x, y) * 4)];
-  const sable = (x0, y0, w, h) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) sol[y][x] = SOL.sable[Math.floor(hasard(x, y) * 3)]; };
+  const sable = (x0, y0, w, h) => {
+    elements.push({type: "chemin", x: x0, y: y0, w, h});
+    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) sol[y][x] = SOL.sable[Math.floor(hasard(x, y) * 3)];
+  };
+  const SORTES = {maisonA: "maison", maisonB: "maison", maisonC: "maison", maisonRouge: "maison", hutte: "maison", statue: "maison",
+    panneauDojo: "panneau", rochers: "rochers", mare: "mare", barque: "barque"};
   const poser = (nom, x0, y0, opts = {}) => {
     const [c, r, w, h] = PIECES[nom];
+    elements.push({type: opts.type || SORTES[nom] || "arbre", nom, x: x0, y: y0, w, h, ...(opts.region ? {region: opts.region} : {})});
     for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
       objets[y0 + j][x0 + i] = T(c + i, r + j);
       bloque[y0 + j][x0 + i] = opts.passe ? opts.passe(i, j) === false : true;
@@ -31,6 +43,7 @@ function construireCarte(){
   };
   // paths and the square
   sable(17, 12, 10, 7);                      // square, paved
+  elements.push({type: "place", x: 18, y: 13, w: 8, h: 5});
   for (let y = 13; y < 18; y++) for (let x = 18; x < 26; x++) sol[y][x] = SOL.place;
   sable(20, 6, 2, 6); sable(20, 19, 2, 6); sable(20, 23, 8, 2);   // north (Dojo), south then east to the Grand-Duché
   sable(6, 16, 11, 2); sable(27, 16, 11, 2); // west (Germania), east (Albion)
@@ -51,6 +64,7 @@ function construireCarte(){
   ];
   // tall grass where the Ombres hide, one patch per region
   const touffe = (x0, y0, w, h, region) => {
+    elements.push({type: "touffe", x: x0, y: y0, w, h, region});
     for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) {
       if (bloque[y][x] || SOL.sable.includes(sol[y][x])) continue;
       objets[y][x] = HERBES[(x + y) % 2]; herbe[y][x] = region;
@@ -62,14 +76,16 @@ function construireCarte(){
   poser("mare", 36, 22, {passe: (i, j) => i === 0 || j === 0 || i === 4 || j === 4}); poser("barque", 37, 27);
   poser("rochers", 2, 20); poser("grandArbre", 27, 3); poser("grandArbre", 14, 2);
   const arbres = ["buisson1", "buisson2", "buisson3", "sapin1", "sapin2"];
-  for (let x = 0; x < LARG; x += 2) { poser(arbres[(x / 2) % 5], x, 0); poser(arbres[(x / 2 + 2) % 5], x, HAUT - 2); }
-  for (let y = 2; y < HAUT - 2; y += 2) { poser(arbres[(y / 2 + 1) % 5], 0, y); poser(arbres[(y / 2 + 3) % 5], LARG - 2, y); }
+  for (let x = 0; x < LARG; x += 2) { poser(arbres[(x / 2) % 5], x, 0, {type: "bordure"}); poser(arbres[(x / 2 + 2) % 5], x, HAUT - 2, {type: "bordure"}); }
+  for (let y = 2; y < HAUT - 2; y += 2) { poser(arbres[(y / 2 + 1) % 5], 0, y, {type: "bordure"}); poser(arbres[(y / 2 + 3) % 5], LARG - 2, y, {type: "bordure"}); }
   [[3, 4], [15, 8], [29, 9], [3, 26], [12, 27], [30, 27], [33, 24], [15, 22], [16, 3], [16, 25]].forEach(([x, y], i) => {
     if (!bloque[y][x] && !bloque[y + 1][x + 1] && objets[y][x] < 0 && SOL.herbe.includes(sol[y][x])) poser(arbres[i % 5], x, y);
   });
   // a few flowers on the grass (not blocking)
   for (let y = 2; y < HAUT - 2; y++) for (let x = 2; x < LARG - 2; x++)
-    if (objets[y][x] < 0 && !bloque[y][x] && SOL.herbe.includes(sol[y][x]) && hasard(x * 3, y * 7) < .05) objets[y][x] = DECOS[(x * y) % DECOS.length];
+    if (objets[y][x] < 0 && !bloque[y][x] && SOL.herbe.includes(sol[y][x]) && hasard(x * 3, y * 7) < .05) {
+      objets[y][x] = DECOS[(x * y) % DECOS.length]; elements.push({type: "fleur", x, y, w: 1, h: 1, sorte: (x * y) % DECOS.length});
+    }
   // villagers on the square
   const pnj = [
     {x: 19, y: 14, sprite: 9, cle: "sage", nom: "Le Sage", dir: 0, dit: ["Bienvenue à Académia, Gardien !", "Des Ombres violettes se cachent dans les hautes herbes. Touche-en une : ton compagnon la combat avec ce que tu sais !", "Quand tu as vaincu quatre Ombres près d'une maison, sa porte s'ouvre : le chef des Ombres t'y attend."]},
@@ -81,5 +97,5 @@ function construireCarte(){
   // a sign above each house: the subject's icon and name
   const etiquettes = [["dojo", 21, 2.4], ["duche", 25, 19.4], ["germania", 7, 12.4], ["albion", 37, 12.4], ["jardin", 9.5, 4.4], ["observatoire", 35, 4.4]]
     .map(([region, x, y]) => ({region, x, y}));
-  return {sol, objets, bloque, herbe, maison, portes, pnj, etiquettes, depart: {x: 21, y: 16}};
+  return {sol, objets, bloque, herbe, maison, portes, pnj, etiquettes, elements, depart: {x: 21, y: 16}};
 }

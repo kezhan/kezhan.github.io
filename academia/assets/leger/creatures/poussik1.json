@@ -4,7 +4,7 @@
    "frame": {
     "x": 0,
     "y": 0,
-    "w": 168,
+    "w": 182,
     "h": 224
    },
    "rotated": false,
@@ -12,11 +12,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 168,
+    "w": 182,
     "h": 224
    },
    "sourceSize": {
-    "w": 168,
+    "w": 182,
     "h": 224
    },
    "pivot": {
@@ -26,9 +26,9 @@
   },
   "dos": {
    "frame": {
-    "x": 170,
+    "x": 184,
     "y": 0,
-    "w": 168,
+    "w": 182,
     "h": 224
    },
    "rotated": false,
@@ -36,11 +36,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 168,
+    "w": 182,
     "h": 224
    },
    "sourceSize": {
-    "w": 168,
+    "w": 182,
     "h": 224
    },
    "pivot": {
@@ -52,7 +52,7 @@
    "frame": {
     "x": 0,
     "y": 226,
-    "w": 60,
+    "w": 65,
     "h": 80
    },
    "rotated": false,
@@ -60,11 +60,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 60,
+    "w": 65,
     "h": 80
    },
    "sourceSize": {
-    "w": 60,
+    "w": 65,
     "h": 80
    },
    "pivot": {
@@ -74,9 +74,9 @@
   },
   "dos_petit": {
    "frame": {
-    "x": 62,
+    "x": 67,
     "y": 226,
-    "w": 60,
+    "w": 65,
     "h": 80
    },
    "rotated": false,
@@ -84,11 +84,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 60,
+    "w": 65,
     "h": 80
    },
    "sourceSize": {
-    "w": 60,
+    "w": 65,
     "h": 80
    },
    "pivot": {
@@ -100,7 +100,7 @@
  "meta": {
   "image": "poussik1.png",
   "size": {
-   "w": 340,
+   "w": 368,
    "h": 308
   },
   "scale": "1",

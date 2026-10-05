@@ -4,7 +4,7 @@
    "frame": {
     "x": 0,
     "y": 0,
-    "w": 202,
+    "w": 246,
     "h": 240
    },
    "rotated": false,
@@ -12,11 +12,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 202,
+    "w": 246,
     "h": 240
    },
    "sourceSize": {
-    "w": 202,
+    "w": 246,
     "h": 240
    },
    "pivot": {
@@ -26,9 +26,9 @@
   },
   "dos": {
    "frame": {
-    "x": 204,
+    "x": 248,
     "y": 0,
-    "w": 202,
+    "w": 246,
     "h": 240
    },
    "rotated": false,
@@ -36,11 +36,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 202,
+    "w": 246,
     "h": 240
    },
    "sourceSize": {
-    "w": 202,
+    "w": 246,
     "h": 240
    },
    "pivot": {
@@ -52,7 +52,7 @@
    "frame": {
     "x": 0,
     "y": 242,
-    "w": 72,
+    "w": 87,
     "h": 85
    },
    "rotated": false,
@@ -60,11 +60,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 72,
+    "w": 87,
     "h": 85
    },
    "sourceSize": {
-    "w": 72,
+    "w": 87,
     "h": 85
    },
    "pivot": {
@@ -74,9 +74,9 @@
   },
   "dos_petit": {
    "frame": {
-    "x": 74,
+    "x": 89,
     "y": 242,
-    "w": 72,
+    "w": 87,
     "h": 85
    },
    "rotated": false,
@@ -84,11 +84,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 72,
+    "w": 87,
     "h": 85
    },
    "sourceSize": {
-    "w": 72,
+    "w": 87,
     "h": 85
    },
    "pivot": {
@@ -100,7 +100,7 @@
  "meta": {
   "image": "leiwchen2.png",
   "size": {
-   "w": 408,
+   "w": 496,
    "h": 329
   },
   "scale": "1",

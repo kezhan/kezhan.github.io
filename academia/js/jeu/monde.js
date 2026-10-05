@@ -5,10 +5,11 @@ const PAS_MS = 170;
 
 class Monde extends Phaser.Scene {
   constructor(){ super("monde"); }
-  // the high-definition drawings this village needs: hero, villagers, companion, every Ombre
+  // the high-definition drawings this village needs: hero, villagers, companion, every Ombre, the effects
   preload(){
     const a = actif();
     chargerAtlas(this, [herosHD(P()), "sage", "hugo", "paco", a && cleDe(a), ...Object.values(CLES_OMBRES)]);
+    chargerEffetsHD(this.load, QUALITE);
   }
   create(){
     this.carte = construireCarte();
@@ -22,17 +23,17 @@ class Monde extends Phaser.Scene {
     // signs above the houses (icon, name, badges, Ombres beaten before the door opens), crisp at any zoom
     this.panneaux = this.carte.etiquettes.map(e => this.add.text(e.x * CASE, e.y * CASE, "", {fontFamily: "Fredoka, sans-serif", fontSize: "7px",
       color: "#FFFFFF", fontStyle: "bold", stroke: "#1D1640", strokeThickness: 2, backgroundColor: "rgba(29,22,64,.45)", padding: {x: 2, y: 1}})
-      .setOrigin(.5).setResolution(12).setDepth(60));
+      .setOrigin(.5).setResolution(12).setDepth(10000));
     this.majPanneaux();
     // villagers
     this.pnj = this.carte.pnj.map(n => {
-      const s = spriteHumain(this, n.cle, n.sprite, n.x, n.y).setDepth(10 + n.y);
+      const s = spriteHumain(this, n.cle, n.sprite, n.x, n.y).setDepth(profondeur(n.y));
       reposHumain(s, DIRS[n.dir]);
       return {...n, s};
     });
     const p = P(), pos = p.position || this.carte.depart;
     this.case = {x: pos.x, y: pos.y};
-    this.heros = spriteHumain(this, herosHD(p), herosDe(p), pos.x, pos.y).setDepth(20 + pos.y);
+    this.heros = spriteHumain(this, herosHD(p), herosDe(p), pos.x, pos.y).setDepth(profondeur(pos.y, 6));
     this.dir = "bas"; this.chemin = []; this.enMarche = false; this.verrou = false;
     const voisin = [[0, 1], [-1, 0], [1, 0], [0, -1]].map(([a, b]) => ({x: pos.x + a, y: pos.y + b})).find(v => this.libre(v.x, v.y));
     this.traces = [voisin || {...this.case}];
@@ -64,11 +65,15 @@ class Monde extends Phaser.Scene {
       + "  " + (n >= ETAPES ? "🔓" : "●".repeat(n) + "○".repeat(ETAPES - n));
   }
   majPanneaux(){ this.carte.etiquettes.forEach((e, i) => this.panneaux[i].setText(this.texteEtiquette(e.region))); }
+  // the companion following the hero: its drawing is loaded first if it is new (chosen in the bag, evolved)
   majCompagnon(){
-    const c = actif(); if (this.compagnon) this.compagnon.destroy();
-    if (!c) { this.compagnon = null; return; }
-    const t = this.traces[0] || this.case;
-    this.compagnon = spriteCreature(this, cleDe(c), spriteDe(c), t.x, t.y).setDepth(19 + t.y);
+    const c = actif();
+    chargerPuis(this, [c && cleDe(c)], () => {
+      if (this.compagnon) this.compagnon.destroy();
+      if (!c) { this.compagnon = null; return; }
+      const t = this.traces[0] || this.case;
+      this.compagnon = spriteCreature(this, cleDe(c), spriteDe(c), t.x, t.y).setDepth(profondeur(t.y, 4));
+    });
   }
   libre(x, y){ return x >= 0 && y >= 0 && x < LARG && y < HAUT && !this.carte.bloque[y][x]; }
   dist(c){ return Math.abs(c.x - this.case.x) + Math.abs(c.y - this.case.y); }
@@ -116,10 +121,7 @@ class Monde extends Phaser.Scene {
     }
     if (!this.enMarche) this.pas();
   }
-  marquer(x, y){   // a little sparkle where the child tapped: every touch gets an answer
-    const e = this.add.sprite(x * CASE + 8, y * CASE + 8, "effet3").setDepth(5).setScale(.5).setAlpha(.8);
-    e.play("effet3"); e.once("animationcomplete", () => e.destroy());
-  }
+  marquer(x, y){ effetHD(this, "toucher", x * CASE + 8, y * CASE + 8, CASE, profondeur(y, 9)); }   // every touch gets an answer
   pas(){
     const suiv = this.chemin.shift();
     if (!suiv) { this.enMarche = false; this.arreter(); this.arrive(); return; }
@@ -130,21 +132,19 @@ class Monde extends Phaser.Scene {
     this.traces.unshift({...this.case}); this.traces.length = 3;
     this.case = {x, y};
     this.tweens.add({targets: this.heros, x: x * CASE + 8, y: y * CASE + this.heros.dy, duration: TEST ? 1 : PAS_MS, onComplete: () => this.apresPas()});
-    this.heros.setDepth(20 + y);
+    this.heros.setDepth(profondeur(y, 6));
     if (this.compagnon) {   // the companion walks into the hero's previous tile
       const k = this.compagnon, t = this.traces[0], cdx = t.x * CASE + 8 - k.x, cdy = t.y * CASE + k.dy - k.y;
       const d = Math.abs(cdx) > Math.abs(cdy) ? (cdx > 0 ? "droite" : "gauche") : (cdy > 0 ? "bas" : "haut");
       if (cdx || cdy) marcherCreature(k, d, PAS_MS);
       this.tweens.add({targets: k, x: t.x * CASE + 8, y: t.y * CASE + k.dy, duration: TEST ? 1 : PAS_MS});
-      this.compagnon.setDepth(19 + t.y);
+      this.compagnon.setDepth(profondeur(t.y, 4));
     }
   }
   apresPas(){
     const {x, y} = this.case;
     if (ecranCourant !== "monde" || this.verrou) { this.chemin = []; this.pnjVise = null; return this.pas(); }   // a menu opened while walking: stop here
-    if (this.carte.herbe[y][x]) {   // tall grass rustles
-      const f = this.add.sprite(x * CASE + 8, y * CASE + 10, "effet18").setDepth(30).setScale(.35); f.play("effet18"); f.once("animationcomplete", () => f.destroy());
-    }
+    if (this.carte.herbe[y][x]) effetHD(this, "herbe", this.heros.x, this.heros.y, CASE, this.heros.depth + 3);   // tall grass rustles
     const o = this.ombres.pres(x, y);
     if (o) { this.enMarche = false; this.arreter(); return this.rencontre(o); }
     const porte = this.carte.portes.find(p => p.x === x && p.y === y);

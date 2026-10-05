@@ -4,7 +4,7 @@
    "frame": {
     "x": 0,
     "y": 0,
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "rotated": false,
@@ -12,11 +12,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "sourceSize": {
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "pivot": {
@@ -26,9 +26,9 @@
   },
   "touche": {
    "frame": {
-    "x": 384,
+    "x": 381,
     "y": 0,
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "rotated": false,
@@ -36,11 +36,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "sourceSize": {
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "pivot": {
@@ -50,9 +50,9 @@
   },
   "vaincu": {
    "frame": {
-    "x": 768,
+    "x": 762,
     "y": 0,
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "rotated": false,
@@ -60,11 +60,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "sourceSize": {
-    "w": 382,
+    "w": 379,
     "h": 280
    },
    "pivot": {
@@ -76,7 +76,7 @@
    "frame": {
     "x": 0,
     "y": 282,
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "rotated": false,
@@ -84,11 +84,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "sourceSize": {
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "pivot": {
@@ -98,9 +98,9 @@
   },
   "touche_petit": {
    "frame": {
-    "x": 138,
+    "x": 137,
     "y": 282,
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "rotated": false,
@@ -108,11 +108,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "sourceSize": {
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "pivot": {
@@ -122,9 +122,9 @@
   },
   "vaincu_petit": {
    "frame": {
-    "x": 276,
+    "x": 274,
     "y": 282,
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "rotated": false,
@@ -132,11 +132,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "sourceSize": {
-    "w": 136,
+    "w": 135,
     "h": 100
    },
    "pivot": {
@@ -148,7 +148,7 @@
  "meta": {
   "image": "maitre.png",
   "size": {
-   "w": 1152,
+   "w": 1143,
    "h": 384
   },
   "scale": "1",

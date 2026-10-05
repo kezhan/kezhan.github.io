@@ -9,7 +9,7 @@ const VIOLET = [.3 * .8, .59 * .8, .11 * .8, 0, 0,  .3 * .52, .59 * .52, .11 * .
 class SceneCombat extends Phaser.Scene {
   constructor(){ super("combat"); }
   init(d){ this.d = d; }
-  preload(){ chargerAtlas(this, [cleDe(this.d.c), this.d.o.cle]); }
+  preload(){ chargerAtlas(this, [cleDe(this.d.c), this.d.o.cle]); chargerFondsHD(this.load, QUALITE); chargerEffetsHD(this.load, QUALITE); }
   create(){
     const {c, o, region} = this.d, w = this.scale.width, h = this.scale.height, r = RATIO;
     const portrait = h > w * 1.1, part = portrait ? .5 : .58, hs = Math.round(h * part);
@@ -32,7 +32,7 @@ class SceneCombat extends Phaser.Scene {
       this.d.vu = true;
       this.moi.x = -this.moi.displayWidth; this.tweens.add({targets: this.moi, x: this.base.moi.x, duration: 650, ease: "Back.easeOut"});
       this.lui.setAlpha(0).x += 30 * r; this.tweens.add({targets: this.lui, alpha: 1, x: this.base.lui.x, duration: 600, delay: 250, ease: "Quad.easeOut"});
-      this.time.delayedCall(250, () => this.effet("lui", 18, 1.3));
+      this.time.delayedCall(250, () => this.effet("lui", "apparition"));
     }
     // a turned tablet: the scene is drawn again for the new size, once the size has really changed
     let minuteur = null;
@@ -64,9 +64,9 @@ class SceneCombat extends Phaser.Scene {
     const s = this[cible];
     if (s && s.hd && this.textures.get("hd_" + s.hd).has(nom)) s.setFrame(nom);
   }
-  effet(cible, n, echelle = 1){
-    const s = this[cible], e = this.add.sprite(s.x, s.y - s.displayHeight / 2, "effet" + n).setScale(echelle * s.displayHeight / 64).setDepth(6);
-    e.play("effet" + n); e.once("animationcomplete", () => e.destroy());
+  effet(cible, nom){   // js/jeu/effets_hd.js, centred on the creature and as big as it
+    const s = this[cible];
+    if (s) effetHD(this, nom, s.x, s.y - s.displayHeight / 2, s.displayHeight, 6);
   }
   texte(cible, t, couleur = "#FFFFFF", taille = 1){
     const s = this[cible], r = RATIO;
@@ -91,7 +91,7 @@ class SceneCombat extends Phaser.Scene {
       else if (nom === "joie") T({y: b.y - 28 * r, duration: 200, yoyo: true, repeat: 1, ease: "Quad.easeOut"});
       else if (nom === "ko" && cible === "lui") {   // the Ombre is consoled: it smiles, sparkles and floats away
         if (s.souffle) s.souffle.stop();
-        this.pose("lui", "vaincu"); this.effet("lui", 3, 1.6);
+        this.pose("lui", "vaincu"); this.effet("lui", "consolee");
         T({y: b.y - 60 * r, alpha: 0, duration: 900, delay: 350, ease: "Sine.easeIn"});
       }
       else if (nom === "ko") { if (s.souffle) s.souffle.stop(); T({alpha: .45, scaleY: s.base * .8, duration: 550, ease: "Quad.easeIn"}); }
@@ -129,8 +129,8 @@ function monterArene(c, o, region){
     degats(k, n, type = ""){
       const s = S(); if (!s) return;
       if (type === "rate") return s.texte(k, "Raté !", "#E7E1FF", .8);
-      if (type === "esquive") { s.effet(k, 2, 1.2); return s.texte(k, "🛡️ Esquivé !", "#BDF2CF", .8); }
-      s.effet(k, k === "lui" ? (type === "critique" ? 12 : n > 12 ? 11 : 7) : 20, type === "critique" ? 1.4 : 1.1);
+      if (type === "esquive") { s.effet(k, "esquive"); return s.texte(k, "🛡️ Esquivé !", "#BDF2CF", .8); }
+      s.effet(k, k === "lui" ? (type === "critique" ? "critique" : n > 12 ? "coup_fort" : "coup") : "recu");
       s.texte(k, "−" + n, type === "critique" ? "#FFD45C" : "#FFFFFF", type === "critique" ? 1.3 : 1);
     },
     // a message in the text box at the bottom; the question panel steps aside meanwhile

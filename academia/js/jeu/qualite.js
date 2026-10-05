@@ -36,3 +36,11 @@ function chargerAtlas(scene, cles){
   });
 }
 const aHD = (scene, cle) => !!cle && scene.textures.exists("hd_" + cle);
+// outside preload (a companion chosen in the bag, an evolution): load what is missing, then go on (at once if nothing is)
+function chargerPuis(scene, cles, apres){
+  const manque = [...new Set(cles)].filter(c => c && !scene.textures.exists("hd_" + c) && !ATLAS_MANQUANTS.has(c));
+  if (!manque.length) return apres();
+  chargerAtlas(scene, manque);
+  scene.load.once("complete", () => { if (scene.sys.isActive() || scene.sys.isSleeping()) apres(); });
+  scene.load.start();
+}

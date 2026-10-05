@@ -1,7 +1,7 @@
 /* Académia : l'état du jeu, une partie par enfant retrouvée par son prénom, sauvegardée à chaque étape
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». */
-const VERSION = "0.3";
+const VERSION = "0.4";
 const CLE = "academia.v1";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;

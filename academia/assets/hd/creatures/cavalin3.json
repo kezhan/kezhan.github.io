@@ -1,0 +1,109 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 333,
+    "h": 512
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 333,
+    "h": 512
+   },
+   "sourceSize": {
+    "w": 333,
+    "h": 512
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos": {
+   "frame": {
+    "x": 335,
+    "y": 0,
+    "w": 333,
+    "h": 512
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 333,
+    "h": 512
+   },
+   "sourceSize": {
+    "w": 333,
+    "h": 512
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_petit": {
+   "frame": {
+    "x": 0,
+    "y": 514,
+    "w": 120,
+    "h": 185
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 185
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 185
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos_petit": {
+   "frame": {
+    "x": 122,
+    "y": 514,
+    "w": 120,
+    "h": 185
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 120,
+    "h": 185
+   },
+   "sourceSize": {
+    "w": 120,
+    "h": 185
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "cavalin3.png",
+  "size": {
+   "w": 670,
+   "h": 701
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

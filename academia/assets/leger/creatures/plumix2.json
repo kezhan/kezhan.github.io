@@ -1,0 +1,109 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 223,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 223,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 223,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos": {
+   "frame": {
+    "x": 225,
+    "y": 0,
+    "w": 223,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 223,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 223,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_petit": {
+   "frame": {
+    "x": 0,
+    "y": 242,
+    "w": 79,
+    "h": 85
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 79,
+    "h": 85
+   },
+   "sourceSize": {
+    "w": 79,
+    "h": 85
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos_petit": {
+   "frame": {
+    "x": 81,
+    "y": 242,
+    "w": 79,
+    "h": 85
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 79,
+    "h": 85
+   },
+   "sourceSize": {
+    "w": 79,
+    "h": 85
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "plumix2.png",
+  "size": {
+   "w": 450,
+   "h": 329
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

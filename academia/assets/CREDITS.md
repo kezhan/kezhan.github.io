@@ -1,5 +1,16 @@
 # Crédits des images
 
-Décor, personnages, portraits, monstres et effets : pack « Ninja Adventure » de **Pixel-boy** (https://pixel-boy.itch.io/ninja-adventure-asset-pack), copie publiée dans https://github.com/sparklinlabs/superpowers-asset-packs (dossier `ninja-adventure`), licence **CC0 1.0** (domaine public), vérifiée le 04/10/2026.
+## Haute définition (`hd/` et `leger/`)
 
-Moteur de jeu : Phaser 3.90 (https://phaser.io), licence MIT, copie dans `vendor/phaser/` avec sa licence.
+1. Héros et habitants : pack « Toon Characters » de **Kenney** (https://kenney.nl/assets/toon-characters), licence **CC0 1.0** (domaine public), recoloré et complété ; sources et licence dans `outils/personnages/sources/`.
+2. Compagnons, Ombres et boss : pack « Monster Builder Pack » de **Kenney** (https://kenney.nl/assets/monster-builder-pack), licence **CC0 1.0**, et formes dessinées pour le jeu dans le même style. La tête de Cavalin est dessinée d'après le pack « Animal Pack Remastered » de Kenney (CC0), sans en copier de fichier.
+3. Décors de combat : pack « Background Elements Remastered » de **Kenney** (https://kenney.nl/assets/background-elements-remastered), licence **CC0 1.0**, vérifiée le 05/10/2026, et formes dessinées pour le jeu ; sources et licence dans `outils/fonds/sources/`.
+4. Effets : dessinés pour le jeu (`outils/effets/`).
+
+## Pixel art (en attendant le village en haute définition)
+
+Carte du village, et personnages en secours : pack « Ninja Adventure » de **Pixel-boy** (https://pixel-boy.itch.io/ninja-adventure-asset-pack), copie publiée dans https://github.com/sparklinlabs/superpowers-asset-packs (dossier `ninja-adventure`), licence **CC0 1.0** (domaine public), vérifiée le 04/10/2026.
+
+## Moteur
+
+Phaser 3.90 (https://phaser.io), licence MIT, copie dans `vendor/phaser/` avec sa licence.
