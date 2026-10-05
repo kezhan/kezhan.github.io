@@ -23,8 +23,8 @@
    des deux fait foi.
 
    Écrite dans espace_courtier/porte/, publiée par _outils/publier.py. L'espace ne sait rien de
-   la porte : elle pose sa coquille, ses feuilles et ses scripts, puis ajoute à la barre la
-   pastille du temps qui reste.
+   la porte : elle pose sa coquille, ses feuilles et ses scripts, puis, s'il y a une limite de
+   temps, ajoute à la barre la pastille du temps qui reste.
 
    L'auteur, le 03-10 : « à gauche, une image, illustration, avec bouton pour lancer
    présentation, à droite login et mot de passe », puis « pas besoin de mot de passe pour lancer
@@ -33,8 +33,8 @@
    qu'au premier clic ; si elle manque, la porte le dit en une ligne. Une fois chargée, l'espace
    ne s'ouvre plus dans la même page : ses scripts redéclareraient ceux de la présentation.
 
-   La sortie : window.porteSortir() oublie la session et revient à la porte. La pastille s'en
-   sert, le menu du compte de l'espace aussi quand elle existe.
+   La sortie : window.porteSortir() oublie la session et revient à la porte. Le menu du compte de
+   l'espace s'en sert (« Se déconnecter »), la pastille aussi quand il y a une limite.
 
    Ouverte du disque (porte/porte.html, sans contenu chiffré), la porte est un aperçu : elle
    s'affiche comme en ligne, un mot de passe pour la forme déjà saisi ; tout mot de passe mène à
@@ -169,7 +169,9 @@ async function ouvrirEspace(contenu, niveau){
     el.textContent = s.code + "\n//# sourceURL=" + s.nom;
     document.body.appendChild(el);
   }
-  poserPastille(niveau);
+  // Sans limite de temps, pas de pastille : elle ne disait que le temps qui reste (l'auteur, le 05-10 :
+  // « pourquoi j'ai toujours : Accès complet ? [...] ça sert à quoi ? ») ; la sortie est dans le menu du compte.
+  if(!SANS_LIMITE) poserPastille(niveau);
   accueillir();
   if(niveau === "demo") compter.demarrer();
 }
