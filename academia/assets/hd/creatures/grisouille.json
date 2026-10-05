@@ -1,0 +1,157 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 331,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 331,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 331,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 333,
+    "y": 0,
+    "w": 331,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 331,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 331,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu": {
+   "frame": {
+    "x": 666,
+    "y": 0,
+    "w": 331,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 331,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 331,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_petit": {
+   "frame": {
+    "x": 0,
+    "y": 422,
+    "w": 118,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 118,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 118,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 120,
+    "y": 422,
+    "w": 118,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 118,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 118,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu_petit": {
+   "frame": {
+    "x": 240,
+    "y": 422,
+    "w": 118,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 118,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 118,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "grisouille.png",
+  "size": {
+   "w": 999,
+   "h": 574
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

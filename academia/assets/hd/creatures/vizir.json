@@ -1,0 +1,157 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 443,
+    "h": 560
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 443,
+    "h": 560
+   },
+   "sourceSize": {
+    "w": 443,
+    "h": 560
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 445,
+    "y": 0,
+    "w": 443,
+    "h": 560
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 443,
+    "h": 560
+   },
+   "sourceSize": {
+    "w": 443,
+    "h": 560
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu": {
+   "frame": {
+    "x": 890,
+    "y": 0,
+    "w": 443,
+    "h": 560
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 443,
+    "h": 560
+   },
+   "sourceSize": {
+    "w": 443,
+    "h": 560
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_petit": {
+   "frame": {
+    "x": 0,
+    "y": 562,
+    "w": 158,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 158,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 158,
+    "h": 200
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 160,
+    "y": 562,
+    "w": 158,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 158,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 158,
+    "h": 200
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu_petit": {
+   "frame": {
+    "x": 320,
+    "y": 562,
+    "w": 158,
+    "h": 200
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 158,
+    "h": 200
+   },
+   "sourceSize": {
+    "w": 158,
+    "h": 200
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "vizir.png",
+  "size": {
+   "w": 1335,
+   "h": 764
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

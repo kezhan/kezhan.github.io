@@ -1,0 +1,157 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 259,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 259,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 259,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 261,
+    "y": 0,
+    "w": 259,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 259,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 259,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu": {
+   "frame": {
+    "x": 522,
+    "y": 0,
+    "w": 259,
+    "h": 280
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 259,
+    "h": 280
+   },
+   "sourceSize": {
+    "w": 259,
+    "h": 280
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_petit": {
+   "frame": {
+    "x": 0,
+    "y": 282,
+    "w": 92,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 92,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 92,
+    "h": 100
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 94,
+    "y": 282,
+    "w": 92,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 92,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 92,
+    "h": 100
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu_petit": {
+   "frame": {
+    "x": 188,
+    "y": 282,
+    "w": 92,
+    "h": 100
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 92,
+    "h": 100
+   },
+   "sourceSize": {
+    "w": 92,
+    "h": 100
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "gardien.png",
+  "size": {
+   "w": 783,
+   "h": 384
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

@@ -23,11 +23,14 @@ class OmbresVillage {
   poser(region){
     const libres = this.cases[region].filter(c => !this.occupee(c.x, c.y) && this.loinDuHeros(c));
     if (!libres.length) { this.s.time.delayedCall(2000, () => this.poser(region)); return null; }   // the hero stands in the grass: later
-    const c = libres[rnd(libres.length)], cle = "monstre" + ombre(regionDe(region), false).sprite;
-    const o = {region, x: c.x, y: c.y, cle};
-    o.s = this.s.add.sprite(c.x * CASE + 8, c.y * CASE + 8, cle, 0).setDepth(18 + c.y);
-    if (o.s.preFX) { o.s.preFX.addColorMatrix().set(VIOLET); o.s.preFX.addGlow(0x7B4DFF, 2, 0, false, .1, 6); } else o.s.setTint(TEINTE_OMBRE);
-    o.s.play(cle + "-bas"); o.s.anims.timeScale = .5;
+    const c = libres[rnd(libres.length)], qui = ombre(regionDe(region), false);
+    const o = {region, x: c.x, y: c.y};
+    o.s = spriteCreature(this.s, qui.cle, qui.sprite, c.x, c.y).setDepth(18 + c.y);
+    if (o.s.pixel) {   // the pixel drawing is turned violet; the high-definition one is drawn violet
+      if (o.s.preFX) o.s.preFX.addColorMatrix().set(VIOLET); else o.s.setTint(TEINTE_OMBRE);
+      o.s.play(o.s.pixel + "-bas"); o.s.anims.timeScale = .5;
+    }
+    if (o.s.preFX) o.s.preFX.addGlow(0x7B4DFF, 2, 0, false, .1, 6);
     o.s.setAlpha(0); this.s.tweens.add({targets: o.s, alpha: 1, duration: TEST ? 1 : 400});
     this.liste.push(o);
     return o;
@@ -42,13 +45,13 @@ class OmbresVillage {
       if (!voisins.length) return;
       const c = voisins[rnd(voisins.length)], d = c.x > o.x ? "droite" : c.x < o.x ? "gauche" : c.y > o.y ? "bas" : "haut";
       o.x = c.x; o.y = c.y; o.bouge = true;
-      o.s.play(o.cle + "-" + d, true);
-      this.s.tweens.add({targets: o.s, x: c.x * CASE + 8, y: c.y * CASE + 8, duration: TEST ? 1 : 420,
-        onComplete: () => { o.bouge = false; o.s.setDepth(18 + c.y); o.s.play(o.cle + "-bas", true); }});
+      marcherCreature(o.s, d, 420);
+      this.s.tweens.add({targets: o.s, x: c.x * CASE + 8, y: c.y * CASE + o.s.dy, duration: TEST ? 1 : 420,
+        onComplete: () => { o.bouge = false; o.s.setDepth(18 + c.y); if (o.s.pixel) o.s.play(o.s.pixel + "-bas", true); else reposCreature(o.s); }});
     });
   }
   // the child chose this one: it stops and hops, so that the hero can reach it
-  viser(o){ o.fige = true; if (!TEST && !o.bouge) this.s.tweens.add({targets: o.s, y: o.y * CASE + 4, duration: 120, yoyo: true}); }
+  viser(o){ o.fige = true; if (!TEST && !o.bouge) this.s.tweens.add({targets: o.s, y: o.y * CASE + o.s.dy - 4, duration: 120, yoyo: true}); }
   // after its fight: beaten, it vanishes in a puff and another one comes back later; otherwise it wanders again
   apres(o, gagne){
     if (!o) return;

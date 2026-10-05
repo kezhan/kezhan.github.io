@@ -1,0 +1,157 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 247,
+    "y": 0,
+    "w": 245,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu": {
+   "frame": {
+    "x": 494,
+    "y": 0,
+    "w": 245,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 245,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 245,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_petit": {
+   "frame": {
+    "x": 0,
+    "y": 422,
+    "w": 87,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 87,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 87,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 89,
+    "y": 422,
+    "w": 87,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 87,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 87,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu_petit": {
+   "frame": {
+    "x": 178,
+    "y": 422,
+    "w": 87,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 87,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 87,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "neantik.png",
+  "size": {
+   "w": 741,
+   "h": 574
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

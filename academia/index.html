@@ -10,8 +10,8 @@
 <link rel="apple-touch-icon" href="icones/icone-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&display=swap">
-<link rel="stylesheet" href="style.css?v=d1752719">
-<link rel="stylesheet" href="style_combat.css?v=d1752719">
+<link rel="stylesheet" href="style.css?v=6fee8000">
+<link rel="stylesheet" href="style_combat.css?v=6fee8000">
 </head>
 <body>
 <!-- the game world (Phaser) fills the screen; menus sit on top of it -->
@@ -28,6 +28,7 @@
   <p class="sous">Le monde où l'on apprend en s'amusant</p>
   <div class="profils" id="profils"></div>
   <button class="gros" id="btnNouveau" disabled>✨ Nouveau Gardien</button>
+  <p class="version" id="version"></p>
 </main>
 
 <!-- NEW GUARDIAN: name, age, hero -->
@@ -69,7 +70,7 @@
   <div class="carte large">
     <div class="entete"><h2 class="titre3">🎒 Mon équipe</h2><button class="rond" id="btnFermerEquipe" aria-label="Fermer">✖</button></div>
     <div class="liste-equipe" id="listeEquipe"></div>
-    <div class="ligne"><button class="joker" id="btnChanger">👤 Changer de Gardien</button></div>
+    <div class="ligne"><button class="joker" id="btnChanger">👤 Changer de Gardien</button><button class="joker" id="btnImages"></button></div>
   </div>
 </section>
 
@@ -82,28 +83,29 @@
 <div class="toast" id="toast" hidden></div>
 
 <script src="vendor/phaser/phaser.min.js"></script>
-<script src="js/outils.js?v=d1752719"></script>
-<script src="js/etat.js?v=d1752719"></script>
-<script src="js/voix.js?v=d1752719"></script>
-<script src="js/compagnons.js?v=d1752719"></script>
-<script src="js/questions/maths.js?v=d1752719"></script>
-<script src="js/questions/maths_mult.js?v=d1752719"></script>
-<script src="js/questions/logique.js?v=d1752719"></script>
-<script src="js/questions.js?v=d1752719"></script>
-<script src="js/adaptatif.js?v=d1752719"></script>
-<script src="js/sprite_dom.js?v=d1752719"></script>
-<script src="js/question_vue.js?v=d1752719"></script>
-<script src="js/combat.js?v=d1752719"></script>
-<script src="js/progression.js?v=d1752719"></script>
-<script src="js/equipe.js?v=d1752719"></script>
-<script src="js/accueil.js?v=d1752719"></script>
-<script src="js/jeu/carte.js?v=d1752719"></script>
-<script src="js/jeu/chargement.js?v=d1752719"></script>
-<script src="js/jeu/monde.js?v=d1752719"></script>
-<script src="js/jeu/fond_combat.js?v=d1752719"></script>
-<script src="js/jeu/scene_combat.js?v=d1752719"></script>
-<script src="js/jeu/ombres_village.js?v=d1752719"></script>
-<script src="js/jeu/lanceur.js?v=d1752719"></script>
-<script src="js/demarrage.js?v=d1752719"></script>
+<script src="js/outils.js?v=6fee8000"></script>
+<script src="js/etat.js?v=6fee8000"></script>
+<script src="js/voix.js?v=6fee8000"></script>
+<script src="js/compagnons.js?v=6fee8000"></script>
+<script src="js/questions/maths.js?v=6fee8000"></script>
+<script src="js/questions/maths_mult.js?v=6fee8000"></script>
+<script src="js/questions/logique.js?v=6fee8000"></script>
+<script src="js/questions.js?v=6fee8000"></script>
+<script src="js/adaptatif.js?v=6fee8000"></script>
+<script src="js/sprite_dom.js?v=6fee8000"></script>
+<script src="js/question_vue.js?v=6fee8000"></script>
+<script src="js/combat.js?v=6fee8000"></script>
+<script src="js/progression.js?v=6fee8000"></script>
+<script src="js/equipe.js?v=6fee8000"></script>
+<script src="js/accueil.js?v=6fee8000"></script>
+<script src="js/jeu/carte.js?v=6fee8000"></script>
+<script src="js/jeu/qualite.js?v=6fee8000"></script>
+<script src="js/jeu/chargement.js?v=6fee8000"></script>
+<script src="js/jeu/sprites_hd.js?v=6fee8000"></script>
+<script src="js/jeu/monde.js?v=6fee8000"></script>
+<script src="js/jeu/scene_combat.js?v=6fee8000"></script>
+<script src="js/jeu/ombres_village.js?v=6fee8000"></script>
+<script src="js/jeu/lanceur.js?v=6fee8000"></script>
+<script src="js/demarrage.js?v=6fee8000"></script>
 </body>
 </html>

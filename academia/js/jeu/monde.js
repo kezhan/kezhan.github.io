@@ -5,6 +5,11 @@ const PAS_MS = 170;
 
 class Monde extends Phaser.Scene {
   constructor(){ super("monde"); }
+  // the high-definition drawings this village needs: hero, villagers, companion, every Ombre
+  preload(){
+    const a = actif();
+    chargerAtlas(this, [herosHD(P()), "sage", "hugo", "paco", a && cleDe(a), ...Object.values(CLES_OMBRES)]);
+  }
   create(){
     this.carte = construireCarte();
     const {sol, objets} = this.carte;
@@ -17,21 +22,22 @@ class Monde extends Phaser.Scene {
     // signs above the houses (icon, name, badges, Ombres beaten before the door opens), crisp at any zoom
     this.panneaux = this.carte.etiquettes.map(e => this.add.text(e.x * CASE, e.y * CASE, "", {fontFamily: "Fredoka, sans-serif", fontSize: "7px",
       color: "#FFFFFF", fontStyle: "bold", stroke: "#1D1640", strokeThickness: 2, backgroundColor: "rgba(29,22,64,.45)", padding: {x: 2, y: 1}})
-      .setOrigin(.5).setResolution(8).setDepth(60));
+      .setOrigin(.5).setResolution(12).setDepth(60));
     this.majPanneaux();
     // villagers
     this.pnj = this.carte.pnj.map(n => {
-      const s = this.add.sprite(n.x * CASE + 8, n.y * CASE + 8, "perso" + n.sprite, n.dir).setDepth(10 + n.y);
+      const s = spriteHumain(this, n.cle, n.sprite, n.x, n.y).setDepth(10 + n.y);
+      reposHumain(s, DIRS[n.dir]);
       return {...n, s};
     });
     const p = P(), pos = p.position || this.carte.depart;
     this.case = {x: pos.x, y: pos.y};
-    this.heros = this.add.sprite(pos.x * CASE + 8, pos.y * CASE + 8, "perso" + herosDe(p), 0).setDepth(20 + pos.y);
+    this.heros = spriteHumain(this, herosHD(p), herosDe(p), pos.x, pos.y).setDepth(20 + pos.y);
     this.dir = "bas"; this.chemin = []; this.enMarche = false; this.verrou = false;
     const voisin = [[0, 1], [-1, 0], [1, 0], [0, -1]].map(([a, b]) => ({x: pos.x + a, y: pos.y + b})).find(v => this.libre(v.x, v.y));
     this.traces = [voisin || {...this.case}];
     this.compagnon = null; this.majCompagnon();
-    this.cameras.main.startFollow(this.heros, true, .2, .2);
+    this.cameras.main.startFollow(this.heros, true, .2, .2, 0, this.heros.dy - 8);   // centred on the hero's tile, as for the pixel hero
     const zoom = () => this.ajusterZoom();
     zoom(); this.scale.on("resize", zoom); this.events.once("shutdown", () => this.scale.off("resize", zoom));
     this.ombres = new OmbresVillage(this);
@@ -40,7 +46,7 @@ class Monde extends Phaser.Scene {
     this.input.on("pointerup", ptr => {
       if (this.occupe()) return;
       const x = Math.floor(ptr.worldX / CASE), y = Math.floor(ptr.worldY / CASE);
-      this.allerVers(x, y, this.pnj.find(q => q.x === x && q.y === y));
+      this.allerVers(x, y, this.pnj.find(q => q.x === x && (q.y === y || (q.s.hd && q.y === y + 1))));
     });
     // arrows only, without capturing them for the whole page (the first-name field keeps its space and arrows)
     this.touches = this.input.keyboard.addKeys({up: "UP", down: "DOWN", left: "LEFT", right: "RIGHT"}, false);
@@ -48,9 +54,9 @@ class Monde extends Phaser.Scene {
   // the village answers unless another screen, a dialogue or a fight starting is in front of it
   occupe(){ return ecranCourant !== "monde" || !$("dialogue").hidden || this.verrou || performance.now() < (window.__calme || 0); }
   ajusterZoom(){
-    const w = this.scale.width, h = this.scale.height;
+    const w = this.scale.width / RATIO, h = this.scale.height / RATIO;   // in CSS pixels
     const z = Math.min(6, Math.max(2, Math.round(Math.min(w / (20 * CASE), h / (14 * CASE)))));   // whole pixels only
-    this.cameras.main.setZoom(z);
+    this.cameras.main.setZoom(z * RATIO);
   }
   texteEtiquette(regionId){
     const r = regionDe(regionId), st = regionEtat(regionId), n = Math.min(st.etape, ETAPES);
@@ -62,7 +68,7 @@ class Monde extends Phaser.Scene {
     const c = actif(); if (this.compagnon) this.compagnon.destroy();
     if (!c) { this.compagnon = null; return; }
     const t = this.traces[0] || this.case;
-    this.compagnon = this.add.sprite(t.x * CASE + 8, t.y * CASE + 8, "monstre" + spriteDe(c), 0).setDepth(19 + t.y);
+    this.compagnon = spriteCreature(this, cleDe(c), spriteDe(c), t.x, t.y).setDepth(19 + t.y);
   }
   libre(x, y){ return x >= 0 && y >= 0 && x < LARG && y < HAUT && !this.carte.bloque[y][x]; }
   dist(c){ return Math.abs(c.x - this.case.x) + Math.abs(c.y - this.case.y); }
@@ -116,21 +122,20 @@ class Monde extends Phaser.Scene {
   }
   pas(){
     const suiv = this.chemin.shift();
-    if (!suiv) { this.enMarche = false; this.heros.stop(); this.heros.setFrame(DIRS.indexOf(this.dir)); if (this.compagnon) this.compagnon.stop();
-      this.arrive(); return; }
+    if (!suiv) { this.enMarche = false; this.arreter(); this.arrive(); return; }
     const [x, y] = suiv, dx = x - this.case.x, dy = y - this.case.y;
     this.dir = dx > 0 ? "droite" : dx < 0 ? "gauche" : dy > 0 ? "bas" : "haut";
     this.enMarche = true;
-    this.heros.play(`perso${herosDe(P())}-${this.dir}`, true);
+    marcherHumain(this.heros, this.dir);
     this.traces.unshift({...this.case}); this.traces.length = 3;
     this.case = {x, y};
-    this.tweens.add({targets: this.heros, x: x * CASE + 8, y: y * CASE + 8, duration: TEST ? 1 : PAS_MS, onComplete: () => this.apresPas()});
+    this.tweens.add({targets: this.heros, x: x * CASE + 8, y: y * CASE + this.heros.dy, duration: TEST ? 1 : PAS_MS, onComplete: () => this.apresPas()});
     this.heros.setDepth(20 + y);
     if (this.compagnon) {   // the companion walks into the hero's previous tile
-      const t = this.traces[0], cdx = t.x * CASE + 8 - this.compagnon.x, cdy = t.y * CASE + 8 - this.compagnon.y;
+      const k = this.compagnon, t = this.traces[0], cdx = t.x * CASE + 8 - k.x, cdy = t.y * CASE + k.dy - k.y;
       const d = Math.abs(cdx) > Math.abs(cdy) ? (cdx > 0 ? "droite" : "gauche") : (cdy > 0 ? "bas" : "haut");
-      if (cdx || cdy) this.compagnon.play(`monstre${spriteDe(actif())}-${d}`, true);
-      this.tweens.add({targets: this.compagnon, x: t.x * CASE + 8, y: t.y * CASE + 8, duration: TEST ? 1 : PAS_MS});
+      if (cdx || cdy) marcherCreature(k, d, PAS_MS);
+      this.tweens.add({targets: k, x: t.x * CASE + 8, y: t.y * CASE + k.dy, duration: TEST ? 1 : PAS_MS});
       this.compagnon.setDepth(19 + t.y);
     }
   }
@@ -141,11 +146,12 @@ class Monde extends Phaser.Scene {
       const f = this.add.sprite(x * CASE + 8, y * CASE + 10, "effet18").setDepth(30).setScale(.35); f.play("effet18"); f.once("animationcomplete", () => f.destroy());
     }
     const o = this.ombres.pres(x, y);
-    if (o) { this.enMarche = false; this.heros.stop(); this.heros.setFrame(DIRS.indexOf(this.dir)); if (this.compagnon) this.compagnon.stop(); return this.rencontre(o); }
+    if (o) { this.enMarche = false; this.arreter(); return this.rencontre(o); }
     const porte = this.carte.portes.find(p => p.x === x && p.y === y);
-    if (porte && !this.chemin.length) { this.enMarche = false; this.heros.stop(); return this.devantPorte(porte.region); }
+    if (porte && !this.chemin.length) { this.enMarche = false; this.arreter(); return this.devantPorte(porte.region); }
     this.pas();
   }
+  arreter(){ reposHumain(this.heros, this.dir); if (this.compagnon) reposCreature(this.compagnon); }
   arrive(){
     const p = P(); p.position = {...this.case}; sauver();
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
@@ -157,8 +163,8 @@ class Monde extends Phaser.Scene {
   }
   parler(n){
     const vers = {x: this.case.x - n.x, y: this.case.y - n.y};
-    n.s.setFrame(vers.y > 0 ? 0 : vers.y < 0 ? 1 : vers.x < 0 ? 2 : 3);
-    dialogue(n.nom, "portrait" + n.sprite, n.dit);
+    reposHumain(n.s, vers.y > 0 ? "bas" : vers.y < 0 ? "haut" : vers.x < 0 ? "gauche" : "droite");
+    dialogue(n.nom, n.cle, n.dit);
   }
   devantPorte(regionId){ this.chemin = []; this.pnjVise = null; entrerMaison(regionId); }
   // an Ombre is touched: the village holds still, a flash, and the fight

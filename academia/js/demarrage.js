@@ -3,6 +3,7 @@ async function demarrer(){
   charger();
   $("btnNouveau").onclick = () => { sfx.tap(); ouvrirCreation(); };
   $("btnNouveau").disabled = false;
+  $("version").textContent = `version ${VERSION} · images ${QUALITE === "hd" ? "haute définition" : "légères"}`;
   $("btnCreer").onclick = () => { sfx.tap(); creer(); };
   $("nomGardien").onkeydown = e => { if (e.key === "Enter") creer(); };
   document.querySelector("[data-retour]").onclick = () => { sfx.tap(); ouvrirAccueil(); };
@@ -15,6 +16,9 @@ async function demarrer(){
     const d = $("dialogue");
     if ((e.key === "Enter" || e.key === " ") && !e.repeat && !d.hidden && d.onclick && !e.target.closest("button, input")) { e.preventDefault(); d.onclick(); }
   });
+  // images: high definition or light (for a tablet short of memory); the page starts again with the other version
+  $("btnImages").textContent = QUALITE === "hd" ? "🖼️ Images : haute définition" : "🖼️ Images : légères";
+  $("btnImages").onclick = () => { sfx.tap(); choisirQualite(QUALITE === "hd" ? "leger" : "hd"); location.reload(); };
   $("btnChanger").onclick = () => { sfx.tap(); taire(); JEU.scene.stop("monde"); ouvrirAccueil(); };
   ouvrirAccueil();
   await chargerQuestions();

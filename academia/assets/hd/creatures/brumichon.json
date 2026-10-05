@@ -1,0 +1,157 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 565,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 565,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 565,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 567,
+    "y": 0,
+    "w": 565,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 565,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 565,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu": {
+   "frame": {
+    "x": 1134,
+    "y": 0,
+    "w": 565,
+    "h": 420
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 565,
+    "h": 420
+   },
+   "sourceSize": {
+    "w": 565,
+    "h": 420
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "face_petit": {
+   "frame": {
+    "x": 0,
+    "y": 422,
+    "w": 202,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 204,
+    "y": 422,
+    "w": 202,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "vaincu_petit": {
+   "frame": {
+    "x": 408,
+    "y": 422,
+    "w": 202,
+    "h": 150
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 202,
+    "h": 150
+   },
+   "sourceSize": {
+    "w": 202,
+    "h": 150
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "brumichon.png",
+  "size": {
+   "w": 1701,
+   "h": 574
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

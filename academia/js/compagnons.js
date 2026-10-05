@@ -25,6 +25,7 @@ const PALIERS = [1, 15, 30];
 const stade = c => c.niveau >= PALIERS[2] ? 3 : c.niveau >= PALIERS[1] ? 2 : 1;
 const nomCompagnon = c => FAMILLES[c.famille].noms[stade(c) - 1];
 const spriteDe = c => FAMILLES[c.famille].sprite;
+const cleDe = c => c.famille + stade(c);   // the high-definition drawing of a companion at its stage (assets/hd/creatures)
 const echelleStade = s => [1, 1.3, 1.6][s - 1];   // a companion grows at each evolution
 const pvMax = c => 24 + 4 * c.niveau;
 const force = c => 6 + c.niveau;
@@ -49,15 +50,18 @@ const ETAPES = 4;   // fights before the region boss
 const regionDe = id => REGIONS.find(r => r.id === id);
 // the Ombres: grumpy but never frightening for a 4-year-old
 const OMBRES = ["Néantik", "Ombre-Chagrin", "Grisouille", "Brumichon", "Ronchonnet"];
+const CLES_OMBRES = {"Néantik": "neantik", "Ombre-Chagrin": "ombre", "Grisouille": "grisouille", "Brumichon": "brumichon", "Ronchonnet": "ronchonnet"};
+const CLES_BOSS = {dojo: "vizir", albion: "roi", germania: "dragon", duche: "esprit", jardin: "gardien", observatoire: "maitre"};
 const SPRITES_OMBRES = [1, 3, 11, 22];
 // life counted in quick attacks of the companion, not in levels, so that a fight stays short at every level:
 // an Ombre falls in 2 quick attacks before 6 years, 3 after; a boss in 3, then 4
 function ombre(region, boss){
   const r = regionDe(region.id), st = regionEtat(region.id), k = st.niveau, a = actif(), p = P();
   const base = a ? a.niveau : 1, coup = Math.round((6 + base) * 1.4), petit = !!p && p.age <= 5;
-  if (boss) return {nom: r.boss, sprite: r.spriteBoss, niveau: base + 1, pvMax: Math.round(coup * (petit ? 2.6 : 3.6)), force: 4 + Math.ceil(base * .7) + k, boss: true};
+  if (boss) return {nom: r.boss, sprite: r.spriteBoss, cle: CLES_BOSS[r.id], niveau: base + 1, pvMax: Math.round(coup * (petit ? 2.6 : 3.6)), force: 4 + Math.ceil(base * .7) + k, boss: true};
   const n = st.etape + REGIONS.indexOf(r);   // each region has its own Ombre, and the next one changes
-  return {nom: OMBRES[(n + k) % OMBRES.length], sprite: SPRITES_OMBRES[(n + k) % SPRITES_OMBRES.length], niveau: base,
+  const nom = OMBRES[(n + k) % OMBRES.length];
+  return {nom, cle: CLES_OMBRES[nom], sprite: SPRITES_OMBRES[(n + k) % SPRITES_OMBRES.length], niveau: base,
           pvMax: Math.round(coup * (petit ? 1.8 : 2.6)), force: 3 + Math.ceil(base * .5) + Math.floor(k / 2), boss: false};
 }
 // the region's own family hits harder there (GDD §4: weaknesses)

@@ -12,7 +12,7 @@ function ouvrirEquipe(){
   Object.entries(FAMILLES).sort(([a], [b]) => rang(a) - rang(b)).forEach(([f, F]) => {
     const c = p.compagnons.find(x => x.famille === f), r = REGIONS.find(x => x.famille === f);
     const fiche = el("div", "fiche" + (c ? "" : " inconnue") + (c && c.id === p.actif ? " active" : ""));
-    fiche.append(c ? spriteCompagnon(c, 84) : spriteDOM("monstre", F.sprite, 72, {marche: false}));
+    fiche.append(c ? spriteCompagnon(c, 92) : imageHD(f + "1", "face", 84, () => spriteDOM("monstre", F.sprite, 72, {marche: false})));
     const corps = el("div", "fiche-corps", `<b></b><small></small>`);
     corps.querySelector("b").textContent = c ? nomCompagnon(c) : "???";
     corps.querySelector("small").textContent = c ? `Niveau ${c.niveau} · ${r.icone} ${F.matiere}` : `À libérer : ${r.icone} ${r.nom}`;

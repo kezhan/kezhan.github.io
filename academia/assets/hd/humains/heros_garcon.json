@@ -1,0 +1,325 @@
+{
+ "frames": {
+  "face": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "dos": {
+   "frame": {
+    "x": 183,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "profil": {
+   "frame": {
+    "x": 366,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche0": {
+   "frame": {
+    "x": 549,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche1": {
+   "frame": {
+    "x": 732,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche2": {
+   "frame": {
+    "x": 915,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche3": {
+   "frame": {
+    "x": 1098,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche4": {
+   "frame": {
+    "x": 0,
+    "y": 222,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche5": {
+   "frame": {
+    "x": 183,
+    "y": 222,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche6": {
+   "frame": {
+    "x": 366,
+    "y": 222,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "marche7": {
+   "frame": {
+    "x": 549,
+    "y": 222,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "joie": {
+   "frame": {
+    "x": 732,
+    "y": 222,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "parle": {
+   "frame": {
+    "x": 915,
+    "y": 222,
+    "w": 181,
+    "h": 220
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 181,
+    "h": 220
+   },
+   "sourceSize": {
+    "w": 181,
+    "h": 220
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "image": "heros_garcon.png",
+  "size": {
+   "w": 1281,
+   "h": 444
+  },
+  "scale": "1",
+  "app": "academia hd vectoriel (Kenney CC0)"
+ }
+}

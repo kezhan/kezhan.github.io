@@ -2,6 +2,9 @@
    Personnages et monstres : planches de 4 colonnes (bas, haut, gauche, droite) et une ligne par image de marche. */
 const HEROS = [6, 17, 16, 25, 12, 19, 2];          // the child chooses one
 const herosDe = p => p && HEROS.includes(p.heros) ? p.heros : HEROS[0];
+// the same heroes drawn in high definition, in the same order (a saved choice keeps its hero)
+const HEROS_HD = ["heros_garcon", "heros_fille", "heros_3", "heros_4", "heros_5", "heros_6", "heros_7"];
+const herosHD = p => HEROS_HD[HEROS.indexOf(herosDe(p))] || HEROS_HD[0];
 const PNJ = [9, 10, 14, 13, 22, 24];
 const MONSTRES = [1, 2, 3, 5, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 21, 22];
 const DIRS = ["bas", "haut", "gauche", "droite"];
