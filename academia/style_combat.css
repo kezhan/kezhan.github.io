@@ -65,6 +65,11 @@
 .minuteur{height:12px; border-radius:999px; background:#E7E1FF; overflow:hidden; margin:4px 0 8px}
 .minuteur i{display:block; height:100%; background:linear-gradient(90deg, var(--vert), var(--or), var(--rouge)); transform-origin:left}
 .explication{background:#FFF3C4; border-radius:18px; padding:10px 14px; margin-top:10px; font-size:19px}
+/* low screens (a phone held sideways): everything fits without scrolling */
+@media (max-height:500px){ .panneau{padding-top:8px; padding-bottom:8px} .q-tete{margin-bottom:0} .outil{min-width:40px; height:40px; font-size:16px}
+  .titre-bouclier{font-size:18px} .question .enonce{font-size:22px; margin:0 0 2px} .question .visuel{font-size:28px; margin:0 0 4px}
+  .reponse{min-height:52px; font-size:24px; padding:2px} .attaque{min-height:0; padding:6px 10px} .attaque small{display:none}
+  .jokers{margin-top:4px} .explication{margin-top:6px; padding:6px 10px; font-size:17px} .etat{padding:4px 10px 6px} .etat b{font-size:16px} }
 @media (max-width:440px){ .attaques{grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px}
   .attaque{flex-direction:column; text-align:center; gap:4px; padding:10px 6px; min-height:0} .attaque small{display:none}
   .attaque b{font-size:16px; line-height:1.15} .attaque .ico{font-size:30px} .attaque > span:last-child{width:100%}

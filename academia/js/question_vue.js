@@ -4,7 +4,7 @@
 function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {}){
   return new Promise(fin => {
     const vf = estVraiFaux(q), lang = q.langue || "fr", t0 = Date.now();
-    window.__q = q;   // the question on screen, read by the recette
+    window.__q = q; window.__qn = (window.__qn || 0) + 1;   // the question on screen and its number, read by the recette
     let fini = false, chrono = null;
     panneau.innerHTML = ""; panneau.classList.remove("cache");
     const boite = el("div", "question" + (vf ? " vraifaux" : ""));
@@ -22,7 +22,12 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
       if (n > 24) v.classList.add("tres-long"); else if (n > 12) v.classList.add("long");
       boite.append(v);
     }
-    const ecoute = () => dire(q.dire || q.question, lang);
+    const ecoute = async () => {
+      const m = lang !== "fr" && /^(.*?)«\s*(.+?)\s*»(.*)$/.exec(q.question);
+      if (!m) return dire(q.dire || q.question, lang);
+      await dire(m[1], "fr");
+      if (!fini) await dire(q.dire || m[2], lang);
+    };
     const outils = el("div", "outils");
     const outil = (ico, nom) => { const b = el("button", "outil"); b.textContent = ico; b.title = nom; b.setAttribute("aria-label", nom); return b; };
     const b1 = outil("🔊", "Écouter"); b1.onclick = () => { sfx.tap(); ecoute(); }; outils.append(b1);
@@ -50,11 +55,12 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
       b.dataset.v = v;
       b.textContent = vf ? (v === "vrai" ? "✅ Vrai" : "❌ Faux") : v;
       if (v === q.reponse) markOk(b);
-      b.onclick = () => repondre(b);
+      b.onclick = () => { if (Date.now() - t0 >= 700) repondre(b); };
       grille.append(b);
     });
     boite.append(grille);
     panneau.append(boite);
+    grille.scrollIntoView({block: "nearest"});   // a low screen: the answers stay in sight
     ecoute();
 
     function repondre(b){
@@ -65,12 +71,15 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
       sfx.faux(); if (b) b.classList.add("faux");
       // the companion explains (GDD §8.1), then the child taps on to continue
       const t = el("div", "explication");
-      const bonne = vf ? (q.reponse === "vrai" ? "C'est vrai !" : "C'est faux !") : `La bonne réponse : ${q.reponse}`;
-      t.textContent = `${b ? "" : "⏳ Trop tard ! "}${bonne}${q.explication ? " " + q.explication : ""}`;
+      const bonne = vf ? (q.reponse === "vrai" ? "C'est vrai !" : "C'est faux !") : `La bonne réponse est ${q.reponse}.`;
+      const l1 = el("b"); l1.textContent = (b ? "" : "⏳ Trop tard ! ") + bonne; t.append(l1);
+      if (q.explication) { const l2 = el("p"); l2.style.margin = "6px 0 0"; l2.textContent = q.explication; t.append(l2); }
       const suite = markOk(el("button", "moyen vert", "J'ai compris 👍")); suite.style.marginTop = "10px";
       suite.onclick = () => { sfx.tap(); taire(); fin({juste: false, ms}); };
       boite.append(t, suite);
-      dire(t.textContent);
+      suite.scrollIntoView({block: "nearest"});
+      const dite = vf || sansEmoji(q.reponse) ? bonne : "Regarde la bonne réponse, en vert.";
+      dire((b ? "" : "Trop tard ! ") + dite + (q.explication ? " " + q.explication : ""));
     }
   });
 }

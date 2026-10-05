@@ -18,7 +18,7 @@ async function terminerCombat(b){
       libere = ajouterCompagnon(region.famille, Math.max(1, c.niveau - 2));   // the region's companion joins the team
       if (!libere) { p.jokers.potion++; p.jokers.indice++; joker = "cadeau"; }   // already in the team: presents instead
     } else st.etape++;
-    if (Math.random() < .45) { joker = pick(["potion", "indice"], 1)[0]; p.jokers[joker]++; }
+    if (!joker && Math.random() < .45) { joker = pick(["potion", "indice"], 1)[0]; p.jokers[joker]++; }
   } else b.xp = Math.round(b.xp * .6);
   const xpAvant = {niveau: c.niveau, xp: c.xp};
   const gain = gagnerXP(c, b.xp);
@@ -28,57 +28,63 @@ async function terminerCombat(b){
   await ecranFin(b, c, region, gain, xpAvant, {libere, badge, joker});
 }
 
+// the end screen: « Continuer » is there at once and always in sight; the celebration goes on behind it,
+// and stops as soon as the child leaves
 async function ecranFin(b, c, region, gain, xpAvant, {libere, badge, joker}){
   montrer("fin");
   const carte = $("finCarte"); carte.innerHTML = "";
+  let parti = false;
   const titre = b.gagne ? (b.boss ? "Victoire contre le boss !" : "Victoire !") : "Ton compagnon est fatigué";
   const fig = el("div", "scene-fin");
-  const dessin = () => { fig.innerHTML = ""; fig.append(spriteCompagnon(c, 120)); };
+  const dessin = () => { fig.innerHTML = ""; fig.append(spriteCompagnon(c, 110)); };
   carte.append(el("div", "grand", b.gagne ? (b.boss ? "🏆" : "🎉") : "💤"), el("h2"), fig);
   carte.querySelector("h2").textContent = titre;
-  if (gain.evolue) { fig.append(spriteDOM("monstre", spriteDe(c), 120, {echelle: echelleStade(gain.stadeAvant) / 1.3})); } else dessin();
+  if (gain.evolue) { fig.append(spriteDOM("monstre", spriteDe(c), 110, {echelle: echelleStade(gain.stadeAvant) / 1.3})); } else dessin();
   const figure = {anim: nom => { if (calme()) return Promise.resolve();
     const k = {joie: [[{transform: "translateY(0)"}, {transform: "translateY(-30px)"}, {transform: "translateY(0)"}], 600],
                evolution: [[{transform: "scale(1)", filter: "brightness(1)"}, {transform: "scale(1.4) rotate(720deg)", filter: "brightness(4)"}, {transform: "scale(1)", filter: "brightness(1)"}], 2200]}[nom];
     return fig.animate(k[0], {duration: k[1], easing: "ease-in-out"}).finished.catch(() => {}); }, changer: dessin};
   const lignes = el("div");
   const ligne = t => { const x = el("p"); x.textContent = t; lignes.append(x); return x; };
-  ligne(`${b.bonnes} bonne${b.bonnes > 1 ? "s" : ""} réponse${b.bonnes > 1 ? "s" : ""} sur ${b.total} · +${b.xp} XP`);
+  ligne(`${b.bonnes} bonne${b.bonnes > 1 ? "s" : ""} réponse${b.bonnes > 1 ? "s" : ""} sur ${b.total}` + (b.xp ? ` · +${b.xp} XP` : ""));
   if (b.revanches) ligne(`🔁 ${b.revanches} revanche${b.revanches > 1 ? "s" : ""} gagnée${b.revanches > 1 ? "s" : ""} : XP triplée !`);
-  if (!b.gagne) ligne("Ce n'est pas grave : il se repose et revient plus fort. Tu as gagné de l'expérience !");
+  if (!b.gagne) ligne(b.xp > 0 ? "Ce n'est pas grave : il se repose et revient plus fort. Tu as gagné de l'expérience !" : "Ce n'est pas grave : ton compagnon se repose. Réessaie, tu vas y arriver !");
+  if (b.gagne && !b.boss) {   // how far the door is
+    const n = Math.min(regionEtat(b.region).etape, ETAPES);
+    ligne(n >= ETAPES ? `${region.icone} ${region.nom} : la porte est ouverte ! ${region.boss} t'attend.`
+      : `${region.icone} ${region.nom} : ${n} Ombre${n > 1 ? "s" : ""} sur ${ETAPES} avant la porte`);
+  }
   if (joker) ligne({potion: "🧪 Tu trouves une Potion de clarté !", indice: "🦉 Tu trouves un Indice du sage !", cadeau: "🎁 Le village te remercie : une Potion de clarté et un Indice du sage !"}[joker]);
   const barre = el("div", "barrexp", "<i></i>");
-  carte.append(lignes, barre);
-  dire(titre + ". " + lignes.textContent);
+  const ligneBtn = el("div", "ligne suite-fin");
+  const suite = markOk(el("button", "gros", "Continuer ➡"));
+  suite.onclick = () => { if (parti) return; parti = true; sfx.tap(); taire(); retourMonde({gagne: b.gagne}); };
+  ligneBtn.append(suite);
+  carte.append(lignes, barre, ligneBtn);
+  const lire = () => [...lignes.children].map(x => x.textContent).join(" ");
+  dire(titre + ". " + lire());
   if (b.gagne) { etincelles(innerWidth / 2, 160, 24); figure.anim("joie"); }
-  await wait(250);
+  await wait(250); if (parti) return;
   barre.firstChild.style.width = Math.min(100, 100 * c.xp / xpPour(c.niveau)) + "%";
 
   if (gain.niveaux) {
-    sfx.niveau(); await wait(900);
-    const t = `⬆️ ${nomCompagnon(c)} passe au niveau ${c.niveau} !`; ligne(t); dire(t); await wait(1600);
+    sfx.niveau(); await wait(900); if (parti) return;
+    const t = `⬆️ ${nomCompagnon(c)} passe au niveau ${c.niveau} !`; ligne(t); dire(t); await wait(1600); if (parti) return;
   }
   if (gain.evolue) {
     const avant = FAMILLES[c.famille].noms[gain.stadeAvant - 1];
-    const t = `Oh ? ${avant} évolue…`; ligne(t); await dire(t);
+    const t = `Oh ? ${avant} évolue…`; ligne(t); await dire(t); if (parti) return;
     sfx.evolution();
     const anim = figure.anim("evolution");
-    await wait(1300); figure.changer(); await anim;
+    await wait(1300); figure.changer(); await anim; if (parti) return;
     etincelles(...centre(fig), 30);
-    const t2 = `${avant} est devenu ${nomCompagnon(c)} !`; ligne(t2); await dire(t2);
+    const t2 = `${avant} est devenu ${nomCompagnon(c)} !`; ligne(t2); await dire(t2); if (parti) return;
   }
-  if (badge) { const t = `🏅 Tu gagnes le ${badge} !`; ligne(t); await dire(t); }
-  if (libere) {
-    const box = el("div", "carte"); box.style.marginTop = "12px";
-    const f2 = el("div", "scene-fin");
+  if (badge) { const t = `🏅 Tu gagnes le ${badge} !`; ligne(t); await dire(t); if (parti) return; }
+  if (libere) {   // the freed companion stands next to ours, so that the card fits the screen
     const nom = FAMILLES[libere.famille].noms[0];
-    box.append(el("p", "", `<b>✨ Tu as libéré ${nom} !</b><br>${FAMILLES[libere.famille].desc} Il rejoint ton équipe.`), f2);
-    carte.append(box);
-    f2.append(spriteCompagnon(libere, 110)); etincelles(...centre(f2), 24);
+    fig.append(spriteCompagnon(libere, 96)); etincelles(...centre(fig), 24);
+    ligne(`✨ Tu as libéré ${nom} ! ${FAMILLES[libere.famille].desc} Il rejoint ton équipe.`);
     await dire(`Tu as libéré ${nom} ! Il rejoint ton équipe.`);
   }
-  const ligneBtn = el("div", "ligne");
-  const suite = markOk(el("button", "gros", "Continuer ➡"));
-  suite.onclick = () => { sfx.tap(); taire(); retourMonde(); };
-  ligneBtn.append(suite); carte.append(ligneBtn);
 }

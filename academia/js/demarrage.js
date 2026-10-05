@@ -2,11 +2,19 @@
 async function demarrer(){
   charger();
   $("btnNouveau").onclick = () => { sfx.tap(); ouvrirCreation(); };
+  $("btnNouveau").disabled = false;
   $("btnCreer").onclick = () => { sfx.tap(); creer(); };
   $("nomGardien").onkeydown = e => { if (e.key === "Enter") creer(); };
   document.querySelector("[data-retour]").onclick = () => { sfx.tap(); ouvrirAccueil(); };
   $("btnEquipe").onclick = () => { sfx.tap(); taire(); ouvrirEquipe(); };
   $("btnFermerEquipe").onclick = () => { sfx.tap(); fermerEquipe(); };
+  $("equipe").onclick = e => { if (e.target === e.currentTarget) { sfx.tap(); fermerEquipe(); } };
+  // on a PC: Escape closes the bag, Enter or Space moves a dialogue on (never through its choice buttons)
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !$("equipe").hidden) { sfx.tap(); return fermerEquipe(); }
+    const d = $("dialogue");
+    if ((e.key === "Enter" || e.key === " ") && !e.repeat && !d.hidden && d.onclick && !e.target.closest("button, input")) { e.preventDefault(); d.onclick(); }
+  });
   $("btnChanger").onclick = () => { sfx.tap(); taire(); JEU.scene.stop("monde"); ouvrirAccueil(); };
   ouvrirAccueil();
   await chargerQuestions();

@@ -25,6 +25,7 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .moyen{min-height:56px; font-size:20px; padding:10px 18px}
 .gros:active,.moyen:active,.rond:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(29,22,64,.35)}
 .gros[disabled]{opacity:.45; pointer-events:none}
+.gros.attente{opacity:.45}   /* still answers: it says what is missing */
 .gris{background:var(--gris)} .vert{background:var(--vert); color:#fff}
 .rond{width:56px; height:56px; border-radius:50%; background:var(--papier); font-size:28px; box-shadow:var(--ombre); flex:none}
 .ligne{display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; margin:16px 0}
@@ -61,6 +62,8 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .ages button[aria-pressed="true"],.choix-heros[aria-pressed="true"]{background:var(--or); outline:4px solid var(--encre)}
 .starters{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:16px; max-width:980px; margin:0 auto}
 .starter{background:var(--papier); border-radius:28px; padding:16px 14px; box-shadow:var(--ombre); text-align:center; display:flex; flex-direction:column; align-items:center}
+.starter.choisi{outline:6px solid var(--or); transform:scale(1.04)}
+.starters:has(.choisi) .starter:not(.choisi){opacity:.35}
 .starter h3{font:700 28px var(--titre); margin:6px 0 2px} .starter p{margin:4px 0 12px; color:#4a4270; flex:1}
 
 /* top bar in the village */
@@ -93,9 +96,10 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 
 /* end of fight */
 .fin{text-align:center}
-.fin .grand{font-size:80px; line-height:1}
+.fin .grand{font-size:64px; line-height:1}
+.fin .suite-fin{position:sticky; bottom:0; background:var(--papier); margin:8px -18px -18px; padding:10px 18px 18px; border-radius:0 0 28px 28px}
 .fin h2{font:700 34px var(--titre); margin:6px 0}
-.scene-fin{display:flex; justify-content:center; align-items:flex-end; min-height:140px}
+.scene-fin{display:flex; justify-content:center; align-items:flex-end; gap:18px; min-height:120px}
 .barrexp{height:20px; border-radius:999px; background:#E7E1FF; overflow:hidden; margin:10px auto; max-width:420px}
 .barrexp.petite{height:10px; margin:4px 0; max-width:none}
 .barrexp i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--bleu), var(--vert)); transition:width 1.2s ease-out}

@@ -1,13 +1,21 @@
 /* Académia : charge la carte des notions et les questions écrites (donnees/), et fabrique une question
    pour une notion, écrite ou calculée par un générateur (js/questions/<matiere>.js, GENERATEURS). */
-const Q = {notions: [], parNotion: {}, vraifaux: {}, pret: false};
+const Q = {notions: [], parNotion: {}, vraifaux: {}, pret: false, charges: new Set()};
 const FICHIERS = ["anglais", "allemand", "luxembourgeois", "logique", "sciences", "vraifaux"];
 
 async function chargerQuestions(){
-  const lire = async f => { try { const r = await fetch(f, {cache: "no-cache"}); return r.ok ? await r.json() : null; } catch (e) { return null; } };
-  Q.notions = (await lire("donnees/notions.json")) || [];
-  const listes = await Promise.all(FICHIERS.map(m => lire(`donnees/questions/${m}.json`)));
-  listes.forEach(l => (Array.isArray(l) ? l : []).forEach(ajouterQuestion));
+  const lire = async f => {
+    for (let essai = 0; essai < 3; essai++) {
+      try { const r = await fetch(f, {cache: "no-cache"}); if (r.ok) return await r.json(); } catch (e) {}
+      await new Promise(ok => setTimeout(ok, 400 * (essai + 1)));
+    }
+    return null;
+  };
+  if (!Q.notions.length) Q.notions = (await lire("donnees/notions.json")) || [];
+  await Promise.all(FICHIERS.filter(m => !Q.charges.has(m)).map(async m => {
+    const l = await lire(`donnees/questions/${m}.json`);
+    if (Array.isArray(l)) { l.forEach(ajouterQuestion); Q.charges.add(m); }
+  }));
   Q.pret = true;
 }
 const estVraiFaux = q => q.reponse === "vrai" || q.reponse === "faux";

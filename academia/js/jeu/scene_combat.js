@@ -44,9 +44,14 @@ class SceneCombat extends Phaser.Scene {
       this.lui.setAlpha(0).x += 24; this.tweens.add({targets: this.lui, alpha: 1, x: this.base.lui.x, duration: 600, delay: 250, ease: "Quad.easeOut"});
       this.time.delayedCall(250, () => this.effet("lui", 18, 1.3));
     }
-    // a turned tablet: the scene is drawn again for the new size
-    const taille = () => this.time.delayedCall(80, () => this.scene.restart(this.d));
-    this.scale.on("resize", taille); this.events.once("shutdown", () => this.scale.off("resize", taille));
+    // a turned tablet: the scene is drawn again for the new size, once the size has really changed
+    let minuteur = null;
+    const taille = () => {
+      if (minuteur) minuteur.remove();
+      minuteur = this.time.delayedCall(150, () => { if (this.scale.width !== w || this.scale.height !== h) this.scene.restart(this.d); });
+    };
+    this.scale.on("resize", taille);
+    this.events.once("shutdown", () => { this.pret = false; this.scale.off("resize", taille); });
   }
   teinter(cible){ const s = this[cible], t = this.teinte[cible]; s.clearTint(); if (t) s.setTint(t); }
   effet(cible, n, echelle = 1){
@@ -63,7 +68,9 @@ class SceneCombat extends Phaser.Scene {
     const s = this[cible], b = this.base[cible], autre = this[cible === "moi" ? "lui" : "moi"];
     if (TEST || !s) return Promise.resolve();
     return new Promise(fin => {
-      const T = cfg => this.tweens.add({targets: s, ...cfg, onComplete: fin});
+      let fait = false; const ok = () => { if (!fait) { fait = true; fin(); } };
+      this.events.once("shutdown", ok); setTimeout(ok, 1500);
+      const T = cfg => this.tweens.add({targets: s, ...cfg, onComplete: ok});
       if (nom === "attaque") T({x: b.x + (autre.x - b.x) * .3, y: b.y + (autre.y - b.y) * .3, duration: 170, yoyo: true, ease: "Quad.easeOut"});
       else if (nom === "touche") {
         s.setTintFill(0xFFFFFF); this.time.delayedCall(90, () => this.teinter(cible));
@@ -72,7 +79,7 @@ class SceneCombat extends Phaser.Scene {
       }
       else if (nom === "joie") T({y: b.y - 10, duration: 200, yoyo: true, repeat: 1, ease: "Quad.easeOut"});
       else if (nom === "ko") { this.effet(cible, 18, 1.4); T({alpha: 0, scaleY: s.scaleY * .3, duration: 550, ease: "Quad.easeIn"}); }
-      else fin();
+      else ok();
     });
   }
 }

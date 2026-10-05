@@ -32,17 +32,17 @@ const force = c => 6 + c.niveau;
 const xpPour = n => 10 + 6 * n;
 
 const REGIONS = [
-  {id: "dojo", spriteBoss: 8, nom: "Dojo des Nombres", icone: "🥋", matiere: "maths", famille: "matty", desc: "Compter et calculer",
+  {id: "dojo", herbes: "à droite du chemin du Dojo", spriteBoss: 8, nom: "Dojo des Nombres", icone: "🥋", matiere: "maths", famille: "matty", desc: "Compter et calculer",
    boss: "Grand Vizir des Nombres", badge: "Badge de Pythagore"},
-  {id: "albion", spriteBoss: 15, nom: "Port d'Albion", icone: "⛵", matiere: "anglais", famille: "plumix", desc: "Parler anglais",
+  {id: "albion", herbes: "sous le port, près de la mare", spriteBoss: 15, nom: "Port d'Albion", icone: "⛵", matiere: "anglais", famille: "plumix", desc: "Parler anglais",
    boss: "Roi du Quotidien", badge: "Badge de la Boussole"},
-  {id: "germania", spriteBoss: 16, nom: "Montagne de Germania", icone: "⛰️", matiere: "allemand", famille: "barli", desc: "Deutsch sprechen",
+  {id: "germania", herbes: "en bas, près des rochers", spriteBoss: 16, nom: "Montagne de Germania", icone: "⛰️", matiere: "allemand", famille: "barli", desc: "Deutsch sprechen",
    boss: "Dragon du Temps", badge: "Badge des Runes"},
-  {id: "duche", spriteBoss: 2, nom: "Vallée du Grand-Duché", icone: "🏰", matiere: "luxembourgeois", famille: "leiwchen", desc: "Lëtzebuergesch schwätzen",
+  {id: "duche", herbes: "à droite de la maison rouge", spriteBoss: 2, nom: "Vallée du Grand-Duché", icone: "🏰", matiere: "luxembourgeois", famille: "leiwchen", desc: "Lëtzebuergesch schwätzen",
    boss: "Esprit des Traditions", badge: "Badge du Lion rouge"},
-  {id: "jardin", spriteBoss: 17, nom: "Jardin des Éclats", icone: "🌸", matiere: "logique", famille: "cavalin", desc: "Formes, couleurs, suites",
+  {id: "jardin", herbes: "à gauche de la hutte", spriteBoss: 17, nom: "Jardin des Éclats", icone: "🌸", matiere: "logique", famille: "cavalin", desc: "Formes, couleurs, suites",
    boss: "Gardien des Énigmes", badge: "Badge du Cristal"},
-  {id: "observatoire", spriteBoss: 21, nom: "Observatoire", icone: "🔭", matiere: "sciences", famille: "poussik", desc: "Le monde qui nous entoure",
+  {id: "observatoire", herbes: "à droite de la statue", spriteBoss: 21, nom: "Observatoire", icone: "🔭", matiere: "sciences", famille: "poussik", desc: "Le monde qui nous entoure",
    boss: "Maître des Astres", badge: "Badge de l'Étoile"}
 ];
 const ETAPES = 4;   // fights before the region boss
@@ -50,13 +50,15 @@ const regionDe = id => REGIONS.find(r => r.id === id);
 // the Ombres: grumpy but never frightening for a 4-year-old
 const OMBRES = ["Néantik", "Ombre-Chagrin", "Grisouille", "Brumichon", "Ronchonnet"];
 const SPRITES_OMBRES = [1, 3, 11, 22];
+// life counted in quick attacks of the companion, not in levels, so that a fight stays short at every level:
+// an Ombre falls in 2 quick attacks before 6 years, 3 after; a boss in 3, then 4
 function ombre(region, boss){
-  const r = regionDe(region.id), st = regionEtat(region.id), k = st.niveau, a = actif();
-  const base = a ? a.niveau : 1;
-  if (boss) return {nom: r.boss, sprite: r.spriteBoss, niveau: base + 1, pvMax: 34 + 7 * base + 6 * k, force: 4 + Math.ceil(base * .7) + k, boss: true};
-  const n = st.etape;
+  const r = regionDe(region.id), st = regionEtat(region.id), k = st.niveau, a = actif(), p = P();
+  const base = a ? a.niveau : 1, coup = Math.round((6 + base) * 1.4), petit = !!p && p.age <= 5;
+  if (boss) return {nom: r.boss, sprite: r.spriteBoss, niveau: base + 1, pvMax: Math.round(coup * (petit ? 2.6 : 3.6)), force: 4 + Math.ceil(base * .7) + k, boss: true};
+  const n = st.etape + REGIONS.indexOf(r);   // each region has its own Ombre, and the next one changes
   return {nom: OMBRES[(n + k) % OMBRES.length], sprite: SPRITES_OMBRES[(n + k) % SPRITES_OMBRES.length], niveau: base,
-          pvMax: 24 + 4 * base + 3 * n + 3 * k, force: 3 + Math.ceil(base * .5) + Math.floor(k / 2), boss: false};
+          pvMax: Math.round(coup * (petit ? 1.8 : 2.6)), force: 3 + Math.ceil(base * .5) + Math.floor(k / 2), boss: false};
 }
 // the region's own family hits harder there (GDD §4: weaknesses)
 const superEfficace = (c, region) => c && FAMILLES[c.famille].matiere === regionDe(region.id).matiere;

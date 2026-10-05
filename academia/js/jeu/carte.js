@@ -17,7 +17,7 @@ const HERBES = [T(10, 16), T(9, 15)];
 
 function construireCarte(){
   const grille = (v) => Array.from({length: HAUT}, () => Array(LARG).fill(v));
-  const sol = grille(0), objets = grille(-1), bloque = grille(false), herbe = grille(null);
+  const sol = grille(0), objets = grille(-1), bloque = grille(false), herbe = grille(null), maison = grille(null);
   const hasard = (x, y) => Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;   // same map every time
   for (let y = 0; y < HAUT; y++) for (let x = 0; x < LARG; x++) sol[y][x] = SOL.herbe[Math.floor(hasard(x, y) * 4)];
   const sable = (x0, y0, w, h) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) sol[y][x] = SOL.sable[Math.floor(hasard(x, y) * 3)]; };
@@ -26,6 +26,7 @@ function construireCarte(){
     for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
       objets[y0 + j][x0 + i] = T(c + i, r + j);
       bloque[y0 + j][x0 + i] = opts.passe ? opts.passe(i, j) === false : true;
+      if (opts.region) maison[y0 + j][x0 + i] = opts.region;
     }
   };
   // paths and the square
@@ -35,12 +36,12 @@ function construireCarte(){
   sable(6, 16, 11, 2); sable(27, 16, 11, 2); // west (Germania), east (Albion)
   sable(9, 7, 2, 9); sable(34, 7, 2, 9);     // Jardin, Observatoire
   // buildings: one per subject, the door's front tile opens the region (portes)
-  poser("maisonC", 19, 3); poser("panneauDojo", 23, 5);
-  poser("maisonRouge", 23, 20);
-  poser("maisonA", 5, 13);
-  poser("maisonB", 35, 13);
-  poser("hutte", 8, 5);
-  poser("statue", 34, 5);
+  poser("maisonC", 19, 3, {region: "dojo"}); poser("panneauDojo", 23, 5, {region: "dojo"});
+  poser("maisonRouge", 23, 20, {region: "duche"});
+  poser("maisonA", 5, 13, {region: "germania"});
+  poser("maisonB", 35, 13, {region: "albion"});
+  poser("hutte", 8, 5, {region: "jardin"});
+  poser("statue", 34, 5, {region: "observatoire"});
   const portes = [
     {x: 20, y: 6, region: "dojo"}, {x: 21, y: 6, region: "dojo"},
     {x: 24, y: 23, region: "duche"}, {x: 25, y: 23, region: "duche"},
@@ -56,7 +57,7 @@ function construireCarte(){
     }
   };
   touffe(24, 7, 5, 4, "dojo"); touffe(28, 20, 6, 3, "duche"); touffe(7, 20, 6, 4, "germania");
-  touffe(37, 18, 5, 3, "albion"); touffe(12, 6, 5, 4, "jardin"); touffe(37, 7, 4, 4, "observatoire");
+  touffe(37, 18, 5, 3, "albion"); touffe(3, 3, 5, 4, "jardin"); touffe(37, 7, 4, 4, "observatoire");
   // nature: the pond near the port, rocks near the mountain, trees all around
   poser("mare", 36, 22, {passe: (i, j) => i === 0 || j === 0 || i === 4 || j === 4}); poser("barque", 37, 27);
   poser("rochers", 2, 20); poser("grandArbre", 27, 3); poser("grandArbre", 14, 2);
@@ -71,14 +72,14 @@ function construireCarte(){
     if (objets[y][x] < 0 && !bloque[y][x] && SOL.herbe.includes(sol[y][x]) && hasard(x * 3, y * 7) < .05) objets[y][x] = DECOS[(x * y) % DECOS.length];
   // villagers on the square
   const pnj = [
-    {x: 19, y: 14, sprite: 9, nom: "Le Sage", dir: 0, dit: ["Bienvenue à Académia, Gardien !", "Des Ombres se cachent dans les hautes herbes. Ton compagnon les combat avec ce que tu sais !", "Quand tu as vaincu quatre Ombres près d'une maison, sa porte s'ouvre : le chef des Ombres t'y attend."]},
+    {x: 19, y: 14, sprite: 9, nom: "Le Sage", dir: 0, dit: ["Bienvenue à Académia, Gardien !", "Des Ombres violettes se cachent dans les hautes herbes. Touche-en une : ton compagnon la combat avec ce que tu sais !", "Quand tu as vaincu quatre Ombres près d'une maison, sa porte s'ouvre : le chef des Ombres t'y attend."]},
     {x: 25, y: 15, sprite: 10, nom: "Hugo", dir: 2, dit: ["Chaque bonne réponse rend ton compagnon plus fort.", "Au niveau 15, il évolue !"]},
-    {x: 22, y: 18, sprite: 14, nom: "Paco", dir: 1, dit: ["Touche l'endroit où tu veux aller, ton héros y marche tout seul.", "Ton équipe est dans le sac 🎒, en haut de l'écran."]}
+    {x: 22, y: 18, sprite: 14, nom: "Paco", dir: 1, dit: ["Touche l'endroit où tu veux aller, ton héros y marche tout seul. Touche une maison pour aller à sa porte.", "Ton équipe est dans le sac 🎒, en haut de l'écran."]}
   ];
   pnj.forEach(n => { bloque[n.y][n.x] = true; });
   portes.forEach(p => { bloque[p.y][p.x] = false; });
   // a sign above each house: the subject's icon and name
   const etiquettes = [["dojo", 21, 2.4], ["duche", 25, 19.4], ["germania", 7, 12.4], ["albion", 37, 12.4], ["jardin", 9.5, 4.4], ["observatoire", 35, 4.4]]
     .map(([region, x, y]) => ({region, x, y}));
-  return {sol, objets, bloque, herbe, portes, pnj, etiquettes, depart: {x: 21, y: 16}};
+  return {sol, objets, bloque, herbe, maison, portes, pnj, etiquettes, depart: {x: 21, y: 16}};
 }

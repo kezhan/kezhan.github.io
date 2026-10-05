@@ -3,7 +3,10 @@
    en vérité la réussite de l'enfant dans la matière (bulletin masqué, GDD §9). */
 function ouvrirEquipe(){
   const p = P(); if (!p) return;
-  window.__ui = true; montrer("equipe");
+  const m = JEU.scene.getScene("monde");
+  if (ecranCourant === "monde" && (!$("dialogue").hidden || (m && m.verrou))) return;
+  if (m && m.chemin) { m.chemin = []; m.pnjVise = null; }
+  montrer("equipe");
   const l = $("listeEquipe"); l.innerHTML = "";
   const rang = f => { const c = p.compagnons.find(x => x.famille === f); return c ? (c.id === p.actif ? 0 : 1) : 2; };
   Object.entries(FAMILLES).sort(([a], [b]) => rang(a) - rang(b)).forEach(([f, F]) => {
@@ -32,4 +35,4 @@ function ouvrirEquipe(){
     fiche.append(corps); l.append(fiche);
   });
 }
-function fermerEquipe(){ montrer("monde"); setTimeout(() => { window.__ui = false; }, 50); }
+function fermerEquipe(){ window.__calme = performance.now() + 250; montrer("monde"); }
