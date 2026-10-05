@@ -42,6 +42,9 @@
 const C = window.CONTENU_CHIFFRE, APERCU = !C;
 const CLE_SESSION = "ec-porte:session", CLE_TEMPS = "ec-porte:temps", COOKIE = "ec_porte_temps";
 const LIMITE = ((C && C.limite_s) || 5 * 3600) * 1000;
+/* Une limite à zéro : la démonstration n'a plus de temps compté, elle s'ouvre comme l'accès complet
+   (l'auteur, le 05-10 : « tu peux supprimer la limitation de 5h »). */
+const SANS_LIMITE = !!C && C.limite_s === 0;
 const INACTIF = 5 * 60 * 1000, PAS = 15000;
 const $ = (id)=> document.getElementById(id);
 const garde = (f, sinon)=>{ try { return f(); } catch(e){ return sinon; } };
@@ -64,7 +67,7 @@ function ecrireTemps(ms){
   garde(()=> localStorage.setItem(CLE_TEMPS, v));
   garde(()=>{ document.cookie = `${COOKIE}=${v}; max-age=31536000; path=${chemin()}; SameSite=Lax`; });
 }
-const reste = ()=> Math.max(0, LIMITE - lireTemps());
+const reste = ()=> SANS_LIMITE ? Infinity : Math.max(0, LIMITE - lireTemps());
 function duree(ms){
   const min = Math.ceil(ms / 60000), h = Math.floor(min / 60), m = min % 60;
   return h ? `${h} h${m ? " " + String(m).padStart(2, "0") : ""}` : `${m} min`;
@@ -291,6 +294,7 @@ async function entrer(e){
     const f = $("porteForm"); f.classList.remove("secoue"); void f.offsetWidth; f.classList.add("secoue");
     return dire(document.body.classList.contains("porte-fin") ? "Ce code n'ouvre pas l'espace." : "Ce mot de passe n'ouvre pas l'espace.");
   }
+  if(SANS_LIMITE && r.niveau === "demo") r.niveau = "complet";
   if(r.niveau === "demo" && reste() <= 0){
     occupe(false);
     return montrer("fin", "Ce mot de passe ouvre la démonstration, dont le temps est écoulé sur ce navigateur.");
@@ -367,6 +371,7 @@ async function demarrer(){
   if(s){
     try {
       const contenu = await dechiffrer(b64(s.k));
+      if(SANS_LIMITE && s.n === "demo") s.n = "complet";
       if(s.n === "demo" && reste() <= 0){ oublierSession(); return montrer("fin"); }
       reprendre(s);
       return await ouvrirEspace(contenu, s.n);
