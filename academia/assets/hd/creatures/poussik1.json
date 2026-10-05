@@ -48,6 +48,78 @@
     "y": 1
    }
   },
+  "joie": {
+   "frame": {
+    "x": 732,
+    "y": 0,
+    "w": 364,
+    "h": 448
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 364,
+    "h": 448
+   },
+   "sourceSize": {
+    "w": 364,
+    "h": 448
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 1098,
+    "y": 0,
+    "w": 364,
+    "h": 448
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 364,
+    "h": 448
+   },
+   "sourceSize": {
+    "w": 364,
+    "h": 448
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue": {
+   "frame": {
+    "x": 1464,
+    "y": 0,
+    "w": 364,
+    "h": 448
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 364,
+    "h": 448
+   },
+   "sourceSize": {
+    "w": 364,
+    "h": 448
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
   "face_petit": {
    "frame": {
     "x": 0,
@@ -95,12 +167,84 @@
     "x": 0.5,
     "y": 1
    }
+  },
+  "joie_petit": {
+   "frame": {
+    "x": 264,
+    "y": 450,
+    "w": 130,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 130,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 130,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 396,
+    "y": 450,
+    "w": 130,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 130,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 130,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue_petit": {
+   "frame": {
+    "x": 528,
+    "y": 450,
+    "w": 130,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 130,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 130,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
   }
  },
  "meta": {
   "image": "poussik1.png",
   "size": {
-   "w": 732,
+   "w": 1830,
    "h": 612
   },
   "scale": "1",

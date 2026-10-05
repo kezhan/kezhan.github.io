@@ -48,6 +48,78 @@
     "y": 1
    }
   },
+  "joie": {
+   "frame": {
+    "x": 918,
+    "y": 0,
+    "w": 457,
+    "h": 480
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 457,
+    "h": 480
+   },
+   "sourceSize": {
+    "w": 457,
+    "h": 480
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 1377,
+    "y": 0,
+    "w": 457,
+    "h": 480
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 457,
+    "h": 480
+   },
+   "sourceSize": {
+    "w": 457,
+    "h": 480
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue": {
+   "frame": {
+    "x": 1836,
+    "y": 0,
+    "w": 457,
+    "h": 480
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 457,
+    "h": 480
+   },
+   "sourceSize": {
+    "w": 457,
+    "h": 480
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
   "face_petit": {
    "frame": {
     "x": 0,
@@ -95,12 +167,84 @@
     "x": 0.5,
     "y": 1
    }
+  },
+  "joie_petit": {
+   "frame": {
+    "x": 328,
+    "y": 482,
+    "w": 162,
+    "h": 170
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 162,
+    "h": 170
+   },
+   "sourceSize": {
+    "w": 162,
+    "h": 170
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 492,
+    "y": 482,
+    "w": 162,
+    "h": 170
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 162,
+    "h": 170
+   },
+   "sourceSize": {
+    "w": 162,
+    "h": 170
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue_petit": {
+   "frame": {
+    "x": 656,
+    "y": 482,
+    "w": 162,
+    "h": 170
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 162,
+    "h": 170
+   },
+   "sourceSize": {
+    "w": 162,
+    "h": 170
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
   }
  },
  "meta": {
   "image": "matty2.png",
   "size": {
-   "w": 918,
+   "w": 2295,
    "h": 654
   },
   "scale": "1",

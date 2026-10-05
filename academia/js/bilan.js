@@ -1,8 +1,11 @@
 /* Académia : la carte de fin d'un combat, le bilan seul (le badge, le compagnon libéré et l'évolution ont leur scène).
    Toutes les lignes ont leur place dès l'ouverture et entrent l'une après l'autre en fondu : « Continuer » ne bouge
    jamais et se voit tout de suite. Victoire : ruban, rayons qui tournent, confettis et étoiles dessinés, le compagnon
-   en grand qui saute. Fatigue : bleu nuit doux, le compagnon qui respire lentement sous ses « Z ». Une Ombre enfuie :
-   rien de grave, elle attend dans les herbes. Sur un écran bas, la carte passe en deux colonnes (style_scenes.css). */
+   en grand qui saute de joie (sa pose « joie »), deux lanceurs de confettis à ses pieds, sa coupe après un chef.
+   Fatigue : bleu nuit doux, le compagnon fatigué (pose « fatigue ») qui respire lentement sous ses « Z » dessinés.
+   Une Ombre enfuie : rien de grave, elle attend dans les herbes. Une pose pas encore dessinée montre la face
+   (imageHD). Les icônes des lignes sont dessinées (js/icones.js). Sur un écran bas, la carte passe en deux colonnes
+   (style_scenes.css). */
 function carteBilan(b, c, region, gain, xpAvant, fin){
   return new Promise(resolu => {
     const issue = b.gagne ? "victoire" : b.fuite ? "fuite" : "fatigue";
@@ -14,15 +17,27 @@ function carteBilan(b, c, region, gain, xpAvant, fin){
     // the ribbon on top; then the companion (left on a low screen)
     const scene = el("div", "bilan-scene");
     const ruban = el("div", "ruban", "<span></span>"); ruban.firstChild.textContent = affiche(titre);
-    const podium = el("div", "podium", issue === "victoire" ? `<div class="rayons"></div>` : issue === "fatigue" ? `<div class="zzz"><i>Z</i><i>Z</i><i>Z</i></div>` : "");
+    const podium = el("div", "podium", issue === "victoire" ? `<div class="rayons"></div>` : "");
     const fig = el("div", "figure");
     // an evolving companion is still shown in its old form: the evolution scene reveals the new one
-    fig.append(gain.evolue ? imageHD(c.famille + gain.stadeAvant, "face", 200) : spriteCompagnon(c, 200));
+    const pose = {victoire: "joie", fatigue: "fatigue"}[issue] || "face", cle = gain.evolue ? c.famille + gain.stadeAvant : cleDe(c);
+    fig.append(imageHD(cle, pose, 200));
     podium.append(fig); scene.append(podium);
+    if (issue === "victoire") {   // party poppers at its feet (its cup in place of the right one after a chief), twinkles
+      podium.append(iconeDom("confettis", "popper gauche"), b.boss ? iconeDom("trophee", "coupe") : iconeDom("confettis", "popper droite"));
+      ["etoile", "etincelle", "etoile"].forEach((n, i) => podium.append(iconeDom(n, "scintille-bilan s" + (i + 1))));
+    }
+    if (issue === "fatigue") {   // its tired pose has its own « Z »; a drawing without it gets three drawn ones over its head
+      const z = el("div", "zzz"); z.hidden = true;
+      for (let i = 0; i < 3; i++) { const x = el("i"); x.append(iconeDom("dodo")); z.append(x); }
+      podium.append(z);
+      atlasJSON(cle, typeAtlas(cle)).then(a => { z.hidden = !!(a && a.frames.fatigue); });
+    }
     // right (or below): the lines, the XP bar, « Continuer »
     const corps = el("div", "bilan-corps"), lignes = el("div", "lignes");
     const lignesTexte = [];
-    const ligne = (t, cls = "") => { const x = el("p", "ligne-bilan " + cls); x.textContent = affiche(t); lignes.append(x); lignesTexte.push(t); };
+    // a line, its emoji drawn; the voice reads the text without it (js/voix.js)
+    const ligne = (t, cls = "") => { lignes.append(ecrireIcones(el("p", "ligne-bilan " + cls), affiche(t))); lignesTexte.push(t); };
     const s = n => n > 1 ? "s" : "";
     const nomAvant = FAMILLES[c.famille].noms[gain.stadeAvant - 1];
     ligne(`${b.bonnes} bonne${s(b.bonnes)} réponse${s(b.bonnes)} sur ${b.total}` + (b.xp ? ` · +${b.xp} XP` : ""), "fort");
@@ -33,16 +48,16 @@ function carteBilan(b, c, region, gain, xpAvant, fin){
     if (issue === "fuite") ligne(b.boss ? `${majuscule(region.chef)} t'attend encore dans sa maison. Réessaie, tu vas y arriver !` : "Elle se cache dans les herbes. Retrouve-la : tu vas y arriver !");
     if (b.gagne && !b.boss) {   // how far the door is
       const n = Math.min(regionEtat(b.region).etape, ETAPES);
-      ligne(n >= ETAPES ? `${region.icone} ${region.nom} : la porte est ouverte ! ${region.boss} t'attend.`
+      ligne(n >= ETAPES ? `🔓 ${region.nom} : la porte est ouverte ! ${region.boss} t'attend.`
         : `${region.icone} ${region.nom} : ${n} Ombre${s(n)} sur ${ETAPES} avant la porte`);
     }
     if (fin.cadeau) ligne("🎁 Le village te remercie : une Potion de clarté et un Indice du sage !");
     if (fin.joker) ligne({potion: "🧪 Tu trouves une Potion de clarté !", indice: "🦉 Tu trouves un Indice du sage !", sablier: "⏳ Tu trouves un Sablier pour le combo !"}[fin.joker]);
-    if (gain.niveaux) ligne(`⬆️ ${gain.evolue ? nomAvant : nomCompagnon(c)} passe au niveau ${c.niveau} !`, "fort");
+    if (gain.niveaux) ligne(`⬆️ ${gain.evolue ? nomAvant : nomCompagnon(c)} passe au niveau ${c.niveau} !`, "fort niveau");
     if (gain.evolue) ligne(`✨ Oh ? ${nomAvant} évolue…`, "evolue");
     const barre = el("div", "barrexp", "<i></i>");
     const bas = el("div", "ligne suite-fin");
-    const suite = markOk(el("button", "gros", gain.evolue ? "Regarder ➡" : "Continuer ➡"));
+    const suite = markOk(ecrireIcones(el("button", "gros"), gain.evolue ? "Regarder ➡" : "Continuer ➡"));
     let parti = false;
     suite.onclick = () => {
       if (parti) return; parti = true;
@@ -66,6 +81,6 @@ function carteBilan(b, c, region, gain, xpAvant, fin){
     const vers = Math.min(100, 100 * c.xp / xpPour(c.niveau));
     barre.firstChild.style.width = (gain.niveaux ? 0 : Math.min(100, 100 * xpAvant.xp / xpPour(xpAvant.niveau))) + "%";
     setTimeout(() => { if (!parti) barre.firstChild.style.width = vers + "%"; }, 300);
-    if (gain.niveaux) setTimeout(() => { if (!parti) sfx.niveau(); }, 250 + 280 * toutes.findIndex(x => x.textContent.startsWith("⬆️")));
+    if (gain.niveaux) setTimeout(() => { if (!parti) sfx.niveau(); }, 250 + 280 * toutes.findIndex(x => x.classList.contains("niveau")));
   });
 }

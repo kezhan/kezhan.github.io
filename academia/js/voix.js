@@ -1,8 +1,8 @@
 /* Académia : la voix lit les questions et les explications (la petite ne lit pas encore). Voix du navigateur ;
-   le luxembourgeois n'en a pas : chaque mot est joué depuis son enregistrement de lod.lu, copié dans le jeu
-   (assets/audio/lb, donnees/lexique_lb.json, données CC0) pour marcher sans réseau ; la voix allemande prend le
-   relais pour un mot sans enregistrement ou un enregistrement qui ne joue pas. Quand la tablette passe à une autre
-   application, la voix et les sons s'arrêtent. */
+   le luxembourgeois n'en a pas : chaque phrase enregistrée d'un seul tenant (exemple du dictionnaire), sinon chaque
+   mot, est jouée depuis son enregistrement de lod.lu, copié dans le jeu (assets/audio/lb, donnees/lexique_lb.json,
+   données CC0) pour marcher sans réseau ; la voix allemande prend le relais pour un mot sans enregistrement ou un
+   enregistrement qui ne joue pas. Quand la tablette passe à une autre application, la voix et les sons s'arrêtent. */
 const LOCALES = {fr: "fr-FR", en: "en-GB", de: "de-DE", lb: "lb-LU", zh: "zh-CN"};
 let voixListe = [];
 function chargerVoix(){ try { voixListe = speechSynthesis.getVoices() || []; } catch (e) { voixListe = []; } }
@@ -19,14 +19,18 @@ function voixPour(lang){
 // emojis are shown, never read aloud ("🍎🍎" would be read as "pomme rouge pomme rouge")
 const sansEmoji = t => String(t || "").replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu, "").replace(/\s+/g, " ").trim();
 let voixCoupee = false, generation = 0, audioLb = null;
+// the music listens (js/sons.js): it steps back while the voice speaks
+const signalerVoix = parle => document.dispatchEvent(new CustomEvent("voix", {detail: parle ? "debut" : "fin"}));
 // options.lent: a foreign word said slowly
 function dire(texte, lang = "fr", options){
   const t = sansEmoji(texte), moi = ++generation, lent = !!(options && options.lent);
   if (TEST) { window.__dit = t; return Promise.resolve(); }
   if (audioLb) { audioLb.pause(); audioLb = null; }
   if (!t || voixCoupee) return Promise.resolve();
-  if (lang === "lb" && !voixPour("lb")) return direLb(t, moi).then(ok => ok || moi !== generation ? undefined : parler(t, "de", lent));
-  return parler(t, lang, lent);
+  signalerVoix(true);
+  const fini = () => { if (moi === generation) signalerVoix(false); };
+  const p = lang === "lb" && !voixPour("lb") ? direLb(t, moi).then(ok => ok || moi !== generation ? undefined : parler(t, "de", lent)) : parler(t, lang, lent);
+  return p.then(fini, fini);
 }
 function parler(t, lang, lent = false){
   return new Promise(fin => {
@@ -61,10 +65,23 @@ function motsLb(t){
   });
   return mots;
 }
+// the recordings that say a text: the longest sentence recorded whole first (« ech hunn dech gär », an example of
+// lod.lu), else word by word; null when a word has none
+function enregistrementsLb(mots, lex){
+  const urls = [];
+  for (let i = 0; i < mots.length;) {
+    let n = Math.min(mots.length - i, 8);
+    while (n > 1 && !(lex[mots.slice(i, i + n).join(" ")] || {}).audio) n--;
+    const e = lex[mots.slice(i, i + n).join(" ")];
+    if (!e || !e.audio) return null;
+    urls.push(e.audio); i += n;
+  }
+  return urls;
+}
 // false when a word has no recording or a recording does not play: the caller then says it all with the German voice
 async function direLb(t, moi){
-  const lex = await chargerLexiqueLb(), urls = motsLb(t).map(m => lex[m] && lex[m].audio);
-  if (!urls.length || urls.some(u => !u)) return false;
+  const lex = await chargerLexiqueLb(), urls = enregistrementsLb(motsLb(t), lex);
+  if (!urls || !urls.length) return false;
   for (const u of urls) {
     if (moi !== generation) return true;
     const joue = await new Promise(fin => {
@@ -81,6 +98,7 @@ function taire(){
   generation++;
   if (audioLb) { audioLb.pause(); audioLb = null; }
   try { speechSynthesis.cancel(); } catch (e) {}
+  signalerVoix(false);
 }
 // another app in front: the voice stops and the little sounds sleep (ton() wakes them up at the next sound)
 document.addEventListener("visibilitychange", () => {

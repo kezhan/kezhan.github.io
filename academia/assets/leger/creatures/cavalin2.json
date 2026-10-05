@@ -48,6 +48,78 @@
     "y": 1
    }
   },
+  "joie": {
+   "frame": {
+    "x": 332,
+    "y": 0,
+    "w": 164,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 164,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 164,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 498,
+    "y": 0,
+    "w": 164,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 164,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 164,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue": {
+   "frame": {
+    "x": 664,
+    "y": 0,
+    "w": 164,
+    "h": 240
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 164,
+    "h": 240
+   },
+   "sourceSize": {
+    "w": 164,
+    "h": 240
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
   "face_petit": {
    "frame": {
     "x": 0,
@@ -95,12 +167,84 @@
     "x": 0.5,
     "y": 1
    }
+  },
+  "joie_petit": {
+   "frame": {
+    "x": 120,
+    "y": 242,
+    "w": 58,
+    "h": 85
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 58,
+    "h": 85
+   },
+   "sourceSize": {
+    "w": 58,
+    "h": 85
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 180,
+    "y": 242,
+    "w": 58,
+    "h": 85
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 58,
+    "h": 85
+   },
+   "sourceSize": {
+    "w": 58,
+    "h": 85
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue_petit": {
+   "frame": {
+    "x": 240,
+    "y": 242,
+    "w": 58,
+    "h": 85
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 58,
+    "h": 85
+   },
+   "sourceSize": {
+    "w": 58,
+    "h": 85
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
   }
  },
  "meta": {
   "image": "cavalin2.png",
   "size": {
-   "w": 332,
+   "w": 830,
    "h": 329
   },
   "scale": "1",

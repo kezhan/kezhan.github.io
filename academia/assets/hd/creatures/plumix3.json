@@ -48,6 +48,78 @@
     "y": 1
    }
   },
+  "joie": {
+   "frame": {
+    "x": 1000,
+    "y": 0,
+    "w": 498,
+    "h": 512
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 498,
+    "h": 512
+   },
+   "sourceSize": {
+    "w": 498,
+    "h": 512
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche": {
+   "frame": {
+    "x": 1500,
+    "y": 0,
+    "w": 498,
+    "h": 512
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 498,
+    "h": 512
+   },
+   "sourceSize": {
+    "w": 498,
+    "h": 512
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue": {
+   "frame": {
+    "x": 2000,
+    "y": 0,
+    "w": 498,
+    "h": 512
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 498,
+    "h": 512
+   },
+   "sourceSize": {
+    "w": 498,
+    "h": 512
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
   "face_petit": {
    "frame": {
     "x": 0,
@@ -95,12 +167,84 @@
     "x": 0.5,
     "y": 1
    }
+  },
+  "joie_petit": {
+   "frame": {
+    "x": 364,
+    "y": 514,
+    "w": 180,
+    "h": 185
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 185
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 185
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "touche_petit": {
+   "frame": {
+    "x": 546,
+    "y": 514,
+    "w": 180,
+    "h": 185
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 185
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 185
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fatigue_petit": {
+   "frame": {
+    "x": 728,
+    "y": 514,
+    "w": 180,
+    "h": 185
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 180,
+    "h": 185
+   },
+   "sourceSize": {
+    "w": 180,
+    "h": 185
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
   }
  },
  "meta": {
   "image": "plumix3.png",
   "size": {
-   "w": 1000,
+   "w": 2500,
    "h": 701
   },
   "scale": "1",

@@ -41,6 +41,7 @@ const force = c => 6 + c.niveau;
 // XP needed to go from level n to n+1: quick at first, slower later
 const xpPour = n => 10 + 6 * n;
 
+// the houses; `icone` is written in the texts and shown as the house's drawn symbol (js/icones.js, EMOJI_ICONES)
 const REGIONS = [
   {id: "dojo", herbes: "à droite du chemin du Dojo", nom: "Dojo des Nombres", icone: "🥋", matiere: "maths", famille: "matty", desc: "Compter et calculer",
    boss: "Grand Vizir des Nombres", chef: "le Vizir", badge: "Badge de Pythagore"},

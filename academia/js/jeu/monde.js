@@ -15,12 +15,15 @@ class Monde extends Phaser.Scene {
     chargerEffetsHD(this.load, QUALITE);
     chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
+    // the medals and the open padlock drawn after a house's name (js/icones.js)
+    ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
   }
   create(){
     this.carte = construireCarte();
     dessinerVillageHD(this, this.carte);   // js/jeu/decor_village_hd.js
     this.cameras.main.setBounds(0, 0, LARG * CASE, HAUT * CASE).setRoundPixels(true);
-    // signs above the houses (icon, name, badges, Ombres beaten before the door opens), crisp at any zoom, on a rounded pill
+    // each house's name, crisp at any zoom on a rounded pill, over the sign planted in front of it: it shows when the
+    // hero comes near; the sign's stars count the Ombres beaten before the door opens (js/jeu/decor_village_hd_jeu.js)
     this.panneaux = this.carte.etiquettes.map(e => panneauVillageHD(this, e.region, e.x * CASE, e.y * CASE));
     this.majPanneaux();
     this.vie = new VieVillage(this);   // villagers who breathe, wave and talk
@@ -72,12 +75,20 @@ class Monde extends Phaser.Scene {
     if (n) this.vie.saluer(n.s);   // the villager waves at once, the hero walks to talk
     this.allerVers(x, y, n);
   }
+  // the name of a house, its badges, a padlock once its door is open; without its drawn sign, also the Ombres beaten
   texteEtiquette(regionId){
     const r = regionDe(regionId), st = regionEtat(regionId), n = Math.min(st.etape, ETAPES);
-    return `${r.icone} ${r.nom.replace(/^(Le |La |Les |L')/, "")}` + (st.badges ? " " + "🏅".repeat(Math.min(3, st.badges)) : "")
-      + "  " + (n >= ETAPES ? "🔓" : "●".repeat(n) + "○".repeat(ETAPES - n));
+    const signe = !!(this.villageHD && this.villageHD.enseignes && this.villageHD.enseignes[regionId]);
+    const nom = signe ? r.nom : `${r.icone} ${r.nom.replace(/^(Le |La |Les |L')/, "")}`;
+    return nom + (st.badges ? " " + "🏅".repeat(Math.min(3, st.badges)) : "")
+      + (n >= ETAPES ? " 🔓" : signe ? "" : "  " + "●".repeat(n) + "○".repeat(ETAPES - n));
   }
-  majPanneaux(){ this.carte.etiquettes.forEach((e, i) => ecrirePanneauHD(this.panneaux[i], this.texteEtiquette(e.region))); }
+  majPanneaux(){
+    this.carte.etiquettes.forEach((e, i) => {
+      ecrirePanneauHD(this.panneaux[i], this.texteEtiquette(e.region));
+      etoilesPanneauHD(this, e.region, Math.min(regionEtat(e.region).etape, ETAPES));
+    });
+  }
   // the companion following the hero, drawn again only when it changed (chosen in the bag, evolved): its drawing is
   // loaded first if it is new, and the old one stops breathing before it goes
   majCompagnon(){

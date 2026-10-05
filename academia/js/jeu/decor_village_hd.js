@@ -1,13 +1,15 @@
 /* Académia : le village en haute définition. Le sol (herbe, chemins, place, pied des hautes herbes) est fait de tuiles
    posées d'après les rectangles de la carte (js/jeu/carte.js, elements) ; maisons, petits lieux (puits, lanternes,
    banc...), arbres, forêt du bord, rochers, mare, plage et barque, fleurs, détails du pré et hautes herbes sont des
-   pièces rangées dans deux planches (table : js/jeu/decor_village_hd_pieces.js), triées par ligne comme les
+   pièces rangées dans des planches (table : js/jeu/decor_village_hd_pieces.js), triées par ligne comme les
    personnages : un objet prend profondeur(sa dernière ligne, 0), une touffe passe devant les pieds de qui se tient
-   dans sa case. Dessins : outils/village/ (à nous, style plat des packs Kenney). Deux versions : assets/hd/village
+   dans sa case. Devant chaque maison, un panneau planté (le symbole de sa matière, quatre creux d'étoile), sur une
+   case que personne ne traverse ; les portes dessinées et l'ombre du chef sont posées par js/jeu/portes_village.js.
+   Dessins : outils/village/ (à nous, style plat des packs Kenney). Deux versions : assets/hd/village
    (8 pixels par unité du monde) et assets/leger/village (4) ; même code. Ce qui bouge est dans
    decor_village_hd_vivant.js, ce que le jeu appelle en marchant dans decor_village_hd_jeu.js.
    Contrat : IMAGES_VILLAGE, chargerVillageHD(load, version), dessinerVillageHD(scene, carte) qui rend
-   {etiquettes, maisons, ecrans, touffes, eau}. */
+   {etiquettes, maisons, ecrans, touffes, eau, enseignes}. */
 const IMAGES_VILLAGE = Object.keys(PLANCHES_VILLAGE).map(n => ({cle: "vh_" + n, fichier: n + ".png"}));
 
 // version 'hd' or 'leger': same drawing, same code (already loaded images are skipped)
@@ -153,6 +155,29 @@ const VILLAGE_HD = (() => {
     });
   }
 
+  // the sign planted in front of each house (its subject's symbol, four hollows that the stars fill: outils/village/
+  // scripts/enseignes.py). The Dojo's stands on the map, its little board of stars hangs under it; the others stand
+  // on a tile of their own, by the door, out of the paths, the tall grass and the flowers, and nobody walks through
+  // their post. rendu.enseignes[region]: {x, y (foot), tx, ty (tile), im, piece (whose named points are the hollows)}
+  const ENSEIGNES = {germania: [3, 16], albion: [40, 15], duche: [22, 22], jardin: [12, 6], observatoire: [37, 6]};
+  function enseignes(scene, carte, rendu){
+    carte.elements.filter(e => e.type === "panneau").forEach(e => {
+      const [x, y] = pied(e), region = e.region || "dojo";
+      const im = poser(scene, "planchette_dojo", x, y, profondeur(e.y + e.h - 1, 0) + .01);
+      if (im) rendu.enseignes[region] = {region, x, y, tx: e.x, ty: e.y, im, piece: "planchette_dojo", haut: y - 26};
+    });
+    Object.entries(ENSEIGNES).forEach(([region, [tx, ty]]) => {
+      if (rendu.enseignes[region] || !carte.maison.some(l => l.includes(region)) || carte.bloque[ty][tx]) return;
+      const x = (tx + .5) * CASE, y = (ty + 1) * CASE, nom = "panneau_" + region, im = poser(scene, nom, x, y, profondeur(ty, 0));
+      if (!im) return;
+      carte.bloque[ty][tx] = true;
+      rendu.ecrans.push(im);
+      rendu.maisons.push({region, nom, x, y, ligne: ty, im, bornes: im.getBounds()});   // a touch on it leads to the door
+      const q = point(nom, "etiquette", x, y);
+      rendu.enseignes[region] = {region, x, y, tx, ty, im, piece: nom, haut: q ? q.y : y - 27};
+    });
+  }
+
   // trees of the map, the same kind for the same tree even when it is moved: the first big one is a round tree, the
   // second a cherry tree; the others by their name in the map and their rank among those of that name
   const SORTES = {buisson1: ["arbre_fleuri", "arbre_rond"], buisson2: ["arbre_pommier", "arbre_oranger"], buisson3: ["arbre_pommier", "arbre_oranger"],
@@ -261,12 +286,12 @@ const VILLAGE_HD = (() => {
   }
 
   function dessiner(scene, carte){
-    const rendu = {etiquettes: {}, maisons: [], ecrans: [], touffes: {}, lumieres: [], carte};
+    const rendu = {etiquettes: {}, maisons: [], ecrans: [], touffes: {}, lumieres: [], enseignes: {}, carte};
     if (!IMAGES_VILLAGE.every(i => scene.textures.exists(i.cle))) return rendu;   // not loaded: nothing drawn, the caller keeps its own map
     IMAGES_VILLAGE.forEach(i => scene.textures.get(i.cle).setFilter(Phaser.Textures.FilterMode.LINEAR));
     const g = grilles(carte);
     sol(scene, carte, g);
-    batiments(scene, carte, rendu); arbres(scene, carte, rendu); foret(scene, carte);
+    batiments(scene, carte, rendu); enseignes(scene, carte, rendu); arbres(scene, carte, rendu); foret(scene, carte);
     mare(scene, carte, rendu); fleurs(scene, carte); pre(scene, carte, g); herbes(scene, carte, rendu);
     rendu.ecrans = rendu.ecrans.filter(Boolean);
     rendu.ecrans.forEach(im => { im.bornes = im.getBounds(); });

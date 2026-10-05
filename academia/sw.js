@@ -7,7 +7,7 @@
       La page et les données passent par le réseau, mais pas plus de trois secondes : sinon la copie gardée.
    VERSION_SW est réécrite par publier.py à chaque publication : le navigateur voit un service worker neuf et
    installe la nouvelle version. En local (VERSION_SW = "dev"), rien n'est préchargé. */
-const VERSION_SW = "0.7-e91ece90";
+const VERSION_SW = "0.8-0cbc4d98";
 const CACHE = "academia-" + VERSION_SW, EMPREINTES = "precache-empreintes.json";
 const ATTENTE_RESEAU = 3000, PRECHARGE_APRES = 15000;
 

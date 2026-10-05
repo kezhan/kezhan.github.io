@@ -49,11 +49,11 @@ function ficheCompagnon(f){
   dessin.onclick = () => { sauterDessin(fig); direCompagnon(f); };
   const corps = el("div", "fiche-corps", "<b></b>");
   corps.querySelector("b").textContent = c ? affiche(nomCompagnon(c)) : "???";
-  if (!c) { const s = el("small"); s.textContent = `À libérer : ${r.icone} ${r.nom}`; corps.append(s); }
+  if (!c) corps.append(ecrireIcones(el("small"), `À libérer : ${r.icone} ${r.nom}`));   // the house's drawn symbol (js/icones.js)
   else {
     corps.append(el("div", "barrexp petite", `<i style="width:${Math.min(100, 100 * c.xp / xpPour(c.niveau))}%"></i>`), etoilesFiche(c));
-    if (c.id !== p.actif) { const b = el("button", "moyen", "⚔️ Avec moi !"); b.onclick = () => choisirCompagnon(c); corps.append(b); }
-    else corps.append(el("span", "suit", "🐾 Te suit partout"));
+    if (c.id !== p.actif) { const b = ecrireIcones(el("button", "moyen"), "⚔️ Avec moi !"); b.onclick = () => choisirCompagnon(c); corps.append(b); }
+    else corps.append(ecrireIcones(el("span", "suit"), "🐾 Te suit partout"));
   }
   d.append(dessin, corps);
   return d;
@@ -69,7 +69,7 @@ function etoilesFiche(c){
   if (charge) {
     const k = el("span", "charge" + (charge >= plein ? " complete" : ""), "<i></i>".repeat(plein));
     [...k.children].forEach((x, i) => x.classList.toggle("remplie", i < charge));
-    k.title = charge >= plein ? `🌟 ${FAMILLES[c.famille].attaques[2]} est prêt !` : "Combo en charge";
+    k.title = charge >= plein ? `${FAMILLES[c.famille].attaques[2]} est prêt !` : "Combo en charge";
     l.append(k);
   }
   return l;
@@ -87,7 +87,7 @@ function vignetteCompagnon(f){
 function ouvrirFiche(f){
   const l = $("listeEquipe"), v = $("ficheEquipe");
   l.hidden = true; v.hidden = false; v.innerHTML = "";
-  const retour = el("button", "moyen gris retour", "⬅ Équipe");
+  const retour = ecrireIcones(el("button", "moyen gris retour"), "⬅ Équipe");
   retour.onclick = () => { sfx.tap(); dessinerEquipe(); };
   v.append(ficheCompagnon(f), retour);
 }

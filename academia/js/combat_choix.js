@@ -18,15 +18,16 @@ function choisirAttaque(panneau, c, {boss = false, premier = false} = {}){
     if (p.age <= 5) return petitPanneau();
 
     const g = el("div", "attaques");
-    const bouton = (cls, ico, titre, aide, action) => {
-      const b = el("button", "attaque " + cls, `<span class="ico">${ico}</span><span><b></b><small></small></span>`);
+    const bouton = (cls, ico, titre, aide, action) => {   // ico: its drawn icon (js/icones.js)
+      const b = el("button", "attaque " + cls, `<span class="ico"></span><span><b></b><small></small></span>`);
+      b.querySelector(".ico").append(iconeDom(ico));
       b.querySelector("b").textContent = affiche(titre); b.querySelector("small").textContent = affiche(aide);
       b.onclick = () => { if (!b.disabled) choisir(action, titre); };
       g.append(b); return b;
     };
-    markOk(bouton("rapide", "⚡", A[0], "Une question facile", "rapide"));
-    bouton("massive", "💥", A[1], boss ? "Le défi du chef !" : "Plus dur, plus d'XP !", "massive");
-    const combo = bouton("combo" + (pret ? " prete" : ""), "🌟", A[2], pret ? "Prêt : trois bonnes réponses !" : "Trois bonnes réponses de suite", "combo");
+    markOk(bouton("rapide", "eclair", A[0], "Une question facile", "rapide"));
+    bouton("massive", "choc", A[1], boss ? "Le défi du chef !" : "Plus dur, plus d'XP !", "massive");
+    const combo = bouton("combo" + (pret ? " prete" : ""), "etoile", A[2], pret ? "Prêt : trois bonnes réponses !" : "Trois bonnes réponses de suite", "combo");
     combo.querySelector("span:last-child").append(el("div", "jauge-combo", `<i style="width:${100 * (c.charge || 0) / COMBO_PLEIN}%"></i>`));
     combo.disabled = !pret;
     if (pret) scintiller(combo);
@@ -34,7 +35,7 @@ function choisirAttaque(panneau, c, {boss = false, premier = false} = {}){
     const l = el("div", "jokers");
     if (pret && (p.jokers.sablier || 0) > 0) {   // the Hourglass: ten more seconds for each question of the timed combo
       const s = el("button", "joker sablier"); s.setAttribute("aria-pressed", "false");
-      const ecrire = () => { s.textContent = affiche(`⏳ +10 s pour le combo · ${p.jokers.sablier}`); };
+      const ecrire = () => { ecrireIcones(s, affiche(`⏳ +10 s pour le combo · ${p.jokers.sablier}`)); };
       ecrire();
       s.onclick = () => {
         sfx.tap(); sablier = !sablier; s.setAttribute("aria-pressed", String(sablier));
@@ -42,12 +43,12 @@ function choisirAttaque(panneau, c, {boss = false, premier = false} = {}){
       };
       l.append(s);
     }
-    const fuite = el("button", "joker", "🏃 S'enfuir");
+    const fuite = ecrireIcones(el("button", "joker"), "🏃 S'enfuir");
     fuite.onclick = () => {
       sfx.tap();
       if (fuite.dataset.sur) { choisir("fuite"); return; }
-      fuite.dataset.sur = "1"; fuite.textContent = affiche("🏃 Partir ? Touche encore"); dire("Tu veux partir ? Touche encore.");
-      setTimeout(() => { delete fuite.dataset.sur; fuite.textContent = "🏃 S'enfuir"; }, 3000);
+      fuite.dataset.sur = "1"; ecrireIcones(fuite, affiche("🏃 Partir ? Touche encore")); dire("Tu veux partir ? Touche encore.");
+      setTimeout(() => { delete fuite.dataset.sur; ecrireIcones(fuite, "🏃 S'enfuir"); }, 3000);
     };
     l.append(fuite); panneau.append(l);
     // the voice reads the choices as the panel rises (all of it on the first turn, the names after)

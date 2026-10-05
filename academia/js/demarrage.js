@@ -1,6 +1,10 @@
 /* Académia : lancement. Charge la partie et les questions, branche les boutons des menus, puis reprend là où l'enfant
-   s'était arrêté. */
+   s'était arrêté. Ouvert comme un fichier, ou arrivé sans un de ses scripts, il ne démarre pas : l'écran de secours
+   d'index.html le dit. */
 async function demarrer(){
+  if (location.protocol === "file:" || (window.__scriptsManquants || []).length) return;
+  // installable app, playable offline (GitHub Pages is https): the worker starts keeping the game from the first visit
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
   charger();
   $("btnNouveau").onclick = () => { sfx.tap(); ouvrirCreation(); };
   $("btnNouveau").disabled = false;
@@ -27,8 +31,6 @@ async function demarrer(){
   ouvrirAccueil();
   await chargerQuestions();
   if (!window.__jeuPret) await new Promise(r => document.addEventListener("jeu-pret", r, {once: true}));
-  // installable app, playable offline (GitHub Pages is https)
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
   window.__pret = true;
 }
-demarrer();
+demarrer().catch(e => { console.error(e); if (typeof ecranIncomplet === "function") ecranIncomplet(); });

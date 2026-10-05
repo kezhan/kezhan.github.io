@@ -34,6 +34,17 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .palpite{animation:palpite 1.6s ease-in-out infinite}
 @keyframes palpite{0%,100%{transform:scale(1)} 50%{transform:scale(1.06)}}
 
+/* drawn icons (js/icones.js): in the text, at the size of its font; alone in a round button, they fill it */
+.icone{display:inline-block; width:1.3em; height:1.3em; vertical-align:-.3em; object-fit:contain; flex:none; pointer-events:none;
+  -webkit-user-drag:none; user-select:none}
+.rond{display:inline-flex; align-items:center; justify-content:center}
+.rond .icone{width:66%; height:66%; vertical-align:0}
+.rond.fermer .icone{width:52%; height:52%}
+.gros .icone{width:1.25em; height:1.25em}
+.moyen > .icone:only-child{width:34px; height:34px}
+.titre3 .icone{width:1.15em; height:1.15em; vertical-align:-.2em}
+.joker .icone{width:1.3em; height:1.3em; vertical-align:-.32em}
+
 /* screens over the game */
 .ecran{position:fixed; inset:0; z-index:10; overflow-y:auto; padding:14px max(14px, env(safe-area-inset-right)) 24px max(14px, env(safe-area-inset-left))}
 .ecran.plein{background:radial-gradient(circle at 20% 15%, rgba(255,255,255,.16) 0 2px, transparent 3px) 0 0/90px 90px,
@@ -113,6 +124,7 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .gardien{display:flex; align-items:center; gap:10px; color:#fff; font:700 22px var(--titre); background:rgba(29,22,64,.6); border-radius:999px; padding:4px 14px 4px 4px}
 .gardien img{width:48px; height:48px; border-radius:50%; background:var(--papier); border:3px solid var(--or)}
 .pastille{background:rgba(255,255,255,.18); border-radius:999px; padding:2px 10px; font-size:18px}
+.pastille .icone{width:1.2em; height:1.2em; vertical-align:-.27em}
 
 /* dialogue with a villager (js/dialogue.js): the text writes itself, the rest of the line keeps its place */
 .dialogue{position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:12; width:min(760px, calc(100% - 20px));
@@ -127,6 +139,9 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .dlg-choix .suite{width:48px; height:48px; background:var(--or); font:700 22px/1 var(--titre); display:inline-flex; align-items:center; justify-content:center;
   animation:palpite 1.4s ease-in-out infinite}
 .dlg-choix .epees{font-size:46px; min-width:132px; min-height:84px; border-radius:26px; animation:palpite 1.4s ease-in-out infinite}
+.dlg-choix .epees .icone{width:62px; height:62px}
+.dlg-choix .suite .icone{width:26px; height:26px}
+.dlg-corps p .icone{width:1.25em; height:1.25em; vertical-align:-.28em}
 
 /* team (js/equipe.js): low cards, all in sight at 1271 x 637; thumbnails that open a card on a phone or a low screen */
 .sac{display:flex; flex-direction:column}
@@ -236,7 +251,7 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
   #creation .heros{grid-template-columns:repeat(7, minmax(0, 60px)); gap:6px}
   #creation .ligne{margin:6px 0 0} #creation .gros, #creation .moyen{min-height:50px; font-size:20px; padding:6px 18px}
   .dialogue{bottom:6px; padding:8px 10px; gap:10px} .dlg-portrait{width:64px; height:64px} .dlg-corps p{font-size:18px; margin:2px 0}
-  .dlg-choix .epees{min-height:60px; font-size:36px}
+  .dlg-choix .epees{min-height:60px; font-size:36px} .dlg-choix .epees .icone{width:46px; height:46px}
 }
 @media (max-width:440px){ body{font-size:17px} .dlg-portrait{width:64px; height:64px} .dialogue{padding:10px; gap:8px} }
 @media (prefers-reduced-motion: reduce){ .sprite-hd.vivant, .ecran.plein, .palpite, .logo-eclat, .dlg-choix .suite, .dlg-choix .epees, .coucou .tete{animation:none} }

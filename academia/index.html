@@ -10,17 +10,53 @@
 <link rel="apple-touch-icon" href="icones/icone-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&display=swap">
-<link rel="stylesheet" href="style.css?v=e91ece90">
-<link rel="stylesheet" href="style_combat.css?v=e91ece90">
-<link rel="stylesheet" href="style_scenes.css?v=e91ece90">
+<link rel="stylesheet" href="style.css?v=0cbc4d98">
+<link rel="stylesheet" href="style_combat.css?v=0cbc4d98">
+<link rel="stylesheet" href="style_scenes.css?v=0cbc4d98">
+<script>
+/* Before everything. Opened as a file (a double click on index.html), the game cannot read its pictures and
+   questions; a script that did not come (the network cut during the first visit) stops it. In both cases a clear
+   screen instead of an empty game: js/demarrage.js does not start, or this screen comes when its start fails. */
+(() => {
+  const manquants = window.__scriptsManquants = [];
+  addEventListener("error", e => { if (e.target && e.target.tagName === "SCRIPT") manquants.push(e.target.src); }, true);
+  window.ecranSecours = (titre, texte, bouton) => {
+    if (document.getElementById("secours")) return;
+    const d = document.createElement("div"), h = document.createElement("h1"), p = document.createElement("p");
+    d.id = "secours";
+    d.style.cssText = "position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;"
+      + "gap:20px;padding:24px;background:#2B1E5C;color:#FFF;font:600 20px/1.45 Nunito,system-ui,sans-serif;text-align:center";
+    h.style.cssText = "margin:0;font:700 30px/1.2 Fredoka,system-ui,sans-serif"; p.style.margin = "0";
+    h.textContent = titre; p.textContent = texte; d.append(h, p);
+    if (bouton) {
+      const b = document.createElement(bouton.lien ? "a" : "button");
+      b.style.cssText = "min-height:64px;padding:12px 28px;border:0;border-radius:20px;background:#FFD45C;color:#2B1E5C;"
+        + "font:700 24px Fredoka,system-ui,sans-serif;text-decoration:none;display:inline-flex;align-items:center;cursor:pointer";
+      b.textContent = bouton.texte;
+      if (bouton.lien) b.href = bouton.lien; else b.onclick = bouton.action;
+      d.append(b);
+    }
+    (document.body || document.documentElement).append(d);
+  };
+  window.ecranIncomplet = () => ecranSecours("Le jeu n'est pas arrivé en entier", "Le réseau a coupé pendant le chargement.",
+    {texte: "↻ Recharger", action: () => location.reload()});
+  document.addEventListener("DOMContentLoaded", () => {
+    if (location.protocol === "file:") return ecranSecours("Académia s'ouvre dans le navigateur, pas comme un fichier",
+      "Un double clic sur index.html ne peut pas marcher : le navigateur refuse au jeu ses dessins et ses questions. "
+      + "En ligne : kezhan.github.io/academia. Sur ce PC, la version du dossier : python jouer_en_local.py, dans le dossier du jeu.",
+      {texte: "Ouvrir Académia", lien: "https://kezhan.github.io/academia/"});
+    if (manquants.length || typeof demarrer !== "function") ecranIncomplet();
+  });
+})();
+</script>
 </head>
 <body>
 <!-- the game world (Phaser) fills the screen; menus sit on top of it -->
 <div id="jeu"></div>
 
 <header class="barre" id="barre" hidden>
-  <div class="gardien"><img id="gPortrait" alt=""><span id="gNom"></span><span class="pastille">✨ <b id="gEtincelles">0</b></span></div>
-  <button class="rond" id="btnEquipe" aria-label="Mon équipe">🎒</button>
+  <div class="gardien"><img id="gPortrait" alt=""><span id="gNom"></span><span class="pastille"><img class="icone" data-icone="etincelle" alt=""> <b id="gEtincelles">0</b></span></div>
+  <button class="rond" id="btnEquipe" aria-label="Mon équipe"><img class="icone" data-icone="sac" alt=""></button>
 </header>
 
 <!-- PROFILES: the village drawn behind (js/jeu/vitrine.js), the starters in front -->
@@ -41,7 +77,7 @@
   </h1>
   <p class="sous">Le monde où l'on apprend en s'amusant</p>
   <div class="profils" id="profils"></div>
-  <button class="gros palpite" id="btnNouveau" disabled>✨ Nouveau Gardien</button>
+  <button class="gros palpite" id="btnNouveau" disabled><img class="icone" data-icone="etincelle" alt=""> Nouveau Gardien</button>
   <div class="decor-accueil" id="decorAccueil" aria-hidden="true"></div>
   <p class="version" id="version"></p>
 </main>
@@ -57,7 +93,7 @@
     <label class="etiquette">Ton héros</label>
     <div class="heros" id="heros"></div>
   </div>
-  <div class="ligne"><button class="moyen gris" data-retour>⬅</button><button class="gros attente" id="btnCreer">C'est parti !</button></div>
+  <div class="ligne"><button class="moyen gris" data-retour aria-label="Retour"><img class="icone" data-icone="retour" alt=""></button><button class="gros attente" id="btnCreer">C'est parti !</button></div>
 </section>
 
 <!-- FIRST COMPANION -->
@@ -83,17 +119,17 @@
 <!-- TEAM: the child's bag (js/equipe.js); the grown-ups' corner opens from it by a long press -->
 <section id="equipe" class="ecran voile" hidden>
   <div class="carte large sac">
-    <div class="entete"><h2 class="titre3">🎒 Mon équipe</h2><button class="rond fermer" id="btnFermerEquipe" aria-label="Fermer">✖</button></div>
+    <div class="entete"><h2 class="titre3"><img class="icone" data-icone="sac" alt=""> Mon équipe</h2><button class="rond fermer" id="btnFermerEquipe" aria-label="Fermer"><img class="icone" data-icone="croix" alt=""></button></div>
     <div class="liste-equipe" id="listeEquipe"></div>
     <div class="fiche-seule" id="ficheEquipe" hidden></div>
-    <div class="pied-sac"><button class="parents" id="btnParents" aria-label="Coin des parents : garder le doigt appuyé trois secondes"><i class="anneau-appui"></i>👪 Parents</button><small>appui long</small></div>
+    <div class="pied-sac"><button class="parents" id="btnParents" aria-label="Coin des parents : garder le doigt appuyé trois secondes"><i class="anneau-appui"></i><img class="icone" data-icone="parents" alt=""> Parents</button><small>appui long</small></div>
   </div>
 </section>
 
 <!-- GROWN-UPS' CORNER (js/parents.js) -->
 <section id="parents" class="ecran voile" hidden>
   <div class="carte large coin-parents">
-    <div class="entete"><h2 class="titre3" id="parentsTitre">👪 Parents</h2><button class="joker" id="btnChanger">👤 Changer de Gardien</button><button class="rond fermer" id="btnFermerParents" aria-label="Fermer">✖</button></div>
+    <div class="entete"><h2 class="titre3" id="parentsTitre"><img class="icone" data-icone="parents" alt=""> Parents</h2><button class="joker" id="btnChanger"><img class="icone" data-icone="gardien" alt=""> Changer de Gardien</button><button class="rond fermer" id="btnFermerParents" aria-label="Fermer"><img class="icone" data-icone="croix" alt=""></button></div>
     <nav class="onglets" id="ongletsParents" role="tablist">
       <button role="tab" data-onglet="matieres" aria-selected="true">Matières</button><button role="tab" data-onglet="erreurs">Erreurs</button><button role="tab" data-onglet="temps">Temps</button><button role="tab" data-onglet="reglages">Réglages</button>
     </nav>
@@ -110,53 +146,55 @@
 <div class="toast" id="toast" hidden></div>
 
 <script src="vendor/phaser/phaser.min.js"></script>
-<script src="js/outils.js?v=e91ece90"></script>
-<script src="js/etat.js?v=e91ece90"></script>
-<script src="js/voix.js?v=e91ece90"></script>
-<script src="js/compagnons.js?v=e91ece90"></script>
-<script src="js/questions/maths.js?v=e91ece90"></script>
-<script src="js/questions/maths_mult.js?v=e91ece90"></script>
-<script src="js/questions/logique.js?v=e91ece90"></script>
-<script src="js/questions.js?v=e91ece90"></script>
-<script src="js/adaptatif.js?v=e91ece90"></script>
-<script src="js/sprite_dom.js?v=e91ece90"></script>
-<script src="js/dialogue.js?v=e91ece90"></script>
-<script src="js/question_dessin.js?v=e91ece90"></script>
-<script src="js/question_vue.js?v=e91ece90"></script>
-<script src="js/combat.js?v=e91ece90"></script>
-<script src="js/combat_choix.js?v=e91ece90"></script>
-<script src="js/astuces.js?v=e91ece90"></script>
-<script src="js/progression.js?v=e91ece90"></script>
-<script src="js/bilan.js?v=e91ece90"></script>
-<script src="js/moments.js?v=e91ece90"></script>
-<script src="js/effets_dom.js?v=e91ece90"></script>
-<script src="js/evolution.js?v=e91ece90"></script>
-<script src="js/liberation.js?v=e91ece90"></script>
-<script src="js/transition.js?v=e91ece90"></script>
-<script src="js/equipe.js?v=e91ece90"></script>
-<script src="js/parents.js?v=e91ece90"></script>
-<script src="js/accueil.js?v=e91ece90"></script>
-<script src="js/jeu/carte.js?v=e91ece90"></script>
-<script src="js/jeu/qualite.js?v=e91ece90"></script>
-<script src="js/jeu/decor_village_hd_pieces.js?v=e91ece90"></script>
-<script src="js/jeu/decor_village_hd.js?v=e91ece90"></script>
-<script src="js/jeu/decor_village_hd_vivant.js?v=e91ece90"></script>
-<script src="js/jeu/decor_village_hd_jeu.js?v=e91ece90"></script>
-<script src="js/jeu/chargement.js?v=e91ece90"></script>
-<script src="js/jeu/sprites_hd.js?v=e91ece90"></script>
-<script src="js/jeu/effets_hd.js?v=e91ece90"></script>
-<script src="js/jeu/fond_combat_hd.js?v=e91ece90"></script>
-<script src="js/jeu/silhouettes_hd.js?v=e91ece90"></script>
-<script src="js/jeu/vie_village.js?v=e91ece90"></script>
-<script src="js/jeu/portes_village.js?v=e91ece90"></script>
-<script src="js/jeu/guide_village.js?v=e91ece90"></script>
-<script src="js/jeu/monde.js?v=e91ece90"></script>
-<script src="js/jeu/vitrine.js?v=e91ece90"></script>
-<script src="js/jeu/scene_combat.js?v=e91ece90"></script>
-<script src="js/jeu/combat_spectacle.js?v=e91ece90"></script>
-<script src="js/jeu/attaques_hd.js?v=e91ece90"></script>
-<script src="js/jeu/ombres_village.js?v=e91ece90"></script>
-<script src="js/jeu/lanceur.js?v=e91ece90"></script>
-<script src="js/demarrage.js?v=e91ece90"></script>
+<script src="js/outils.js?v=0cbc4d98"></script>
+<script src="js/etat.js?v=0cbc4d98"></script>
+<script src="js/voix.js?v=0cbc4d98"></script>
+<script src="js/sons.js?v=0cbc4d98"></script>
+<script src="js/compagnons.js?v=0cbc4d98"></script>
+<script src="js/questions/maths.js?v=0cbc4d98"></script>
+<script src="js/questions/maths_mult.js?v=0cbc4d98"></script>
+<script src="js/questions/logique.js?v=0cbc4d98"></script>
+<script src="js/questions.js?v=0cbc4d98"></script>
+<script src="js/adaptatif.js?v=0cbc4d98"></script>
+<script src="js/sprite_dom.js?v=0cbc4d98"></script>
+<script src="js/dialogue.js?v=0cbc4d98"></script>
+<script src="js/question_dessin.js?v=0cbc4d98"></script>
+<script src="js/question_vue.js?v=0cbc4d98"></script>
+<script src="js/combat.js?v=0cbc4d98"></script>
+<script src="js/combat_choix.js?v=0cbc4d98"></script>
+<script src="js/astuces.js?v=0cbc4d98"></script>
+<script src="js/progression.js?v=0cbc4d98"></script>
+<script src="js/bilan.js?v=0cbc4d98"></script>
+<script src="js/moments.js?v=0cbc4d98"></script>
+<script src="js/effets_dom.js?v=0cbc4d98"></script>
+<script src="js/evolution.js?v=0cbc4d98"></script>
+<script src="js/liberation.js?v=0cbc4d98"></script>
+<script src="js/transition.js?v=0cbc4d98"></script>
+<script src="js/equipe.js?v=0cbc4d98"></script>
+<script src="js/parents.js?v=0cbc4d98"></script>
+<script src="js/accueil.js?v=0cbc4d98"></script>
+<script src="js/jeu/carte.js?v=0cbc4d98"></script>
+<script src="js/jeu/qualite.js?v=0cbc4d98"></script>
+<script src="js/icones.js?v=0cbc4d98"></script>
+<script src="js/jeu/decor_village_hd_pieces.js?v=0cbc4d98"></script>
+<script src="js/jeu/decor_village_hd.js?v=0cbc4d98"></script>
+<script src="js/jeu/decor_village_hd_vivant.js?v=0cbc4d98"></script>
+<script src="js/jeu/decor_village_hd_jeu.js?v=0cbc4d98"></script>
+<script src="js/jeu/chargement.js?v=0cbc4d98"></script>
+<script src="js/jeu/sprites_hd.js?v=0cbc4d98"></script>
+<script src="js/jeu/effets_hd.js?v=0cbc4d98"></script>
+<script src="js/jeu/fond_combat_hd.js?v=0cbc4d98"></script>
+<script src="js/jeu/silhouettes_hd.js?v=0cbc4d98"></script>
+<script src="js/jeu/vie_village.js?v=0cbc4d98"></script>
+<script src="js/jeu/portes_village.js?v=0cbc4d98"></script>
+<script src="js/jeu/guide_village.js?v=0cbc4d98"></script>
+<script src="js/jeu/monde.js?v=0cbc4d98"></script>
+<script src="js/jeu/vitrine.js?v=0cbc4d98"></script>
+<script src="js/jeu/scene_combat.js?v=0cbc4d98"></script>
+<script src="js/jeu/combat_spectacle.js?v=0cbc4d98"></script>
+<script src="js/jeu/attaques_hd.js?v=0cbc4d98"></script>
+<script src="js/jeu/ombres_village.js?v=0cbc4d98"></script>
+<script src="js/jeu/lanceur.js?v=0cbc4d98"></script>
+<script src="js/demarrage.js?v=0cbc4d98"></script>
 </body>
 </html>

@@ -5,11 +5,14 @@
       silhouette se dessine par-dessus (js/jeu/silhouettes_hd.js) ; sans carte graphique, il passe à 75 % seulement si
       le héros se tient vraiment derrière lui. Un panneau qu'ils touchent devient presque transparent. On l'appelle à
       chaque image : il ne refait rien tant que personne ne bouge.
-   3. panneauVillageHD et ecrirePanneauHD : le panneau d'une maison, texte sur une pastille arrondie, posé au-dessus de
-      la maison, hors des chemins et des hautes herbes, décalé si un habitant est dessous ; cadrerPanneauxHD le garde
-      à l'écran à chaque image : jamais sous la barre du haut (il glisse sur le toit), jamais coupé par un bord (il
+   3. panneauVillageHD et ecrirePanneauHD : le nom d'une maison, texte sur une pastille arrondie, au-dessus du panneau
+      planté devant elle (js/jeu/decor_village_hd.js), sinon au-dessus de la maison ; il n'apparaît que quand le héros
+      s'approche (à trois cases du panneau ou de la porte). cadrerPanneauxHD le montre ou le cache, et le garde à
+      l'écran à chaque image : jamais sous la barre du haut (il passe sous le panneau), jamais coupé par un bord (il
       glisse vers l'intérieur, ou se cache quand plus de la moitié sortirait).
-   4. ombreAuSolHD : l'ombre douce au sol sous un personnage, qui le suit. */
+   4. etoilesPanneauHD : les étoiles d'or dans les creux du panneau planté, une par Ombre battue près de la maison ;
+      celle qui vient de s'allumer saute.
+   5. ombreAuSolHD : l'ombre douce au sol sous un personnage, qui le suit. */
 
 function maisonToucheeHD(scene, wx, wy){ return VILLAGE_HD_JEU.touchee(scene, wx, wy); }
 function devoilerHD(scene, persos, panneaux){ VILLAGE_HD_JEU.devoiler(scene, persos, panneaux); }
@@ -17,6 +20,7 @@ function cadrerPanneauxHD(scene, panneaux, frais){ VILLAGE_HD_JEU.cadrer(scene, 
 // a house's sign at (x, y) in world units (where it goes when the village is not drawn in high definition)
 function panneauVillageHD(scene, region, x, y, texte = ""){ return VILLAGE_HD_JEU.panneau(scene, region, x, y, texte); }
 function ecrirePanneauHD(panneau, texte){ VILLAGE_HD_JEU.ecrire(panneau, texte); }
+function etoilesPanneauHD(scene, region, n){ VILLAGE_HD_JEU.etoiles(scene, region, n); }
 function ombreAuSolHD(scene, sprite){ return VILLAGE_HD_JEU.ombre(scene, sprite); }
 
 const VILLAGE_HD_JEU = (() => {
@@ -95,11 +99,32 @@ const VILLAGE_HD_JEU = (() => {
   // every frame: each sign where it was placed (p.ideal) unless the top bar's pill or button, or the top edge, would
   // cover it: then it goes under its house (p.dessous), and hides if that is covered too. Cut by a side or the bottom:
   // it slides in, or hides when more than half of it would be out
+  // the hero is within three tiles of the house's sign or of one of its doors (always, without the drawn village)
+  const PRES = 3;
+  function proche(scene, region){
+    const h = scene.case, r = scene.villageHD;
+    if (!h || !r || !r.enseignes) return true;
+    const pres = (x, y) => Math.max(Math.abs(x - h.x), Math.abs(y - h.y)) <= PRES, e = r.enseignes[region];
+    return !!(e && pres(e.tx, e.ty)) || scene.carte.portes.some(q => q.region === region && pres(q.x, q.y));
+  }
+  // the name fades in as the hero comes near, out as he goes (its pill, its text and its icons: the container's alpha is
+  // devoiler's)
+  function montrer(scene, p, pres){
+    p.pres = pres;
+    const l = [p.texte, p.pastille, ...(p.icones || [])];
+    scene.tweens.killTweensOf(l);
+    if (pres) p.setVisible(true);
+    if (calme()) { l.forEach(o => o.setAlpha(pres ? 1 : 0)); if (!pres) p.setVisible(false); return; }
+    scene.tweens.add({targets: l, alpha: pres ? 1 : 0, duration: 220, onComplete: () => { if (!p.pres && p.active) p.setVisible(false); }});
+  }
   function cadrer(scene, panneaux, frais){
     const cam = scene.cameras.main, v = vue(cam), k = cam.zoom / RATIO;
     const W = scene.scale.width / RATIO, H = scene.scale.height / RATIO, m = 6, rects = rectsBarre(scene.game.loop.frame, frais);
     panneaux.forEach(p => {
       if (!p || !p.active || !p.ideal) return;
+      const pres = proche(scene, p.region);
+      if (pres !== p.pres) montrer(scene, p, pres);
+      if (!pres && !p.visible) return;   // gone; one that is fading still keeps clear of the bar and the edges
       const w = p.largeur * k, h = p.hauteur * k;
       const couvert = (sx, sy) => sy - h / 2 < m || rects.some(b => sx + w / 2 > b.left - 4 && sx - w / 2 < b.right + 4 && sy - h / 2 < b.bottom + 4);
       const ici = q => {
@@ -112,6 +137,27 @@ const VILLAGE_HD_JEU = (() => {
       const q = ici(p.ideal) || (p.dessous && ici(p.dessous));
       if (!q) return p.setVisible(false);
       p.setVisible(true).setPosition(q.x, q.y);
+    });
+  }
+
+  // n gold stars in the hollows of the house's sign; the ones just lit pop
+  function etoiles(scene, region, n){
+    const r = scene.villageHD, e = r && r.enseignes && r.enseignes[region];
+    if (!e) return;
+    if (!e.etoiles) e.etoiles = [1, 2, 3, 4].map(i => {
+      const q = VILLAGE_HD.point(e.piece, "etoile" + i, e.x, e.y), s = q && VILLAGE_HD.poser(scene, "etoile_panneau", q.x, q.y, e.im.depth + .02);
+      if (s) { s.base = s.scale; s.setVisible(false); }
+      return s;
+    }).filter(Boolean);
+    const avant = e.allumees === undefined ? -1 : e.allumees;
+    e.allumees = n;
+    e.etoiles.forEach((s, i) => {
+      const on = i < n;
+      s.setVisible(on);
+      if (!on || avant < 0 || i < avant || calme()) return;
+      s.setScale(0);
+      scene.tweens.add({targets: s, scale: s.base, duration: 420, delay: (i - avant) * 150, ease: "Back.easeOut"});
+      effetHD(scene, "toucher", s.x, s.y, 6, s.depth + .1);
     });
   }
 
@@ -136,7 +182,8 @@ const VILLAGE_HD_JEU = (() => {
     return {x, y};
   }
 
-  // a sign: its text (the game's style) on a rounded pill like the interface's (.gardien: #1D1640 at 0.6)
+  // a house's name: its text (the game's style) on a rounded pill like the interface's (.gardien: #1D1640 at 0.6),
+  // hidden until the hero comes near (cadrer)
   function panneau(scene, region, x, y, texte){
     const t = scene.add.text(0, 0, "", {fontFamily: "Fredoka, sans-serif", fontSize: "7px", color: "#FFFFFF", fontStyle: "bold",
       stroke: "#1D1640", strokeThickness: 2, padding: {x: 2, y: 1}}).setOrigin(.5).setResolution(12);
@@ -145,20 +192,39 @@ const VILLAGE_HD_JEU = (() => {
     Object.assign(p, {region, texte: t, pastille: g, depart: {x, y}});
     const r = scene.villageHD;
     if (r) (r.panneaux = r.panneaux || []).push(p);
+    if (r && r.enseignes) { p.pres = false; p.setVisible(false); [t, g].forEach(o => o.setAlpha(0)); }
     ecrire(p, texte);
+    // the game's font may come after the village (a slow network): the name is written again with it
+    if (document.fonts && document.fonts.load) document.fonts.load('bold 7px "Fredoka"').then(() => { if (p.active) ecrire(p, p.brut); }).catch(() => {});
     return p;
   }
+  // the medals won and the open padlock follow the name as drawn icons (js/icones.js, loaded with the village); the
+  // text keeps its emojis for whoever reads it (texteEtiquette), and shows them while an icon is missing
   function ecrire(p, texte){
-    p.texte.setText(texte);
-    const w = p.texte.width + 4, h = p.texte.height;
+    const sc = p.scene, T = 8;
+    const noms = [...String(texte).matchAll(/🏅|🔓/gu)].map(m => m[0] === "🔓" ? "cadenas_ouvert" : "medaille_" + p.region);
+    const dessines = noms.length > 0 && noms.every(n => sc && sc.textures.exists("ico_" + n));
+    p.brut = texte;
+    p.texte.setText(dessines ? String(texte).replace(/\s*(🏅|🔓)/gu, "") : texte);
+    (p.icones || []).forEach(i => i.destroy());
+    const wt = p.texte.width, wi = dessines ? noms.length * (T + 1) : 0;
+    const w = wt + wi + 4, h = Math.max(p.texte.height, dessines ? T + 2 : 0);
+    p.texte.setX(-wi / 2);
+    p.icones = dessines ? noms.map((n, i) => sc.add.image(-w / 2 + 3 + wt + i * (T + 1) + T / 2, 0, "ico_" + n).setDisplaySize(T, T).setAlpha(p.texte.alpha)) : [];
+    if (p.icones.length) p.add(p.icones);
     p.pastille.clear().fillStyle(0x1D1640, .6).fillRoundedRect(-w / 2, -h / 2, w, h, h / 2);
     const r = p.scene && p.scene.villageHD;
+    const s = r && r.enseignes && r.enseignes[p.region];
     const e = r && r.etiquettesDepart && r.etiquettesDepart[p.region];
-    if (e) { const q = placer(r, p.region, e, w, h); p.setPosition(q.x, q.y); }
-    // where it stands when nothing is in the way, its size, and where it goes when the top of the screen hides it:
-    // under its house, in front of the door
     const m = r && r.maisons.find(q => q.region === p.region && q.nom.startsWith("maison_"));
-    Object.assign(p, {ideal: {x: p.x, y: p.y}, largeur: w, hauteur: h, dessous: m ? {x: m.x, y: m.y + h / 2 + 3} : null});
+    // over the house's sign, stretching away from the house (its door, its stars and its arrow stay in sight)
+    const dx = s && m ? (s.x < m.x ? -1 : 1) * Math.max(0, w / 2 - 14) : 0;
+    if (s) p.setPosition(s.x + dx, s.haut - h / 2 - 1);
+    else if (e) { const q = placer(r, p.region, e, w, h); p.setPosition(q.x, q.y); }
+    // where it stands when nothing is in the way, its size, and where it goes when the top of the screen hides it:
+    // under the sign, or under the house, in front of the door
+    const dessous = s ? {x: s.x + dx, y: s.y + h / 2 + 2} : m ? {x: m.x, y: m.y + h / 2 + 3} : null;
+    Object.assign(p, {ideal: {x: p.x, y: p.y}, largeur: w, hauteur: h, dessous});
     if (r) r.devoile = null;   // the next devoilerHD looks again
   }
 
@@ -193,5 +259,5 @@ const VILLAGE_HD_JEU = (() => {
     o.setPosition(s.x, s.y + 1.2).setDepth(s.depth - .5).setAlpha(.22 * s.alpha);
     return o;
   }
-  return {touchee, devoiler, cadrer, placer, panneau, ecrire, ombre};
+  return {touchee, devoiler, cadrer, placer, panneau, ecrire, etoiles, ombre};
 })();

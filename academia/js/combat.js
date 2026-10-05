@@ -21,17 +21,19 @@ async function lancerCombat(regionId, boss){
   const moi = ++combatEnCours, abandon = () => moi !== combatEnCours;
   if (typeof jouerAmbiance === "function") jouerAmbiance(boss ? "boss" : "combat");
   const vue = monterArene(c, o, region);
+  // a message in the text box, its emojis drawn (js/icones.js)
+  const bulle = (texte, ms) => { const fin = vue.bulle(texte, ms); iconiser($("bulleCombat")); return fin; };
   vue.maj();
   const panneau = $("panneau"), cacher = () => panneau.classList.add("cache");
   panneau.innerHTML = ""; cacher();
   await vue.entree();                      // the arena opens; a boss falls onto its stand under its banner
   if (abandon()) return;
   const intro = boss ? `${region.icone} ${o.nom} apparaît ! C'est le chef de la maison !` : `${region.icone} ${region.nom} : une Ombre approche, ${o.nom} !`;
-  dire(intro); await vue.bulle(intro, 1800);
+  dire(intro); await bulle(intro, 1800);
   if (abandon()) return;
   if (c.charge >= COMBO_PLEIN) {           // the combo charged in an earlier fight is ready at once
     const t = `🌟 ${nomCompagnon(c)} peut lancer ${attaquesDe(c)[2]} !`;
-    dire(t); await vue.bulle(t, 1500);
+    dire(t); await bulle(t, 1500);
     if (abandon()) return;
   }
 
@@ -62,12 +64,12 @@ async function lancerCombat(regionId, boss){
     o.pv -= d; vue.maj();
     if (crit) { bilan.xp += 4; bilan.etincelles += 2; }
     if (sup) { bilan.xp += 3; bilan.etincelles += 1; }
-    if (sup && !superDit && o.pv > 0) { superDit = true; await vue.bulle("C'est super efficace !", 900); }
-    else if (crit && !ultime && o.pv > 0) await vue.bulle("Coup critique !", 800);
+    if (sup && !superDit && o.pv > 0) { superDit = true; await bulle("C'est super efficace !", 900); }
+    else if (crit && !ultime && o.pv > 0) await bulle("Coup critique !", 800);
     if (boss && !phase2 && o.pv > 0 && o.pv <= Math.ceil(o.coups / 2) * o.coup) {   // half its life gone: the boss gets cross
       phase2 = true;
       const t = `${majuscule(region.chef)} se fâche ! Courage, ${p.nom} !`;
-      dire(t); await vue.phase2(); await vue.bulle(t, 1500);
+      dire(t); await vue.phase2(); await bulle(t, 1500);
     }
     await wait(300);
   };
@@ -76,11 +78,11 @@ async function lancerCombat(regionId, boss){
     if (bilan.total >= plafondQuestions(boss)) {
       if (!petit && !bilan.bonnes) {       // not one right answer: the Ombre runs back into the grass (no door step)
         const t = boss ? `${majuscule(region.chef)} s'enfuit dans sa maison ! Reviens le défier.` : `${o.nom} s'enfuit dans les herbes ! Elle reviendra.`;
-        dire(t); await vue.fuite(); await vue.bulle(t, 1700);
+        dire(t); await vue.fuite(); await bulle(t, 1700);
         bilan.fuite = true; break;
       }
       const t = `✨ ${nomCompagnon(c)} donne le coup final !`;
-      dire(t); await vue.bulle(t, 1200);
+      dire(t); await bulle(t, 1200);
       await frapper(o.coups, "critique"); o.pv = 0; vue.maj();
       break;
     }
@@ -88,7 +90,7 @@ async function lancerCombat(regionId, boss){
     if (abandon()) return;
     if (choix.action === "fuite") {
       const t = "On rentre au village. L'Ombre t'attend encore dans les herbes !";
-      dire(t); await vue.bulle(t, 1600);
+      dire(t); await bulle(t, 1600);
       if (abandon()) return;
       taire(); await fermerEtoile();
       retourMonde({gagne: false}); ouvrirEtoile(); return;
@@ -134,7 +136,7 @@ async function lancerCombat(regionId, boss){
     // the Ombre's turn: every other round for the little ones, with no question; the True/False shield every other turn from 6
     toursOmbre++;
     if (petit && toursOmbre % 2) continue;
-    await vue.bulle(`${o.nom} prépare une attaque !`, 900);
+    await bulle(`${o.nom} prépare une attaque !`, 900);
     const q = !petit && toursOmbre % 2 && bilan.total < plafondQuestions(boss) ? tirer(region.matiere, "bouclier", false) : null;
     if (q) {
       const r = await poser(q, estVraiFaux(q) ? "🛡️ Bouclier\u00A0! Vrai ou faux\u00A0?" : "🛡️ Bouclier\u00A0!", {jokers: false});

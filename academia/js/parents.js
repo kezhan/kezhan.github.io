@@ -5,7 +5,8 @@
       réponses), les erreurs gardées ; une ligne touchée montre les notions de la matière et leur état.
    2. Erreurs : les questions ratées, que le prochain chef d'Ombres reposera (revanche).
    3. Temps : par jour, le temps de jeu estimé d'après les combats, les combats, les bonnes réponses.
-   4. Réglages : images (le jeu redémarre après accord), sauvegarde dans un fichier et reprise, état des images.
+   4. Réglages : images (le jeu redémarre après accord), musique de ce Gardien (js/sons.js), sauvegarde dans un
+      fichier et reprise, état des images.
    Tout vient de la partie enregistrée (js/etat.js) : ce coin ne note rien de nouveau. */
 const APPUI_PARENTS_MS = 3000, SEANCE_PAUSE_MS = 15 * 60000, SEANCE_COMBAT_MS = 3 * 60000;
 if (!ECRANS.includes("parents")) ECRANS.push("parents");   // one more screen for montrer() (js/outils.js)
@@ -37,7 +38,7 @@ function appuiLong(b, ms, action){
 function ouvrirParents(){
   const p = P(); if (!p) return;
   taire(); montrer("parents");
-  $("parentsTitre").textContent = `👪 Parents · ${p.nom}`;
+  ecrireIcones($("parentsTitre"), `👪 Parents · ${p.nom}`);   // drawn icons (js/icones.js)
   ongletParents("matieres");
 }
 function fermerParents(){ window.__calme = performance.now() + 250; montrer("monde"); }
@@ -74,7 +75,7 @@ function vueMatieres(v){
     const m = r.matiere, ns = notionsDe(m), h = combatsDe(m);
     const bonnes = h.reduce((n, x) => n + (x.bonnes || 0), 0), total = h.reduce((n, x) => n + (x.total || 0), 0);
     const courante = ns.length ? notionCourante(m) : null;
-    t.ligne([`${r.icone} ${NOMS_MATIERES[m] || m}`, courante ? courante.titre : "", `${notionsReussies(m).length} sur ${ns.length}`,
+    t.ligne([ecrireIcones(el("span"), `${r.icone} ${NOMS_MATIERES[m] || m}`), courante ? courante.titre : "", `${notionsReussies(m).length} sur ${ns.length}`,
       total >= 10 ? `${Math.round(100 * bonnes / total)} %` : "à découvrir", String((p.erreurs || []).filter(e => e.matiere === m).length)], "lien")
       .onclick = () => { sfx.tap(); vueNotions(v, r); };
   });
@@ -84,7 +85,7 @@ function vueMatieres(v){
 function vueNotions(v, r){
   const p = P(), m = r.matiere, courante = notionCourante(m);
   v.innerHTML = "";
-  const retour = el("button", "joker retour-vue", `⬅ ${r.icone} ${NOMS_MATIERES[m] || m}`);
+  const retour = ecrireIcones(el("button", "joker retour-vue"), `⬅ ${r.icone} ${NOMS_MATIERES[m] || m}`);
   retour.onclick = () => { sfx.tap(); ongletParents("matieres"); };
   const t = tableauParents(["Notion", "État", "Bonnes", "Erreurs", "Âge"], [2, 3, 4], [3, 4]);
   notionsDe(m).forEach(n => {
@@ -128,11 +129,12 @@ function vueTemps(v){
 
 function vueReglages(v){
   const g = el("div", "reglages"), ligne = (titre, ...contenu) => { const b = el("b"); b.textContent = titre; const c = el("div", "boutons"); c.append(...contenu); g.append(b, c); };
-  const bouton = (texte, action, id) => { const b = el("button", "joker", texte); if (id) b.id = id; b.onclick = () => { sfx.tap(); action(); }; return b; };
+  const bouton = (texte, action, id) => { const b = ecrireIcones(el("button", "joker"), texte); if (id) b.id = id; b.onclick = () => { sfx.tap(); action(); }; return b; };
   const autre = QUALITE === "hd" ? "leger" : "hd", nomQ = q => q === "hd" ? "haute définition" : "légères";
   ligne("Images", bouton(`🖼️ Passer aux images ${nomQ(autre)}`, () => dialogue("Parents", null,
     [`Le jeu va redémarrer avec les images ${nomQ(autre)}, d'accord ?`],
     [{texte: "✔ D'accord", action: () => { choisirQualite(autre); location.reload(); }}, {texte: "✖ Non", action: () => {}}], {instantane: true}), "btnImages"));
+  if (typeof boutonMusique === "function") ligne("Musique", boutonMusique());
   const fichier = el("input"); fichier.type = "file"; fichier.accept = ".json,application/json"; fichier.hidden = true;
   fichier.onchange = () => { if (fichier.files[0]) reprendrePartie(fichier.files[0]); fichier.value = ""; };
   ligne("Sauvegarde", bouton("💾 Enregistrer dans un fichier", enregistrerPartie), bouton("📂 Reprendre depuis un fichier", () => fichier.click()), fichier);

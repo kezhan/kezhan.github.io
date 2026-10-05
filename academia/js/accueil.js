@@ -23,7 +23,7 @@ function ouvrirAccueil(){
     b.onclick = () => { sfx.tap(); choisirProfil(p.id); dire(`Bonjour ${p.nom} !`); p.compagnons.length ? entrerMonde() : ouvrirChoix(); };
     l.append(b);
   });
-  $("btnNouveau").textContent = Object.keys(E.profils).length ? "✨ Nouveau Gardien" : "✨ Commencer l'aventure";
+  ecrireIcones($("btnNouveau"), Object.keys(E.profils).length ? "✨ Nouveau Gardien" : "✨ Commencer l'aventure");
 }
 // the bottom of the home screen: the four first companions breathing on the grass, and an Ombre peeking out of the
 // tall grass (a touch: it ducks; a companion touched hops and says its name)
@@ -128,7 +128,9 @@ function ouvrirChoix(){
       e.stopPropagation();
       if (pris || P().compagnons.length) return;
       pris = true; s.querySelectorAll("button").forEach(x => { x.disabled = true; }); b.classList.add("choisi");
-      sfx.victoire(); etincelles(...centre(fig), 20);
+      sfx.victoire();
+      const [x, y] = centre(fig);   // drawn sparkles and stars burst from the chosen companion (js/effets_dom.js)
+      jaillir(x, y, {pieces: ["etincelle", "etoile", "etoile_p"], n: 18, angle: [0, 360], gravite: 260, vitesse: [160, 340], taille: [16, 30], duree: [700, 1100]});
       ajouterCompagnon(f, 1);
       dire(`${F.noms[0]} rejoint ton équipe !`);
       const mots = p.age <= 5 ? [`Touche une Ombre violette dans l'herbe haute : ${F.noms[0]} va la combattre !`]

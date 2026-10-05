@@ -11,7 +11,8 @@
 #etatLui .pv{position:relative}
 #etatLui .pv::after{content:""; position:absolute; inset:0; pointer-events:none;
   background:repeating-linear-gradient(90deg, transparent 0 calc(100% / var(--n, 1) - 2px), rgba(29,22,64,.85) calc(100% / var(--n, 1) - 2px) calc(100% / var(--n, 1)))}
-.etat.chef b::before{content:"👑 "}
+.etat.chef b::before{content:""; display:inline-block; width:1.2em; height:1.2em; margin-right:.25em; vertical-align:-.22em;
+  background:var(--ico-couronne) center/contain no-repeat}   /* the drawn crown (js/icones.js) */
 .etat.fache{border-color:#E8743B; animation:fache .55s ease-in-out infinite alternate}
 @keyframes fache{to{box-shadow:0 4px 0 rgba(29,22,64,.3), 0 0 0 5px rgba(232,116,59,.45)}}
 
@@ -109,9 +110,9 @@
 .ruban::after{right:-20px; clip-path:polygon(0 0, 100% 0, 66% 50%, 100% 100%, 0 100%)}
 .carte.bilan[data-issue="fatigue"] .ruban{background:#5B7BD9} .carte.bilan[data-issue="fatigue"] .ruban::before,.carte.bilan[data-issue="fatigue"] .ruban::after{background:#3F5CB4}
 .carte.bilan[data-issue="fuite"] .ruban{background:#8E7BE0} .carte.bilan[data-issue="fuite"] .ruban::before,.carte.bilan[data-issue="fuite"] .ruban::after{background:#6B57C2}
-.podium{position:relative; width:100%; height:clamp(150px, 30vh, 236px); display:flex; align-items:flex-end; justify-content:center; margin-top:2px}
+.podium{--hf:min(200px, 26vh); position:relative; width:100%; height:clamp(150px, 30vh, 236px); display:flex; align-items:flex-end; justify-content:center; margin-top:2px}
 .podium .figure{position:relative; z-index:1; transform-origin:50% 100%}
-.carte.bilan .sprite{height:min(200px, 26vh); animation:none}
+.carte.bilan .sprite{height:var(--hf); animation:none}
 .carte.bilan[data-issue="victoire"] .figure{animation:saute-bilan 1.5s ease-in-out infinite}
 .podium .rayons{position:absolute; left:50%; top:55%; width:440px; height:440px; margin:-220px 0 0 -220px; border-radius:50%; pointer-events:none;
   background:repeating-conic-gradient(rgba(255,206,80,.6) 0 9deg, rgba(255,206,80,0) 9deg 22.5deg);
@@ -121,12 +122,31 @@
 .carte.bilan[data-issue="fatigue"]{background:#EEF1FF}
 .carte.bilan[data-issue="fatigue"] .figure{animation:respire-fatigue 3.6s ease-in-out infinite; filter:saturate(.7) brightness(.94)}
 @keyframes respire-fatigue{50%{transform:translateY(4px) scale(1.035, .955)}}
-.zzz{position:absolute; left:calc(50% + 46px); top:18%; width:90px; height:120px; pointer-events:none}
-.zzz i{position:absolute; left:0; bottom:0; font:700 26px var(--titre); font-style:normal; color:#6F87E0; opacity:0; animation:zzz 3.3s ease-in infinite}
-.zzz i:nth-child(2){animation-delay:1.1s; font-size:32px} .zzz i:nth-child(3){animation-delay:2.2s; font-size:38px}
-@keyframes zzz{0%{opacity:0; transform:translate(0, 0)} 20%{opacity:1} 100%{opacity:0; transform:translate(46px, -96px)}}
+/* the little scene around the companion (js/bilan.js): drawn icons (js/icones.js) placed by the drawing's height --hf */
+.podium .popper{position:absolute; z-index:2; bottom:0; width:calc(var(--hf) * .34); height:auto; animation:pop-icone .5s .15s cubic-bezier(.3,1.6,.5,1) both}
+.podium .popper.gauche{left:max(0px, calc(50% - var(--hf) * .9))}
+.podium .popper.droite{right:max(0px, calc(50% - var(--hf) * .9)); transform:scaleX(-1)}
+.podium .coupe{position:absolute; z-index:2; bottom:0; right:max(0px, calc(50% - var(--hf) * .95)); width:calc(var(--hf) * .46); height:auto;
+  animation:pop-icone .5s .2s cubic-bezier(.3,1.6,.5,1) both, brille-coupe 2.4s .8s ease-in-out infinite}
+.podium .scintille-bilan{position:absolute; z-index:2; width:calc(var(--hf) * .15); height:auto; animation:scintille 1.8s ease-in-out infinite}
+.podium .scintille-bilan.s1{left:calc(50% - var(--hf) * .62); top:12%}
+.podium .scintille-bilan.s2{left:calc(50% + var(--hf) * .5); top:4%; width:calc(var(--hf) * .12); animation-delay:.6s}
+.podium .scintille-bilan.s3{left:calc(50% + var(--hf) * .62); top:42%; width:calc(var(--hf) * .1); animation-delay:1.2s}
+@keyframes pop-icone{from{scale:.3; opacity:0}}
+@keyframes brille-coupe{0%,100%{rotate:0deg} 30%{rotate:-6deg; scale:1.06} 60%{rotate:4deg}}
+.zzz{position:absolute; z-index:2; left:calc(50% + var(--hf) * .2); top:2%; width:calc(var(--hf) * .5); height:calc(var(--hf) * .62); pointer-events:none}
+.zzz i{position:absolute; display:block; width:28%; aspect-ratio:1}
+.zzz i .icone{display:block; width:100%; height:100%}
+.zzz i:nth-child(1){left:0; bottom:0}
+.zzz i:nth-child(2){left:26%; bottom:30%; width:34%}
+.zzz i:nth-child(3){left:56%; bottom:62%; width:42%}
+@media (prefers-reduced-motion: no-preference){
+  .zzz i{animation:zzz 3.3s ease-in-out infinite} .zzz i:nth-child(2){animation-delay:1.1s} .zzz i:nth-child(3){animation-delay:2.2s}
+}
+@keyframes zzz{0%{opacity:0; transform:translate(-20%, 40%) scale(.6)} 25%,70%{opacity:1; transform:none} 100%{opacity:0; transform:translate(20%, -40%) scale(1.08)}}
 .bilan-corps{display:flex; flex-direction:column}
 .carte.bilan .lignes{display:flex; flex-direction:column; gap:6px; margin:10px 0 0}
+.ligne-bilan .icone{width:1.45em; height:1.45em; vertical-align:-.38em}
 .ligne-bilan{margin:0; opacity:0; transform:translateY(6px); transition:opacity .35s ease-out, transform .35s ease-out}
 .ligne-bilan.vu{opacity:1; transform:none}
 .ligne-bilan.fort{font:700 21px/1.2 var(--titre)}
@@ -141,8 +161,7 @@
   .carte.bilan .ruban{grid-area:ruban; justify-self:center; margin-bottom:10px}
   .bilan-scene{grid-area:scene; align-self:stretch; justify-content:center}
   .bilan-corps{grid-area:corps}
-  .podium{height:min(236px, 52vh)}
-  .carte.bilan .sprite{height:min(200px, 40vh)}
+  .podium{height:min(236px, 52vh); --hf:min(200px, 40vh)}
   .carte.bilan .lignes{margin-top:0}
 }
 @media (max-height:440px){
@@ -174,6 +193,7 @@
 .boutons-moment{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; min-height:68px; margin-top:4px}
 .boutons-moment.vu .gros{animation:pop-bouton .35s cubic-bezier(.3,1.6,.5,1) both}
 .boutons-moment .gros.gris{background:var(--papier2)}
+.boutons-moment .gros .icone{width:1.35em; height:1.35em}
 @keyframes pop-bouton{from{transform:scale(.6); opacity:0}}
 /* the evolution: two shapes on the same stage */
 .forme{position:absolute; left:50%; bottom:0; transform:translateX(-50%)}
@@ -187,6 +207,7 @@
 @keyframes saute-moment{0%,55%,100%{transform:translateX(-50%) translateY(0)} 22%{transform:translateX(-50%) translateY(-24px)}}
 .moment.eclair::after{content:""; position:absolute; inset:0; z-index:5; background:#fff; pointer-events:none; animation:eclair .6s ease-out forwards}
 @keyframes eclair{from{opacity:.95} to{opacity:0}}
+.test .moment.eclair::after{opacity:0}   /* the recette: no white screen left over the new form */
 /* the badge falls like a medal */
 .moment.badge .scene-moment{display:flex; justify-content:center}
 .medaille{position:relative; height:100%}
@@ -224,5 +245,6 @@
 .voile-etoile{position:fixed; inset:0; width:100vw; height:100vh; z-index:70; pointer-events:none}
 
 @media (prefers-reduced-motion: reduce){
-  .rayons-moment,.podium .rayons,.forme.nee,.carte.bilan .figure,.attaque.prete,.attaque.prete::before,.attaque .scintille,.medaille.brille img,.zzz i,.outil.montree{animation:none !important}
+  .rayons-moment,.podium .rayons,.forme.nee,.carte.bilan .figure,.attaque.prete,.attaque.prete::before,.attaque .scintille,.medaille.brille img,.zzz i,.outil.montree,
+  .podium .popper,.podium .coupe,.podium .scintille-bilan{animation:none !important}
 }

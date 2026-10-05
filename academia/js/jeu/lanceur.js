@@ -24,7 +24,7 @@ if (screen.orientation) screen.orientation.addEventListener("change", () => setT
 function entrerMonde(apres){
   if (!window.__jeuPret) {   // slow network: the images are not loaded yet, the village waits for them
     if (!entrerMonde.attente) {
-      entrerMonde.attente = true; toast("⏳ Le village se prépare…", 60000);
+      entrerMonde.attente = true; toast("⏳ Le village se prépare…", 60000); iconiser($("toast"));
       document.addEventListener("jeu-pret", () => { entrerMonde.attente = false; $("toast").hidden = true; entrerMonde(apres); }, {once: true});
     }
     return;
@@ -74,13 +74,14 @@ function majBarre(){
 // 5 years old, one big button with the swords, named by the voice; walking away (a touch on the village) is « not now »
 function entrerMaison(regionId){
   const r = regionDe(regionId), st = regionEtat(regionId), reste = ETAPES - st.etape;
-  if (reste > 0) return dialogue(r.nom, CLES_OMBRES["Néantik"], [`${r.icone} ${r.nom}. Une Ombre garde la porte fermée.`,
+  const nom = `${r.icone} ${r.nom}`;   // the house's drawn symbol before its name (js/icones.js), a padlock in the line
+  if (reste > 0) return dialogue(nom, CLES_OMBRES["Néantik"], [`🔒 ${r.nom}. Une Ombre garde la porte fermée.`,
     `Touche encore ${reste} Ombre${reste > 1 ? "s" : ""} violette${reste > 1 ? "s" : ""} dans les hautes herbes ${r.herbes}, et la porte s'ouvrira !`]);
   if (typeof jouerSon === "function") jouerSon("porte");
   const entrer = () => entrerChezLeChef(regionId), boss = CLES_BOSS[regionId];
-  if (P().age <= 5) return dialogue(r.nom, boss, [`La porte est ouverte : le ${r.boss} t'attend !`],
+  if (P().age <= 5) return dialogue(nom, boss, [`🔓 La porte est ouverte : le ${r.boss} t'attend !`],
     [{texte: "⚔️", classe: "epees", aide: "Entrer", dit: "Touche les épées pour entrer !", action: entrer}], {quitter: true});
-  dialogue(r.nom, boss, [`${r.icone} La porte s'ouvre… Le ${r.boss} t'attend à l'intérieur !`], [
+  dialogue(nom, boss, [`🔓 La porte s'ouvre… Le ${r.boss} t'attend à l'intérieur !`], [
     {texte: "⚔️ Entrer", dit: "Touche Entrer pour le combattre,", action: entrer},
     {texte: "↩️ Pas maintenant", dit: "ou Pas maintenant pour rester dehors.", action: () => {}}], {quitter: true});
 }

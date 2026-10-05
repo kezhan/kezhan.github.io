@@ -16,7 +16,7 @@ function spectacle(S, vue, c, o, region){
       const s = await scene();
       const fini = s ? s.entrer() : Promise.resolve();
       ouvrirEtoile();   // js/transition.js: the star opens on the arena (nothing if it was not closed)
-      if (o.boss) bandeauBoss(o, region);
+      if (o.boss) { bandeauBoss(o, region); if (typeof jouerSon === "function") jouerSon("rencontre"); }   // the chief lands
       await fini;
     },
     async frappe({degats, type = "", ultime = false}){

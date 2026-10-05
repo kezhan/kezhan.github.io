@@ -50,16 +50,4 @@ const sfx = {
   victoire: () => ton([523, 659, 784, 1047, 1319], .12), niveau: () => ton([659, 784, 988, 1319], .14),
   evolution: () => ton([392, 523, 659, 784, 1047, 1319, 1568], .16), bouclier: () => ton([880, 1175], .08, "sine")
 };
-// a short burst of sparkles where something good happened
-function etincelles(x, y, n = 14){
-  if (calme()) return;
-  for (let i = 0; i < n; i++) {
-    const a = Math.PI * 2 * i / n, r = 60 + Math.random() * 60, s = el("div", "", ["✨", "⭐", "💫"][i % 3]);
-    s.style.cssText = `position:fixed;left:${x}px;top:${y}px;font-size:${18 + rnd(14)}px;pointer-events:none;z-index:60`;
-    document.body.append(s);
-    s.animate([{transform: "translate(-50%,-50%) scale(.4)", opacity: 1},
-      {transform: `translate(calc(-50% + ${Math.cos(a) * r}px), calc(-50% + ${Math.sin(a) * r}px)) scale(1)`, opacity: 0}],
-      {duration: 700 + rnd(300), easing: "cubic-bezier(.2,.8,.3,1)"}).onfinish = () => s.remove();
-  }
-}
 function centre(n){ const r = n.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }

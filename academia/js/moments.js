@@ -44,8 +44,7 @@ function ouvrirMoment(theme){
       const l = M.q(".boutons-moment") || m.appendChild(el("div", "boutons-moment"));
       l.innerHTML = ""; delete l.dataset.choisi;
       liste.forEach((b, i) => {
-        const x = el("button", "gros " + (b.cls || ""), "");
-        x.textContent = affiche(b.texte);
+        const x = ecrireIcones(el("button", "gros " + (b.cls || "")), affiche(b.texte));   // its emoji drawn (js/icones.js)
         if (!i) markOk(x);
         x.onclick = () => {   // one choice: the buttons then rest while the scene ends
           if (etat.fini || l.dataset.choisi) return; l.dataset.choisi = "1";

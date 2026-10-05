@@ -100,6 +100,8 @@ function contenuReponse(v, q, enGroupes){
     else { const r = el("span", "q-rang"); g.forEach(x => r.append(imageQ(x))); f.append(r); genre = "image"; }
   } else {
     const m = el("span", "q-mot"); m.textContent = v; f.append(m);
+    const lettres = Math.max(...String(v).split(/\s+/).map(w => w.length));   // a long word (« Donneschdeg ») shrinks
+    if (lettres > 7) m.style.setProperty("--lettres", lettres);                 // to fit its button, never cut in two
     if (estNombreDe(v)) f.append(pointsDe(+v));
   }
   if (leg) { const s = el("small", "q-legende"); s.textContent = leg; f.append(s); }
