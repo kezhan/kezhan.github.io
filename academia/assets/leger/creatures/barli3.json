@@ -4,7 +4,7 @@
    "frame": {
     "x": 0,
     "y": 0,
-    "w": 253,
+    "w": 258,
     "h": 256
    },
    "rotated": false,
@@ -12,11 +12,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 253,
+    "w": 258,
     "h": 256
    },
    "sourceSize": {
-    "w": 253,
+    "w": 258,
     "h": 256
    },
    "pivot": {
@@ -26,9 +26,9 @@
   },
   "dos": {
    "frame": {
-    "x": 255,
+    "x": 260,
     "y": 0,
-    "w": 253,
+    "w": 258,
     "h": 256
    },
    "rotated": false,
@@ -36,11 +36,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 253,
+    "w": 258,
     "h": 256
    },
    "sourceSize": {
-    "w": 253,
+    "w": 258,
     "h": 256
    },
    "pivot": {
@@ -52,7 +52,7 @@
    "frame": {
     "x": 0,
     "y": 258,
-    "w": 91,
+    "w": 93,
     "h": 92
    },
    "rotated": false,
@@ -60,11 +60,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 91,
+    "w": 93,
     "h": 92
    },
    "sourceSize": {
-    "w": 91,
+    "w": 93,
     "h": 92
    },
    "pivot": {
@@ -74,9 +74,9 @@
   },
   "dos_petit": {
    "frame": {
-    "x": 93,
+    "x": 95,
     "y": 258,
-    "w": 91,
+    "w": 93,
     "h": 92
    },
    "rotated": false,
@@ -84,11 +84,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 91,
+    "w": 93,
     "h": 92
    },
    "sourceSize": {
-    "w": 91,
+    "w": 93,
     "h": 92
    },
    "pivot": {
@@ -100,7 +100,7 @@
  "meta": {
   "image": "barli3.png",
   "size": {
-   "w": 510,
+   "w": 520,
    "h": 352
   },
   "scale": "1",

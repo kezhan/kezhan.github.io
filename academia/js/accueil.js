@@ -8,7 +8,7 @@ function ouvrirAccueil(){
   Object.values(E.profils).sort((a, b) => (b.vu || "").localeCompare(a.vu || "")).forEach(p => {
     const c = p.compagnons.find(x => x.id === p.actif) || p.compagnons[0];
     const b = el("button", "profil");
-    b.append(imageHD(herosHD(p), "face", 76, () => spriteDOM("perso", herosDe(p), 64)));
+    b.append(imageHD(herosHD(p), "face", 76));
     const t = el("span", "", "<b></b><small></small>");
     t.querySelector("b").textContent = p.nom;
     t.querySelector("small").textContent = c ? `${nomCompagnon(c)} · niveau ${c.niveau}` : "Pas encore de compagnon";
@@ -33,7 +33,7 @@ function ouvrirCreation(){
   }
   const h = $("heros"); h.innerHTML = "";
   HEROS.forEach((id, i) => {
-    const b = el("button", "choix-heros"); b.append(imageHD(HEROS_HD[i], "face", 84, () => spriteDOM("perso", id, 72))); b.setAttribute("aria-pressed", String(i === 0));
+    const b = el("button", "choix-heros"); b.append(imageHD(HEROS_HD[i], "face", 84)); b.setAttribute("aria-pressed", String(i === 0));
     if (i === 0) markOk(b);
     b.onclick = () => { herosChoisi = id; sfx.tap(); [...h.children].forEach(x => x.setAttribute("aria-pressed", String(x === b))); valider(); };
     h.append(b);
@@ -66,7 +66,7 @@ function ouvrirChoix(){
   STARTERS.forEach((f, i) => {
     const F = FAMILLES[f], r = REGIONS.find(x => x.famille === f);
     const b = el("div", "starter");
-    const fig = imageHD(f + "1", "face", 150, () => spriteDOM("monstre", F.sprite, 128)); b.append(fig);
+    const fig = imageHD(f + "1", "face", 150); b.append(fig);
     b.append(el("h3"), el("p")); b.querySelector("h3").textContent = F.noms[0];
     b.querySelector("p").textContent = `${F.desc} Il aime : ${r.desc.toLowerCase()}.`;
     const choisir = el("button", "gros", "Je te choisis !");

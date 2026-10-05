@@ -4,7 +4,7 @@
    "frame": {
     "x": 0,
     "y": 0,
-    "w": 635,
+    "w": 722,
     "h": 512
    },
    "rotated": false,
@@ -12,11 +12,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 635,
+    "w": 722,
     "h": 512
    },
    "sourceSize": {
-    "w": 635,
+    "w": 722,
     "h": 512
    },
    "pivot": {
@@ -26,9 +26,9 @@
   },
   "dos": {
    "frame": {
-    "x": 637,
+    "x": 724,
     "y": 0,
-    "w": 635,
+    "w": 722,
     "h": 512
    },
    "rotated": false,
@@ -36,11 +36,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 635,
+    "w": 722,
     "h": 512
    },
    "sourceSize": {
-    "w": 635,
+    "w": 722,
     "h": 512
    },
    "pivot": {
@@ -52,7 +52,7 @@
    "frame": {
     "x": 0,
     "y": 514,
-    "w": 229,
+    "w": 261,
     "h": 185
    },
    "rotated": false,
@@ -60,11 +60,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 229,
+    "w": 261,
     "h": 185
    },
    "sourceSize": {
-    "w": 229,
+    "w": 261,
     "h": 185
    },
    "pivot": {
@@ -74,9 +74,9 @@
   },
   "dos_petit": {
    "frame": {
-    "x": 231,
+    "x": 263,
     "y": 514,
-    "w": 229,
+    "w": 261,
     "h": 185
    },
    "rotated": false,
@@ -84,11 +84,11 @@
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 229,
+    "w": 261,
     "h": 185
    },
    "sourceSize": {
-    "w": 229,
+    "w": 261,
     "h": 185
    },
    "pivot": {
@@ -100,7 +100,7 @@
  "meta": {
   "image": "leiwchen3.png",
   "size": {
-   "w": 1274,
+   "w": 1448,
    "h": 701
   },
   "scale": "1",

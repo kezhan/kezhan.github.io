@@ -39,7 +39,7 @@ async function ecranFin(b, c, region, gain, xpAvant, {libere, badge, joker}){
   const dessin = () => { fig.innerHTML = ""; fig.append(spriteCompagnon(c, 110)); };
   carte.append(el("div", "grand", b.gagne ? (b.boss ? "🏆" : "🎉") : "💤"), el("h2"), fig);
   carte.querySelector("h2").textContent = titre;
-  if (gain.evolue) fig.append(imageHD(c.famille + gain.stadeAvant, "face", 110, () => spriteDOM("monstre", spriteDe(c), 110, {echelle: echelleStade(gain.stadeAvant) / 1.3})));
+  if (gain.evolue) fig.append(imageHD(c.famille + gain.stadeAvant, "face", 110));
   else dessin();
   const figure = {anim: nom => { if (calme()) return Promise.resolve();
     const k = {joie: [[{transform: "translateY(0)"}, {transform: "translateY(-30px)"}, {transform: "translateY(0)"}], 600],

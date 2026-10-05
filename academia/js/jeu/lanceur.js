@@ -3,7 +3,7 @@
 // the canvas has RATIO pixels per CSS pixel (js/jeu/qualite.js) and is shown at the window's size: sharp drawings on a tablet
 const tailleToile = () => [Math.round(innerWidth * RATIO), Math.round(innerHeight * RATIO)];
 const JEU = new Phaser.Game({
-  type: Phaser.AUTO, parent: "jeu", backgroundColor: "#2B1E5C", pixelArt: true,
+  type: Phaser.AUTO, parent: "jeu", backgroundColor: "#2B1E5C",
   scale: {mode: Phaser.Scale.NONE, width: tailleToile()[0], height: tailleToile()[1], zoom: 1 / RATIO},
   scene: [Chargement, Monde, SceneCombat]
 });
@@ -48,9 +48,7 @@ function retourMonde(resultat){
 function majBarre(){
   const p = P(); if (!p) return;
   $("gNom").textContent = p.nom; $("gEtincelles").textContent = p.etincelles;
-  const img = $("gPortrait"); img.classList.remove("pixel");
-  img.onerror = () => { img.onerror = null; img.classList.add("pixel"); img.src = `assets/portraits/${herosDe(p)}.png`; };   // not drawn yet: the pixel one
-  img.src = `${DOSSIER_HD}/portraits/${herosHD(p)}.png`;
+  $("gPortrait").src = `${DOSSIER_HD}/portraits/${herosHD(p)}.png`;
 }
 
 // a house: its boss waits once four Ombres of the tall grass nearby are beaten
@@ -63,18 +61,13 @@ function entrerMaison(regionId){
     {texte: "⚔️ Entrer", action: () => commencerCombat(regionId, true)}, {texte: "↩️ Pas maintenant", action: () => {}}]);
 }
 
-const PORTRAITS_PIXEL = {sage: 9, hugo: 10, paco: 14};
 // dialogue: lines shown one after the other, read aloud; optional choice buttons at the end.
 // While it is open, the village does not move (js/jeu/monde.js, occupe).
 function dialogue(nom, portrait, lignes, choix){
   const d = $("dialogue"), t = $("dlgTexte"), b = $("dlgChoix");
   d.hidden = false; $("dlgNom").textContent = nom;
   const img = $("dlgPortrait"); img.hidden = !portrait;
-  if (portrait) {   // a villager's key: the high-definition face, else the pixel one
-    img.classList.remove("pixel");
-    img.onerror = () => { img.onerror = null; img.classList.add("pixel"); img.src = `assets/portraits/${PORTRAITS_PIXEL[portrait] || 9}.png`; };
-    img.src = `${DOSSIER_HD}/portraits/${portrait}.png`;
-  }
+  if (portrait) img.src = `${DOSSIER_HD}/portraits/${portrait}.png`;   // a villager's key
   let i = 0;
   const fermer = apres => { d.hidden = true; d.onclick = null; taire(); window.__calme = performance.now() + 250; if (apres) apres(); };
   const afficher = () => {

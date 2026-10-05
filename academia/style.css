@@ -45,13 +45,10 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .entete{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px}
 .etiquette{display:block; font:700 18px var(--titre); margin:10px 0 6px}
 
-/* pixel sprites in menus: sharp, walking on the spot */
-.sprite{image-rendering:pixelated; image-rendering:crisp-edges; flex:none; background-repeat:no-repeat}
-.sprite.marche{animation:marche .7s steps(4) infinite}
-.sprite-hd{image-rendering:auto; background-repeat:no-repeat}
+/* drawings in menus (js/sprite_dom.js): a pose cut from its atlas, breathing gently */
+.sprite{flex:none; background-repeat:no-repeat; height:var(--h); aspect-ratio:.8}
 .sprite-hd.vivant{animation:respire 2.4s ease-in-out infinite; transform-origin:50% 100%}
 @keyframes respire{50%{transform:scale(.985, 1.03)}}
-@keyframes marche{from{background-position-y:0} to{background-position-y:var(--pas)}}
 
 /* profiles, creation, starters */
 .profils{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; margin:18px auto 0; max-width:900px}
@@ -60,9 +57,11 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 #btnNouveau{display:flex; margin:22px auto}
 .version{position:fixed; right:12px; bottom:8px; margin:0; color:rgba(255,255,255,.55); font-size:13px}
 .nom{width:100%; min-height:58px; border-radius:16px; background:#fff; border:3px solid var(--encre); font:700 30px var(--titre); padding:0 14px; color:var(--encre)}
-.ages,.heros{display:flex; flex-wrap:wrap; gap:8px}
-.ages button{width:62px; height:62px; border-radius:18px; background:var(--papier2); font:700 26px var(--titre); box-shadow:0 3px 0 rgba(29,22,64,.25)}
-.choix-heros{width:92px; height:92px; border-radius:20px; background:var(--papier2); display:flex; align-items:center; justify-content:center; box-shadow:0 3px 0 rgba(29,22,64,.25)}
+.ages{display:grid; grid-template-columns:repeat(9, minmax(0, 62px)); gap:8px}   /* 5 then 4 on a phone */
+.heros{display:grid; grid-template-columns:repeat(7, minmax(0, 92px)); gap:8px}   /* all on one line, 4 then 3 on a phone */
+.ages button{width:100%; aspect-ratio:1; border-radius:18px; background:var(--papier2); font:700 26px var(--titre); box-shadow:0 3px 0 rgba(29,22,64,.25)}
+.choix-heros{width:100%; aspect-ratio:1; border-radius:20px; background:var(--papier2); display:flex; align-items:center; justify-content:center; box-shadow:0 3px 0 rgba(29,22,64,.25)}
+.choix-heros .sprite-hd{height:min(var(--h), 90%)}
 .ages button[aria-pressed="true"],.choix-heros[aria-pressed="true"]{background:var(--or); outline:4px solid var(--encre)}
 .starters{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:16px; max-width:980px; margin:0 auto}
 .starter{background:var(--papier); border-radius:28px; padding:16px 14px; box-shadow:var(--ombre); text-align:center; display:flex; flex-direction:column; align-items:center}
@@ -82,7 +81,6 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .dialogue{position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:12; width:min(760px, calc(100% - 20px));
   background:var(--papier); border:5px solid var(--encre); border-radius:22px; box-shadow:var(--ombre); display:flex; gap:12px; padding:12px; cursor:pointer; animation:entree .2s}
 .dialogue img{width:88px; height:88px; border:4px solid var(--encre); border-radius:14px; background:#E9DCC2; flex:none}
-.gardien img.pixel,.dialogue img.pixel{image-rendering:pixelated}
 .dlg-corps{flex:1} .dlg-corps b{font:700 21px var(--titre); color:var(--nuit2)} .dlg-corps p{margin:4px 0; font-size:20px}
 .dlg-choix{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap}
 .dlg-choix .suite{background:none; font-size:24px; animation:clignote 1s infinite}
@@ -112,7 +110,8 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 
 .toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:var(--encre); color:#fff; padding:12px 20px;
   border-radius:16px; font:700 18px var(--titre); z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.35); max-width:90vw; text-align:center}
+@media (max-width:560px){ .heros{grid-template-columns:repeat(4, minmax(0, 92px))} .ages{grid-template-columns:repeat(5, minmax(0, 62px))} }
 @media (max-width:440px){ body{font-size:17px} .dialogue img{width:64px; height:64px} }
-@media (prefers-reduced-motion: reduce){ .sprite.marche,.sprite-hd.vivant{animation:none} .ecran.plein{animation:none} }
+@media (prefers-reduced-motion: reduce){ .sprite-hd.vivant{animation:none} .ecran.plein{animation:none} }
 /* automated recette (#test): nothing moves */
 .test *, .test *::before, .test *::after{animation:none !important; transition:none !important}

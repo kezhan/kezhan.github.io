@@ -31,7 +31,7 @@ const EFFETS_HD = (() => {
   // its opacity: holds then fades, fades in and out, fades all along
   const FONDUS = {fin: t => t < .55 ? 1 : 1 - entree((t - .55) / .45), doux: t => t < .12 ? t / .12 : t < .6 ? 1 : 1 - (t - .6) / .4, vite: t => 1 - t};
 
-  // the drawings are smoothed when scaled, like the characters (the game is set up for pixel art)
+  // the drawings are smoothed when scaled, like the characters
   const lisses = new Set();
   function lisser(S){
     IMAGES_EFFETS.forEach(i => {

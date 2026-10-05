@@ -26,11 +26,8 @@ class OmbresVillage {
     if (!libres.length) { this.s.time.delayedCall(2000, () => this.poser(region, bouffee)); return null; }   // the hero stands in the grass: later
     const c = libres[rnd(libres.length)], qui = ombre(regionDe(region), false);
     const o = {region, x: c.x, y: c.y};
-    o.s = spriteCreature(this.s, qui.cle, qui.sprite, c.x, c.y).setDepth(profondeur(c.y));
-    if (o.s.pixel) {   // the pixel drawing is turned violet; the high-definition one is drawn violet
-      if (o.s.preFX) o.s.preFX.addColorMatrix().set(VIOLET); else o.s.setTint(TEINTE_OMBRE);
-      o.s.play(o.s.pixel + "-bas"); o.s.anims.timeScale = .5;
-    }
+    o.s = spriteCreature(this.s, qui.cle, c.x, c.y).setDepth(profondeur(c.y));
+    ombreAuSolHD(this.s, o.s);
     if (o.s.preFX) o.s.preFX.addGlow(0x7B4DFF, 2, 0, false, .1, 6);
     o.s.setAlpha(0); this.s.tweens.add({targets: o.s, alpha: 1, duration: TEST ? 1 : 400});
     if (bouffee) this.fumee(o);
@@ -47,9 +44,10 @@ class OmbresVillage {
       if (!voisins.length) return;
       const c = voisins[rnd(voisins.length)], d = c.x > o.x ? "droite" : c.x < o.x ? "gauche" : c.y > o.y ? "bas" : "haut";
       o.x = c.x; o.y = c.y; o.bouge = true;
+      secouerHerbeHD(this.s, c.x, c.y);
       marcherCreature(o.s, d, 420);
       this.s.tweens.add({targets: o.s, x: c.x * CASE + 8, y: c.y * CASE + o.s.dy, duration: TEST ? 1 : 420,
-        onComplete: () => { o.bouge = false; o.s.setDepth(profondeur(c.y)); if (o.s.pixel) o.s.play(o.s.pixel + "-bas", true); else reposCreature(o.s); }});
+        onComplete: () => { o.bouge = false; o.s.setDepth(profondeur(c.y)); reposCreature(o.s); }});
     });
   }
   // the child chose this one: it stops and hops, so that the hero can reach it
@@ -62,7 +60,7 @@ class OmbresVillage {
     this.liste = this.liste.filter(x => x !== o);
     this.fumee(o);
     if (o.s.souffle) { o.s.souffle.stop(); o.s.souffle = null; }   // it shrinks from its own size (a drawing is scaled down)
-    this.s.tweens.add({targets: o.s, alpha: 0, scale: (o.s.base || 1) * .4, duration: TEST ? 1 : 350, onComplete: () => o.s.destroy()});
+    this.s.tweens.add({targets: o.s, alpha: 0, scale: o.s.base * .4, duration: TEST ? 1 : 350, onComplete: () => o.s.destroy()});
     this.s.time.delayedCall(TEST ? 10 : OMBRE_REVIENT_MS, () => this.poser(o.region));
   }
   fumee(o){ effetHD(this.s, "fumee", o.s.x, o.s.y - o.s.displayHeight / 2, o.s.displayHeight, o.s.depth + 4); }

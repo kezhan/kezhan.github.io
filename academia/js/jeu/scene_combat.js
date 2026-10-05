@@ -3,9 +3,6 @@
    définition (js/jeu/qualite.js) : l'Ombre grogne, fait la grimace quand elle est touchée et sourit, consolée, quand
    elle est vaincue. Coordonnées en pixels de la toile (RATIO par pixel CSS). Les cases de vie sont en HTML ; les
    attaques restent des questions posées dans le panneau du bas, qui s'efface pendant les coups. */
-const TEINTE_OMBRE = 0xB9A8FF;   // a pixel Ombre (no drawing yet) is turned violet
-const VIOLET = [.3 * .8, .59 * .8, .11 * .8, 0, 0,  .3 * .52, .59 * .52, .11 * .52, 0, 0,  .3 * 1.2, .59 * 1.2, .11 * 1.2, 0, 0,  0, 0, 0, 1, 0];
-
 class SceneCombat extends Phaser.Scene {
   constructor(){ super("combat"); }
   init(d){ this.d = d; }
@@ -18,12 +15,11 @@ class SceneCombat extends Phaser.Scene {
       lui: estrade(w * (portrait ? .68 : .72), hs * .58, Math.min(Math.max(w * .15, 60 * r), 180 * r)),
       moi: estrade(w * (portrait ? .3 : .27), hs * .9, Math.min(Math.max(w * .19, 72 * r), 220 * r))};
     document.documentElement.style.setProperty("--scene", Math.round(hs / r) + "px");
-    if (typeof dessinerFondHD === "function") dessinerFondHD(this, L, region, o.boss); else fondSimple(this, L, region, o.boss);
+    dessinerFondHD(this, L, region, o.boss);   // js/jeu/fond_combat_hd.js
 
     // the creatures, feet on their stands
-    this.lui = this.creature(o.cle, o.sprite, "face", L.lui, hs * (o.boss ? .5 : .4), 0);
-    this.moi = this.creature(cleDe(c), spriteDe(c), "dos", L.moi, hs * .44 * [1, 1.08, 1.16][stade(c) - 1], 1);
-    if (this.lui.pixel && !o.boss) { if (this.lui.preFX) this.lui.preFX.addColorMatrix().set(VIOLET); else this.lui.setTint(TEINTE_OMBRE); }
+    this.lui = this.creature(o.cle, "face", L.lui, hs * (o.boss ? .5 : .4));
+    this.moi = this.creature(cleDe(c), "dos", L.moi, hs * .44 * [1, 1.08, 1.16][stade(c) - 1]);
     if (this.lui.preFX) this.lui.preFX.addGlow(o.boss ? 0xFF5EC9 : 0x7B4DFF, 3, 0, false, .1, 10);
     if (stade(c) === 3 && this.moi.preFX) this.moi.preFX.addGlow(0xFFD45C, 3, 0);
     this.base = {lui: {x: this.lui.x, y: this.lui.y}, moi: {x: this.moi.x, y: this.moi.y}};
@@ -43,21 +39,14 @@ class SceneCombat extends Phaser.Scene {
     this.scale.on("resize", taille);
     this.events.once("shutdown", () => { this.pret = false; this.scale.off("resize", taille); });
   }
-  // a creature: its high-definition drawing (pose `vue`), else the pixel one; a soft shadow under its feet
-  creature(cleHD, idPixel, vue, p, hauteur, cadrePixel){
-    const t = aHD(this, cleHD) && this.textures.get("hd_" + cleHD);
-    let s;
-    if (t) {
-      s = this.add.sprite(p.x, p.y + p.ry * .35, "hd_" + cleHD, t.has(vue) ? vue : "face").setOrigin(.5, 1);
-      s.base = hauteur / s.height; s.setScale(s.base); s.hd = cleHD; s.vue = s.frame.name;
-    } else {
-      s = this.add.sprite(p.x, p.y + p.ry * .35, "monstre" + idPixel, cadrePixel).setOrigin(.5, 1);
-      s.base = hauteur / 16; s.setScale(s.base); s.pixel = "monstre" + idPixel;
-      s.play(`${s.pixel}-${cadrePixel ? "haut" : "bas"}`); s.anims.timeScale = .6;
-    }
+  // a creature: its drawing in pose `vue` (face or back), feet on its stand, a soft shadow under it
+  creature(cle, vue, p, hauteur){
+    const t = this.textures.get("hd_" + cle);
+    const s = this.add.sprite(p.x, p.y + p.ry * .35, "hd_" + cle, t.has(vue) ? vue : "face").setOrigin(.5, 1);
+    s.base = hauteur / s.height; s.setScale(s.base); s.hd = cle; s.vue = s.frame.name;
     s.setDepth(5);
     this.add.graphics().setDepth(4).fillStyle(0x000000, .18).fillEllipse(p.x, p.y + p.ry * .3, s.displayWidth * .75, p.ry * .7);
-    if (s.hd && !TEST) s.souffle = this.tweens.add({targets: s, scaleY: s.base * 1.03, scaleX: s.base * .985, duration: 1000, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
+    if (!TEST) s.souffle = this.tweens.add({targets: s, scaleY: s.base * 1.03, scaleX: s.base * .985, duration: 1000, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
     return s;
   }
   pose(cible, nom){   // a high-definition expression, when that drawing has it
@@ -83,7 +72,7 @@ class SceneCombat extends Phaser.Scene {
       const T = cfg => this.tweens.add({targets: s, ...cfg, onComplete: ok});
       if (nom === "attaque") T({x: b.x + (autre.x - b.x) * .3, y: b.y + (autre.y - b.y) * .3, duration: 170, yoyo: true, ease: "Quad.easeOut"});
       else if (nom === "touche") {
-        s.setTintFill(0xFFFFFF); this.time.delayedCall(90, () => { s.clearTint(); if (s.pixel && cible === "lui" && !this.d.o.boss && !s.preFX) s.setTint(TEINTE_OMBRE); });
+        s.setTintFill(0xFFFFFF); this.time.delayedCall(90, () => s.clearTint());
         this.pose(cible, "touche"); this.time.delayedCall(650, () => { if (s.active && s.frame.name === "touche") s.setFrame(s.vue); });
         this.cameras.main.shake(200, .008);
         T({x: b.x + 6 * r, duration: 50, yoyo: true, repeat: 3});
@@ -98,19 +87,6 @@ class SceneCombat extends Phaser.Scene {
       else ok();
     });
   }
-}
-
-// a plain backdrop, used until the region's drawn one (js/jeu/fond_combat_hd.js) is there
-function fondSimple(S, L, region, boss){
-  const g = S.add.graphics().setDepth(0), nuit = region === "observatoire";
-  const ciel = boss ? [0x2A1650, 0xE07A5A] : nuit ? [0x161241, 0x463A98] : [0x7EC8F8, 0xD3EEFF];
-  g.fillGradientStyle(ciel[0], ciel[0], ciel[1], ciel[1], 1).fillRect(0, 0, L.w, L.yh);
-  const sable = region === "dojo" || region === "albion";
-  g.fillStyle(sable ? 0xF2B36E : nuit ? 0x3E6B4A : 0x7CC66A).fillRect(0, L.yh, L.w, L.h - L.yh);
-  [L.lui, L.moi].forEach(p => {
-    g.fillStyle(sable ? 0xC98A4B : 0x4E9A3A).fillEllipse(p.x, p.y + p.ry * .45, p.rx * 2, p.ry * 2);
-    g.fillStyle(sable ? 0xF5CF96 : 0x8BD86A).fillEllipse(p.x, p.y, p.rx * 2, p.ry * 2);
-  });
 }
 
 // the arena seen by js/combat.js: life boxes in HTML, the rest drawn by the Phaser scene
