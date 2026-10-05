@@ -3,9 +3,14 @@
    L'auteur, le 03-10 : « mettre un mot de passe login, même si c'est html ... peut-être que tu
    fais un hash, sans stockage des mots en clair ? ». Mieux qu'une empreinte comparée : l'espace
    publié est chiffré (AES-256-GCM) par une clé de contenu, elle-même chiffrée par la clé que
-   donne chaque mot de passe (PBKDF2-SHA-256, 600 000 tours). La page ne contient ni les mots de
-   passe ni leurs empreintes : lire la source ne donne que du chiffré, et chaque essai coûte une
-   fraction de seconde de calcul.
+   donne chaque mot de passe (PBKDF2-SHA-256, 600 000 tours). La page ne contient aucune empreinte,
+   et chaque essai coûte une fraction de seconde de calcul.
+
+   Le mot de passe de démonstration arrive déjà saisi, et l'on choisit le rôle dans lequel l'espace
+   s'ouvre (porte_role.js) ; l'auteur, le 04-10 : « pré-remplis le mot de passe, et laisser choisir
+   le rôle, mais par défaut, c'est admin, tout voir ». publier.py l'écrit dans la page publiée
+   seulement (le bloc #porteDonnees), jamais dans rag ; celui de l'accès complet n'est écrit nulle
+   part.
 
    Deux mots de passe ouvrent le même contenu : celui de la démonstration, limitée à cinq heures
    d'utilisation par navigateur, et celui d'un accès complet. L'auteur : « limiter la démo à 5h ?
@@ -22,15 +27,16 @@
    présentation, à droite login et mot de passe », puis « pas besoin de mot de passe pour lancer
    la présentation sur la page de login ». La présentation est publiée en clair à côté de la
    porte (presentation/presentation_publique.js, fabriquée par publier.py) et ne se charge
-   qu'au premier clic ; si elle manque, la porte le dit en une ligne.
+   qu'au premier clic ; si elle manque, la porte le dit en une ligne. Une fois chargée, l'espace
+   ne s'ouvre plus dans la même page : ses scripts redéclareraient ceux de la présentation.
 
    La sortie : window.porteSortir() oublie la session et revient à la porte. La pastille s'en
    sert, le menu du compte de l'espace aussi quand elle existe.
 
    Ouverte du disque (porte/porte.html, sans contenu chiffré), la porte est un aperçu : elle
-   s'affiche comme en ligne ; tout mot de passe mène à ../index.html#/accueil, et la
-   présentation à ../index.html#/presentation (porte.html#fin montre la fin de la
-   démonstration). */
+   s'affiche comme en ligne, un mot de passe pour la forme déjà saisi ; tout mot de passe mène à
+   ../index.html?role=…#/accueil, et la présentation à ../index.html#/presentation
+   (porte.html#fin montre la fin de la démonstration). */
 (function(){
 "use strict";
 const C = window.CONTENU_CHIFFRE, APERCU = !C;
@@ -41,6 +47,10 @@ const $ = (id)=> document.getElementById(id);
 const garde = (f, sinon)=>{ try { return f(); } catch(e){ return sinon; } };
 const b64 = (s)=> Uint8Array.from(atob(s), (c)=> c.charCodeAt(0));
 const en64 = (u)=> btoa(String.fromCharCode.apply(null, Array.from(u)));
+/* Le mot de passe de démonstration, écrit d'avance : celui que publier.py pose dans la page
+   publiée ; dans l'aperçu, que tout mot ouvre, un mot pour la forme. */
+const DONNEES = garde(()=> JSON.parse($("porteDonnees").textContent), null) || {};
+const MDP_DEMO = typeof DONNEES.mdp === "string" && DONNEES.mdp ? DONNEES.mdp : APERCU ? "apercu" : "";
 
 /* ---- Le temps d'utilisation, gardé deux fois ---- */
 const chemin = ()=> location.pathname.replace(/[^/]*$/, "") || "/";
@@ -60,19 +70,38 @@ function duree(ms){
   return h ? `${h} h${m ? " " + String(m).padStart(2, "0") : ""}` : `${m} min`;
 }
 
-/* ---- La session : la clé du contenu, jamais le mot de passe ---- */
+/* ---- La session : la clé du contenu et l'identifiant saisi, jamais le mot de passe ----
+   « Rester connecté » la garde aussi dans le stockage durable : un nouvel onglet la reprend, au
+   nom de la même personne (l'espace lit l'identifiant dans l'onglet, « ec-porte:qui »). */
+const CLE_QUI = "ec-porte:qui";
 const magasins = ()=> [garde(()=> sessionStorage, null), garde(()=> localStorage, null)].filter(Boolean);
 function lireSession(){
   for(const m of magasins()){ const v = garde(()=> JSON.parse(m.getItem(CLE_SESSION)), null); if(v && v.k) return v; }
   return null;
 }
-function poserSession(cle, niveau, longtemps){
-  const v = JSON.stringify({ k:en64(cle), n:niveau });
+function poserSession(cle, niveau, longtemps, qui){
+  const v = JSON.stringify({ k:en64(cle), n:niveau, q:qui || "" });
   garde(()=> sessionStorage.setItem(CLE_SESSION, v));
   if(longtemps) garde(()=> localStorage.setItem(CLE_SESSION, v));
 }
-function oublierSession(){ magasins().forEach((m)=> garde(()=> m.removeItem(CLE_SESSION))); }
-function sortir(){ oublierSession(); location.reload(); }
+function oublierSession(){
+  magasins().forEach((m)=> garde(()=> m.removeItem(CLE_SESSION)));
+  garde(()=> sessionStorage.removeItem(CLE_QUI));
+}
+/* Une session gardée reprend (un nouvel onglet) : la personne qui l'a ouverte, et le dernier rôle
+   pris, que l'adresse ne dit pas encore (porte_role.js). */
+function reprendre(s){
+  if(s.q) garde(()=> sessionStorage.setItem(CLE_QUI, s.q));
+  if(window.PorteRole && !garde(()=> new URLSearchParams(location.search).get("role"), null)) PorteRole.entrer();
+}
+/* La sortie retire `?role=` de l'adresse, comme le menu du compte (js/compte.js) : par l'une ou
+   par l'autre, la porte revient sur le dernier rôle pris. */
+function sortir(){
+  oublierSession();
+  garde(()=>{ const p = new URLSearchParams(location.search); p.delete("role");
+    history.replaceState(history.state, "", location.pathname + (p.toString() ? "?" + p : "") + location.hash); });
+  location.reload();
+}
 window.porteSortir = sortir;
 
 /* ---- Le chiffre ---- */
@@ -104,7 +133,6 @@ function chargerScript(src){
 /* L'identifiant n'est pas contrôlé (le mot de passe est la seule clé) : il dit seulement qui
    l'espace accueille. Une personne de l'équipe est reconnue à son adresse ; sinon le nom se lit
    dans l'adresse (prénom.nom). */
-const CLE_QUI = "ec-porte:qui";
 function nomDe(adresse){
   const local = String(adresse || "").split("@")[0].replace(/[._-]+/g, " ").trim();
   return local ? local.replace(/\b\p{L}/gu, (l)=>l.toUpperCase()) : "";
@@ -209,18 +237,35 @@ const compter = (()=>{
 })();
 
 /* ---- La porte elle-même ---- */
+/* Ce qu'il reste à faire, en une phrase : le mot de passe déjà saisi, il ne reste que le rôle. */
+function consigne(){
+  const role = !!window.PorteRole;
+  if(MDP_DEMO) return role ? "Choisissez un rôle, puis connectez-vous." : "Le mot de passe de démonstration est déjà saisi.";
+  return role ? "Choisissez un rôle et entrez le mot de passe qui vous a été transmis." : "Entrez le mot de passe qui vous a été transmis.";
+}
+/* Le mot de passe de démonstration dans son champ, sauf à la fin de la démonstration, qu'il
+   n'ouvre plus ; « Déjà saisi » tant que c'est lui. */
+function preremplir(oui){
+  const c = $("porteMdp");
+  if(oui && MDP_DEMO && !c.value) c.value = MDP_DEMO;
+  if(!oui && MDP_DEMO && c.value === MDP_DEMO) c.value = "";
+  majSaisi();
+}
+const majSaisi = ()=>{ $("porteSaisi").hidden = !MDP_DEMO || $("porteMdp").value !== MDP_DEMO || document.body.classList.contains("porte-fin"); };
 function montrer(etat, erreur){
   const fin = etat === "fin";
   document.body.classList.toggle("porte-fin", fin);
   $("porteTitre").textContent = fin ? "Votre démonstration est terminée" : "Connexion";
   $("porteTexte").innerHTML = fin
     ? "Les cinq heures de démonstration ont été utilisées sur ce navigateur. Pour continuer, <b>demandez un accès</b> à la personne qui vous a transmis ce lien, puis entrez-le ici."
-    : "Entrez le mot de passe qui vous a été transmis.";
+    : consigne();
   $("porteLabel").textContent = fin ? "Code d'accès" : "Mot de passe";
   $("porteNote").hidden = fin;
+  preremplir(!fin);
   dire(erreur || "");
   $("porte").hidden = false;
-  setTimeout(()=> $("porteMdp").focus(), 50);
+  // Le mot de passe déjà saisi, rien n'attend d'être tapé : le focus ne va qu'à un champ vide.
+  if(!MDP_DEMO || fin) setTimeout(()=> $("porteMdp").focus(), 50);
 }
 function dire(t, info){ const e = $("porteErreur"); e.textContent = t; e.hidden = !t; e.classList.toggle("info", !!info); }
 function occupe(oui){
@@ -230,10 +275,15 @@ function occupe(oui){
 
 async function entrer(e){
   e.preventDefault();
-  const champ = $("porteMdp"), mdp = champ.value;
-  garde(()=> sessionStorage.setItem(CLE_QUI, ($("porteQui") || {}).value || ""));
+  const champ = $("porteMdp"), mdp = champ.value, qui = ($("porteQui") || {}).value || "";
+  garde(()=> sessionStorage.setItem(CLE_QUI, qui));
   if(!mdp){ champ.focus(); return; }
-  if(APERCU){ location.href = "../index.html#/accueil"; return; }
+  const role = window.PorteRole ? PorteRole.cle() : "";
+  if(APERCU){
+    if(role) PorteRole.entrer();
+    location.href = "../index.html" + (role ? "?role=" + encodeURIComponent(role) : "") + "#/accueil";
+    return;
+  }
   dire(""); occupe(true);
   const r = await essayer(mdp).catch(()=> null);
   if(!r){
@@ -245,7 +295,13 @@ async function entrer(e){
     occupe(false);
     return montrer("fin", "Ce mot de passe ouvre la démonstration, dont le temps est écoulé sur ce navigateur.");
   }
-  poserSession(r.cle, r.niveau, $("porteRester").checked);
+  poserSession(r.cle, r.niveau, $("porteRester").checked, qui);
+  // L'espace lit son rôle dans l'adresse en démarrant : le rôle choisi y est posé avant.
+  if(role) PorteRole.entrer();
+  // La présentation lancée d'ici a posé ses scripts dans la page, et l'espace porte les mêmes : il
+  // les déclarerait une seconde fois. Il s'ouvre donc dans une page neuve, où la session tout juste
+  // posée le reprend (demarrer) ; un navigateur qui ne garde rien l'ouvre ici, comme avant.
+  if(chargement && lireSession()){ location.reload(); return; }
   try { await ouvrirEspace(await dechiffrer(r.cle), r.niveau); }
   catch(err){ occupe(false); dire("L'espace n'a pas pu s'ouvrir. Rechargez la page."); }
 }
@@ -293,6 +349,9 @@ function brancher(){
   });
   const maj = (e)=>{ if(e.getModifierState) $("porteMaj").hidden = !e.getModifierState("CapsLock"); };
   $("porteMdp").addEventListener("keydown", maj); $("porteMdp").addEventListener("keyup", maj);
+  $("porteMdp").addEventListener("input", majSaisi);
+  // « Mot de passe oublié ? » n'a pas lieu d'être quand il est déjà saisi.
+  $("porteOubli").hidden = !!MDP_DEMO;
 }
 
 async function demarrer(){
@@ -309,6 +368,7 @@ async function demarrer(){
     try {
       const contenu = await dechiffrer(b64(s.k));
       if(s.n === "demo" && reste() <= 0){ oublierSession(); return montrer("fin"); }
+      reprendre(s);
       return await ouvrirEspace(contenu, s.n);
     } catch(e){ oublierSession(); }
   }

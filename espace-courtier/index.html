@@ -8,9 +8,10 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<!-- Les blocs POLICES, MARQUE et CONTENU, chacun entre ses deux commentaires, servent l'aperçu
-     local (porte.html ouverte du disque) ; _outils/publier.py les remplace par la version
-     publiée : les polices de index.html, la marque en ligne, le contenu chiffré. -->
+<!-- Les blocs POLICES, MARQUE, CONTENU et PORTE, chacun entre ses deux commentaires, servent
+     l'aperçu local (porte.html ouverte du disque) ; _outils/publier.py les remplace par la version
+     publiée : les polices de index.html, la marque en ligne, le contenu chiffré, et les rôles avec
+     le mot de passe de démonstration (_outils/porte_donnees.py). -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -117,7 +118,21 @@
           <input id="porteQui" name="username" type="email" autocomplete="username" spellcheck="false" autocapitalize="off"
           value="camille.arnaud@kerwyn-partners.com"></div>
       </div>
-      <label class="porte-label" id="porteLabel" for="porteMdp">Mot de passe</label>
+      <!-- Le rôle dans lequel l'espace s'ouvre (porte_role.js) : une liste à choix unique. -->
+      <div class="porte-role" id="porteRoleBloc" hidden>
+        <span class="porte-label" id="porteRoleLabel">Rôle</span>
+        <div class="porte-role-champ">
+          <div class="porte-role-btn" id="porteRole" role="combobox" tabindex="0" aria-haspopup="listbox" aria-expanded="false"
+            aria-controls="porteRoles" aria-labelledby="porteRoleLabel">
+            <span class="porte-role-ic" id="porteRoleIc" aria-hidden="true"></span>
+            <span class="porte-role-t"><b id="porteRoleNom"></b><span id="porteRoleResume"></span></span>
+            <svg class="porte-role-ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
+          </div>
+          <ul class="porte-roles" id="porteRoles" role="listbox" aria-labelledby="porteRoleLabel" hidden></ul>
+        </div>
+      </div>
+      <div class="porte-label-l"><label class="porte-label" id="porteLabel" for="porteMdp">Mot de passe</label>
+        <span class="porte-saisi" id="porteSaisi" hidden><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 6.2l2 2L9 4"/></svg>Déjà saisi</span></div>
       <div class="porte-champ"><svg class="porte-champ-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
         <input id="porteMdp" name="password" type="password" autocomplete="current-password" spellcheck="false" autocapitalize="off">
         <button type="button" class="porte-voir" id="porteVoir" aria-label="Afficher le mot de passe" aria-pressed="false">
@@ -138,8 +153,13 @@
   </section>
 </div>
 <script src="contenu.js"></script>
-<!-- La scène d'abord : elle est à l'échelle avant que porte.js montre la porte. -->
+<!-- Les rôles : l'aperçu lit ceux de l'espace ; la page publiée reçoit à la place un JSON
+     (#porteDonnees) qui porte aussi le mot de passe de démonstration. -->
+<script type="application/json" id="porteDonnees">{"mdp":"aurore-phare-lagune-88","roles":[{"cle":"commercial","nom":"Commercial grands comptes","resume":"Comptes, rendez-vous, pipeline","dom":"developpement","svg":"\u003ccircle cx=\"12\" cy=\"12\" r=\"8.5\"/\u003e\u003ccircle cx=\"12\" cy=\"12\" r=\"4.5\"/\u003e\u003ccircle cx=\"12\" cy=\"12\" r=\"1\"/\u003e"},{"cle":"production","nom":"Production","resume":"Contrats, demandes, flottes","dom":"gestion","svg":"\u003cpath d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/\u003e\u003cpath d=\"M14 3v5h5\"/\u003e\u003cpath d=\"M9 13h6M9 17h4\"/\u003e"},{"cle":"sinistres","nom":"Gestion sinistres","resume":"Dossiers, alertes, CatNat","dom":"gestion","svg":"\u003cpath d=\"M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4\"/\u003e"},{"cle":"prevention","nom":"Ingénierie prévention","resume":"Visites, recommandations, climat","dom":"risques","svg":"\u003cpath d=\"M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z\"/\u003e\u003cpath d=\"M9 12l2 2 4-4\"/\u003e"},{"cle":"direction","nom":"Direction","resume":"Portefeuille, pipeline, équipe","dom":"portefeuille","svg":"\u003cpath d=\"M4 19h16\"/\u003e\u003cpath d=\"M6 16l4-6 3 3 5-8\"/\u003e\u003cpath d=\"M15 4h3v3\"/\u003e"},{"cle":"admin","nom":"Administration","resume":"Tout voir : espace, équipe, accès","dom":"portefeuille","svg":"\u003cpath d=\"M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.8l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.8v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z\"/\u003e\u003ccircle cx=\"12\" cy=\"12\" r=\"3\"/\u003e"},{"cle":"juriste","nom":"Juridique","resume":"Polices, versions, garanties","dom":"gestion","svg":"\u003cpath d=\"M12 3v18\"/\u003e\u003cpath d=\"M7 21h10\"/\u003e\u003cpath d=\"M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2\"/\u003e\u003cpath d=\"m16 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1z\"/\u003e\u003cpath d=\"m2 16 3-8 3 8c-.9.6-1.9 1-3 1s-2.1-.4-3-1z\"/\u003e"}]}</script>
+<!-- La scène d'abord : elle est à l'échelle avant que porte.js montre la porte. Le rôle ensuite :
+     porte.js s'en sert pour dire ce qu'il y a à faire. -->
 <script src="porte_scene.js"></script>
+<script src="porte_role.js"></script>
 <script src="porte.js"></script>
 </body>
 </html>

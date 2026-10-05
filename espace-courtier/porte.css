@@ -63,6 +63,61 @@ body.porte [hidden] { display:none !important; }
 .porte-texte b { color:var(--p-encre); }
 .porte-label { display:block; margin:0 0 7px; font-size:13px; font-weight:600; color:var(--p-doux); }
 .porte-ident { margin:0 0 16px; }
+/* Le libellé du mot de passe, et « Déjà saisi » quand la démonstration l'a écrit d'avance. */
+.porte-label-l { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:0 0 7px; }
+.porte-label-l .porte-label { margin:0; }
+.porte-saisi { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#0B7A62; white-space:nowrap; }
+.porte-saisi svg { width:13px; height:13px; flex:none; align-self:center; border-radius:50%; background:#0B7A62;
+  fill:none; stroke:#fff; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ---- Le rôle, sous l'identifiant : une liste à choix unique (porte_role.js) ----
+   L'icône de chaque rôle dans la couleur de sa famille, comme dans le menu des rôles de l'espace ;
+   son nom, et ce qu'il couvre en trois mots. */
+.porte-role { margin:0 0 16px; }
+.porte-role-champ { position:relative; }
+.porte-role-btn { position:relative; box-sizing:border-box; display:flex; align-items:center; gap:12px; min-height:58px; padding:9px 44px 9px 9px;
+  border:1px solid var(--p-champ); border-radius:12px; background:#fff; cursor:pointer; outline:none; user-select:none;
+  transition:border-color .15s, box-shadow .15s; }
+.porte-role-btn:hover { border-color:#AFBBD0; }
+.porte-role-btn:focus, .porte-role-btn[aria-expanded="true"] { border-color:var(--p-bleu); box-shadow:0 0 0 4px rgba(41,87,200,.14); }
+/* La liste posée sur le champ (une fenêtre basse) : rien du champ ne dépasse autour d'elle. */
+.porte-role-btn.couvert { border-color:transparent; box-shadow:none; transition:none; }
+.porte-role-ic { width:38px; height:38px; flex:none; border-radius:10px; display:flex; align-items:center; justify-content:center;
+  background:var(--r-fond,#EEF2F8); color:var(--r-encre,#33455C); }
+.porte-role-ic svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.porte-role-t { min-width:0; flex:1; }
+.porte-role-t b, .porte-role-t span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.porte-role-t b { font-size:15px; font-weight:600; line-height:1.3; color:var(--p-encre); }
+.porte-role-t span { margin-top:1px; font-size:12.5px; line-height:1.35; color:var(--p-pale); }
+.porte-role-ch { position:absolute; right:14px; top:50%; width:18px; height:18px; margin-top:-9px; fill:none; stroke:#8C99AD; stroke-width:2;
+  stroke-linecap:round; stroke-linejoin:round; transition:transform .15s; }
+.porte-role-btn:hover .porte-role-ch { stroke:var(--p-doux); }
+.porte-role-btn[aria-expanded="true"] .porte-role-ch { transform:rotate(180deg); stroke:var(--p-bleu); }
+/* Les familles de l'espace (js/rubriques.js), dans les couleurs de la charte. */
+.porte-carte [data-dom="portefeuille"] { --r-encre:#2957C8; --r-fond:#EAEEFA; }
+.porte-carte [data-dom="gestion"] { --r-encre:#8A3D7A; --r-fond:#F6EAF3; }
+.porte-carte [data-dom="developpement"] { --r-encre:#006353; --r-fond:#E0F5F3; }
+.porte-carte [data-dom="risques"] { --r-encre:#975F09; --r-fond:#FEECD7; }
+.porte-carte [data-dom="analyse"] { --r-encre:#6A3FB5; --r-fond:#F4F0FC; }
+/* Une ligne de 40 px : la liste entière tient sous le champ à 637 px de haut (l'écran de l'auteur),
+   et encore avec la barre des favoris (jusqu'à 601 px) ; 44 px au doigt. */
+.porte-roles { position:absolute; left:0; right:0; z-index:30; box-sizing:border-box; margin:0; padding:4px; list-style:none; overflow:auto;
+  background:#fff; border:1px solid var(--p-ligne); border-radius:14px; box-shadow:0 22px 48px rgba(20,38,59,.18), 0 2px 6px rgba(20,38,59,.06);
+  animation:porte-entre .14s ease-out; }
+.porte-role-o { display:flex; align-items:center; gap:11px; height:40px; box-sizing:border-box; padding:0 8px 0 6px; border-radius:10px; cursor:pointer; }
+@media (pointer:coarse){ .porte-role-o { height:44px; } }
+.porte-role-o .porte-role-ic { width:32px; height:32px; border-radius:9px; }
+.porte-role-o .porte-role-ic svg { width:17px; height:17px; }
+.porte-role-o .porte-role-t b { font-size:13.5px; line-height:1.25; }
+.porte-role-o .porte-role-t span { margin-top:0; font-size:12px; line-height:1.3; }
+/* L'option active (la souris, les flèches) se voit nettement ; la choisie reste bleue. */
+.porte-role-o.actif { background:#EDF1F7; box-shadow:inset 0 0 0 1px #D3DCEA; }
+.porte-role-o[aria-selected="true"] { background:var(--p-bleu-w); }
+.porte-role-o[aria-selected="true"].actif { background:#E0E7F8; box-shadow:inset 0 0 0 1px #C3D0EE; }
+.porte-role-o[aria-selected="true"] .porte-role-t b { color:var(--p-bleu); }
+.porte-role-coche { width:18px; height:18px; flex:none; margin-right:2px; fill:none; stroke:var(--p-bleu); stroke-width:2.2;
+  stroke-linecap:round; stroke-linejoin:round; visibility:hidden; }
+.porte-role-o[aria-selected="true"] .porte-role-coche { visibility:visible; }
 .porte-champ { position:relative; }
 .porte-champ-ic { position:absolute; left:14px; top:50%; width:18px; height:18px; margin-top:-9px; pointer-events:none;
   fill:none; stroke:#8C99AD; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; transition:stroke .15s; }
@@ -123,7 +178,7 @@ body.porte-fin .porte-fin-ic { display:flex; width:48px; height:48px; margin:0 0
   align-items:center; justify-content:center; }
 body.porte-fin .porte-fin-ic svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 body.porte-fin .porte-carte h1 { color:#7A4A05; }
-body.porte-fin .porte-ident, body.porte-fin .porte-oubli { display:none; }
+body.porte-fin .porte-ident, body.porte-fin .porte-role, body.porte-fin .porte-oubli { display:none; }
 
 @media (max-width:1180px){ .porte-page { grid-template-columns:minmax(0,1.22fr) minmax(390px,1fr); } }
 @media (max-width:900px){
@@ -134,11 +189,14 @@ body.porte-fin .porte-ident, body.porte-fin .porte-oubli { display:none; }
   .porte-sous, .porte-lancer-n { display:none; }
   .porte-lancer-l { margin-top:14px; }
   .porte-lancer { width:100%; justify-content:center; height:48px; }
-  .porte-droite { padding:26px 20px 22px; }
+  .porte-droite { padding:20px 20px 22px; }
   .porte-carte { margin:0; }
   .porte-carte h1 { font-size:27px; }
+  /* Le rôle a pris sa place : « Se connecter » reste dans le premier écran d'un téléphone. */
+  .porte-texte { margin-bottom:20px; }
+  .porte-options { margin:12px 0 16px; }
 }
-@media (prefers-reduced-motion:reduce){ .secoue, .porte-roue, .porte-lancer-ic::after, .porte-lancer-info, .porte-accroche { animation:none; } }
+@media (prefers-reduced-motion:reduce){ .secoue, .porte-roue, .porte-lancer-ic::after, .porte-lancer-info, .porte-accroche, .porte-roles { animation:none; } }
 
 /* ---- Dans l'espace ouvert : la pastille du temps, son menu, l'avis ---- */
 .porte-pastille { display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 12px; margin-right:10px; flex:none;
