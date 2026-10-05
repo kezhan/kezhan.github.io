@@ -1,13 +1,14 @@
-/* Académia : le moteur Phaser et les passages entre le village, les maisons et les combats ;
-   la boîte de dialogue des habitants (portrait, texte lu à voix haute, toucher pour continuer). */
+/* Académia : le moteur Phaser et les passages entre l'accueil, le village, les maisons et les combats.
+   La boîte de dialogue est dans js/dialogue.js. */
 // the canvas has RATIO pixels per CSS pixel (js/jeu/qualite.js) and is shown at the window's size: sharp drawings on a tablet
 const tailleToile = () => [Math.round(innerWidth * RATIO), Math.round(innerHeight * RATIO)];
 // a picture that never came is drawn as nothing, never as the engine's black square with a green cross
 const TRANSPARENT = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAC0lEQVR4nGNgQAcAABIAAXfx+gAAAAAASUVORK5CYII=";
 const JEU = new Phaser.Game({
   type: Phaser.AUTO, parent: "jeu", backgroundColor: "#2B1E5C", images: {missing: TRANSPARENT},
+  audio: {noAudio: true},   // the game's voice and sounds do not go through Phaser (no idle audio context)
   scale: {mode: Phaser.Scale.NONE, width: tailleToile()[0], height: tailleToile()[1], zoom: 1 / RATIO},
-  scene: [Chargement, Monde, SceneCombat]
+  scene: [Chargement, Monde, SceneCombat, Vitrine]
 });
 // the canvas follows the window and a turned tablet (each scene redraws itself on the resize event)
 let minuteurToile = null;
@@ -28,8 +29,9 @@ function entrerMonde(apres){
     }
     return;
   }
-  $("dialogue").hidden = true;
+  fermerDialogue();
   montrer("monde");
+  if (JEU.scene.isActive("vitrine")) JEU.scene.stop("vitrine");
   if (JEU.scene.isActive("monde") || JEU.scene.isSleeping("monde")) JEU.scene.stop("monde");
   if (apres) JEU.scene.getScene("monde").events.once("create", apres);
   JEU.scene.start("monde");
@@ -38,6 +40,15 @@ function entrerMonde(apres){
 function commencerCombat(regionId, boss){
   JEU.scene.sleep("monde");
   lancerCombat(regionId, boss);
+}
+// through the open door to the boss: the village holds still and the screen closes in a star on the door
+// (js/transition.js, when the fights have it)
+function entrerChezLeChef(regionId){
+  const m = JEU.scene.getScene("monde"), p = m && m.portes && m.portes.portes[regionId];
+  if (typeof fermerEtoile !== "function" || !p || !m.sys.isActive()) return commencerCombat(regionId, true);
+  m.verrou = true; m.chemin = [];
+  const [x, y] = m.ecranDe(p.x, p.y);
+  fermerEtoile(x, y).then(() => commencerCombat(regionId, true));
 }
 // back from a fight; `resultat` ({gagne}) tells the village whether the Ombre that was touched is beaten
 function retourMonde(resultat){
@@ -59,36 +70,17 @@ function majBarre(){
   imageReessayee($("gPortrait"), `${DOSSIER_HD}/portraits/${herosHD(p)}.png`);
 }
 
-// a house: its boss waits once four Ombres of the tall grass nearby are beaten
+// a house: its boss waits once four Ombres of the tall grass nearby are beaten. The buttons are said aloud; up to
+// 5 years old, one big button with the swords, named by the voice; walking away (a touch on the village) is « not now »
 function entrerMaison(regionId){
-  const r = regionDe(regionId), st = regionEtat(regionId);
-  const reste = ETAPES - st.etape;
-  if (reste > 0) return dialogue(r.nom, null, [`${r.icone} ${r.nom}. La porte est fermée par une Ombre.`,
+  const r = regionDe(regionId), st = regionEtat(regionId), reste = ETAPES - st.etape;
+  if (reste > 0) return dialogue(r.nom, CLES_OMBRES["Néantik"], [`${r.icone} ${r.nom}. Une Ombre garde la porte fermée.`,
     `Touche encore ${reste} Ombre${reste > 1 ? "s" : ""} violette${reste > 1 ? "s" : ""} dans les hautes herbes ${r.herbes}, et la porte s'ouvrira !`]);
-  dialogue(r.nom, null, [`${r.icone} La porte s'ouvre… ${r.boss} t'attend à l'intérieur !`], [
-    {texte: "⚔️ Entrer", action: () => commencerCombat(regionId, true)}, {texte: "↩️ Pas maintenant", action: () => {}}]);
-}
-
-// dialogue: lines shown one after the other, read aloud; optional choice buttons at the end.
-// While it is open, the village does not move (js/jeu/monde.js, occupe).
-function dialogue(nom, portrait, lignes, choix){
-  const d = $("dialogue"), t = $("dlgTexte"), b = $("dlgChoix");
-  d.hidden = false; $("dlgNom").textContent = nom;
-  const img = $("dlgPortrait"); img.hidden = !portrait;
-  if (portrait) imageReessayee(img, `${DOSSIER_HD}/portraits/${portrait}.png`);   // a villager's key
-  let i = 0;
-  const fermer = apres => { d.hidden = true; d.onclick = null; taire(); window.__calme = performance.now() + 250; if (apres) apres(); };
-  const afficher = () => {
-    t.textContent = lignes[i]; dire(lignes[i]); b.innerHTML = "";
-    const derniere = i === lignes.length - 1;
-    if (derniere && choix) choix.forEach((c, k) => {
-      const x = el("button", k ? "moyen gris" : "moyen", c.texte);
-      if (!k) markOk(x);
-      x.onclick = e => { e.stopPropagation(); sfx.tap(); fermer(c.action); };
-      b.append(x);
-    });
-    else { const suite = markOk(el("button", "suite", derniere ? "✔" : "▼")); b.append(suite); }
-  };
-  d.onclick = () => { if (choix && i === lignes.length - 1) return; sfx.tap(); i++; if (i < lignes.length) afficher(); else fermer(); };
-  afficher();
+  if (typeof jouerSon === "function") jouerSon("porte");
+  const entrer = () => entrerChezLeChef(regionId), boss = CLES_BOSS[regionId];
+  if (P().age <= 5) return dialogue(r.nom, boss, [`La porte est ouverte : le ${r.boss} t'attend !`],
+    [{texte: "⚔️", classe: "epees", aide: "Entrer", dit: "Touche les épées pour entrer !", action: entrer}], {quitter: true});
+  dialogue(r.nom, boss, [`${r.icone} La porte s'ouvre… Le ${r.boss} t'attend à l'intérieur !`], [
+    {texte: "⚔️ Entrer", dit: "Touche Entrer pour le combattre,", action: entrer},
+    {texte: "↩️ Pas maintenant", dit: "ou Pas maintenant pour rester dehors.", action: () => {}}], {quitter: true});
 }

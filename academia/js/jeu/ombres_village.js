@@ -1,7 +1,9 @@
-/* Académia : les Ombres qu'on voit dans les hautes herbes. Une par touffe, violette comme au combat ; elle se promène
-   dans son herbe sans jamais venir coller le héros. La toucher, ou passer juste à côté, lance le combat ; battue,
-   elle s'efface dans un nuage et une autre revient un peu plus tard. L'enfant voit ce qu'il chasse. */
-const OMBRE_REVIENT_MS = 5000, OMBRE_PAS_MS = 1500;
+/* Académia : les Ombres qu'on voit dans les hautes herbes. Une par touffe, violette comme au combat, un peu plus grande
+   que les compagnons pour qu'un doigt la trouve ; elle se promène dans son herbe sans jamais venir coller le héros.
+   La toucher (ou toucher juste à côté, diagonales comprises), ou passer juste à côté, lance le combat ; battue, elle
+   s'efface dans un nuage et une autre revient un peu plus tard. L'enfant voit ce qu'il chasse. */
+const OMBRE_REVIENT_MS = 5000, OMBRE_PAS_MS = 1500, HAUTEUR_OMBRE = 19;
+const aUnPas = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) <= 1;   // the same tile or one of the eight around
 
 class OmbresVillage {
   constructor(scene){
@@ -13,20 +15,40 @@ class OmbresVillage {
     scene.time.addEvent({delay: OMBRE_PAS_MS, loop: true, callback: () => this.promener()});
   }
   a(x, y){ return this.liste.find(o => o.x === x && o.y === y) || null; }
-  // an Ombre on the hero's tile or right next to it
-  pres(x, y){ return this.liste.find(o => !o.combat && Math.abs(o.x - x) + Math.abs(o.y - y) <= 1) || null; }
+  // an Ombre on the hero's tile or right next to it, diagonals too
+  pres(x, y){ return this.liste.find(o => !o.combat && aUnPas(o, {x, y})) || null; }
+  // the Ombre a finger meant: on it or within a tile around it, the nearest to the finger (a world point)
+  touchee(wx, wy){
+    const t = {x: Math.floor(wx / CASE), y: Math.floor(wy / CASE)};
+    let vise = null, dmin = Infinity;
+    this.liste.forEach(o => {
+      if (o.combat || !aUnPas(o, t)) return;
+      const d = Math.hypot(o.s.x - wx, o.s.y - o.s.displayHeight / 2 - wy);
+      if (d < dmin) { dmin = d; vise = o; }
+    });
+    return vise;
+  }
+  // the nearest Ombre to a tile (walking distance on the grid), among those `filtre` keeps, for the guide's arrow and hand
+  proche(x, y, filtre = () => true){
+    let vise = null, dmin = Infinity;
+    this.liste.forEach(o => {
+      const d = Math.abs(o.x - x) + Math.abs(o.y - y);
+      if (!o.combat && o.s.active && o.s.alpha > .5 && d < dmin && filtre(o)) { dmin = d; vise = o; }
+    });
+    return vise;
+  }
   occupee(x, y){
     const s = this.s, t = s.traces[0];
     return !!this.a(x, y) || (s.case.x === x && s.case.y === y) || (!!t && t.x === x && t.y === y);
   }
-  loinDuHeros(c){ return Math.abs(c.x - this.s.case.x) + Math.abs(c.y - this.s.case.y) > 1; }
+  loinDuHeros(c){ return !aUnPas(c, this.s.case); }
   // an Ombre in this grass; one coming back (`bouffee`) appears in a puff of smoke
   poser(region, bouffee = true){
     const libres = this.cases[region].filter(c => !this.occupee(c.x, c.y) && this.loinDuHeros(c));
     if (!libres.length) { this.s.time.delayedCall(2000, () => this.poser(region, bouffee)); return null; }   // the hero stands in the grass: later
     const c = libres[rnd(libres.length)], qui = ombre(regionDe(region), false);
     const o = {region, x: c.x, y: c.y};
-    o.s = spriteCreature(this.s, qui.cle, c.x, c.y).setDepth(profondeur(c.y));
+    o.s = spriteCreature(this.s, qui.cle, c.x, c.y, HAUTEUR_OMBRE).setDepth(profondeur(c.y));
     ombreAuSolHD(this.s, o.s);
     halo(this.s, o.s, 0x7B4DFF, 1.14, .6);   // its violet glow (js/jeu/sprites_hd.js)
     o.s.setAlpha(0); this.s.tweens.add({targets: o.s, alpha: 1, duration: TEST ? 1 : 400});
@@ -59,7 +81,7 @@ class OmbresVillage {
     if (!gagne) return;
     this.liste = this.liste.filter(x => x !== o);
     this.fumee(o);
-    if (o.s.souffle) { o.s.souffle.stop(); o.s.souffle = null; }   // it shrinks from its own size (a drawing is scaled down)
+    arreterSouffle(o.s);   // it shrinks from its own size (a drawing is scaled down)
     this.s.tweens.add({targets: o.s, alpha: 0, scale: o.s.base * .4, duration: TEST ? 1 : 350, onComplete: () => o.s.destroy()});
     this.s.time.delayedCall(TEST ? 10 : OMBRE_REVIENT_MS, () => this.poser(o.region));
   }

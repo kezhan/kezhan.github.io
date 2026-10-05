@@ -1,0 +1,228 @@
+/* Académia : les combats et les grands moments. Cases de vie (la vie de l'Ombre en bonnes réponses), place de la scène
+   selon l'écran (portrait : le panneau prend le bas ; écran bas : le panneau à droite, la scène à gauche), choix
+   d'attaque des petits, combo prêt, astuce du Sage, bandeau du boss, carte de fin, scènes plein écran (évolution,
+   badge, compagnon libéré), passage étoilé. Chargé après style_combat.css. */
+
+/* titles in Fredoka: its spaces are narrow (« Bouclier !Vrai ou faux ? ») */
+.titre-bouclier, .attaque b, .etat b, .bulle, .ruban, .titre-moment, .nom-moment, .sous-moment, .ligne-bilan.fort,
+.bandeau-boss b, .astuce p, #finCarte .gros, .boutons-moment .gros{word-spacing:.08em}
+
+/* ---------- life boxes: the Ombre's life in right answers, the chief's crown and anger ---------- */
+#etatLui .pv{position:relative}
+#etatLui .pv::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(90deg, transparent 0 calc(100% / var(--n, 1) - 2px), rgba(29,22,64,.85) calc(100% / var(--n, 1) - 2px) calc(100% / var(--n, 1)))}
+.etat.chef b::before{content:"👑 "}
+.etat.fache{border-color:#E8743B; animation:fache .55s ease-in-out infinite alternate}
+@keyframes fache{to{box-shadow:0 4px 0 rgba(29,22,64,.3), 0 0 0 5px rgba(232,116,59,.45)}}
+
+/* ---------- where the scene goes (data-mode set by js/jeu/scene_combat.js) ---------- */
+/* portrait: the choice fills the bottom half (no empty meadow under the stands), its buttons grow with it */
+#combat[data-mode="portrait"] .panneau.choix{min-height:calc(100vh - var(--scene, 50vh) + 16px); min-height:calc(100dvh - var(--scene, 50vh) + 16px);
+  display:flex; flex-direction:column; justify-content:center; gap:12px}
+#combat[data-mode="portrait"] .panneau.choix > .attaques{grid-template-columns:1fr; gap:12px}
+#combat[data-mode="portrait"] .panneau.choix .attaque{min-height:clamp(80px, 10vh, 124px)}
+#combat[data-mode="portrait"] .panneau.choix > .attaques.unique{flex:1; grid-template-rows:2fr 1fr}
+#combat[data-mode="portrait"] .attaque.unique{flex-direction:column; gap:6px}
+#combat[data-mode="portrait"] .attaque.unique .sprite{height:min(24vh, 210px)}
+#combat[data-mode="portrait"] .attaque.unique b{font-size:clamp(28px, 4.4vh, 40px)}
+#combat[data-mode="portrait"] .attaques.unique .attaque.etoile{width:auto; flex-direction:row; gap:18px}
+#combat[data-mode="portrait"] .attaque.etoile img{width:min(12vh, 96px)}
+/* a low screen (a phone held sideways): the scene on the left, the panel on the right, small life boxes */
+#combat[data-mode="cote"] .panneau{left:auto; right:0; top:0; bottom:0; width:calc(100% - var(--zone, 44vw)); max-height:none;
+  border-radius:24px 0 0 24px; padding:8px max(10px, env(safe-area-inset-right)) 8px 14px; box-shadow:-5px 0 0 rgba(29,22,64,.25)}
+#combat[data-mode="cote"] .panneau.cache{transform:translateX(calc(100% + 24px))}
+#combat[data-mode="cote"] .panneau.choix{display:flex; flex-direction:column; justify-content:center}
+#combat[data-mode="cote"] .attaques{grid-template-columns:1fr; gap:8px}
+#combat[data-mode="cote"] .attaques.unique{grid-template-columns:1fr auto; min-height:min(250px, 70vh)}
+#combat[data-mode="cote"] .attaque.unique{flex-direction:column; gap:4px}
+#combat[data-mode="cote"] .attaque.unique .sprite{height:min(34vh, 130px)}
+#combat[data-mode="cote"] .attaque.etoile{width:112px; min-height:0; flex-direction:column; text-align:center}
+#combat[data-mode="cote"] .attaque.etoile img{width:60px}
+#combat[data-mode="cote"] .attaque{min-height:0; padding:6px 10px; flex-direction:row; text-align:left}
+#combat[data-mode="cote"] .attaque small{display:block}
+#combat[data-mode="cote"] .etat{width:min(190px, calc(var(--zone, 44vw) * .48)); padding:2px 8px 4px; border-width:3px; border-radius:12px; gap:0 6px}
+#combat[data-mode="cote"] .etat b{font-size:14px}
+#combat[data-mode="cote"] .etat .niv{font-size:12px}
+#combat[data-mode="cote"] .etat .pv{height:8px}
+#combat[data-mode="cote"] .etat .pvtxt{font-size:11px}
+#combat[data-mode="cote"] .etat.lui{top:8px; left:8px}
+#combat[data-mode="cote"] .etat.moi{top:auto; bottom:8px; right:auto; left:calc(var(--zone, 44vw) - min(190px, calc(var(--zone, 44vw) * .48)) - 8px)}
+#combat[data-mode="cote"] .bulle{left:calc(var(--zone, 44vw) + 10px); right:10px; width:auto; transform:none; bottom:12px; font-size:18px; padding:10px 14px}
+
+/* ---------- choosing the attack ---------- */
+/* up to 5 years: the companion's face, and the star of the combo */
+.attaques.unique{display:grid; grid-template-columns:1fr auto; gap:12px}
+.attaque.unique{background:#CFF2FF; min-height:118px; justify-content:center; gap:16px; padding:8px 18px}
+.attaque.unique .sprite{animation:none; height:min(96px, 18vh)}
+.attaque.unique b{font:700 30px/1.1 var(--titre)}
+.attaque.etoile{background:linear-gradient(160deg, #FFF1B8, #FFD0F0); width:128px; min-height:118px; flex-direction:column; justify-content:center; align-items:center; gap:8px; padding:8px}
+.attaque.etoile img{width:68px; height:auto; filter:grayscale(1) opacity(.5)}
+.attaque.etoile[disabled]{opacity:.8}
+.attaque.etoile.prete img{filter:none; animation:brille 1s ease-in-out infinite}
+.pips{display:flex; gap:6px}
+.pips i{width:15px; height:15px; border-radius:50%; background:#E7E1FF; border:2px solid var(--encre)}
+.pips i.plein{background:var(--or)}
+/* the combo ready: it pulses and twinkles */
+.attaque.prete{position:relative; overflow:visible; animation:pulse 1.15s ease-in-out infinite}
+.attaque.prete::before{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(110deg, transparent 35%, rgba(255,255,255,.75) 48%, transparent 60%) no-repeat; background-size:260% 100%; animation:reflet 1.8s ease-in-out infinite}
+.attaque .scintille{position:absolute; width:26px; pointer-events:none; animation:scintille 1.4s ease-in-out infinite}
+.attaque .scintille.s1{top:-10px; right:12%} .attaque .scintille.s2{bottom:-8px; left:10%; animation-delay:.5s} .attaque .scintille.s3{top:30%; right:-10px; width:20px; animation-delay:.9s}
+@keyframes pulse{50%{transform:scale(1.04); box-shadow:0 6px 0 rgba(29,22,64,.35), 0 0 0 6px rgba(255,212,92,.45)}}
+@keyframes brille{50%{transform:scale(1.14) rotate(8deg)}}
+@keyframes reflet{from{background-position:130% 0} to{background-position:-30% 0}}
+@keyframes scintille{0%,100%{transform:scale(.3) rotate(0); opacity:0} 50%{transform:scale(1) rotate(90deg); opacity:1}}
+.joker.sablier[aria-pressed="true"]{background:var(--or); outline:3px solid var(--encre)}
+
+/* ---------- the Sage shows the potion ---------- */
+.astuce{position:fixed; z-index:15; display:flex; gap:10px; align-items:center; background:var(--papier); border:4px solid var(--encre);
+  border-radius:18px; padding:8px 12px; box-shadow:var(--ombre); pointer-events:none; animation:entree .25s ease-out}
+.astuce img{width:56px; height:56px; border-radius:12px; background:#E9DCC2; flex:none}
+.astuce p{margin:0; font:700 18px/1.25 var(--titre)}
+.astuce::after{content:""; position:absolute; bottom:-15px; left:calc(var(--queue, 50%) - 13px); border:13px solid transparent; border-top-color:var(--encre); border-bottom:0}
+.outil.montree{position:relative; z-index:1; outline:4px solid var(--or); animation:montree 1s ease-in-out infinite}
+@keyframes montree{50%{transform:scale(1.16); box-shadow:0 0 0 10px rgba(255,212,92,.45)}}
+
+/* ---------- the boss's banner ---------- */
+.bandeau-boss{position:fixed; left:0; right:0; bottom:16%; z-index:11; display:flex; align-items:center; gap:14px; padding:10px max(24px, 8vw);
+  background:linear-gradient(90deg, rgba(29,22,64,.94), rgba(67,48,136,.94)); color:#fff; border-block:4px solid var(--or); pointer-events:none; transform:translateX(-105%)}
+.bandeau-boss.passe{animation:bandeau-entre .45s cubic-bezier(.2,.9,.3,1.15) forwards}
+.bandeau-boss.passe.part{animation:bandeau-sort .45s ease-in forwards}
+.bandeau-boss .portrait{width:84px; height:84px; border-radius:50%; background:radial-gradient(circle at 50% 40%, #A98CFF, #433088); border:4px solid var(--or);
+  display:flex; align-items:flex-end; justify-content:center; overflow:hidden; flex:none}
+.bandeau-boss .portrait .sprite{height:78px; animation:none}
+.bandeau-boss small{display:block; font:700 15px var(--titre); color:#E7E1FF}
+.bandeau-boss b{display:block; font:700 clamp(24px, 4vw, 38px)/1.1 var(--titre)}
+@keyframes bandeau-entre{to{transform:translateX(0)}}
+@keyframes bandeau-sort{from{transform:translateX(0)} to{transform:translateX(105%)}}
+
+/* ---------- the end card: the summary only ---------- */
+#fin.bilan{background:rgba(29,22,64,.25); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); align-items:center; padding-top:14px; padding-bottom:14px}
+#fin.bilan[data-issue="fatigue"]{background:rgba(26,40,96,.55)}
+.carte.bilan{position:relative; max-width:620px; margin:auto; padding:14px 20px 18px; display:flex; flex-direction:column; overflow:hidden; text-align:center; animation:entree-carte .35s ease-out}
+@keyframes entree-carte{from{transform:scale(.92); opacity:0}}
+.bilan-scene{position:relative; display:flex; flex-direction:column; align-items:center}
+.ruban{position:relative; z-index:2; margin:2px auto 0; background:#F0566B; color:#fff; font:700 clamp(24px, 4vw, 32px)/1.1 var(--titre); padding:10px 30px 12px;
+  border-radius:8px; box-shadow:0 5px 0 rgba(29,22,64,.25); text-shadow:0 2px 0 rgba(29,22,64,.3); max-width:calc(100% - 60px)}
+.ruban::before,.ruban::after{content:""; position:absolute; top:10px; width:30px; height:100%; background:#C2394F; z-index:-1}
+.ruban::before{left:-20px; clip-path:polygon(0 0, 100% 0, 100% 100%, 0 100%, 34% 50%)}
+.ruban::after{right:-20px; clip-path:polygon(0 0, 100% 0, 66% 50%, 100% 100%, 0 100%)}
+.carte.bilan[data-issue="fatigue"] .ruban{background:#5B7BD9} .carte.bilan[data-issue="fatigue"] .ruban::before,.carte.bilan[data-issue="fatigue"] .ruban::after{background:#3F5CB4}
+.carte.bilan[data-issue="fuite"] .ruban{background:#8E7BE0} .carte.bilan[data-issue="fuite"] .ruban::before,.carte.bilan[data-issue="fuite"] .ruban::after{background:#6B57C2}
+.podium{position:relative; width:100%; height:clamp(150px, 30vh, 236px); display:flex; align-items:flex-end; justify-content:center; margin-top:2px}
+.podium .figure{position:relative; z-index:1; transform-origin:50% 100%}
+.carte.bilan .sprite{height:min(200px, 26vh); animation:none}
+.carte.bilan[data-issue="victoire"] .figure{animation:saute-bilan 1.5s ease-in-out infinite}
+.podium .rayons{position:absolute; left:50%; top:55%; width:440px; height:440px; margin:-220px 0 0 -220px; border-radius:50%; pointer-events:none;
+  background:repeating-conic-gradient(rgba(255,206,80,.6) 0 9deg, rgba(255,206,80,0) 9deg 22.5deg);
+  -webkit-mask:radial-gradient(circle, #000 14%, transparent 66%); mask:radial-gradient(circle, #000 14%, transparent 66%); animation:tourne 16s linear infinite}
+@keyframes tourne{to{transform:rotate(360deg)}}
+@keyframes saute-bilan{0%,55%,100%{transform:translateY(0) scale(1)} 18%{transform:translateY(-26px) scale(.97, 1.04)} 36%{transform:translateY(0) scale(1.05, .95)}}
+.carte.bilan[data-issue="fatigue"]{background:#EEF1FF}
+.carte.bilan[data-issue="fatigue"] .figure{animation:respire-fatigue 3.6s ease-in-out infinite; filter:saturate(.7) brightness(.94)}
+@keyframes respire-fatigue{50%{transform:translateY(4px) scale(1.035, .955)}}
+.zzz{position:absolute; left:calc(50% + 46px); top:18%; width:90px; height:120px; pointer-events:none}
+.zzz i{position:absolute; left:0; bottom:0; font:700 26px var(--titre); font-style:normal; color:#6F87E0; opacity:0; animation:zzz 3.3s ease-in infinite}
+.zzz i:nth-child(2){animation-delay:1.1s; font-size:32px} .zzz i:nth-child(3){animation-delay:2.2s; font-size:38px}
+@keyframes zzz{0%{opacity:0; transform:translate(0, 0)} 20%{opacity:1} 100%{opacity:0; transform:translate(46px, -96px)}}
+.bilan-corps{display:flex; flex-direction:column}
+.carte.bilan .lignes{display:flex; flex-direction:column; gap:6px; margin:10px 0 0}
+.ligne-bilan{margin:0; opacity:0; transform:translateY(6px); transition:opacity .35s ease-out, transform .35s ease-out}
+.ligne-bilan.vu{opacity:1; transform:none}
+.ligne-bilan.fort{font:700 21px/1.2 var(--titre)}
+.ligne-bilan.evolue{font:700 21px/1.2 var(--titre); color:var(--nuit2)}
+.carte.bilan .barrexp{margin:12px auto 4px; width:100%}
+.carte.bilan .suite-fin{position:static; margin:8px 0 0; padding:0; background:none; border-radius:0}
+/* a low screen: two columns, the companion on the left, the summary and the button on the right */
+@media (max-height:680px) and (min-width:560px){
+  #fin.bilan{padding-top:8px; padding-bottom:8px}
+  .carte.bilan{display:grid; grid-template-columns:40% minmax(0, 1fr); grid-template-areas:"ruban ruban" "scene corps"; align-items:center;
+    column-gap:16px; max-width:860px; padding:12px 18px}
+  .carte.bilan .ruban{grid-area:ruban; justify-self:center; margin-bottom:10px}
+  .bilan-scene{grid-area:scene; align-self:stretch; justify-content:center}
+  .bilan-corps{grid-area:corps}
+  .podium{height:min(236px, 52vh)}
+  .carte.bilan .sprite{height:min(200px, 40vh)}
+  .carte.bilan .lignes{margin-top:0}
+}
+@media (max-height:440px){
+  .ruban{font-size:20px; padding:6px 22px 8px}
+  .ligne-bilan{font-size:15px} .ligne-bilan.fort,.ligne-bilan.evolue{font-size:17px}
+  .carte.bilan .gros{min-height:52px; font-size:20px; padding:8px 20px}
+  .carte.bilan .barrexp{height:14px; margin:6px auto 2px}
+}
+
+/* ---------- the big moments, full screen ---------- */
+.moment{position:fixed; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; overflow:hidden;
+  padding:14px max(14px, env(safe-area-inset-right)) 14px max(14px, env(safe-area-inset-left)); text-align:center; color:#fff; touch-action:manipulation;
+  background:radial-gradient(ellipse at 50% 44%, #4A3A9C 0%, #2B1E5C 46%, #150F33 100%); animation:entree .3s ease-out}
+.moment.liberation{background:radial-gradient(ellipse at 50% 44%, #3E62B8 0%, #2B1E5C 50%, #150F33 100%)}
+.moment.badge{background:radial-gradient(ellipse at 50% 44%, #6A4BB0 0%, #33206A 48%, #170F38 100%)}
+.rayons-moment{position:absolute; left:50%; top:46%; width:220vmax; height:220vmax; margin:-110vmax 0 0 -110vmax; pointer-events:none;
+  background:repeating-conic-gradient(rgba(255,226,140,.2) 0 8deg, rgba(255,226,140,0) 8deg 20deg);
+  -webkit-mask:radial-gradient(circle, #000 0, #000 8%, transparent 32%); mask:radial-gradient(circle, #000 0, #000 8%, transparent 32%); animation:tourne 30s linear infinite}
+.halo-moment{position:absolute; left:50%; top:46%; width:76vmin; height:76vmin; margin:-38vmin 0 0 -38vmin; border-radius:50%; pointer-events:none;
+  background:radial-gradient(circle, rgba(255,240,190,.42), rgba(255,240,190,0) 68%)}
+.titre-moment,.nom-moment,.sous-moment,.scene-moment,.boutons-moment,.etoiles-badge{position:relative; z-index:1}
+.titre-moment{z-index:2; margin:0; font:700 clamp(24px, 4.4vw, 40px)/1.15 var(--titre); text-shadow:0 3px 0 var(--encre)}
+.scene-moment{width:100%; max-width:760px; flex:none}
+.nom-moment{margin:4px 0 0; font:700 clamp(32px, 6.6vw, 64px)/1.05 var(--titre); color:var(--or); text-shadow:0 4px 0 var(--encre); opacity:0; transform:scale(.4)}
+.nom-moment.vu{animation:pop .5s cubic-bezier(.3,1.7,.5,1) forwards}
+.sous-moment{margin:0; font:700 clamp(18px, 3vw, 26px)/1.2 var(--titre); opacity:0; transition:opacity .4s}
+.sous-moment.vu{opacity:1}
+@keyframes pop{to{opacity:1; transform:scale(1)}}
+.boutons-moment{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; min-height:68px; margin-top:4px}
+.boutons-moment.vu .gros{animation:pop-bouton .35s cubic-bezier(.3,1.6,.5,1) both}
+.boutons-moment .gros.gris{background:var(--papier2)}
+@keyframes pop-bouton{from{transform:scale(.6); opacity:0}}
+/* the evolution: two shapes on the same stage */
+.forme{position:absolute; left:50%; bottom:0; transform:translateX(-50%)}
+.forme .sprite{animation:none; transition:filter .5s ease}
+.forme.lumiere .sprite{filter:brightness(0) invert(1) drop-shadow(0 0 18px rgba(255,255,255,.95))}
+.forme.apres,.forme.libre{opacity:0}
+.forme.apres.visible,.forme.libre.nee{opacity:1}
+.forme.avant.cachee{opacity:0}
+.forme.nee{animation:nee .7s cubic-bezier(.3,1.6,.5,1) both, saute-moment 1.7s .8s ease-in-out infinite}
+@keyframes nee{from{transform:translateX(-50%) scale(.45)} to{transform:translateX(-50%) scale(1)}}
+@keyframes saute-moment{0%,55%,100%{transform:translateX(-50%) translateY(0)} 22%{transform:translateX(-50%) translateY(-24px)}}
+.moment.eclair::after{content:""; position:absolute; inset:0; z-index:5; background:#fff; pointer-events:none; animation:eclair .6s ease-out forwards}
+@keyframes eclair{from{opacity:.95} to{opacity:0}}
+/* the badge falls like a medal */
+.moment.badge .scene-moment{display:flex; justify-content:center}
+.medaille{position:relative; height:100%}
+.medaille img{display:block; height:100%; width:auto; filter:drop-shadow(0 8px 0 rgba(0,0,0,.25))}
+.medaille.brille img{animation:balance 2.6s ease-in-out infinite; transform-origin:50% 0}
+@keyframes balance{0%,100%{transform:rotate(0)} 25%{transform:rotate(3deg)} 75%{transform:rotate(-3deg)}}
+.etoiles-badge{display:flex; gap:12px; justify-content:center; min-height:54px}
+.etoile-badge{height:50px; width:auto; opacity:0; transform:scale(0)}
+.etoile-badge:not(.pleine){filter:grayscale(1) brightness(.75)}
+.etoile-badge.vu{animation:pop-etoile .45s cubic-bezier(.3,1.8,.5,1) forwards}
+.etoile-badge:not(.pleine).vu{animation-name:pop-etoile-vide}
+@keyframes pop-etoile{to{opacity:1; transform:scale(1)}}
+@keyframes pop-etoile-vide{to{opacity:.45; transform:scale(.9)}}
+/* the freed companion: the chief turns to light, a bubble of shadow bursts */
+.forme.chef .sprite{transition:filter .45s ease}
+.forme.chef.lumiere .sprite{filter:brightness(0) invert(1) drop-shadow(0 0 22px #fff)}
+.bulle-ombre{position:absolute; left:50%; top:50%; width:var(--d, 260px); height:var(--d, 260px); border-radius:50%; opacity:0; transform:translate(-50%, -50%) scale(0);
+  display:flex; align-items:flex-end; justify-content:center; overflow:hidden;
+  background:radial-gradient(circle at 34% 28%, rgba(205,180,255,.6), rgba(104,62,190,.88) 52%, rgba(44,24,98,.96)); box-shadow:0 0 44px rgba(150,110,255,.65), inset 0 0 30px rgba(20,10,50,.6)}
+.bulle-ombre.vu{opacity:1}
+.ombre-dedans{padding-bottom:12%}
+.ombre-dedans .sprite{filter:brightness(0) opacity(.5); animation:none}
+.bulle-ombre.tremble{animation:tremble-bulle .16s linear infinite}
+.bulle-ombre.eclate{animation:eclate .32s ease-out forwards}
+@keyframes tremble-bulle{0%{transform:translate(-50%, -50%) scale(1) rotate(0)} 50%{transform:translate(-51%, -49%) scale(1.03) rotate(1.5deg)} 100%{transform:translate(-49%, -51%) scale(.98) rotate(-1.5deg)}}
+@keyframes eclate{from{transform:translate(-50%, -50%) scale(1); opacity:1} to{transform:translate(-50%, -50%) scale(1.6); opacity:0}}
+.forme.libre.range{animation:range .6s ease-in forwards}
+@keyframes range{to{transform:translateX(-50%) translateY(40%) scale(.2); opacity:0}}
+@media (max-height:500px){ .moment{gap:4px} .titre-moment{font-size:22px} .nom-moment{font-size:34px} .sous-moment{font-size:17px}
+  .boutons-moment{min-height:56px} .moment .gros{min-height:52px; font-size:20px; padding:8px 20px} .etoiles-badge{min-height:40px} .etoile-badge{height:38px} }
+
+/* ---------- drawn pieces flying in HTML (js/effets_dom.js) and the star-shaped passage (js/transition.js) ---------- */
+.piece-fx{position:fixed; pointer-events:none; height:auto}
+.lueur-fx{position:fixed; pointer-events:none; mix-blend-mode:screen}
+.voile-etoile{position:fixed; inset:0; width:100vw; height:100vh; z-index:70; pointer-events:none}
+
+@media (prefers-reduced-motion: reduce){
+  .rayons-moment,.podium .rayons,.forme.nee,.carte.bilan .figure,.attaque.prete,.attaque.prete::before,.attaque .scintille,.medaille.brille img,.zzz i,.outil.montree{animation:none !important}
+}

@@ -1,6 +1,8 @@
 /* Académia : le village. Le héros marche case par case jusqu'à l'endroit touché (chemin trouvé en contournant
-   les obstacles) ou avec les flèches ; son compagnon le suit ; les habitants parlent ; toucher une maison mène à sa
-   porte ; dans les hautes herbes, des Ombres violettes (js/jeu/ombres_village.js) : en toucher une lance le combat. */
+   les obstacles) ou avec les flèches ; son compagnon le suit ; les habitants parlent (js/jeu/vie_village.js) ; toucher
+   une maison mène à sa porte (js/jeu/portes_village.js) ; dans les hautes herbes, des Ombres violettes
+   (js/jeu/ombres_village.js) : en toucher une, ou juste à côté, lance le combat. Une main et une flèche guident l'enfant
+   qui ne sait plus quoi faire (js/jeu/guide_village.js). */
 const PAS_MS = 170;
 
 class Monde extends Phaser.Scene {
@@ -11,6 +13,7 @@ class Monde extends Phaser.Scene {
     const a = actif();
     chargerAtlas(this, [herosHD(P()), "sage", "hugo", "paco", a && cleDe(a), ...Object.values(CLES_OMBRES)]);
     chargerEffetsHD(this.load, QUALITE);
+    chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
   }
   create(){
@@ -20,42 +23,54 @@ class Monde extends Phaser.Scene {
     // signs above the houses (icon, name, badges, Ombres beaten before the door opens), crisp at any zoom, on a rounded pill
     this.panneaux = this.carte.etiquettes.map(e => panneauVillageHD(this, e.region, e.x * CASE, e.y * CASE));
     this.majPanneaux();
-    // villagers
-    this.pnj = this.carte.pnj.map(n => {
-      const s = spriteHumain(this, n.cle, n.x, n.y).setDepth(profondeur(n.y));
-      reposHumain(s, DIRS[n.dir]); ombreAuSolHD(this, s);
-      return {...n, s};
-    });
+    this.vie = new VieVillage(this);   // villagers who breathe, wave and talk
+    this.pnj = this.carte.pnj.map(n => ({...n, s: this.vie.habitant(n)}));
     const p = P(), pos = p.position || this.carte.depart;
     this.case = {x: pos.x, y: pos.y};
     this.heros = spriteHumain(this, herosHD(p), pos.x, pos.y).setDepth(profondeur(pos.y, 6));
     ombreAuSolHD(this, this.heros);
-    this.dir = "bas"; this.chemin = []; this.enMarche = false; this.verrou = false;
+    this.dir = "bas"; this.chemin = []; this.enMarche = false; this.verrou = false; this.moment = false;
     const voisin = [[0, 1], [-1, 0], [1, 0], [0, -1]].map(([a, b]) => ({x: pos.x + a, y: pos.y + b})).find(v => this.libre(v.x, v.y));
     this.traces = [voisin || {...this.case}];
-    this.compagnon = null; this.majCompagnon();
-    this.cameras.main.startFollow(this.heros, true, .2, .2, 0, this.heros.dy - 8);   // centred on the hero's tile
+    this.compagnon = null; this.cleCompagnon = null; this.majCompagnon();
+    this.suivreHeros();
+    this.cameras.main.on("followupdate", () => cadrerPanneauxHD(this, this.panneaux));   // the signs once the camera has moved
     const zoom = () => this.ajusterZoom();
     zoom(); this.scale.on("resize", zoom); this.events.once("shutdown", () => this.scale.off("resize", zoom));
     this.ombres = new OmbresVillage(this);
+    this.portes = new PortesVillage(this);   // closed doors in violet mist, open doors in golden light
+    this.guide = new GuideVillage(this);     // the arrow before the first fight, the hand when nothing happens
+    this.silhouettes = new SilhouettesHD(this);   // the hero and the companion seen through what hides them
     window.__calme = performance.now() + 300;
-    // touch: walk where the child taps (a villager: go and talk; a house, its roof or its sign: go to its door; an Ombre: go and fight)
-    this.input.on("pointerup", ptr => {
-      if (this.occupe()) return;
-      let x = Math.floor(ptr.worldX / CASE), y = Math.floor(ptr.worldY / CASE);
-      const r = maisonToucheeHD(this, ptr.worldX, ptr.worldY), m = this.carte.maison;
-      if (r && !(m[y] && m[y][x] === r)) for (let b = 0; b < HAUT; b++) { const a = m[b].indexOf(r); if (a >= 0) { x = a; y = b; break; } }
-      this.allerVers(x, y, this.pnj.find(q => q.x === x && (q.y === y || q.y === y + 1)));
-    });
+    // touch: walk where the child taps (a villager: go and talk; a house, its roof or its sign: go to its door; an Ombre
+    // or right next to it: go and fight; the companion: it jumps for joy)
+    this.input.on("pointerdown", () => this.guide.toucher());
+    this.input.on("pointerup", ptr => this.toucher(ptr));
     // arrows only, without capturing them for the whole page (the first-name field keeps its space and arrows)
     this.touches = this.input.keyboard.addKeys({up: "UP", down: "DOWN", left: "LEFT", right: "RIGHT"}, false);
+    if (typeof jouerAmbiance === "function") jouerAmbiance("village");
   }
-  // the village answers unless another screen, a dialogue or a fight starting is in front of it
-  occupe(){ return ecranCourant !== "monde" || !$("dialogue").hidden || this.verrou || performance.now() < (window.__calme || 0); }
+  // the village answers unless another screen, a dialogue, a fight starting or a door opening is in front of it
+  occupe(){ return ecranCourant !== "monde" || dialogueOuvert() || this.verrou || this.moment || performance.now() < (window.__calme || 0); }
+  suivreHeros(){ this.cameras.main.startFollow(this.heros, true, .2, .2, 0, this.heros.dy - 8); }   // centred on the hero's tile
   ajusterZoom(){
     const w = this.scale.width / RATIO, h = this.scale.height / RATIO;   // in CSS pixels
     const z = Math.min(6, Math.max(2, Math.round(Math.min(w / (20 * CASE), h / (14 * CASE)))));   // whole pixels only
     this.cameras.main.setZoom(z * RATIO);
+  }
+  toucher(ptr){
+    if (dialogueFermable()) fermerDialogue(true);   // the last line of a dialogue: the touch closes it and goes on
+    if (this.occupe()) return;
+    const wx = ptr.worldX, wy = ptr.worldY;
+    if (this.vie.toucherCompagnon(wx, wy)) return;
+    const o = this.ombres.touchee(wx, wy);
+    if (o) return this.allerVers(o.x, o.y);
+    let x = Math.floor(wx / CASE), y = Math.floor(wy / CASE);
+    const r = maisonToucheeHD(this, wx, wy), m = this.carte.maison;
+    if (r && !(m[y] && m[y][x] === r)) for (let b = 0; b < HAUT; b++) { const a = m[b].indexOf(r); if (a >= 0) { x = a; y = b; break; } }
+    const n = this.pnj.find(q => q.x === x && (q.y === y || q.y === y + 1));
+    if (n) this.vie.saluer(n.s);   // the villager waves at once, the hero walks to talk
+    this.allerVers(x, y, n);
   }
   texteEtiquette(regionId){
     const r = regionDe(regionId), st = regionEtat(regionId), n = Math.min(st.etape, ETAPES);
@@ -63,14 +78,18 @@ class Monde extends Phaser.Scene {
       + "  " + (n >= ETAPES ? "🔓" : "●".repeat(n) + "○".repeat(ETAPES - n));
   }
   majPanneaux(){ this.carte.etiquettes.forEach((e, i) => ecrirePanneauHD(this.panneaux[i], this.texteEtiquette(e.region))); }
-  // the companion following the hero: its drawing is loaded first if it is new (chosen in the bag, evolved)
+  // the companion following the hero, drawn again only when it changed (chosen in the bag, evolved): its drawing is
+  // loaded first if it is new, and the old one stops breathing before it goes
   majCompagnon(){
-    const c = actif();
-    chargerPuis(this, [c && cleDe(c)], () => {
-      if (this.compagnon) this.compagnon.destroy();
-      if (!c) { this.compagnon = null; return; }
+    const c = actif(), cle = c ? cleDe(c) : null;
+    if (cle === this.cleCompagnon && (this.compagnon ? this.compagnon.active : !cle)) return;
+    this.cleCompagnon = cle;
+    chargerPuis(this, [cle], () => {
+      if (cle !== this.cleCompagnon) return;   // changed again meanwhile
+      if (this.compagnon) { arreterSouffle(this.compagnon); this.compagnon.destroy(); this.compagnon = null; }
+      if (!cle) return;
       const t = this.traces[0] || this.case;
-      this.compagnon = spriteCreature(this, cleDe(c), t.x, t.y).setDepth(profondeur(t.y, 4));
+      this.compagnon = spriteCreature(this, cle, t.x, t.y).setDepth(profondeur(t.y, 4));
       ombreAuSolHD(this, this.compagnon);
     });
   }
@@ -108,7 +127,7 @@ class Monde extends Phaser.Scene {
     const o = this.ombres.a(x, y);
     if (this.ombreVisee && this.ombreVisee !== o) this.ombreVisee.fige = false;
     this.marquer(x, y);
-    if (o && this.dist(o) <= 1) return this.rencontre(o);
+    if (o && aUnPas(o, this.case)) return this.rencontre(o);
     const ch = this.chercher(x, y);
     if (!ch) return;
     if (o) this.ombres.viser(o);
@@ -128,11 +147,13 @@ class Monde extends Phaser.Scene {
     this.dir = dx > 0 ? "droite" : dx < 0 ? "gauche" : dy > 0 ? "bas" : "haut";
     this.enMarche = true;
     marcherHumain(this.heros, this.dir);
+    if (typeof jouerSon === "function") jouerSon("pas");
     this.traces.unshift({...this.case}); this.traces.length = 3;
     this.case = {x, y};
     this.tweens.add({targets: this.heros, x: x * CASE + 8, y: y * CASE + this.heros.dy, duration: TEST ? 1 : PAS_MS, onComplete: () => this.apresPas()});
     this.heros.setDepth(profondeur(y, 6));
     if (this.compagnon) {   // the companion walks into the hero's previous tile
+      this.vie.arreterSaut();
       const k = this.compagnon, t = this.traces[0], cdx = t.x * CASE + 8 - k.x, cdy = t.y * CASE + k.dy - k.y;
       const d = Math.abs(cdx) > Math.abs(cdy) ? (cdx > 0 ? "droite" : "gauche") : (cdy > 0 ? "bas" : "haut");
       if (cdx || cdy) marcherCreature(k, d, PAS_MS);
@@ -156,31 +177,53 @@ class Monde extends Phaser.Scene {
     const p = P(); p.position = {...this.case}; sauver();
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
   }
-  update(){
-    devoilerHD(this, [this.heros, this.compagnon], this.panneaux);   // a drawing or a sign in front of the hero or the companion turns see-through
+  update(time){
+    devoilerHD(this, [this.heros, this.compagnon], this.panneaux);   // a sign in front of the hero turns see-through
+    this.silhouettes.suivre([this.heros, this.compagnon]);           // what hides them: their silhouette shows through
+    cadrerPanneauxHD(this, this.panneaux);   // signs never under the top bar nor cut by an edge
+    this.portes.update(time); this.guide.update(time);
     if (this.enMarche || this.occupe() || !this.touches) return;
     const t = this.touches, d = t.left.isDown ? [-1, 0] : t.right.isDown ? [1, 0] : t.up.isDown ? [0, -1] : t.down.isDown ? [0, 1] : null;
-    if (d && this.libre(this.case.x + d[0], this.case.y + d[1])) { this.chemin = [[this.case.x + d[0], this.case.y + d[1]]]; this.pas(); }
+    if (d && this.libre(this.case.x + d[0], this.case.y + d[1])) { this.guide.toucher(); this.chemin = [[this.case.x + d[0], this.case.y + d[1]]]; this.pas(); }
   }
   parler(n){
-    const vers = {x: this.case.x - n.x, y: this.case.y - n.y};
-    reposHumain(n.s, vers.y > 0 ? "bas" : vers.y < 0 ? "haut" : vers.x < 0 ? "gauche" : "droite");
-    dialogue(n.nom, n.cle, n.dit);
+    this.vie.parler(n.s);
+    dialogue(n.nom, n.cle, n.dit, null, {ligne: (i, voix) => this.vie.mains(n.s, voix), fin: () => this.vie.repos(n.s)});
   }
   devantPorte(regionId){ this.chemin = []; this.pnjVise = null; entrerMaison(regionId); }
-  // an Ombre is touched: the village holds still, a flash, and the fight
+  // a point of the world on the screen, in CSS pixels (the camera's view as it is drawn at this frame)
+  ecranDe(wx, wy){
+    const c = this.cameras.main, k = c.zoom / RATIO;
+    return [(wx - c.scrollX - c.width * c.originX * (1 - 1 / c.zoom)) * k, (wy - c.scrollY - c.height * c.originY * (1 - 1 / c.zoom)) * k];
+  }
+  // an Ombre is touched: the village holds still, the Ombre jumps, and the screen closes in a star on it
+  // (js/transition.js, when the fights have it) before the fight
   rencontre(o){
     this.verrou = true; this.chemin = []; this.pnjVise = null; this.ombreVisee = null;
-    o.combat = true; this.ombreEnCombat = o;
+    o.combat = true; this.ombreEnCombat = o; this.etapeAvant = regionEtat(o.region).etape;
     sfx.critique();
-    this.cameras.main.flash(250, 255, 255, 255);
-    this.time.delayedCall(TEST ? 0 : 350, () => commencerCombat(o.region, false));
+    if (!calme()) this.tweens.add({targets: o.s, y: o.s.y - 6, duration: 140, yoyo: true, ease: "Quad.easeOut"});
+    const lancer = () => commencerCombat(o.region, false);
+    if (typeof fermerEtoile === "function") {
+      const [x, y] = this.ecranDe(o.s.x, o.s.y - o.s.displayHeight / 2);
+      this.time.delayedCall(TEST ? 0 : 200, () => fermerEtoile(x, y).then(lancer));
+    } else {
+      this.cameras.main.flash(250, 255, 255, 255);
+      this.time.delayedCall(TEST ? 0 : 350, lancer);
+    }
   }
-  // back from a fight (js/jeu/lanceur.js, retourMonde): the beaten Ombre vanishes, signs and companion are redrawn
+  // back from a fight (js/jeu/lanceur.js, retourMonde): the beaten Ombre vanishes, signs, doors and companion are
+  // redrawn; the fourth Ombre near a house opens its door before the child's eyes
   apresCombat({gagne}){
     this.verrou = false; this.chemin = []; this.pnjVise = null;
     window.__calme = performance.now() + 400;   // the second tap of a double tap on « Continuer » does not walk
-    this.ombres.apres(this.ombreEnCombat, gagne); this.ombreEnCombat = null;
-    this.majCompagnon(); this.majPanneaux();
+    const o = this.ombreEnCombat, region = o && o.region;
+    const ouvre = !!region && this.etapeAvant < ETAPES && regionEtat(region).etape >= ETAPES;
+    this.ombres.apres(o, gagne); this.ombreEnCombat = null;
+    this.majCompagnon(); this.majPanneaux(); this.portes.maj(ouvre ? region : null);
+    cadrerPanneauxHD(this, this.panneaux, true);   // the bar is back, its pill a little wider: the signs at once
+    if (ouvre) this.portes.ouvrir(region);
+    this.guide.retour();
+    if (typeof jouerAmbiance === "function") jouerAmbiance("village");
   }
 }

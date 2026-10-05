@@ -1,5 +1,5 @@
 /* Académia : le jeu (Phaser) occupe l'écran ; menus, dialogues et questions se posent par-dessus.
-   Tablette d'abord : gros boutons, rien sous 56 px de cible. */
+   Tablette d'abord : gros boutons, rien sous 56 px de cible. Écrans compacts (téléphone, écran bas) en fin de fichier. */
 :root{
   --nuit:#2B1E5C; --nuit2:#433088; --ciel1:#5B47C9; --or:#FFD45C; --encre:#1D1640; --papier:#FFF8EC; --papier2:#FFF0D6;
   --vert:#3DBE7A; --rouge:#F0566B; --bleu:#36B5F0; --gris:#B9B3D6; --ombre:0 6px 0 rgba(29,22,64,.35);
@@ -7,7 +7,7 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0; height:100%; background:var(--nuit); color:var(--encre); font:600 18px/1.35 var(--texte);
-  -webkit-tap-highlight-color:transparent; overscroll-behavior:none; overflow:hidden; user-select:none}
+  -webkit-tap-highlight-color:transparent; overscroll-behavior:none; overflow:hidden; user-select:none; -webkit-user-select:none}
 [hidden]{display:none !important}
 button{font:inherit; color:inherit; border:0; cursor:pointer; touch-action:manipulation}
 button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
@@ -15,11 +15,10 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 #jeu canvas{display:block}
 
 /* titles and buttons */
-.titre{font:700 clamp(48px, 12vw, 96px)/1 var(--titre); color:#fff; text-align:center; margin:22px 0 0;
-  text-shadow:0 5px 0 var(--encre), 0 0 34px rgba(255,212,92,.65); letter-spacing:1px}
 .titre2{font:700 clamp(26px, 6vw, 40px)/1.1 var(--titre); color:#fff; text-align:center; margin:8px 0 4px; text-shadow:0 3px 0 var(--encre)}
 .titre3{font:700 28px var(--titre); margin:0}
-.sous{color:#E7E1FF; text-align:center; margin:4px 0 16px; font-size:17px}
+.titre2,.titre3,.gros,.moyen,.dlg-corps b,.profil b{word-spacing:.08em}   /* Fredoka sets its words a little too close */
+.sous{color:#F1ECFF; text-align:center; margin:4px 0 16px; font-size:17px; text-shadow:0 2px 6px rgba(29,22,64,.6)}
 .gros,.moyen{display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:64px; padding:12px 26px;
   border-radius:22px; background:var(--or); color:var(--encre); font:700 24px var(--titre); box-shadow:var(--ombre); transition:transform .12s}
 .moyen{min-height:56px; font-size:20px; padding:10px 18px}
@@ -28,47 +27,84 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .gros.attente{opacity:.45}   /* still answers: it says what is missing */
 .gris{background:var(--gris)} .vert{background:var(--vert); color:#fff}
 .rond{width:56px; height:56px; border-radius:50%; background:var(--papier); font-size:28px; box-shadow:var(--ombre); flex:none}
+.rond.fermer{background:var(--or); color:var(--encre); display:inline-flex; align-items:center; justify-content:center; font:700 26px/1 var(--titre)}
 .ligne{display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; margin:16px 0}
 .joker{min-height:52px; border-radius:16px; background:var(--papier2); padding:6px 12px; font:700 17px var(--titre); box-shadow:0 3px 0 rgba(29,22,64,.25)}
 .joker[disabled]{opacity:.4; pointer-events:none}
+.palpite{animation:palpite 1.6s ease-in-out infinite}
+@keyframes palpite{0%,100%{transform:scale(1)} 50%{transform:scale(1.06)}}
 
 /* screens over the game */
 .ecran{position:fixed; inset:0; z-index:10; overflow-y:auto; padding:14px max(14px, env(safe-area-inset-right)) 24px max(14px, env(safe-area-inset-left))}
 .ecran.plein{background:radial-gradient(circle at 20% 15%, rgba(255,255,255,.16) 0 2px, transparent 3px) 0 0/90px 90px,
   linear-gradient(180deg, var(--ciel1), var(--nuit) 70%); animation:entree .35s ease-out}
+/* the village drawn behind the home screens (js/jeu/vitrine.js), softened, under a violet sky */
+.monde-dessine .ecran.plein{background:linear-gradient(180deg, rgba(76,56,190,.82) 0, rgba(60,42,150,.5) 34%, rgba(43,30,92,.22) 70%, rgba(43,30,92,.4) 100%),
+  var(--fond-accueil) center/cover no-repeat, var(--nuit)}
 .ecran.voile{background:rgba(29,22,64,.55); display:flex; align-items:flex-start; justify-content:center; padding-top:6vh}
 #combat{background:none; pointer-events:none; overflow:visible}
 #combat > *{pointer-events:auto}
 @keyframes entree{from{opacity:0} to{opacity:1}}
 .carte{background:var(--papier); border-radius:28px; padding:18px; box-shadow:var(--ombre); max-width:660px; margin:0 auto; width:100%}
 .carte.large{max-width:900px}
-.entete{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px}
+.entete{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px}
 .etiquette{display:block; font:700 18px var(--titre); margin:10px 0 6px}
 
 /* drawings in menus (js/sprite_dom.js): a pose cut from its atlas, breathing gently */
 .sprite{flex:none; background-repeat:no-repeat; height:var(--h); aspect-ratio:.8}
 .sprite-hd.vivant{animation:respire 2.4s ease-in-out infinite; transform-origin:50% 100%}
 @keyframes respire{50%{transform:scale(.985, 1.03)}}
+.saute, .sprite-hd.vivant.saute{animation:saute-menu .5s ease-out}
+@keyframes saute-menu{40%{transform:translateY(-18px) scale(1.05)}}
 
-/* profiles, creation, starters */
-.profils{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; margin:18px auto 0; max-width:900px}
-.profil{background:var(--papier); border-radius:26px; padding:12px 16px; box-shadow:var(--ombre); text-align:left; display:flex; gap:12px; align-items:center; min-height:92px}
-.profil span{flex:1} .profil b{font:700 24px var(--titre); display:block} .profil small{color:#5d5585}
-#btnNouveau{display:flex; margin:22px auto}
-.version{position:fixed; right:12px; bottom:8px; margin:0; color:rgba(255,255,255,.55); font-size:13px}
-.diag{margin:4px 0 0; text-align:center; color:#7a7299; font-size:13px}
-.nom{width:100%; min-height:58px; border-radius:16px; background:#fff; border:3px solid var(--encre); font:700 30px var(--titre); padding:0 14px; color:var(--encre)}
-.ages{display:grid; grid-template-columns:repeat(9, minmax(0, 62px)); gap:8px}   /* 5 then 4 on a phone */
+/* home: the drawn logo, the profiles with the hero and the companion standing, the starters on the grass */
+.logo{margin:6px auto 0; width:min(560px, 92vw); line-height:0}
+.logo svg{width:100%; height:auto; overflow:visible}
+.logo text{font:700 118px var(--titre); letter-spacing:1px}
+.logo-ombre{fill:var(--encre); stroke:var(--encre); stroke-width:22px; stroke-linejoin:round; opacity:.55}
+.logo-trait{fill:var(--encre); stroke:var(--encre); stroke-width:20px; stroke-linejoin:round}
+.logo-texte{fill:url(#logoOr); stroke:#FFF6D8; stroke-width:2.5px; paint-order:stroke}
+.logo-eclat{fill:#FFF6C9; stroke:var(--encre); stroke-width:4px; stroke-linejoin:round; animation:luit 2.2s ease-in-out infinite; transform-box:fill-box; transform-origin:center}
+.logo-eclat.e2{animation-delay:-.7s} .logo-eclat.e3{animation-delay:-1.4s}
+@keyframes luit{50%{opacity:.35}}
+#accueil > *:not(.decor-accueil):not(.version){position:relative; z-index:1}
+.profils{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 340px)); justify-content:center; gap:14px; margin:14px auto 0; max-width:1100px}
+.profil{background:var(--papier); border-radius:26px; padding:8px 16px 8px 10px; box-shadow:var(--ombre); text-align:left; display:flex; gap:12px; align-items:center}
+.profil span{flex:1; min-width:0} .profil b{font:700 26px var(--titre); display:block} .profil small{color:#5d5585; font-size:16px}
+.profil-scene{display:flex; align-items:flex-end; gap:0; padding:4px 6px 6px; border-radius:20px;
+  background:radial-gradient(ellipse 70% 22% at 50% 92%, rgba(61,190,122,.45), transparent 70%)}
+.profil-scene .sprite + .sprite{margin-left:-10px}
+#btnNouveau{display:flex; margin:20px auto}
+.version{position:fixed; right:12px; bottom:8px; margin:0; color:rgba(255,255,255,.7); font-size:13px; z-index:2}
+.decor-accueil{position:fixed; left:0; right:0; bottom:0; height:150px; z-index:0; pointer-events:none}
+.decor-accueil .starter-deco{position:absolute; bottom:18px; pointer-events:auto; cursor:pointer}
+.decor-accueil .sol-deco{position:absolute; left:-2%; right:-2%; bottom:0; height:44px; border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  background:linear-gradient(180deg, #8FD66F, #5DB25A)}
+.coucou{position:absolute; left:var(--coucou, 52%); bottom:20px; width:110px; height:110px; pointer-events:auto; overflow:hidden}
+.coucou .tete{position:absolute; left:50%; bottom:0; transform:translate(-50%, 70%); animation:coucou 7s ease-in-out infinite}
+.coucou .herbe-deco{position:absolute; left:50%; bottom:-6px; transform:translateX(-50%)}
+.coucou .herbe-deco.fond{bottom:10px; opacity:.95}
+@keyframes coucou{0%,38%,100%{transform:translate(-50%, 78%)} 48%,72%{transform:translate(-50%, 18%)} 80%{transform:translate(-50%, 24%)}}
+.coucou.cache .tete{animation:none; transform:translate(-50%, 85%); transition:transform .2s}
+
+/* new Guardian: the age with its birthday cake, the hero who answers « C'est toi ? » */
+.nom{width:100%; min-height:58px; border-radius:16px; background:#fff; border:3px solid var(--encre); font:700 30px var(--titre); padding:0 14px; color:var(--encre); user-select:text; -webkit-user-select:text}
+.ages{display:grid; grid-template-columns:repeat(9, minmax(0, 64px)); gap:8px}   /* 5 then 4 on a phone */
 .heros{display:grid; grid-template-columns:repeat(7, minmax(0, 92px)); gap:8px}   /* all on one line, 4 then 3 on a phone */
-.ages button{width:100%; aspect-ratio:1; border-radius:18px; background:var(--papier2); font:700 26px var(--titre); box-shadow:0 3px 0 rgba(29,22,64,.25)}
+.ages button{width:100%; aspect-ratio:.78; border-radius:18px; background:var(--papier2); font:700 26px/1 var(--titre); box-shadow:0 3px 0 rgba(29,22,64,.25);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:4px 2px}
+.gateau{width:92%; height:auto; display:block}
 .choix-heros{width:100%; aspect-ratio:1; border-radius:20px; background:var(--papier2); display:flex; align-items:center; justify-content:center; box-shadow:0 3px 0 rgba(29,22,64,.25)}
 .choix-heros .sprite-hd{height:min(var(--h), 90%)}
 .ages button[aria-pressed="true"],.choix-heros[aria-pressed="true"]{background:var(--or); outline:4px solid var(--encre)}
+
+/* first companion */
 .starters{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:16px; max-width:980px; margin:0 auto}
 .starter{background:var(--papier); border-radius:28px; padding:16px 14px; box-shadow:var(--ombre); text-align:center; display:flex; flex-direction:column; align-items:center}
 .starter.choisi{outline:6px solid var(--or); transform:scale(1.04)}
 .starters:has(.choisi) .starter:not(.choisi){opacity:.35}
 .starter h3{font:700 28px var(--titre); margin:6px 0 2px} .starter p{margin:4px 0 12px; color:#4a4270; flex:1}
+.starter .gros{white-space:nowrap}
 
 /* top bar in the village */
 .barre{position:fixed; top:0; left:0; right:0; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:10px;
@@ -78,25 +114,86 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .gardien img{width:48px; height:48px; border-radius:50%; background:var(--papier); border:3px solid var(--or)}
 .pastille{background:rgba(255,255,255,.18); border-radius:999px; padding:2px 10px; font-size:18px}
 
-/* dialogue with a villager */
+/* dialogue with a villager (js/dialogue.js): the text writes itself, the rest of the line keeps its place */
 .dialogue{position:fixed; left:50%; bottom:14px; transform:translateX(-50%); z-index:12; width:min(760px, calc(100% - 20px));
   background:var(--papier); border:5px solid var(--encre); border-radius:22px; box-shadow:var(--ombre); display:flex; gap:12px; padding:12px; cursor:pointer; animation:entree .2s}
-.dialogue img{width:88px; height:88px; border:4px solid var(--encre); border-radius:14px; background:#E9DCC2; flex:none}
-.dlg-corps{flex:1} .dlg-corps b{font:700 21px var(--titre); color:var(--nuit2)} .dlg-corps p{margin:4px 0; font-size:20px}
+.dlg-portrait{width:88px; height:88px; border:4px solid var(--encre); border-radius:14px; background:#E9DCC2; flex:none; overflow:hidden;
+  display:flex; align-items:flex-end; justify-content:center}
+.dlg-portrait img{width:100%; height:100%; display:block}
+.dlg-portrait .sprite{margin-bottom:2px}
+.dlg-corps{flex:1; min-width:0} .dlg-corps b{font:700 21px var(--titre); color:var(--nuit2)} .dlg-corps p{margin:4px 0; font-size:20px}
+.dlg-reste{visibility:hidden}
 .dlg-choix{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap}
-.dlg-choix .suite{background:none; font-size:24px; animation:clignote 1s infinite}
-@keyframes clignote{50%{opacity:.3}}
+.dlg-choix .suite{width:48px; height:48px; background:var(--or); font:700 22px/1 var(--titre); display:inline-flex; align-items:center; justify-content:center;
+  animation:palpite 1.4s ease-in-out infinite}
+.dlg-choix .epees{font-size:46px; min-width:132px; min-height:84px; border-radius:26px; animation:palpite 1.4s ease-in-out infinite}
 
-/* team */
-.liste-equipe{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:12px}
-.fiche{display:flex; gap:12px; align-items:center; background:var(--papier2); border-radius:22px; padding:12px; min-height:120px}
+/* team (js/equipe.js): low cards, all in sight at 1271 x 637; thumbnails that open a card on a phone or a low screen */
+.sac{display:flex; flex-direction:column}
+.liste-equipe{display:grid; grid-template-columns:repeat(auto-fill, minmax(270px, 1fr)); gap:10px}
+.fiche{display:flex; gap:10px; align-items:center; background:var(--papier2); border-radius:22px; padding:8px 12px 8px 6px; text-align:left}
 .fiche.active{outline:4px solid var(--or); background:#FFF3C4}
 .fiche.inconnue .sprite{filter:brightness(0) opacity(.35)}
-.fiche-corps{flex:1; display:flex; flex-direction:column; gap:3px} .fiche-corps b{font:700 22px var(--titre)}
-.fiche-corps .moyen{min-height:46px; font-size:17px; padding:6px 12px; margin-top:4px; align-self:flex-start}
-.stat{display:flex; align-items:center; gap:6px; font-size:14px}
-.stat i{flex:1; height:10px; border-radius:999px; background:#E7E1FF; overflow:hidden}
-.stat i::before{content:""; display:block; height:100%; width:var(--v); background:var(--vert)}
+.fiche-dessin{position:relative; flex:none; width:120px; height:96px; display:flex; align-items:flex-end; justify-content:center; cursor:pointer}
+.fiche-dessin .niv{position:absolute; left:0; bottom:0; background:var(--nuit2); color:#fff; font:700 14px/1 var(--titre);
+  border:2px solid #fff; border-radius:999px; padding:4px 8px; white-space:nowrap}
+.fiche-corps{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px}
+.fiche-corps b{font:700 22px/1.1 var(--titre); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.fiche-corps small{color:#5d5585; font-size:15px; line-height:1.2}
+.fiche-corps .moyen{min-height:44px; font-size:17px; padding:4px 14px; align-self:flex-start; white-space:nowrap; box-shadow:0 4px 0 rgba(29,22,64,.3)}
+.fiche-corps .suit{font:700 15px var(--titre); color:var(--nuit2); white-space:nowrap}
+.etoiles{display:flex; align-items:center; gap:2px; min-height:18px; font:700 14px var(--titre); color:#8a6400}
+.etoiles svg{width:18px; height:18px; flex:none}
+.etoiles .vide{opacity:.3}
+.charge{display:flex; align-items:center; gap:3px; margin-left:8px}
+.charge i{width:9px; height:9px; border-radius:50%; background:#E7E1FF; border:2px solid #C9B8FF}
+.charge i.remplie{background:linear-gradient(135deg, #FFB800, #FF5EC9); border-color:#E89A00}
+.charge.complete i.remplie{animation:luit 1s ease-in-out infinite}
+.barrexp{height:20px; border-radius:999px; background:#E7E1FF; overflow:hidden; margin:10px auto; max-width:420px}
+.barrexp.petite{height:10px; margin:2px 0; max-width:none}
+.barrexp i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--bleu), var(--vert)); transition:width 1.2s ease-out}
+.barrexp.petite i{transition:none}
+.vignettes{grid-template-columns:repeat(auto-fill, minmax(118px, 1fr))}
+.vignette{display:flex; flex-direction:column; align-items:center; gap:2px; background:var(--papier2); border-radius:20px; padding:8px 6px 10px; position:relative}
+.vignette.active{outline:4px solid var(--or); background:#FFF3C4}
+.vignette.inconnue .sprite{filter:brightness(0) opacity(.35)}
+.vignette b{font:700 17px/1.1 var(--titre); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.vignette .niv{position:absolute; left:6px; top:6px; background:var(--nuit2); color:#fff; font:700 13px/1 var(--titre); border-radius:999px; padding:3px 7px}
+.fiche-seule .fiche{padding:12px} .fiche-seule .fiche-dessin{width:140px; height:130px}
+.fiche-seule .retour{margin-top:10px}
+.pied-sac{display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:12px}
+.pied-sac small{color:#8c84ad; font-size:13px}
+.parents{position:relative; min-height:44px; border-radius:14px; background:#EDE8FA; padding:4px 14px; font:700 16px var(--titre); color:var(--nuit2);
+  touch-action:none; -webkit-touch-callout:none; overflow:hidden}
+.anneau-appui{position:absolute; left:0; bottom:0; height:4px; width:calc(var(--appui, 0) * 100%); background:var(--nuit2); border-radius:2px}
+.parents.pret{background:var(--or); color:var(--encre)}   /* full: it opens when the finger lifts */
+
+/* grown-ups' corner (js/parents.js): tabs, then a table */
+.coin-parents > .entete{flex:none}
+.coin-parents{display:flex; flex-direction:column; max-height:calc(100vh - 6vh - 16px); max-height:calc(100dvh - 6vh - 16px)}
+.coin-parents > .entete{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center}
+#btnChanger{white-space:nowrap}
+.onglets{display:flex; flex:none; gap:4px; border-bottom:3px solid #E7E1FF; margin-bottom:8px; overflow-x:auto}
+.onglets button{background:none; padding:8px 14px; font:700 18px var(--titre); color:#6b6390; border-bottom:4px solid transparent; margin-bottom:-3px; white-space:nowrap}
+.onglets button[aria-selected="true"]{color:var(--encre); border-bottom-color:var(--or)}
+.vue-parents{overflow:auto; min-height:0; flex:1}
+.tableau{width:100%; border-collapse:collapse; font-size:16px}
+.tableau th{text-align:left; font:700 14px var(--titre); color:#6b6390; padding:6px 8px; border-bottom:2px solid #E7E1FF; position:sticky; top:0; background:var(--papier)}
+.tableau td{padding:8px; border-bottom:1px solid #EFEAFB; vertical-align:middle}
+.tableau tr.lien{cursor:pointer} .tableau tr.lien:hover td{background:#FFF3C4}
+.tableau .nombre{text-align:right; white-space:nowrap}
+.tableau .total td{font-weight:800; border-top:2px solid #E7E1FF}
+.etat-notion{display:inline-block; border-radius:999px; padding:2px 10px; font:700 13px var(--titre); white-space:nowrap; background:#EFEAFB; color:#5d5585}
+.etat-notion.en-jeu{background:#CFF3DD; color:#1E7A48} .etat-notion.au-depart{background:#E3EEFF; color:#2C5EA8}
+.etat-notion.du-moment{background:#FFE7A6; color:#7A5500} .etat-notion.en-travail{background:#FFE0E5; color:#A3283C}
+.vue-parents .retour-vue{margin:0 0 8px}
+.reglages{display:grid; grid-template-columns:auto 1fr; gap:10px 16px; align-items:center}
+.reglages b{font:700 17px var(--titre)}
+.reglages .boutons{display:flex; gap:10px; flex-wrap:wrap}
+.vide-parents{color:#6b6390; padding:10px 4px}
+
+.toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:var(--encre); color:#fff; padding:12px 20px;
+  border-radius:16px; font:700 18px var(--titre); z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.35); max-width:90vw; text-align:center}
 
 /* end of fight */
 .fin{text-align:center}
@@ -104,15 +201,44 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .fin .suite-fin{position:sticky; bottom:0; background:var(--papier); margin:8px -18px -18px; padding:10px 18px 18px; border-radius:0 0 28px 28px}
 .fin h2{font:700 34px var(--titre); margin:6px 0}
 .scene-fin{display:flex; justify-content:center; align-items:flex-end; gap:18px; min-height:120px}
-.barrexp{height:20px; border-radius:999px; background:#E7E1FF; overflow:hidden; margin:10px auto; max-width:420px}
-.barrexp.petite{height:10px; margin:4px 0; max-width:none}
-.barrexp i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--bleu), var(--vert)); transition:width 1.2s ease-out}
-.barrexp.petite i{transition:none}
 
-.toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:var(--encre); color:#fff; padding:12px 20px;
-  border-radius:16px; font:700 18px var(--titre); z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.35); max-width:90vw; text-align:center}
-@media (max-width:560px){ .heros{grid-template-columns:repeat(4, minmax(0, 92px))} .ages{grid-template-columns:repeat(5, minmax(0, 62px))} }
-@media (max-width:440px){ body{font-size:17px} .dialogue img{width:64px; height:64px} }
-@media (prefers-reduced-motion: reduce){ .sprite-hd.vivant{animation:none} .ecran.plein{animation:none} }
+/* compact screens: a phone, or a phone held sideways (low screen) */
+@media (max-width:560px){
+  .heros{grid-template-columns:repeat(4, minmax(0, 92px))} .ages{grid-template-columns:repeat(5, minmax(0, 64px))}
+  .gardien{padding:4px} .gardien #gNom, .gardien .pastille{display:none}   /* the bar keeps the portrait only */
+  .profils{grid-template-columns:1fr} .profil b{font-size:24px}
+  .decor-accueil{height:118px} .coucou{width:84px; height:90px}
+  .version{display:none}   /* on a phone, the version is in the grown-ups' corner (Réglages) */
+  .coin-parents > .entete{grid-template-columns:1fr auto} .coin-parents .titre3{font-size:24px}
+  #btnChanger{grid-row:2; grid-column:1 / -1; justify-self:start}
+  .onglets button{padding:8px 9px; font-size:16px} .tableau{font-size:15px} .tableau .secondaire{display:none}
+  .tableau thead{display:none} .tableau tr{display:flex; flex-wrap:wrap; gap:2px 14px; padding:8px 4px; border-bottom:1px solid #EFEAFB}
+  .tableau td{border:0; padding:0; text-align:left !important} .tableau td:first-child{flex-basis:100%; font-weight:800}
+  .tableau td:not(:first-child)::before{content:attr(data-label) " "; color:#6b6390; font:700 12px var(--titre)}
+  .tableau .total td{border:0} .tableau td:empty{display:none}
+  .reglages{grid-template-columns:1fr; gap:4px} .reglages b{margin-top:8px}
+}
+@media (max-width:560px), (max-height:500px){
+  .starters{grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px}
+  .starter{padding:10px 8px 12px} .starter p{display:none} .starter h3{font-size:22px; margin:2px 0 6px}
+  .starter .sprite{height:90px !important}
+  .starter .gros{font-size:18px; min-height:50px; padding:8px 12px}
+  .liste-equipe:not(.vignettes){grid-template-columns:1fr}
+}
+@media (max-height:500px){
+  .ecran.voile{padding-top:8px} .carte{padding:12px} .entete{margin-bottom:6px}
+  .titre2{font-size:26px} .sous{margin:2px 0 8px}
+  .decor-accueil{display:none}
+  /* the new Guardian on a phone held sideways: name, age and hero on one screen, « C'est parti » in sight */
+  #creation .titre2{font-size:24px; margin:0 0 4px} #creation .carte{padding:6px 14px 10px; max-width:720px}
+  #creation .etiquette{font-size:15px; margin:4px 0 2px} #creation .nom{min-height:42px; font-size:24px}
+  #creation .ages{grid-template-columns:repeat(9, minmax(0, 46px)); gap:6px} #creation .ages button{font-size:20px; border-radius:12px; padding:2px}
+  #creation .heros{grid-template-columns:repeat(7, minmax(0, 60px)); gap:6px}
+  #creation .ligne{margin:6px 0 0} #creation .gros, #creation .moyen{min-height:50px; font-size:20px; padding:6px 18px}
+  .dialogue{bottom:6px; padding:8px 10px; gap:10px} .dlg-portrait{width:64px; height:64px} .dlg-corps p{font-size:18px; margin:2px 0}
+  .dlg-choix .epees{min-height:60px; font-size:36px}
+}
+@media (max-width:440px){ body{font-size:17px} .dlg-portrait{width:64px; height:64px} .dialogue{padding:10px; gap:8px} }
+@media (prefers-reduced-motion: reduce){ .sprite-hd.vivant, .ecran.plein, .palpite, .logo-eclat, .dlg-choix .suite, .dlg-choix .epees, .coucou .tete{animation:none} }
 /* automated recette (#test): nothing moves */
 .test *, .test *::before, .test *::after{animation:none !important; transition:none !important}

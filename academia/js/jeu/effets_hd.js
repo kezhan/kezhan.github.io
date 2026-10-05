@@ -6,7 +6,8 @@
    pieds) ; taille : la hauteur de la cible dans ces unités (une case du village = 16, au combat des pixels de toile).
    Chaque effet se détruit seul (tweens d'images et particules de Phaser) et rend sa durée en ms. Rien d'effrayant. */
 const IMAGES_EFFETS = ["etoile", "etoile_p", "coeur", "coeur_p", "feuille", "brin", "etincelle", "etincelle_p", "halo", "aura", "point",
-  "anneau", "anneau_p", "choc", "choc_p", "bouclier", "bouclier_p", "nuage", "nuage_p"].map(n => ({cle: "fx_" + n, fichier: n + ".png"}));
+  "anneau", "anneau_p", "choc", "choc_p", "bouclier", "bouclier_p", "nuage", "nuage_p",
+  "cube", "chiffre1", "chiffre2", "chiffre3", "plume", "caillou", "pion"].map(n => ({cle: "fx_" + n, fichier: n + ".png"}));   // the last ones: the families' attacks
 
 // version 'hd' (assets/hd/effets) or 'leger' (assets/leger/effets, half the resolution): same drawing, same code
 function chargerEffetsHD(load, version){
@@ -258,5 +259,7 @@ const EFFETS_HD = (() => {
     r(F);
     return Math.round(F.duree());
   }
-  return {jouer, noms: Object.keys(RECETTES)};
+  // the same tools for effects written elsewhere (js/jeu/attaques_hd.js: the families' attacks)
+  const preparer = (S, x, y, taille, prof) => { lisser(S); return outils(S, x, y, taille, prof || 0); };
+  return {jouer, preparer, noms: Object.keys(RECETTES)};
 })();

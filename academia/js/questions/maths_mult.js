@@ -41,7 +41,7 @@ var GENERATEURS = self.GENERATEURS = self.GENERATEURS || {};
     }
     return question({id: `G_mult_${a}x${b}`, question: `${a} × ${b} = ?`, dire: `Combien font ${a} fois ${b} ?`,
       visuel: p.visuel && r <= 20 ? Array(k).fill(fois(o[0], t)).join(" ") : "", reponse: r,
-      distracteurs: fausses(r, pieges(t, k), [r + 1, r - 1, t + k], 3, 0), indice: `Récite la table de ${t} jusqu'à ${t} × ${k}.`,
+      distracteurs: fausses(r, pieges(t, k), [r + 1, r - 1, t + k], 3, 0), indice: k === 1 ? "Fois 1, le nombre ne change pas." : `Récite la table de ${t} jusqu'à ${t} × ${k}.`,
       explication: astuce(a, b), affirmer: v => `${a} × ${b} = ${v}`, affirmerDire: v => `${a} fois ${b} égale ${v}.`}, m);
   };
 
@@ -53,12 +53,14 @@ var GENERATEURS = self.GENERATEURS = self.GENERATEURS || {};
     if (m === "boss") {
       return question({id: `G_trou_recit_${r}_${t}_${o[1]}`, question: `On range ${r} ${o[2]} ${o[0]} par paquets de ${t}. Combien de paquets ?`,
         dire: `On range ${r} ${o[2]} par paquets de ${t}. Combien de paquets ?`, reponse: k, distracteurs: faux,
-        indice: `Combien de fois ${t} pour faire ${r} ?`, explication: `Dans la table de ${t} : ${t} × ${k} = ${r}, donc ${k} paquets.`}, m);
+        indice: t === k ? `Quel nombre, multiplié par lui-même, donne ${r} ?` : `Combien de fois ${t} pour faire ${r} ?`,
+        explication: `Dans la table de ${t} : ${t} × ${k} = ${r}, donc ${k} paquets.`}, m);
     }
     const gauche = Math.random() < .5;
     return question({id: `G_trou_${gauche ? `?x${t}` : `${t}x?`}=${r}`, question: gauche ? `? × ${t} = ${r}` : `${t} × ? = ${r}`,
       dire: gauche ? `Combien fois ${t} égale ${r} ?` : `${t} fois combien égale ${r} ?`, reponse: k, distracteurs: faux,
-      indice: `Cherche ${r} dans la table de ${t}.`, explication: `Dans la table de ${t} : ${t} × ${k} = ${r}, donc le nombre caché est ${k}.`,
+      indice: t === k ? `Quel nombre, multiplié par lui-même, donne ${r} ?` : `Cherche ${r} dans la table de ${t}.`,
+      explication: `Dans la table de ${t} : ${t} × ${k} = ${r}, donc le nombre caché est ${k}.`,
       affirmer: v => `${t} × ${v} = ${r}`, affirmerDire: v => `${t} fois ${v} égale ${r}.`}, m);
   };
 
@@ -71,11 +73,12 @@ var GENERATEURS = self.GENERATEURS = self.GENERATEURS || {};
     if (m === "boss") {
       return question({id: `G_groupes_${total}_${q}_${o[1]}`, question: `${perso} a ${total} ${o[2]} ${o[0]}. Il en met ${q} dans chaque boîte. Combien de boîtes remplit-il ?`,
         dire: `${perso} a ${total} ${o[2]}. Il en met ${q} dans chaque boîte. Combien de boîtes remplit-il ?`, reponse: g,
-        distracteurs: fausses(g, [g + 1, g - 1, total - q, q], [g + 2], 3, 1), indice: `Fais des paquets de ${q}.`,
+        distracteurs: fausses(g, [g + 1, g - 1, total - q, q], [g + 2], 3, 1), indice: g === q ? "Fais des paquets pareils, puis compte-les." : `Fais des paquets de ${q}.`,
         explication: `Je fais des paquets de ${q} : ${Array(g).fill(q).join(" + ")} = ${total}. Il y a ${g} paquets, car ${g} × ${q} = ${total}.`}, m);
     }
-    return question({id: `G_partage_${total}_${g}_${o[1]}`, question: `${perso} partage ${total} ${o[2]} ${o[0]} entre ${g} amis. Combien chacun en a-t-il ?`,
-      dire: `${perso} partage ${total} ${o[2]} entre ${g} amis. Combien chacun en a-t-il ?`, visuel: total <= 20 ? fois(o[0], total) : "", reponse: q,
+    const dessin = total <= 20;   // the things to share are drawn: their emoji leaves the sentence, it would be counted too
+    return question({id: `G_partage_${total}_${g}_${o[1]}`, question: `${perso} partage ${total} ${o[2]}${dessin ? "" : " " + o[0]} entre ${g} amis. Combien chacun en a-t-il ?`,
+      dire: `${perso} partage ${total} ${o[2]} entre ${g} amis. Combien chacun en a-t-il ?`, visuel: dessin ? fois(o[0], total) : "", reponse: q,
       distracteurs: faux, indice: `Donne ${nombre(1, o)} à chacun, chacun son tour.`,
       explication: `Je donne ${nombre(1, o)} à chacun, chacun son tour : ${g} par tour. Au bout de ${q} tours, il n'en reste plus : chacun en a ${q}, car ${g} × ${q} = ${total}.`,
       affirmer: v => `${total} ${o[2]} pour ${g} amis : ${v} chacun.`, affirmerDire: v => `${total} ${o[2]} pour ${g} amis, ça fait ${v} chacun.`}, m);
@@ -87,7 +90,8 @@ var GENERATEURS = self.GENERATEURS = self.GENERATEURS || {};
     if (m === "boss") return GENERATEURS.partage({max: 50}, "boss");
     const [t, k] = facteurs(p.tables || [2, 3, 4, 5, 6, 7, 8, 9], m), r = t * k;
     return question({id: `G_div_${r}:${t}`, question: `${r} : ${t} = ?`, dire: `Combien font ${r} divisé par ${t} ?`, reponse: k,
-      distracteurs: fausses(k, [k + 1, k - 1, t === k ? k + 2 : t], [k + 2, k - 2], 3, 1), indice: `Cherche ${r} dans la table de ${t}.`,
+      distracteurs: fausses(k, [k + 1, k - 1, t === k ? k + 2 : t], [k + 2, k - 2], 3, 1),
+      indice: t === k ? `Quel nombre, multiplié par lui-même, donne ${r} ?` : `Cherche ${r} dans la table de ${t}.`,
       explication: `${r} : ${t}, je cherche dans la table de ${t} : ${t} × ${k} = ${r}, donc ${r} : ${t} = ${k}.`,
       affirmer: v => `${r} : ${t} = ${v}`, affirmerDire: v => `${r} divisé par ${t} égale ${v}.`}, m);
   };

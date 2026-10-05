@@ -2,7 +2,8 @@
    pack Background Elements Remastered de Kenney, CC0, et formes dessinées dans le même style) sont posées à la
    taille de la toile : ciel et sol en dégradé, lointains teintés par la lumière, monument de la région, arbres,
    reflets du sol et ses fleurs ; la mer, l'écume et les deux estrades sont peintes à la taille exacte (toile 2D,
-   bords lisses). Chez le boss, le crépuscule (la nuit violette à l'Observatoire).
+   bords lisses). Chez le boss, le crépuscule (la nuit violette à l'Observatoire). Ciel et sol débordent de 3 % de
+   chaque côté : une secousse de l'arène ne montre jamais le bord de la toile.
    Contrat : IMAGES_FONDS, chargerFondsHD(load, version), dessinerFondHD(S, L, regionId, boss) ; profondeurs 0 à 4. */
 const IMAGES_FONDS = ["nuage1", "nuage2", "nuage3", "nuage4", "soleil", "lune", "croissant", "etoile", "etoile_filante", "eclat", "luciole", "petale",
   "loin_sapin", "loin_arbre", "loin_arbre_long", "loin_montagne1", "loin_montagne2", "loin_collines",
@@ -20,7 +21,7 @@ function chargerFondsHD(load, version){
   IMAGES_FONDS.forEach(i => { if (!load.textureManager.exists(i.cle)) load.image(i.cle, dossier + i.fichier); });
 }
 
-// L = {w, h, hs, yh, r, lui, moi} in canvas pixels; the backdrop covers the whole canvas, depths 0 to 4
+// L = {w, h, hs, yh, r, lui, moi, mode} in canvas pixels; the backdrop covers the whole canvas and a margin, depths 0 to 4
 function dessinerFondHD(S, L, regionId, boss){ FONDS_HD.dessiner(S, L, regionId, boss); }
 
 const FONDS_HD = (() => {
@@ -89,12 +90,13 @@ const FONDS_HD = (() => {
       a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a);
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
-    const u = L.yh, r = L.r || 1, D = {S, L, lum, u, rnd, portrait: L.h > L.w * 1.1};
+    const u = L.yh, r = L.r || 1, D = {S, L, lum, u, rnd, portrait: L.h > L.w * 1.1, cote: L.mode === "cote"};
+    D.marge = Math.ceil(.03 * Math.max(L.w, L.h));   // painted beyond each edge: the arena shakes without showing an edge
     D.entre = (m, n) => m + (n - m) * rnd();
     D.choix = t => t[Math.floor(rnd() * t.length)];
-    // the region's landmark, on the left: under the Ombre's life box on a tall screen, just right of it otherwise
-    // (the box: 12 CSS pixels from the left, min(300, 50vw - 20) wide, style_combat.css)
-    D.x0 = D.portrait ? Math.max(.14 * L.w, .56 * u) : Math.max(.14 * L.w, r * (12 + Math.min(300, L.w / r / 2 - 20)) + .48 * u);
+    // the region's landmark, on the left: under the Ombre's life box on a tall screen or beside the panel, just right
+    // of it otherwise (the box: 12 CSS pixels from the left, min(300, 50vw - 20) wide, style_combat.css)
+    D.x0 = D.portrait || D.cote ? Math.max(.14 * L.w, .56 * u) : Math.max(.14 * L.w, r * (12 + Math.min(300, L.w / r / 2 - 20)) + .48 * u);
     // a piece standing on (x, y) (or centred with oy .5), `haut` canvas pixels tall, tinted by the light unless told
     D.img = (nom, x, y, haut, prof, o = {}) => {
       const cle = "fd_" + nom;
@@ -132,7 +134,7 @@ const FONDS_HD = (() => {
   function ciel(D){
     const {L, u, lum} = D, n = lum.ciel.length;
     D.toile("fd_ciel", 0, 0, 4, 256, 0, (g, W, H) => { g.fillStyle = D.degrade(g, H, lum.ciel.map((c, i) => [i / (n - 1), c])); g.fillRect(0, 0, W, H); })
-      .setDisplaySize(L.w, L.yh + 4);
+      .setPosition(-D.marge, -D.marge).setDisplaySize(L.w + 2 * D.marge, L.yh + 4 + D.marge);
     if (lum.etoiles) for (let i = 0, k = Math.round(lum.etoiles * 9 * L.w / u); i < k; i++)
       D.img("etoile", D.rnd() * L.w, D.entre(.03, .75 * lum.etoiles) * L.yh, D.entre(.035, .08) * u, .05, {oy: .5, teinte: null, alpha: D.entre(.45, 1)});
     if (lum.lune) D.img(lum.lune, L.w - Math.max(.1 * L.w, .42 * u), .3 * u, .3 * u, .1, {oy: .5, teinte: null});
@@ -247,7 +249,7 @@ const FONDS_HD = (() => {
     D.toile("fd_sol", 0, 0, 4, 512, .9, (g, W, H) => {
       g.fillStyle = D.degrade(g, H, [[0, s.haut], [s.bande * u / h, s.base], [.5, s.base], [1, s.bas]].map(([p, c]) => [p, teinter(c, t)]));
       g.fillRect(0, 0, W, H);
-    }).setPosition(0, L.yh).setDisplaySize(L.w, h);
+    }).setPosition(-D.marge, L.yh).setDisplaySize(L.w + 2 * D.marge, h + D.marge);
     // long flat streaks of light, wider near us
     for (let i = 0, k = Math.round(L.w * h / (u * u) * .4), y0 = L.yh + (s.bande + .05) * u; i < k; i++) {
       const y = y0 + D.rnd() * (L.h - y0), p = Math.min(1, (y - L.yh) / (1.8 * u)), lw = D.entre(.9, 1.6) * u * (.4 + .8 * p);

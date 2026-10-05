@@ -1,8 +1,9 @@
 /* Académia : deux versions des images. Haute définition (assets/hd, toile à deux fois la densité CSS) sur une
    tablette récente, légère (assets/leger, moitié de résolution, toile à la densité CSS) sinon : même dessin, même
    code. Le choix est automatique (densité de l'écran, mémoire, carte graphique), un parent peut le forcer dans le
-   sac (réglage gardé dans le navigateur). Un dessin qui n'arrive pas (réseau) est redemandé ; un personnage attend
-   son dessin, invisible, au lieu d'afficher le carré noir du moteur (js/jeu/sprites_hd.js, quandAtlas). */
+   coin Parents (js/parents.js, réglage gardé dans le navigateur). Un dessin qui n'arrive pas (réseau) est
+   redemandé ; un personnage attend son dessin, invisible, au lieu d'afficher le carré noir du moteur
+   (js/jeu/sprites_hd.js, quandAtlas). */
 const CLE_QUALITE = "academia.qualite";
 function qualiteVoulue(){ try { return localStorage.getItem(CLE_QUALITE) || "auto"; } catch (e) { return "auto"; } }
 function choisirQualite(v){ try { localStorage.setItem(CLE_QUALITE, v); } catch (e) {} }

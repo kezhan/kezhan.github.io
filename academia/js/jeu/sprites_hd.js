@@ -19,18 +19,22 @@ function quandAtlas(scene, cle, fn){
   if (chargerAtlas(scene, [cle]).length && !scene.load.isLoading()) scene.load.start();
 }
 
-function spriteHumain(scene, cle, x, y){
+// vivant: a villager who breathes (the hero walks, he does not)
+function spriteHumain(scene, cle, x, y, vivant = false){
   const s = scene.add.sprite(0, 0, "__DEFAULT").setOrigin(.5, 1);   // transparent until the drawing is there
-  s.dy = 15; s.hd = cle; s.dir = "bas";
+  s.dy = 15; s.hd = cle; s.dir = "bas"; s.base = 1;
   quandAtlas(scene, cle, () => {
     if (!s.active) return;
     s.setTexture("hd_" + cle, "face").setScale(1);
-    s.setScale(HAUTEUR_HUMAIN / s.height);
+    s.base = HAUTEUR_HUMAIN / s.height; s.setScale(s.base);
     animsHumain(scene, cle);
     reposHumain(s, s.dir);
+    if (vivant) respirer(s, .012);
   });
   return poserSprite(s, x, y);
 }
+// a pose of a character's sheet, when the drawing is there and has it (parle, joie...)
+function poseHumain(s, nom){ if (s && s.active && dessine(s) && s.texture.has(nom)) s.setFrame(nom); }
 function animsHumain(scene, cle){
   const k = "hd_" + cle, noms = scene.textures.get(k).getFrameNames();
   const anim = (nom, cadres, fps) => {
@@ -84,10 +88,13 @@ function balancer(s, duree = 170){
   s.pas = (s.pas || 0) + 1;
   s.scene.tweens.add({targets: s, angle: s.pas % 2 ? 5 : -5, duration: duree * .5, yoyo: true, ease: "Sine.easeInOut"});
 }
-function respirer(s){
+// breathing: a slow stretch, forever, until arreterSouffle (before the sprite goes: no tween left running)
+function respirer(s, ampleur = .03){
   if (TEST || s.souffle) return;
-  s.souffle = s.scene.tweens.add({targets: s, scaleY: s.base * 1.03, scaleX: s.base * .985, duration: 900 + Math.random() * 300, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
+  s.souffle = s.scene.tweens.add({targets: s, scaleY: s.base * (1 + ampleur), scaleX: s.base * (1 - ampleur / 2), duration: 900 + Math.random() * 300,
+    yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
 }
+function arreterSouffle(s){ if (s && s.souffle) { s.souffle.stop(); s.souffle = null; } }
 
 // a glow around a creature (an Ombre, a companion at its last stage), gently pulsing: its own silhouette, a little
 // bigger and filled with the colour, just behind it, and a soft haze further out. Pictures that follow it (pose,
@@ -96,8 +103,11 @@ function halo(scene, s, couleur, ampleur = 1.1, alpha = .55){
   const contour = scene.add.sprite(s.x, s.y, "__DEFAULT").setOrigin(.5, 1);
   const brume = scene.textures.exists("fx_halo") ? scene.add.image(s.x, s.y, "fx_halo").setTint(couleur) : null;
   const pouls = {v: 1};
-  if (!TEST) scene.tweens.add({targets: pouls, v: .65, duration: 1100, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
-  const finir = () => { scene.events.off("update", suivre); if (contour.active) contour.destroy(); if (brume && brume.active) brume.destroy(); };
+  const battement = TEST ? null : scene.tweens.add({targets: pouls, v: .65, duration: 1100, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
+  const finir = () => {   // the pulse goes with the glow (it would run forever after each fight otherwise)
+    scene.events.off("update", suivre); if (battement) battement.stop();
+    if (contour.active) contour.destroy(); if (brume && brume.active) brume.destroy();
+  };
   const suivre = () => {
     if (!s.active || !s.scene) return finir();
     const vu = s.visible && dessine(s), h = s.displayHeight;

@@ -7,6 +7,10 @@
 3. Décors de combat : pack « Background Elements Remastered » de **Kenney** (https://kenney.nl/assets/background-elements-remastered), licence **CC0 1.0**, vérifiée le 05/10/2026, et formes dessinées pour le jeu ; sources et licence dans `outils/fonds/sources/`.
 4. Village et effets : dessinés pour le jeu (`outils/village/`, `outils/effets/`).
 
+## Sons
+
+Mots luxembourgeois : enregistrements du **Lëtzebuerger Online Dictionnaire** (Zenter fir d'Lëtzebuerger Sprooch, https://lod.lu), copiés dans `audio/lb/` pour jouer sans réseau ; jeu de données « LOD, Linguistesch Daten » sous licence **CC0 1.0** sur https://data.public.lu/en/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/ (vérifié le 05/10/2026). Chaque mot garde l'adresse de son enregistrement d'origine dans `donnees/lexique_lb.json`.
+
 ## Moteur
 
 Phaser 3.90 (https://phaser.io), licence MIT, copie dans `vendor/phaser/` avec sa licence.

@@ -15,8 +15,8 @@ var GEN_OUTILS = (() => {
   const paquets = (e, n) => { const g = []; for (let i = 0; i < n; i += 5) g.push(fois(e, Math.min(5, n - i))); return g.join(" "); };
   const suite = (de, a) => { const l = []; for (let k = de; k <= a; k++) l.push(k); return l.join(", "); };
   // wrong answers: the typical mistakes first, then values near the answer; never the answer, never twice
-  function fausses(reponse, pieges, proches = [], n = 3, min = 0){
-    const out = [], vus = new Set([String(reponse)]);
+  function fausses(reponse, pieges, proches = [], n = 3, min = 0, interdits = []){
+    const out = [], vus = new Set([String(reponse), ...interdits.map(String)]);   // interdits: never offered (a + b under a drawn subtraction)
     const ajouter = v => { if (out.length < n && Number.isInteger(v) && v >= min && !vus.has(String(v))) { vus.add(String(v)); out.push(String(v)); } };
     pieges.forEach(ajouter); melanger(proches).forEach(ajouter);
     for (let d = 1; out.length < n && d < 50; d++) { ajouter(reponse + d); ajouter(reponse - d); }
@@ -30,6 +30,8 @@ var GEN_OUTILS = (() => {
     const q = {id: o.id, matiere, niveau: NIVEAU[mecanique] || 1, mecaniques: [mecanique], question: o.question,
       langue: "fr", visuel: o.visuel || "", reponse: String(o.reponse), distracteurs: o.distracteurs.map(String),
       explication: o.explication, dire: o.dire || "", indice: o.indice || ""};
+    if (o.dessin) q.dessin = o.dessin;   // a drawing the panel makes (js/question_dessin.js): a crossed pile, a ten frame
+    if (o.cible) q.cible = o.cible;      // the object to count among others, shown apart
     if (mecanique !== "bouclier" || !o.affirmer) return q;
     const vrai = Math.random() < .5, propose = vrai ? q.reponse : q.distracteurs[0];
     return {...q, id: `${o.id}=${propose}`, question: o.affirmer(propose), indice: "",
@@ -51,27 +53,28 @@ var GEN_OUTILS = (() => {
 (() => {
   const {alea, choisir, melanger, fois, paquets, suite, fausses, inverse, question, OBJETS, nombre, deux, de} = GEN_OUTILS;
 
-  /* COMPTER : "Combien de pommes ?", "Montre 3 pommes" (jusqu'à 5), compter un seul objet parmi d'autres (boss) */
+  /* COMPTER : "Combien de pommes ?", "Montre 3 pommes" (jusqu'à 5), compter un seul objet parmi d'autres (boss).
+     L'objet compté n'est jamais dans la phrase : on le compterait avec le dessin. Au boss, il est montré à part. */
   GENERATEURS.denombrer = (p = {}, m = "rapide") => {
     const max = p.max || 10, o = choisir(OBJETS), [e, , pl] = o;
     const n = m === "massive" || m === "boss" ? alea(Math.ceil(max / 2), max) : alea(1, Math.ceil(max * .7));
     const compte = n <= 5 ? `Je touche chaque ${o[1]} une seule fois en comptant : ${suite(1, n)}.`
       : `Je compte par paquets de 5 : ${suite(1, Math.floor(n / 5)).split(", ").map(k => k * 5).join(", ")}${n % 5 ? `, puis ${suite(n - n % 5 + 1, n)}` : ""}.`;
     const base = {reponse: n, distracteurs: fausses(n, [n + 1, n - 1], [n + 2, n - 2], 3, 1), indice: `Touche chaque ${o[1]} une seule fois en comptant.`,
-      affirmer: k => `Il y a ${nombre(+k, o)} ${e} ?`, affirmerDire: k => `Il y a ${nombre(+k, o)}.`};
+      affirmer: k => `Il y a ${nombre(+k, o)} ?`, affirmerDire: k => `Il y a ${nombre(+k, o)}.`};
     if (m === "boss") {   // count one kind among two
       const [, autre] = [o, choisir(OBJETS.filter(x => x !== o))], k = alea(2, Math.min(5, max));
       const visuel = melanger([...Array(n).fill(e), ...Array(k).fill(autre[0])]).join("");
-      return question({...base, id: `G_compter_${max}_${o[1]}_${n}_parmi_${autre[1]}`, question: `Combien ${de(pl)} ${e} ?`, dire: `Combien ${de(pl)} ?`,
-        visuel, explication: `Je compte seulement les ${pl}, une par une, sans compter les ${autre[2]} : il y en a ${n}.`}, m);
+      return question({...base, id: `G_compter_${max}_${o[1]}_${n}_parmi_${autre[1]}`, question: `Combien ${de(pl)} ?`, dire: `Combien ${de(pl)} ?`,
+        visuel, cible: e, explication: `Je compte seulement les ${pl}, une par une, sans compter les ${autre[2]} : il y en a ${n}.`}, m);
     }
     if (max <= 5 && m === "rapide" && Math.random() < .5) {   // show the group that has n things
       const groupes = fausses(n, [n + 1, n - 1], [n + 2], 3, 1).map(k => fois(e, +k));
-      return question({id: `G_compter_${max}_${o[1]}_${n}_montre`, question: `Montre ${nombre(n, o)} ${e}`, dire: `Montre ${nombre(n, o)}.`,
+      return question({id: `G_compter_${max}_${o[1]}_${n}_montre`, question: `Montre ${nombre(n, o)}`, dire: `Montre ${nombre(n, o)}.`,
         reponse: fois(e, n), distracteurs: groupes, indice: `Compte les ${pl} de chaque groupe.`,
         explication: `${nombre(n, o)[0].toUpperCase()}${nombre(n, o).slice(1)}, c'est ${suite(1, n)} : le groupe ${fois(e, n)}.`}, m);
     }
-    return question({...base, id: `G_compter_${max}_${o[1]}_${n}`, question: `Combien ${de(pl)} ${e} ?`, dire: `Combien ${de(pl)} ?`,
+    return question({...base, id: `G_compter_${max}_${o[1]}_${n}`, question: `Combien ${de(pl)} ?`, dire: `Combien ${de(pl)} ?`,
       visuel: paquets(e, n), explication: `${compte} Il y a ${nombre(n, o)}.`}, m);
   };
 
@@ -85,30 +88,29 @@ var GEN_OUTILS = (() => {
   }
   GENERATEURS.comparer = (p = {}, m = "rapide") => {
     const max = p.max || 20;
-    if (p.mode === "collections") {
-      const [a, b] = deux();
+    if (p.mode === "collections") {   // three groups at most, at least two apart; "le moins" and "autant" for the boss
+      const [a, b] = deux(), trois = melanger(choisir([[1, 3, 5], [1, 3, 6], [1, 4, 6], [2, 4, 6]]).filter(v => v <= max));
       if (m === "bouclier") {
-        let x = alea(1, max), y = alea(1, max); while (y === x) y = alea(1, max);
+        const [x, y] = trois;
         return {...question({id: `G_comparer_${a[1]}${x}_${b[1]}${y}`, question: "", reponse: 0, distracteurs: [1], explication: ""}, "rapide"),
-          id: `G_comparer_${a[1]}${x}_${b[1]}${y}`, mecaniques: ["bouclier"], visuel: `${fois(a[0], x)}   ${fois(b[0], y)}`,
-          question: `Il y a plus ${de(a[2])} ${a[0]} que ${de(b[2])} ${b[0]} ?`, dire: `Il y a plus ${de(a[2])} que ${de(b[2])}. Vrai ou faux ?`,
+          id: `G_comparer_${a[1]}${x}_${b[1]}${y}`, mecaniques: ["bouclier"], visuel: `${fois(a[0], x)} ${fois(b[0], y)}`, indice: "",
+          question: `Il y a plus ${de(a[2])} que ${de(b[2])} ?`, dire: `Il y a plus ${de(a[2])} que ${de(b[2])}. Vrai ou faux ?`,
           reponse: x > y ? "vrai" : "faux", distracteurs: [x > y ? "faux" : "vrai"],
-          explication: `Je compte : ${x} ${a[2]} et ${y} ${b[2]}. ${x > y ? `${x} est plus que ${y}` : `${x} est moins que ${y}`}.`};
+          explication: `Je compte : ${x} ${x > 1 ? a[2] : a[1]} et ${y} ${y > 1 ? b[2] : b[1]}. ${x > y ? `${x} est plus que ${y}` : `${x} est moins que ${y}`}.`};
       }
-      const comptes = melanger(Array.from({length: max}, (_, k) => k + 1)).slice(0, 4);
-      if (m === "boss") {   // as many as
-        const n = alea(2, max - 1), autres = fausses(n, [n + 1, n - 1], [n + 2], 3, 1);
-        return question({id: `G_autant_${a[1]}_${b[1]}_${n}`, question: `Où y a-t-il autant ${de(a[2])} ${a[0]} que ${de(b[2])} ${b[0]} ?`,
+      if (m === "boss" && Math.random() < .5) {   // as many as
+        const n = trois[0];
+        return question({id: `G_autant_${a[1]}_${b[1]}_${trois.join("-")}`, question: `Où y a-t-il autant ${de(a[2])} que ${de(b[2])} ?`,
           dire: `Où y a-t-il autant ${de(a[2])} que ${de(b[2])} ?`, visuel: fois(b[0], n), reponse: fois(a[0], n),
-          distracteurs: autres.map(k => fois(a[0], +k)), indice: `Compte les ${b[2]}, puis cherche le même nombre ${de(a[2])}.`,
-          explication: `Il y a ${n} ${b[2]}. Autant, c'est le même nombre : ${n} ${a[2]}, ${fois(a[0], n)}.`}, m);
+          distracteurs: trois.slice(1).map(k => fois(a[0], k)), indice: `Compte les ${b[2]}, puis cherche le même nombre ${de(a[2])}.`,
+          explication: `Il y a ${n} ${n > 1 ? b[2] : b[1]}. Autant, c'est le même nombre : ${nombre(n, a)}, ${fois(a[0], n)}.`}, m);
       }
-      const plus = m !== "massive", cible = plus ? Math.max(...comptes) : Math.min(...comptes);
+      const plus = m !== "boss", cible = plus ? Math.max(...trois) : Math.min(...trois);
       const mot = plus ? "le plus" : "le moins";
-      return question({id: `G_${plus ? "plus" : "moins"}_${a[1]}_${comptes.join("-")}`, question: `Où y a-t-il ${mot} ${de(a[2])} ${a[0]} ?`,
+      return question({id: `G_${plus ? "plus" : "moins"}_${a[1]}_${trois.join("-")}`, question: `Où y a-t-il ${mot} ${de(a[2])} ?`,
         dire: `Où y a-t-il ${mot} ${de(a[2])} ?`, reponse: fois(a[0], cible),
-        distracteurs: comptes.filter(k => k !== cible).map(k => fois(a[0], k)), indice: "Compte chaque groupe.",
-        explication: `Je compte chaque groupe : ${comptes.slice().sort((x, y) => x - y).join(", ")}. ${plus ? `${cible} est le plus grand nombre` : `${cible} est le plus petit nombre`} : c'est là qu'il y a ${mot} ${de(a[2])}.`}, m);
+        distracteurs: trois.filter(k => k !== cible).map(k => fois(a[0], k)), indice: "Compte chaque groupe.",
+        explication: `Je compte chaque groupe : ${trois.slice().sort((x, y) => x - y).join(", ")}. ${plus ? `${cible} est le plus grand nombre` : `${cible} est le plus petit nombre`} : c'est là qu'il y a ${mot} ${de(a[2])}.`}, m);
     }
     // numbers: biggest, smallest, or the sign between two numbers
     const bas = max <= 20 ? 1 : 10, x = alea(bas, max);
@@ -178,7 +180,8 @@ var GEN_OUTILS = (() => {
       const montrer = p.visuel && s <= 10;
       return question({id: `G_add_${a}+?=${s}`, question: `${a} + ? = ${s}`, dire: `${a} plus combien égale ${s} ?`,
         visuel: montrer ? `${fois(o[0], a)} + ❓ = ${fois(o[0], s)}` : "", reponse: b,
-        distracteurs: fausses(b, [b + 1, b - 1, s], [b + 2, b - 2], 3, 0), indice: `Pars de ${a} et compte jusqu'à ${s}.`,
+        distracteurs: fausses(b, [b + 1, b - 1, s], [b + 2, b - 2], 3, 0),
+        indice: a === b ? `C'est un double : quel nombre, ajouté à lui-même, fait ${s} ?` : `Pars de ${a} et compte jusqu'à ${s}.`,
         explication: s <= 10 || a >= 10 ? `Je pars de ${a} et je compte jusqu'à ${s} : il faut ${b}, car ${a} + ${b} = ${s}.`
           : `De ${a} à 10, il faut ${10 - a}, puis de 10 à ${s}, il faut ${s - 10} : ${10 - a} + ${s - 10} = ${b}. ${a} + ${b} = ${s}.`}, m);
     }
@@ -230,14 +233,16 @@ var GEN_OUTILS = (() => {
     if (m === "boss") {   // the missing number: 13 − ? = 8
       return question({id: `G_sous_${a}-?=${d}`, question: `${a} − ? = ${d}`, dire: `${a} moins combien égale ${d} ?`,
         visuel: montrer ? `${fois(o[0], a)} − ❓ = ${fois(o[0], d)}` : "", reponse: b,
-        distracteurs: fausses(b, [b + 1, b - 1, a + d], [b + 2, b - 2], 3, 0), indice: `Combien faut-il enlever à ${a} pour qu'il reste ${d} ?`,
+        distracteurs: fausses(b, [b + 1, b - 1, a + d], [b + 2, b - 2], 3, 0),
+        indice: b === d ? "Ce qu'on enlève est égal à ce qui reste." : `Combien faut-il enlever à ${a} pour qu'il reste ${d} ?`,
         explication: `De ${d} à ${a}, il y a ${b} : ${d} + ${b} = ${a}, donc ${a} − ${b} = ${d}.`}, m);
     }
     const emprunt = a % 10 < b % 10 && a > 10;
     const erreur = emprunt ? (Math.floor(a / 10) - Math.floor(b / 10)) * 10 + (b % 10 - a % 10) : null;   // 63 − 28 → 45: the units turned round
-    const pieges = [erreur, d + 1, d - 1, a > 20 ? inverse(d) : a + b > 20 ? null : a + b].filter(v => v != null && v !== d);
+    const pieges = [erreur, d + 1, d - 1, a > 20 ? inverse(d) : montrer || a + b > 20 ? null : a + b].filter(v => v != null && v !== d);
     return question({id: `G_sous_${a}-${b}`, question: `${a} − ${b} = ?`, dire: `Combien font ${a} moins ${b} ?`,
-      visuel: montrer ? `${fois(o[0], a)} − ${fois(o[0], b)}` : "", reponse: d, distracteurs: fausses(d, pieges, [d + 2, d - 2, d + 10], 3, 0),
+      visuel: montrer ? fois(o[0], a) : "", dessin: montrer ? {type: "barre", e: o[0], n: a, barres: b} : undefined,
+      reponse: d, distracteurs: fausses(d, pieges, [d + 2, d - 2, ...(a > 10 ? [d + 10] : [])], 3, 0, montrer ? [a + b] : []),
       indice: a <= 10 ? "Recule sur tes doigts." : b > 9 ? "Retire d'abord les dizaines, puis les unités." : emprunt ? "Passe par la dizaine juste en dessous." : "Retire les unités.",
       explication: expliquerSoustraction(a, b), affirmer: k => `${a} − ${b} = ${k}`, affirmerDire: k => `${a} moins ${b} égale ${k}.`}, m);
   };
@@ -253,7 +258,9 @@ var GEN_OUTILS = (() => {
       : `${n} + ${c} = 100 : ${n / 10} dizaines + ${c / 10} dizaines = 10 dizaines.`;
     return question({id: `G_comp_${n}+?=${total}`, question: gauche ? `? + ${n} = ${total}` : `${n} + ? = ${total}`,
       dire: gauche ? `Combien plus ${n} égale ${total} ?` : `${n} plus combien égale ${total} ?`, visuel, reponse: c,
-      distracteurs: fausses(c, [c + 1, c - 1, n], [c + 2, c - 2], 3, 0), indice: visuel ? "Compte les ronds blancs." : `Pense aux amoureux de 10.`,
+      dessin: visuel ? {type: "dizaine", n} : undefined,
+      distracteurs: fausses(c, [c + 1, c - 1, n], [c + 2, c - 2], 3, 0),
+      indice: visuel ? "Compte les ronds blancs." : total === 100 ? "Compte les dizaines qui manquent pour aller jusqu'à 100." : "Pense aux amoureux de 10.",
       explication, affirmer: k => `${n} + ${k} = ${total}`, affirmerDire: k => `${n} plus ${k} égale ${total}.`}, m);
   };
 

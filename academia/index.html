@@ -10,8 +10,9 @@
 <link rel="apple-touch-icon" href="icones/icone-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&display=swap">
-<link rel="stylesheet" href="style.css?v=33cb0ff0">
-<link rel="stylesheet" href="style_combat.css?v=33cb0ff0">
+<link rel="stylesheet" href="style.css?v=e91ece90">
+<link rel="stylesheet" href="style_combat.css?v=e91ece90">
+<link rel="stylesheet" href="style_scenes.css?v=e91ece90">
 </head>
 <body>
 <!-- the game world (Phaser) fills the screen; menus sit on top of it -->
@@ -22,12 +23,26 @@
   <button class="rond" id="btnEquipe" aria-label="Mon équipe">🎒</button>
 </header>
 
-<!-- PROFILES -->
+<!-- PROFILES: the village drawn behind (js/jeu/vitrine.js), the starters in front -->
 <main id="accueil" class="ecran plein">
-  <h1 class="titre">Académia</h1>
+  <h1 class="logo" aria-label="Académia">
+    <svg viewBox="0 0 560 170" aria-hidden="true">
+      <defs>
+        <linearGradient id="logoOr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4B0"/><stop offset=".5" stop-color="#FFD45C"/><stop offset="1" stop-color="#F7A531"/></linearGradient>
+        <path id="logoEclat" d="M0,-20 Q3,-3 20,0 Q3,3 0,20 Q-3,3 -20,0 Q-3,-3 0,-20 Z"/>
+      </defs>
+      <text x="280" y="128" text-anchor="middle" class="logo-ombre">Académia</text>
+      <text x="280" y="120" text-anchor="middle" class="logo-trait">Académia</text>
+      <text x="280" y="120" text-anchor="middle" class="logo-texte">Académia</text>
+      <use href="#logoEclat" class="logo-eclat" transform="translate(497 34) scale(1.1)"/>
+      <use href="#logoEclat" class="logo-eclat e2" transform="translate(58 46) scale(.6)"/>
+      <use href="#logoEclat" class="logo-eclat e3" transform="translate(530 108) scale(.45)"/>
+    </svg>
+  </h1>
   <p class="sous">Le monde où l'on apprend en s'amusant</p>
   <div class="profils" id="profils"></div>
-  <button class="gros" id="btnNouveau" disabled>✨ Nouveau Gardien</button>
+  <button class="gros palpite" id="btnNouveau" disabled>✨ Nouveau Gardien</button>
+  <div class="decor-accueil" id="decorAccueil" aria-hidden="true"></div>
   <p class="version" id="version"></p>
 </main>
 
@@ -65,54 +80,83 @@
   <div class="carte fin" id="finCarte"></div>
 </section>
 
-<!-- TEAM -->
+<!-- TEAM: the child's bag (js/equipe.js); the grown-ups' corner opens from it by a long press -->
 <section id="equipe" class="ecran voile" hidden>
-  <div class="carte large">
-    <div class="entete"><h2 class="titre3">🎒 Mon équipe</h2><button class="rond" id="btnFermerEquipe" aria-label="Fermer">✖</button></div>
+  <div class="carte large sac">
+    <div class="entete"><h2 class="titre3">🎒 Mon équipe</h2><button class="rond fermer" id="btnFermerEquipe" aria-label="Fermer">✖</button></div>
     <div class="liste-equipe" id="listeEquipe"></div>
-    <div class="ligne"><button class="joker" id="btnChanger">👤 Changer de Gardien</button><button class="joker" id="btnImages"></button></div>
-    <p class="diag" id="diagImages"></p>
+    <div class="fiche-seule" id="ficheEquipe" hidden></div>
+    <div class="pied-sac"><button class="parents" id="btnParents" aria-label="Coin des parents : garder le doigt appuyé trois secondes"><i class="anneau-appui"></i>👪 Parents</button><small>appui long</small></div>
   </div>
 </section>
 
-<!-- DIALOGUE WITH A VILLAGER -->
+<!-- GROWN-UPS' CORNER (js/parents.js) -->
+<section id="parents" class="ecran voile" hidden>
+  <div class="carte large coin-parents">
+    <div class="entete"><h2 class="titre3" id="parentsTitre">👪 Parents</h2><button class="joker" id="btnChanger">👤 Changer de Gardien</button><button class="rond fermer" id="btnFermerParents" aria-label="Fermer">✖</button></div>
+    <nav class="onglets" id="ongletsParents" role="tablist">
+      <button role="tab" data-onglet="matieres" aria-selected="true">Matières</button><button role="tab" data-onglet="erreurs">Erreurs</button><button role="tab" data-onglet="temps">Temps</button><button role="tab" data-onglet="reglages">Réglages</button>
+    </nav>
+    <div class="vue-parents" id="vueParents"></div>
+  </div>
+</section>
+
+<!-- DIALOGUE WITH A VILLAGER (js/dialogue.js) -->
 <div class="dialogue" id="dialogue" hidden>
-  <img id="dlgPortrait" alt="">
+  <div class="dlg-portrait" id="dlgPortrait"></div>
   <div class="dlg-corps"><b id="dlgNom"></b><p id="dlgTexte"></p><div class="dlg-choix" id="dlgChoix"></div></div>
 </div>
 
 <div class="toast" id="toast" hidden></div>
 
 <script src="vendor/phaser/phaser.min.js"></script>
-<script src="js/outils.js?v=33cb0ff0"></script>
-<script src="js/etat.js?v=33cb0ff0"></script>
-<script src="js/voix.js?v=33cb0ff0"></script>
-<script src="js/compagnons.js?v=33cb0ff0"></script>
-<script src="js/questions/maths.js?v=33cb0ff0"></script>
-<script src="js/questions/maths_mult.js?v=33cb0ff0"></script>
-<script src="js/questions/logique.js?v=33cb0ff0"></script>
-<script src="js/questions.js?v=33cb0ff0"></script>
-<script src="js/adaptatif.js?v=33cb0ff0"></script>
-<script src="js/sprite_dom.js?v=33cb0ff0"></script>
-<script src="js/question_vue.js?v=33cb0ff0"></script>
-<script src="js/combat.js?v=33cb0ff0"></script>
-<script src="js/progression.js?v=33cb0ff0"></script>
-<script src="js/equipe.js?v=33cb0ff0"></script>
-<script src="js/accueil.js?v=33cb0ff0"></script>
-<script src="js/jeu/carte.js?v=33cb0ff0"></script>
-<script src="js/jeu/qualite.js?v=33cb0ff0"></script>
-<script src="js/jeu/decor_village_hd_pieces.js?v=33cb0ff0"></script>
-<script src="js/jeu/decor_village_hd.js?v=33cb0ff0"></script>
-<script src="js/jeu/decor_village_hd_vivant.js?v=33cb0ff0"></script>
-<script src="js/jeu/decor_village_hd_jeu.js?v=33cb0ff0"></script>
-<script src="js/jeu/chargement.js?v=33cb0ff0"></script>
-<script src="js/jeu/sprites_hd.js?v=33cb0ff0"></script>
-<script src="js/jeu/effets_hd.js?v=33cb0ff0"></script>
-<script src="js/jeu/fond_combat_hd.js?v=33cb0ff0"></script>
-<script src="js/jeu/monde.js?v=33cb0ff0"></script>
-<script src="js/jeu/scene_combat.js?v=33cb0ff0"></script>
-<script src="js/jeu/ombres_village.js?v=33cb0ff0"></script>
-<script src="js/jeu/lanceur.js?v=33cb0ff0"></script>
-<script src="js/demarrage.js?v=33cb0ff0"></script>
+<script src="js/outils.js?v=e91ece90"></script>
+<script src="js/etat.js?v=e91ece90"></script>
+<script src="js/voix.js?v=e91ece90"></script>
+<script src="js/compagnons.js?v=e91ece90"></script>
+<script src="js/questions/maths.js?v=e91ece90"></script>
+<script src="js/questions/maths_mult.js?v=e91ece90"></script>
+<script src="js/questions/logique.js?v=e91ece90"></script>
+<script src="js/questions.js?v=e91ece90"></script>
+<script src="js/adaptatif.js?v=e91ece90"></script>
+<script src="js/sprite_dom.js?v=e91ece90"></script>
+<script src="js/dialogue.js?v=e91ece90"></script>
+<script src="js/question_dessin.js?v=e91ece90"></script>
+<script src="js/question_vue.js?v=e91ece90"></script>
+<script src="js/combat.js?v=e91ece90"></script>
+<script src="js/combat_choix.js?v=e91ece90"></script>
+<script src="js/astuces.js?v=e91ece90"></script>
+<script src="js/progression.js?v=e91ece90"></script>
+<script src="js/bilan.js?v=e91ece90"></script>
+<script src="js/moments.js?v=e91ece90"></script>
+<script src="js/effets_dom.js?v=e91ece90"></script>
+<script src="js/evolution.js?v=e91ece90"></script>
+<script src="js/liberation.js?v=e91ece90"></script>
+<script src="js/transition.js?v=e91ece90"></script>
+<script src="js/equipe.js?v=e91ece90"></script>
+<script src="js/parents.js?v=e91ece90"></script>
+<script src="js/accueil.js?v=e91ece90"></script>
+<script src="js/jeu/carte.js?v=e91ece90"></script>
+<script src="js/jeu/qualite.js?v=e91ece90"></script>
+<script src="js/jeu/decor_village_hd_pieces.js?v=e91ece90"></script>
+<script src="js/jeu/decor_village_hd.js?v=e91ece90"></script>
+<script src="js/jeu/decor_village_hd_vivant.js?v=e91ece90"></script>
+<script src="js/jeu/decor_village_hd_jeu.js?v=e91ece90"></script>
+<script src="js/jeu/chargement.js?v=e91ece90"></script>
+<script src="js/jeu/sprites_hd.js?v=e91ece90"></script>
+<script src="js/jeu/effets_hd.js?v=e91ece90"></script>
+<script src="js/jeu/fond_combat_hd.js?v=e91ece90"></script>
+<script src="js/jeu/silhouettes_hd.js?v=e91ece90"></script>
+<script src="js/jeu/vie_village.js?v=e91ece90"></script>
+<script src="js/jeu/portes_village.js?v=e91ece90"></script>
+<script src="js/jeu/guide_village.js?v=e91ece90"></script>
+<script src="js/jeu/monde.js?v=e91ece90"></script>
+<script src="js/jeu/vitrine.js?v=e91ece90"></script>
+<script src="js/jeu/scene_combat.js?v=e91ece90"></script>
+<script src="js/jeu/combat_spectacle.js?v=e91ece90"></script>
+<script src="js/jeu/attaques_hd.js?v=e91ece90"></script>
+<script src="js/jeu/ombres_village.js?v=e91ece90"></script>
+<script src="js/jeu/lanceur.js?v=e91ece90"></script>
+<script src="js/demarrage.js?v=e91ece90"></script>
 </body>
 </html>
