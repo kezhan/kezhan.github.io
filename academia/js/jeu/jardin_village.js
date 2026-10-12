@@ -2,10 +2,15 @@
    cases et la palissade dessinée au-dessus) : le héros va devant lui, puis l'écran du jardin s'ouvre. Au-dessus du
    potager, un signe qui se balance : la récolte quand une plante est mûre, une goutte quand une plante a soif, un
    sachet de graines tant que rien n'est planté. */
-function chargerJardinVillage(load){
-  load.image("jardin_goutte", srcJardin("goutte"));
-  load.image("jardin_graines", srcJardin("graines_carotte"));
-  Object.keys(CULTURES).forEach(id => load.image("jardin_recolte_" + id, srcJardin("recolte_" + id)));
+// the sign's little drawings, loaded once the village is on screen (never on the way to it)
+function chargerJardinVillage(scene, fini){
+  const l = scene.load, avant = l.totalToLoad;
+  if (!scene.textures.exists("jardin_goutte")) l.image("jardin_goutte", srcJardin("goutte"));
+  if (!scene.textures.exists("jardin_graines")) l.image("jardin_graines", srcJardin("graines_carotte"));
+  Object.keys(CULTURES).forEach(id => { if (!scene.textures.exists("jardin_recolte_" + id)) l.image("jardin_recolte_" + id, srcJardin("recolte_" + id)); });
+  if (l.list.size === 0 && avant === 0) return fini();
+  l.once("complete", fini);
+  l.start();
 }
 
 class JardinVillage {
@@ -13,7 +18,7 @@ class JardinVillage {
     this.s = scene; this.vise = false; this.signe = null;
     this.zone = scene.carte.elements.find(e => e.type === "potager") || null;
     this.devant = this.zone && {x: this.zone.x + Math.floor(this.zone.w / 2), y: this.zone.y + this.zone.h};
-    this.maj();
+    chargerJardinVillage(scene, () => { if (scene.sys.isActive()) this.maj(); });
   }
   // the hero next to the vegetable garden (on a tile around it)
   pres(){

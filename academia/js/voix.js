@@ -38,7 +38,21 @@ function dire(texte, lang = "fr", options){
   const p = lang === "lb" ? direLb(t, moi) : parler(t, lang, lent);   // Luxembourgish: the recordings, nothing else
   return p.then(fini, fini);
 }
+// in the Android app (android/), the web view has no speech synthesis: the tablet's own voice speaks, and tells when
+// it has finished (window.__voixAndroid); never for Luxembourgish (the app refuses it too)
+const attenteAndroid = {};
+let numeroAndroid = 0;
+window.__voixAndroid = id => { const f = attenteAndroid[id]; delete attenteAndroid[id]; if (f) f(); };
+function parlerAndroid(t, lang, lent){
+  return new Promise(fin => {
+    const id = "v" + (++numeroAndroid), p = P();
+    attenteAndroid[id] = fin;
+    setTimeout(() => window.__voixAndroid(id), 3000 + t.length * 110);   // never waits forever
+    try { AcademiaAndroid.parler(id, t, LOCALES[lang] || "fr-FR", lent ? .7 : p && p.age <= 5 ? .85 : .95); } catch (e) { window.__voixAndroid(id); }
+  });
+}
 function parler(t, lang, lent = false){
+  if (window.AcademiaAndroid && lang !== "lb") return parlerAndroid(t, lang, lent);
   return new Promise(fin => {
     if (!("speechSynthesis" in window)) return fin();
     try {
@@ -106,6 +120,7 @@ function taire(){
   generation++;
   if (audioLb) { audioLb.pause(); audioLb = null; }
   try { speechSynthesis.cancel(); } catch (e) {}
+  try { if (window.AcademiaAndroid) AcademiaAndroid.taire(); } catch (e) {}
   signalerVoix(false);
 }
 // another app in front: the voice stops and the little sounds sleep (ton() wakes them up at the next sound)

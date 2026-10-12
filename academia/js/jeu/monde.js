@@ -17,7 +17,6 @@ class Monde extends Phaser.Scene {
     chargerVillageHD(this.load, QUALITE);
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
-    chargerJardinVillage(this.load);   // the vegetable garden's sign (js/jeu/jardin_village.js)
   }
   create(){
     this.carte = construireCarte();

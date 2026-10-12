@@ -137,7 +137,7 @@ function vueReglages(v){
   if (typeof boutonMusique === "function") ligne("Musique", boutonMusique());
   const fichier = el("input"); fichier.type = "file"; fichier.accept = ".json,application/json"; fichier.hidden = true;
   fichier.onchange = () => { if (fichier.files[0]) reprendrePartie(fichier.files[0]); fichier.value = ""; };
-  ligne("Sauvegarde", bouton("💾 Enregistrer dans un fichier", enregistrerPartie), bouton("📂 Reprendre depuis un fichier", () => fichier.click()), fichier);
+  ligne("Sauvegarde", bouton("💾 Enregistrer dans un fichier", enregistrerPartie, "btnEnregistrer"), bouton("📂 Reprendre depuis un fichier", () => fichier.click()), fichier);
   const diag = el("small", "diag"); diag.textContent = diagnosticImages();
   ligne("État", diag);
   // whether the browser promised never to erase the games (js/etat.js asks it when the game loads)
@@ -148,15 +148,22 @@ function vueReglages(v){
 // for the grown-ups: how the pictures are drawn, and any that could not be loaded
 function diagnosticImages(){
   const r = JEU.renderer, moteur = r && r.type === Phaser.WEBGL ? `WebGL ${TEXTURE_MAX}` : "sans carte graphique", manque = [...ECHECS];
-  return `Version ${VERSION} · images ${QUALITE === "hd" ? "haute définition" : "légères"} · ${moteur} · `
+  const app = window.AcademiaAndroid ? ` · application Android ${AcademiaAndroid.version()}` : "";
+  return `Version ${VERSION}${app} · images ${QUALITE === "hd" ? "haute définition" : "légères"} · ${moteur} · `
     + (manque.length ? `dessins non chargés : ${manque.join(", ")} (réseau ?)` : "tous les dessins sont chargés");
 }
 
 // the child's game in a file, to keep it or to carry it to another tablet; and back from such a file
 function enregistrerPartie(){
   const p = P(), jour = new Date().toISOString().slice(0, 10);
-  const blob = new Blob([JSON.stringify({jeu: "academia", version: VERSION, enregistre: new Date().toISOString(), profil: p}, null, 1)], {type: "application/json"});
-  const a = el("a"); a.href = URL.createObjectURL(blob); a.download = `academia-${normNom(p.nom).replace(/[^a-z0-9]+/g, "-")}-${jour}.json`;
+  const contenu = JSON.stringify({jeu: "academia", version: VERSION, enregistre: new Date().toISOString(), profil: p}, null, 1);
+  const nom = `academia-${normNom(p.nom).replace(/[^a-z0-9]+/g, "-")}-${jour}.json`;
+  if (window.AcademiaAndroid) {   // the Android app writes it in Downloads (android/, Pont.java)
+    const ok = AcademiaAndroid.enregistrer(nom, contenu);
+    return toast(ok ? `Partie de ${p.nom} enregistrée dans Téléchargements` : "La partie n'a pas pu être enregistrée");
+  }
+  const blob = new Blob([contenu], {type: "application/json"});
+  const a = el("a"); a.href = URL.createObjectURL(blob); a.download = nom;
   document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   toast(`Partie de ${p.nom} enregistrée dans un fichier`);
 }

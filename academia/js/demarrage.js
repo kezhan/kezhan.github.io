@@ -36,4 +36,13 @@ async function demarrer(){
   if (!window.__jeuPret) await new Promise(r => document.addEventListener("jeu-pret", r, {once: true}));
   window.__pret = true;
 }
+// the Android app's back button (android/): closes what is open and says so, else the app steps aside
+window.retourAndroid = () => {
+  if (!$("grainesJardin").hidden) { $("grainesJardin").hidden = true; return true; }
+  if (!$("jardin").hidden) { fermerJardin(); return true; }
+  if (!$("parents").hidden) { fermerParents(); return true; }
+  if (!$("equipe").hidden) { fermerEquipe(); return true; }
+  if (ecranCourant === "creation" || ecranCourant === "choix") { ouvrirAccueil(); return true; }
+  return false;
+};
 demarrer().catch(e => { console.error(e); if (typeof ecranIncomplet === "function") ecranIncomplet(); });
