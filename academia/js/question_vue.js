@@ -28,12 +28,14 @@ async function suiteDeVoix(etapes){
   }
   return true;
 }
-// a French text whose « foreign words » are said with their own voice (der Bär, Moien…)
+// a French text whose « foreign words » are said with their own voice (der Bär, Moien…); in Luxembourgish, whatever
+// the recordings say entirely (« Maach d'Dier zou, dajee »), never the French voice
 function direMixte(texte, q){
-  const lang = q.oreille || q.langue || "fr", mots = Q.mots[lang], parts = [];
-  if (lang === "fr" || !mots) return dire(texte);
+  const lang = q.oreille || q.langue || "fr", mots = Q.mots[lang] || new Set(), parts = [];
+  if (lang === "fr") return dire(texte);
+  const etranger = w => mots.has(w.toLowerCase()) || (lang === "lb" && couvertLb(w));
   const re = /«\s*(.+?)\s*»/g; let m, i = 0;
-  while ((m = re.exec(texte))) if (mots.has(m[1].toLowerCase())) { parts.push([texte.slice(i, m.index), "fr"], [m[1], lang]); i = re.lastIndex; }
+  while ((m = re.exec(texte))) if (etranger(m[1])) { parts.push([texte.slice(i, m.index), "fr"], [m[1], lang]); i = re.lastIndex; }
   parts.push([texte.slice(i), "fr"]);
   return suiteDeVoix(parts.filter(([t]) => /[\p{L}\p{N}]/u.test(t)).map(([t, l]) => () => dire(t, l)));
 }
@@ -167,7 +169,9 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
       suite.onclick = () => { son("bouton"); sfx.tap(); taire(); fin({juste: false, ms}); };
       const correction = el("div", "q-correction"); correction.append(t, suite); corps.append(correction);
       suite.scrollIntoView({block: "nearest"});
-      const dite = vf || leg || sansEmoji(q.reponse) ? bonne : "Regarde la bonne réponse, en vert.";
+      // said aloud, a foreign answer stands between « » so that it gets its own voice (its recordings in Luxembourgish)
+      const bonneDite = vf || leg || (q.oreille || lang) === "fr" ? bonne : `La bonne réponse est « ${rep} »${point}`;
+      const dite = vf || leg || sansEmoji(q.reponse) ? bonneDite : "Regarde la bonne réponse, en vert.";
       direMixte((b ? "" : "Trop tard ! ") + dite + (q.explication ? " " + q.explication : ""), q);
     }
   });

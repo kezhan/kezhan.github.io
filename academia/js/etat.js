@@ -2,7 +2,7 @@
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». Une copie de secours est gardée ; une partie abîmée ou
    d'une version plus ancienne est réparée ; deux onglets ouverts ne s'effacent pas la partie l'un de l'autre. */
-const VERSION = "0.8";
+const VERSION = "0.9";
 const CLE = "academia.v1", CLE_COPIE = "academia.v1.copie";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;
@@ -32,6 +32,7 @@ function reparer(p){
   q.jokers = {...base.jokers, ...(q.jokers && typeof q.jokers === "object" ? q.jokers : {})};
   q.compagnons = q.compagnons.filter(c => c && c.id && FAMILLES[c.famille]);
   if (!q.compagnons.some(c => c.id === q.actif)) q.actif = q.compagnons[0] ? q.compagnons[0].id : null;
+  if (typeof reparerJardin === "function") q.jardin = reparerJardin(q.jardin);   // the child's garden (js/jardin.js)
   return q;
 }
 function prendre(d){

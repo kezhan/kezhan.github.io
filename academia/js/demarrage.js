@@ -17,6 +17,7 @@ async function demarrer(){
   $("btnFermerEquipe").onclick = () => { sfx.tap(); fermerEquipe(); };
   $("equipe").onclick = e => { if (e.target === e.currentTarget) { sfx.tap(); fermerEquipe(); } };
   appuiLong($("btnParents"), APPUI_PARENTS_MS, () => { sfx.juste(); ouvrirParents(); });
+  $("btnFermerJardin").onclick = () => { sfx.tap(); fermerJardin(); };   // the garden (js/jardin_vue.js)
   $("btnFermerParents").onclick = () => { sfx.tap(); fermerParents(); };
   $("parents").onclick = e => { if (e.target === e.currentTarget) { sfx.tap(); fermerParents(); } };
   document.querySelectorAll("#ongletsParents button").forEach(b => { b.onclick = () => { sfx.tap(); ongletParents(b.dataset.onglet); }; });
@@ -25,11 +26,13 @@ async function demarrer(){
   document.addEventListener("keydown", e => {
     if (e.key === "Escape" && !$("equipe").hidden) { sfx.tap(); return fermerEquipe(); }
     if (e.key === "Escape" && !$("parents").hidden) { sfx.tap(); return fermerParents(); }
+    if (e.key === "Escape" && !$("jardin").hidden) { sfx.tap(); return fermerJardin(); }
     const d = $("dialogue");
     if ((e.key === "Enter" || e.key === " ") && !e.repeat && !d.hidden && d.onclick && !e.target.closest("button, input")) { e.preventDefault(); d.onclick(); }
   });
   ouvrirAccueil();
   await chargerQuestions();
+  chargerLexiqueLb();   // the Luxembourgish recordings' lexicon, ready before the first correction (js/voix.js)
   if (!window.__jeuPret) await new Promise(r => document.addEventListener("jeu-pret", r, {once: true}));
   window.__pret = true;
 }

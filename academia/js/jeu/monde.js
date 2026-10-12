@@ -17,6 +17,7 @@ class Monde extends Phaser.Scene {
     chargerVillageHD(this.load, QUALITE);
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
+    chargerJardinVillage(this.load);   // the vegetable garden's sign (js/jeu/jardin_village.js)
   }
   create(){
     this.carte = construireCarte();
@@ -44,6 +45,7 @@ class Monde extends Phaser.Scene {
     this.portes = new PortesVillage(this);   // closed doors in violet mist, open doors in golden light
     this.guide = new GuideVillage(this);     // the arrow before the first fight, the hand when nothing happens
     this.silhouettes = new SilhouettesHD(this);   // the hero and the companion seen through what hides them
+    this.jardin = new JardinVillage(this);        // the vegetable garden opens the child's garden
     window.__calme = performance.now() + 300;
     // touch: walk where the child taps (a villager: go and talk; a house, its roof or its sign: go to its door; an Ombre
     // or right next to it: go and fight; the companion: it jumps for joy)
@@ -66,8 +68,10 @@ class Monde extends Phaser.Scene {
     if (this.occupe()) return;
     const wx = ptr.worldX, wy = ptr.worldY;
     if (this.vie.toucherCompagnon(wx, wy)) return;
+    this.jardin.vise = false;
     const o = this.ombres.touchee(wx, wy);
     if (o) return this.allerVers(o.x, o.y);
+    if (this.jardin.touche(wx, wy)) return;
     let x = Math.floor(wx / CASE), y = Math.floor(wy / CASE);
     const r = maisonToucheeHD(this, wx, wy), m = this.carte.maison;
     if (r && !(m[y] && m[y][x] === r)) for (let b = 0; b < HAUT; b++) { const a = m[b].indexOf(r); if (a >= 0) { x = a; y = b; break; } }
@@ -186,6 +190,7 @@ class Monde extends Phaser.Scene {
   arreter(){ reposHumain(this.heros, this.dir); if (this.compagnon) reposCreature(this.compagnon); }
   arrive(){
     const p = P(); p.position = {...this.case}; sauver();
+    if (this.jardin.arrive()) return;
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
   }
   update(time){
@@ -231,7 +236,7 @@ class Monde extends Phaser.Scene {
     const o = this.ombreEnCombat, region = o && o.region;
     const ouvre = !!region && this.etapeAvant < ETAPES && regionEtat(region).etape >= ETAPES;
     this.ombres.apres(o, gagne); this.ombreEnCombat = null;
-    this.majCompagnon(); this.majPanneaux(); this.portes.maj(ouvre ? region : null);
+    this.majCompagnon(); this.majPanneaux(); this.portes.maj(ouvre ? region : null); this.jardin.maj();
     cadrerPanneauxHD(this, this.panneaux, true);   // the bar is back, its pill a little wider: the signs at once
     if (ouvre) this.portes.ouvrir(region);
     this.guide.retour();

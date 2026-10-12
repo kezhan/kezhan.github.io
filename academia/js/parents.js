@@ -140,6 +140,9 @@ function vueReglages(v){
   ligne("Sauvegarde", bouton("💾 Enregistrer dans un fichier", enregistrerPartie), bouton("📂 Reprendre depuis un fichier", () => fichier.click()), fichier);
   const diag = el("small", "diag"); diag.textContent = diagnosticImages();
   ligne("État", diag);
+  // whether the browser promised never to erase the games (js/etat.js asks it when the game loads)
+  if (navigator.storage && navigator.storage.persisted) navigator.storage.persisted()
+    .then(ok => { diag.textContent += ok ? " · partie protégée de l'effacement" : " · partie non protégée (installer le jeu depuis Chrome)"; }).catch(() => {});
   v.append(g);
 }
 // for the grown-ups: how the pictures are drawn, and any that could not be loaded

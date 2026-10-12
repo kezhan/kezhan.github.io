@@ -1,0 +1,78 @@
+/* Académia : l'écran du jardin (js/jardin_vue.js). En haut le titre, les étincelles et la croix ; les parcelles sur la
+   pelouse du fond dessiné, trois par rangée (six d'un trait sur un téléphone couché) ; le panier et le compagnon dans
+   le coin en bas à gauche, ou en bas sur un écran haut. Tout tient sans défiler. */
+/* The plots stand on the lawn of the drawn background (from 47 % of its height down, the background filling the
+   screen): the bed of the first row never higher than that, which sets --w (a plot is --w wide, 1.35 --w tall: its
+   bed is the bottom 0.67 --w, its plant rises above). --bas is what the basket keeps at the bottom. */
+#jardin{background:#7CC35A center / cover no-repeat; overflow:hidden; --bas:12px;
+  --w:min(25vw, calc((53dvh - var(--bas)) / 2.02))}
+.jardin-tete{position:absolute; top:0; left:0; right:0; z-index:2; display:flex; align-items:center; gap:10px;
+  padding:10px max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left))}
+.jardin-tete h2{margin:0; padding:6px 16px; border-radius:999px; background:rgba(29,22,64,.62); color:#FFF}
+.jardin-tete .pastille{display:inline-flex; align-items:center; gap:4px; padding:6px 14px; border-radius:999px; background:rgba(29,22,64,.62);
+  color:#FFF; font:700 20px var(--titre)}
+.jardin-tete .pastille .icone{width:24px; height:24px}
+.jardin-tete .fermer{margin-left:auto}
+
+.parcelles{position:absolute; left:0; right:0; bottom:var(--bas); display:grid; grid-template-columns:repeat(3, var(--w)); justify-content:center; gap:4px 3vw}
+.parcelle{position:relative; width:var(--w); height:calc(var(--w) * 1.35); background:none; border:0; padding:0; box-shadow:none}
+.parcelle .sol{position:absolute; left:0; bottom:0; width:100%; height:auto; filter:drop-shadow(0 4px 0 rgba(29,22,64,.18))}
+/* the plant's foot (3 % above the bottom of its drawing) on the middle of the bed (54 % of the bed's height from its bottom) */
+.parcelle .plante{position:absolute; left:12%; width:76%; bottom:calc(var(--w) * .333); height:auto; pointer-events:none}
+.parcelle .signe{position:absolute; bottom:calc(var(--w) * .5); right:2%; width:22%; height:auto; animation:jardin-signe 1.4s ease-in-out infinite}
+.parcelle.vide .sol{opacity:.92}
+.parcelle.mure .plante{filter:drop-shadow(0 0 10px rgba(255,212,92,.9))}
+.parcelle:active{transform:scale(.96)}
+@keyframes jardin-signe{50%{transform:translateY(-6px)}}
+
+/* the basket: the companion and the crops, in the bottom left corner (a column beside the plots on a wide screen) */
+.panier{position:absolute; left:max(14px, env(safe-area-inset-left)); bottom:8px; z-index:2; display:flex; flex-direction:column; align-items:center; gap:6px;
+  width:150px}
+.compagnon-jardin{flex:none}
+.recoltes{display:grid; grid-template-columns:repeat(2, 64px); justify-content:center; gap:8px; padding:8px; border-radius:20px; background:rgba(255,248,235,.9);
+  box-shadow:0 4px 0 rgba(29,22,64,.25)}
+.recoltes small{grid-column:1 / -1; max-width:130px; text-align:center}
+.recoltes small{font:700 16px var(--titre); color:var(--nuit2)}
+.recolte{position:relative; width:64px; height:64px; padding:4px; border-radius:16px; background:#FFF; box-shadow:0 3px 0 rgba(29,22,64,.25)}
+.recolte img{width:100%; height:100%; object-fit:contain}
+.recolte b{position:absolute; right:-6px; bottom:-6px; min-width:26px; padding:0 6px; border-radius:999px; background:var(--encre); color:#FFF; font:700 16px/26px var(--titre)}
+
+.bulle-jardin{position:absolute; z-index:4; top:64px; left:50%; transform:translateX(-50%); width:max-content; max-width:calc(100% - 32px); margin:0;
+  padding:10px 18px; border:4px solid var(--encre); border-radius:22px; background:var(--papier); font:700 19px/1.3 var(--titre); color:var(--encre);
+  box-shadow:0 4px 0 rgba(29,22,64,.3); text-align:center; pointer-events:none}
+.bulle-jardin .icone{width:1.3em; height:1.3em; vertical-align:-.3em}
+
+.graines{position:absolute; z-index:5; top:50%; left:50%; transform:translate(-50%, -50%); width:min(720px, calc(100% - 24px));
+  max-height:calc(100% - 24px); overflow-y:auto}
+.graines .entete{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px}
+.graines h2{margin:0}
+.sachets{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px}
+.sachet{display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 8px; border-radius:20px; background:var(--papier2);
+  box-shadow:0 4px 0 rgba(29,22,64,.25); font:700 18px var(--titre)}
+.sachet img{height:110px; width:auto}
+.sachet .prix{display:inline-flex; align-items:center; gap:4px; font-size:17px}
+.sachet .prix .icone{width:22px; height:22px}
+.sachet.cher{opacity:.55}
+
+#jardin .panneau{--scene:26vh; z-index:6}
+.arrosoir-vol{position:fixed; z-index:50; width:clamp(80px, 12vw, 150px); height:auto; transform-origin:40% 60%; pointer-events:none}
+.goutte-vol{position:fixed; z-index:51; width:clamp(12px, 1.6vw, 20px); height:auto; pointer-events:none}
+.recolte-vol{position:fixed; z-index:50; width:clamp(48px, 7vw, 84px); height:auto; pointer-events:none}
+
+/* a tall screen (a tablet or a phone held upright): the basket in a row at the bottom, the plots above it */
+@media (orientation:portrait){
+  #jardin{--bas:132px; --w:min(28vw, calc((53dvh - var(--bas)) / 2.02))}
+  .panier{left:0; right:0; width:auto; flex-direction:row; justify-content:center; align-items:flex-end; padding:0 14px}
+  .recoltes{display:flex; flex-wrap:wrap}
+  .recoltes small{max-width:none}
+}
+/* a phone held sideways: the six plots in one row, the basket smaller */
+@media (orientation:landscape) and (max-height:500px){
+  #jardin{--w:min(11vw, calc((53dvh - var(--bas)) / .67))}
+  .parcelles{grid-template-columns:repeat(6, var(--w)); gap:2px 1.2vw}
+  .panier{width:104px} .compagnon-jardin{transform:scale(.7); transform-origin:bottom center; height:80px}
+  .recoltes{grid-template-columns:repeat(2, 42px); gap:6px; padding:6px} .recolte{width:42px; height:42px}
+  .bulle-jardin{top:52px; font-size:16px; padding:6px 12px}
+  .sachet img{height:70px}
+}
+@media (prefers-reduced-motion:reduce){ .parcelle .signe{animation:none} }

@@ -1,8 +1,10 @@
-/* Académia : la voix lit les questions et les explications (la petite ne lit pas encore). Voix du navigateur ;
-   le luxembourgeois n'en a pas : chaque phrase enregistrée d'un seul tenant (exemple du dictionnaire), sinon chaque
-   mot, est jouée depuis son enregistrement de lod.lu, copié dans le jeu (assets/audio/lb, donnees/lexique_lb.json,
-   données CC0) pour marcher sans réseau ; la voix allemande prend le relais pour un mot sans enregistrement ou un
-   enregistrement qui ne joue pas. Quand la tablette passe à une autre application, la voix et les sons s'arrêtent. */
+/* Académia : la voix lit les questions et les explications (la petite ne lit pas encore). Voix du navigateur pour
+   le français, l'anglais et l'allemand. Le luxembourgeois n'est JAMAIS dit par le navigateur (sa voix serait
+   mauvaise) : chaque phrase enregistrée d'un seul tenant (exemple du dictionnaire), sinon chaque mot, est jouée
+   depuis son enregistrement de lod.lu, copié dans le jeu (assets/audio/lb, donnees/lexique_lb.json, données CC0)
+   pour marcher sans réseau. Un passage sans enregistrement se tait (le contrôle des questions l'interdit, la recette
+   le relève dans window.__lbMuet) ; un enregistrement qui ne joue pas est redemandé une fois. Quand la tablette passe
+   à une autre application, la voix et les sons s'arrêtent. */
 const LOCALES = {fr: "fr-FR", en: "en-GB", de: "de-DE", lb: "lb-LU", zh: "zh-CN"};
 let voixListe = [];
 function chargerVoix(){ try { voixListe = speechSynthesis.getVoices() || []; } catch (e) { voixListe = []; } }
@@ -24,12 +26,16 @@ const signalerVoix = parle => document.dispatchEvent(new CustomEvent("voix", {de
 // options.lent: a foreign word said slowly
 function dire(texte, lang = "fr", options){
   const t = sansEmoji(texte), moi = ++generation, lent = !!(options && options.lent);
-  if (TEST) { window.__dit = t; return Promise.resolve(); }
+  if (TEST) {   // nothing is heard in the checks; a Luxembourgish passage without its recordings is noted
+    window.__dit = t;
+    if (lang === "lb") chargerLexiqueLb().then(lex => { if (!enregistrementsLb(motsLb(t), lex)) (window.__lbMuet = window.__lbMuet || []).push(t); });
+    return Promise.resolve();
+  }
   if (audioLb) { audioLb.pause(); audioLb = null; }
   if (!t || voixCoupee) return Promise.resolve();
   signalerVoix(true);
   const fini = () => { if (moi === generation) signalerVoix(false); };
-  const p = lang === "lb" && !voixPour("lb") ? direLb(t, moi).then(ok => ok || moi !== generation ? undefined : parler(t, "de", lent)) : parler(t, lang, lent);
+  const p = lang === "lb" ? direLb(t, moi) : parler(t, lang, lent);   // Luxembourgish: the recordings, nothing else
   return p.then(fini, fini);
 }
 function parler(t, lang, lent = false){
@@ -65,6 +71,8 @@ function motsLb(t){
   });
   return mots;
 }
+// a text that the recordings say entirely (the lexicon already loaded: chargerLexiqueLb at the start of the game)
+const couvertLb = t => !!lexiqueLb && !!enregistrementsLb(motsLb(sansEmoji(t)), lexiqueLb);
 // the recordings that say a text: the longest sentence recorded whole first (« ech hunn dech gär », an example of
 // lod.lu), else word by word; null when a word has none
 function enregistrementsLb(mots, lex){
@@ -78,19 +86,19 @@ function enregistrementsLb(mots, lex){
   }
   return urls;
 }
-// false when a word has no recording or a recording does not play: the caller then says it all with the German voice
+// false when a word has no recording, or a recording does not play even asked twice: then nothing more is said
 async function direLb(t, moi){
   const lex = await chargerLexiqueLb(), urls = enregistrementsLb(motsLb(t), lex);
-  if (!urls || !urls.length) return false;
+  if (!urls || !urls.length) { (window.__lbMuet = window.__lbMuet || []).push(t); console.warn("luxembourgeois sans enregistrement :", t); return false; }
+  const jouer = u => new Promise(fin => {
+    const a = audioLb = new Audio(u);
+    let fait = false; const fini = v => { if (!fait) { fait = true; fin(v); } };
+    a.onended = () => fini(true); a.onpause = () => fini(true); a.onerror = () => fini(false); setTimeout(() => fini(true), 4000);
+    a.play().catch(() => fini(false));
+  });
   for (const u of urls) {
     if (moi !== generation) return true;
-    const joue = await new Promise(fin => {
-      const a = audioLb = new Audio(u);
-      let fait = false; const fini = v => { if (!fait) { fait = true; fin(v); } };
-      a.onended = () => fini(true); a.onpause = () => fini(true); a.onerror = () => fini(false); setTimeout(() => fini(true), 4000);
-      a.play().catch(() => fini(false));
-    });
-    if (!joue && moi === generation) return false;
+    if (!(await jouer(u)) && moi === generation && !(await jouer(u + "?essai=1")) && moi === generation) return false;
   }
   return true;
 }
