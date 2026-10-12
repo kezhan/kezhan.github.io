@@ -1,5 +1,5 @@
 {
- "source": "lod.lu (Lëtzebuerger Online Dictionnaire, données CC0 : jeu « LOD, Linguistesch Daten » du Zenter fir d'Lëtzebuerger Sprooch sur data.public.lu, licence et page copiées dans outils/contenu/sources/) ; une entrée par mot employé (minuscules, coupé comme le fait js/voix.js), avec la fiche qui le justifie ; une entrée par phrase enregistrée d'un seul tenant (exemple du dictionnaire, clé : ses mots séparés par une espace) ; enregistrements copiés dans assets/audio/lb/ et coupés à leur première forme (« Hond, Hënn, Honn » devient « Hond »), « dit » garde ce qu'ils disent ; audio_lod garde leur adresse d'origine ; fabriqué par outils/contenu/scripts/lexique.py",
+ "source": "lod.lu (Lëtzebuerger Online Dictionnaire, données CC0 : jeu « LOD, Linguistesch Daten » du Zenter fir d'Lëtzebuerger Sprooch sur data.public.lu, licence et page copiées dans outils/contenu/sources/) ; une entrée par mot employé (minuscules, coupé comme le fait js/voix.js), avec la fiche qui le justifie ; une entrée par phrase enregistrée d'un seul tenant (exemple du dictionnaire, clé : ses mots séparés par une espace), ou par passage coupé dans un exemple qui le dit (« coupe », temps dans outils/contenu/coupes_lb.json, réécouté par Whisper) ; enregistrements copiés dans assets/audio/lb/ et coupés à leur première forme (« Hond, Hënn, Honn » devient « Hond »), « dit » garde ce qu'ils disent, exactement la clé ; audio_lod garde leur adresse d'origine ; fabriqué par outils/contenu/scripts/lexique.py",
  "mots": {
   "a": {
    "forme": "A",
@@ -34,6 +34,17 @@
    "dit": "Aarm",
    "coupe": true
   },
+  "achtzeg": {
+   "forme": "achtzeg",
+   "lod": "ACHTZEG1",
+   "lemme": "achtzeg",
+   "categorie": "NB",
+   "sens": "quatre-vingt(s)",
+   "audio": "assets/audio/lb/achtzeg1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/achtzeg1.m4a",
+   "dit": "achtzeg",
+   "coupe": false
+  },
   "af": {
    "forme": "Af",
    "lod": "AF1",
@@ -45,28 +56,6 @@
    "dit": "Af",
    "coupe": true
   },
-  "alles": {
-   "forme": "Alles",
-   "lod": "ALLES1",
-   "lemme": "alles",
-   "categorie": "PRON+INDEF",
-   "sens": "tout",
-   "audio": "assets/audio/lb/alles1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/alles1.m4a",
-   "dit": "alles",
-   "coupe": false
-  },
-  "am": {
-   "forme": "am",
-   "lod": "AM1",
-   "lemme": "am",
-   "categorie": null,
-   "sens": "",
-   "audio": "assets/audio/lb/am1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/am1.m4a",
-   "dit": "am",
-   "coupe": false
-  },
   "apel": {
    "forme": "Apel",
    "lod": "APEL1",
@@ -77,17 +66,6 @@
    "audio_lod": "https://lod.lu/uploads/AAC/apel1.m4a",
    "dit": "Apel",
    "coupe": true
-  },
-  "appetit": {
-   "forme": "Appetit",
-   "lod": "APPETIT1",
-   "lemme": "Appetit",
-   "categorie": "SUBST+M",
-   "sens": "appétit",
-   "audio": "assets/audio/lb/appetit1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/appetit1.m4a",
-   "dit": "Appetit",
-   "coupe": false
   },
   "banann": {
    "forme": "Banann",
@@ -243,17 +221,6 @@
    "dit": "Bëbee",
    "coupe": true
   },
-  "chrëschtdeeg": {
-   "forme": "Chrëschtdeeg",
-   "lod": "CHRESCHTDEEG1",
-   "lemme": "Chrëschtdeeg",
-   "categorie": "SUBST+M",
-   "sens": "fêtes de Noël",
-   "audio": "assets/audio/lb/chreschtdeeg1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/chreschtdeeg1.m4a",
-   "dit": "Chrëschtdeeg",
-   "coupe": false
-  },
   "computer": {
    "forme": "Computer",
    "lod": "COMPUTER1",
@@ -275,17 +242,6 @@
    "audio_lod": "https://lod.lu/uploads/AAC/d1.m4a",
    "dit": "d'",
    "coupe": false
-  },
-  "dag": {
-   "forme": "Dag",
-   "lod": "DAG1",
-   "lemme": "Dag",
-   "categorie": "SUBST+M",
-   "sens": "jour, bientôt",
-   "audio": "assets/audio/lb/dag1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/dag1.m4a",
-   "dit": "Dag",
-   "coupe": true
   },
   "de": {
    "forme": "de",
@@ -364,6 +320,17 @@
    "dit": "dräizéng",
    "coupe": false
   },
+  "drësseg": {
+   "forme": "drësseg",
+   "lod": "DRESSEG1",
+   "lemme": "drësseg",
+   "categorie": "NB",
+   "sens": "trente",
+   "audio": "assets/audio/lb/dresseg1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/dresseg1.m4a",
+   "dit": "drësseg",
+   "coupe": false
+  },
   "duuscht": {
    "forme": "Duuscht",
    "lod": "DUUSCHT1",
@@ -373,17 +340,6 @@
    "audio": "assets/audio/lb/duuscht1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/duuscht1.m4a",
    "dit": "Duuscht",
-   "coupe": false
-  },
-  "däi": {
-   "forme": "däi",
-   "lod": "DAIN1",
-   "lemme": "däin",
-   "categorie": "PRON+POSS",
-   "sens": "ton, le tien",
-   "audio": "assets/audio/lb/dain1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/dain1.m4a",
-   "dit": "däin",
    "coupe": false
   },
   "dënschdeg": {
@@ -470,6 +426,15 @@
    "dit": "Eil",
    "coupe": true
   },
+  "eis beschte gléckwënsch fir däi gebuertsdag": {
+   "forme": "Eis beschte Gléckwënsch fir däi Gebuertsdag",
+   "lod": "GLECKWONSCH1",
+   "exemple": "6440c5340bd09e0ca8b9193bb24ed8c0",
+   "sens": "joyeux anniversaire",
+   "audio": "assets/audio/lb/ex_6440c5340bd09e0ca8b9193bb24ed8c0.m4a",
+   "audio_lod": "https://lod.lu/uploads/examples/AAC/64/6440c5340bd09e0ca8b9193bb24ed8c0.m4a",
+   "dit": "Eis beschte Gléckwënsch fir däi Gebuertsdag"
+  },
   "elefant": {
    "forme": "Elefant",
    "lod": "ELEFANT1",
@@ -481,15 +446,15 @@
    "dit": "Elefant",
    "coupe": true
   },
-  "fir": {
-   "forme": "fir",
-   "lod": "FIR2",
-   "lemme": "fir",
-   "categorie": "PREP",
-   "sens": "pour, d'abord",
-   "audio": "assets/audio/lb/fir2.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/fir2.m4a",
-   "dit": "fir",
+  "fofzeg": {
+   "forme": "fofzeg",
+   "lod": "FOFZEG1",
+   "lemme": "fofzeg",
+   "categorie": "NB",
+   "sens": "cinquante",
+   "audio": "assets/audio/lb/fofzeg1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/fofzeg1.m4a",
+   "dit": "fofzeg",
    "coupe": false
   },
   "fofzéng": {
@@ -567,17 +532,6 @@
    "audio": "assets/audio/lb/fesch1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/fesch1.m4a",
    "dit": "Fësch",
-   "coupe": true
-  },
-  "gebuertsdag": {
-   "forme": "Gebuertsdag",
-   "lod": "GEBUERTSDAG1",
-   "lemme": "Gebuertsdag",
-   "categorie": "SUBST+M",
-   "sens": "anniversaire",
-   "audio": "assets/audio/lb/gebuertsdag1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/gebuertsdag1.m4a",
-   "dit": "Gebuertsdag",
    "coupe": true
   },
   "geess": {
@@ -668,38 +622,35 @@
    "dit": "gréng",
    "coupe": false
   },
-  "gudde": {
-   "forme": "Gudde",
-   "lod": "GUTT2",
-   "lemme": "gutt",
-   "categorie": "ADJ",
-   "sens": "bon, bien",
-   "audio": "assets/audio/lb/gutt2.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/gutt2.m4a",
-   "dit": "gutt",
-   "coupe": false
+  "gudde moien": {
+   "forme": "Gudde Moien",
+   "lod": "MOIEN1",
+   "exemple": "ee04cddd4072d1d7a63aef7f1c667f6f",
+   "sens": "bonjour, le matin",
+   "audio": "assets/audio/lb/ex_ee04cddd4072d1d7a63aef7f1c667f6f_gudde_moien.m4a",
+   "audio_lod": "https://lod.lu/uploads/examples/AAC/ee/ee04cddd4072d1d7a63aef7f1c667f6f.m4a",
+   "dit": "gudde Moien",
+   "coupe": true
   },
-  "gudden": {
-   "forme": "Gudden",
-   "lod": "GUTT2",
-   "lemme": "gutt",
-   "categorie": "ADJ",
-   "sens": "bon, bien",
-   "audio": "assets/audio/lb/gutt2.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/gutt2.m4a",
-   "dit": "gutt",
-   "coupe": false
+  "gudden appetit": {
+   "forme": "Gudden Appetit",
+   "lod": "WENSCHEN1",
+   "exemple": "8071ac503c91b9685f83f938d40c927c",
+   "sens": "bon appétit",
+   "audio": "assets/audio/lb/ex_8071ac503c91b9685f83f938d40c927c_gudden_appetit.m4a",
+   "audio_lod": "https://lod.lu/uploads/examples/AAC/80/8071ac503c91b9685f83f938d40c927c.m4a",
+   "dit": "gudden Appetit",
+   "coupe": true
   },
-  "guddes": {
-   "forme": "Guddes",
-   "lod": "GUTT2",
-   "lemme": "gutt",
-   "categorie": "ADJ",
-   "sens": "bon, bien",
-   "audio": "assets/audio/lb/gutt2.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/gutt2.m4a",
-   "dit": "gutt",
-   "coupe": false
+  "gudden owend": {
+   "forme": "Gudden Owend",
+   "lod": "OWEND1",
+   "exemple": "9a4981c8b5b541ca3318b9a165f6c700",
+   "sens": "bonsoir",
+   "audio": "assets/audio/lb/ex_9a4981c8b5b541ca3318b9a165f6c700_gudden_owend.m4a",
+   "audio_lod": "https://lod.lu/uploads/examples/AAC/9a/9a4981c8b5b541ca3318b9a165f6c700.m4a",
+   "dit": "gudden Owend",
+   "coupe": true
   },
   "gutt": {
    "forme": "Gutt",
@@ -811,17 +762,6 @@
    "dit": "jo",
    "coupe": false
   },
-  "joer": {
-   "forme": "Joer",
-   "lod": "JOER1",
-   "lemme": "Joer",
-   "categorie": "SUBST+N",
-   "sens": "an, année",
-   "audio": "assets/audio/lb/joer1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/joer1.m4a",
-   "dit": "Joer",
-   "coupe": true
-  },
   "joffer": {
    "forme": "Joffer",
    "lod": "JOFFER1",
@@ -886,6 +826,17 @@
    "audio": "assets/audio/lb/keis1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/keis1.m4a",
    "dit": "Kéis",
+   "coupe": true
+  },
+  "kürbis": {
+   "forme": "Kürbis",
+   "lod": "KURBIS1",
+   "lemme": "Kürbis",
+   "categorie": "SUBST+M",
+   "sens": "citrouille, potiron",
+   "audio": "assets/audio/lb/kurbis1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/kurbis1.m4a",
+   "dit": "Kürbis",
    "coupe": true
   },
   "lineal": {
@@ -1049,15 +1000,15 @@
    "dit": "nee",
    "coupe": false
   },
-  "neie": {
-   "forme": "neie",
-   "lod": "NEI1",
-   "lemme": "nei",
-   "categorie": "ADJ",
-   "sens": "neuf, nouveau",
-   "audio": "assets/audio/lb/nei1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/nei1.m4a",
-   "dit": "nei",
+  "nonzeg": {
+   "forme": "nonzeg",
+   "lod": "NONZEG1",
+   "lemme": "nonzeg",
+   "categorie": "NB",
+   "sens": "quatre-vingt-dix",
+   "audio": "assets/audio/lb/nonzeg1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/nonzeg1.m4a",
+   "dit": "nonzeg",
    "coupe": false
   },
   "nonzéng": {
@@ -1124,17 +1075,6 @@
    "audio": "assets/audio/lb/ouer1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/ouer1.m4a",
    "dit": "Ouer",
-   "coupe": true
-  },
-  "owend": {
-   "forme": "Owend",
-   "lod": "OWEND1",
-   "lemme": "Owend",
-   "categorie": "SUBST+M",
-   "sens": "soir, soirée",
-   "audio": "assets/audio/lb/owend1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/owend1.m4a",
-   "dit": "Owend",
    "coupe": true
   },
   "papp": {
@@ -1357,16 +1297,15 @@
    "dit": "Schwëster",
    "coupe": true
   },
-  "schéi": {
-   "forme": "Schéi",
-   "lod": "SCHEIN1",
-   "lemme": "schéin",
-   "categorie": "ADJ",
-   "sens": "beau, joliment",
-   "audio": "assets/audio/lb/schein1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/schein1.m4a",
-   "dit": "schéin",
-   "coupe": false
+  "schéi chrëschtdeeg": {
+   "forme": "Schéi Chrëschtdeeg",
+   "lod": "CHRESCHTDEEG1",
+   "exemple": "0b1d6597bc519b3688d36901cc293ef7",
+   "sens": "joyeux Noël",
+   "audio": "assets/audio/lb/ex_0b1d6597bc519b3688d36901cc293ef7_schei_chreschtdeeg.m4a",
+   "audio_lod": "https://lod.lu/uploads/examples/AAC/0b/0b1d6597bc519b3688d36901cc293ef7.m4a",
+   "dit": "schéi Chrëschtdeeg",
+   "coupe": true
   },
   "schéier": {
    "forme": "Schéier",
@@ -1379,16 +1318,15 @@
    "dit": "Schéier",
    "coupe": true
   },
-  "schéinen": {
-   "forme": "Schéinen",
-   "lod": "SCHEIN1",
-   "lemme": "schéin",
-   "categorie": "ADJ",
-   "sens": "beau, joliment",
-   "audio": "assets/audio/lb/schein1.m4a",
-   "audio_lod": "https://lod.lu/uploads/AAC/schein1.m4a",
-   "dit": "schéin",
-   "coupe": false
+  "schéinen dag": {
+   "forme": "Schéinen Dag",
+   "lod": "VERSAUEN1",
+   "exemple": "31eab4bfc3223f259fffa91932164dd0",
+   "sens": "bonne journée",
+   "audio": "assets/audio/lb/ex_31eab4bfc3223f259fffa91932164dd0_scheinen_dag.m4a",
+   "audio_lod": "https://lod.lu/uploads/examples/AAC/31/31eab4bfc3223f259fffa91932164dd0.m4a",
+   "dit": "schéinen Dag",
+   "coupe": true
   },
   "sechs": {
    "forme": "sechs",
@@ -1399,6 +1337,17 @@
    "audio": "assets/audio/lb/sechs1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/sechs1.m4a",
    "dit": "sechs",
+   "coupe": false
+  },
+  "sechzeg": {
+   "forme": "sechzeg",
+   "lod": "SECHZEG1",
+   "lemme": "sechzeg",
+   "categorie": "NB",
+   "sens": "soixante",
+   "audio": "assets/audio/lb/sechzeg1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/sechzeg1.m4a",
+   "dit": "sechzeg",
    "coupe": false
   },
   "siechzéng": {
@@ -1432,6 +1381,17 @@
    "audio": "assets/audio/lb/siwen1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/siwen1.m4a",
    "dit": "siwen",
+   "coupe": false
+  },
+  "siwwenzeg": {
+   "forme": "siwwenzeg",
+   "lod": "SIWWENZEG1",
+   "lemme": "siwwenzeg",
+   "categorie": "NB",
+   "sens": "soixante-dix",
+   "audio": "assets/audio/lb/siwwenzeg1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/siwwenzeg1.m4a",
+   "dit": "siwwenzeg",
    "coupe": false
   },
   "siwwenzéng": {
@@ -1478,6 +1438,17 @@
    "dit": "Tiger",
    "coupe": true
   },
+  "tomat": {
+   "forme": "Tomat",
+   "lod": "TOMAT1",
+   "lemme": "Tomat",
+   "categorie": "SUBST+F",
+   "sens": "tomate",
+   "audio": "assets/audio/lb/tomat1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/tomat1.m4a",
+   "dit": "Tomat",
+   "coupe": true
+  },
   "uechtzéng": {
    "forme": "uechtzéng",
    "lod": "UECHTZENG1",
@@ -1500,6 +1471,16 @@
    "dit": "vill",
    "coupe": false
   },
+  "vill gléck am neie joer": {
+   "forme": "Vill Gléck am neie Joer",
+   "lod": "WENSCHEN1",
+   "exemple": "4492ac18d8afe0a25b02ab2598e35446",
+   "sens": "bonne année",
+   "audio": "assets/audio/lb/ex_4492ac18d8afe0a25b02ab2598e35446_vill_gleck_am_neie_joer.m4a",
+   "audio_lod": "https://lod.lu/uploads/examples/AAC/44/4492ac18d8afe0a25b02ab2598e35446.m4a",
+   "dit": "vill Gléck am neie Joer",
+   "coupe": true
+  },
   "vull": {
    "forme": "Vull",
    "lod": "VULL1",
@@ -1520,6 +1501,17 @@
    "audio": "assets/audio/lb/veier1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/veier1.m4a",
    "dit": "véier",
+   "coupe": false
+  },
+  "véierzeg": {
+   "forme": "véierzeg",
+   "lod": "VEIERZEG1",
+   "lemme": "véierzeg",
+   "categorie": "NB",
+   "sens": "quarante",
+   "audio": "assets/audio/lb/veierzeg1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/veierzeg1.m4a",
+   "dit": "véierzeg",
    "coupe": false
   },
   "véierzéng": {
@@ -1618,6 +1610,17 @@
    "audio_lod": "https://lod.lu/uploads/AAC/wellkomm1.m4a",
    "dit": "wëllkomm",
    "coupe": false
+  },
+  "zalot": {
+   "forme": "Zalot",
+   "lod": "ZALOT1",
+   "lemme": "Zalot",
+   "categorie": "SUBST+F",
+   "sens": "salade",
+   "audio": "assets/audio/lb/zalot1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/zalot1.m4a",
+   "dit": "Zalot",
+   "coupe": true
   },
   "zant": {
    "forme": "Zant",

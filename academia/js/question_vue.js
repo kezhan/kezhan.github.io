@@ -33,7 +33,7 @@ async function suiteDeVoix(etapes){
 function direMixte(texte, q){
   const lang = q.oreille || q.langue || "fr", mots = Q.mots[lang] || new Set(), parts = [];
   if (lang === "fr") return dire(texte);
-  const etranger = w => mots.has(w.toLowerCase()) || (lang === "lb" && couvertLb(w));
+  const etranger = w => mots.has(w.toLowerCase()) || (lang === "lb" ? couvertLb(w) : aSaVoix(w, lang));   // recorded: js/voix.js
   const re = /«\s*(.+?)\s*»/g; let m, i = 0;
   while ((m = re.exec(texte))) if (etranger(m[1])) { parts.push([texte.slice(i, m.index), "fr"], [m[1], lang]); i = re.lastIndex; }
   parts.push([texte.slice(i), "fr"]);

@@ -1,5 +1,12 @@
-/* Académia : la voix lit les questions et les explications (la petite ne lit pas encore). Voix du navigateur pour
-   le français, l'anglais et l'allemand. Le luxembourgeois n'est JAMAIS dit par le navigateur (sa voix serait
+/* Académia : la voix lit les questions et les explications (la petite ne lit pas encore).
+   1. Le français : la voix du navigateur, ou celle de la tablette dans l'application Android.
+   2. L'anglais et l'allemand : des enregistrements Azure faits à l'avance (outils/voix/, assets/audio/en et de), un
+      par morceau de passage (une phrase, ou une partie entre virgules : « dog, dog ! » joue deux fois « dog »),
+      trouvés par donnees/voix_etrangeres.json. Un morceau sans enregistrement (ou qui ne joue pas, même redemandé) :
+      la voix du navigateur ou de la tablette, réglée sur sa langue ; un appareil sans voix de cette langue se tait
+      plutôt que de lire avec une autre (noté dans window.__voixManquante). La recette relève dans
+      window.__sansEnregistrement un passage anglais ou allemand qui n'a pas ses enregistrements.
+   3. Le luxembourgeois n'est JAMAIS dit par le navigateur (sa voix serait
    mauvaise) : chaque phrase enregistrée d'un seul tenant (exemple du dictionnaire), sinon chaque mot, est jouée
    depuis son enregistrement de lod.lu, copié dans le jeu (assets/audio/lb, donnees/lexique_lb.json, données CC0)
    pour marcher sans réseau. Un passage sans enregistrement se tait (le contrôle des questions l'interdit, la recette
@@ -20,14 +27,16 @@ function voixPour(lang){
 }
 // emojis are shown, never read aloud ("🍎🍎" would be read as "pomme rouge pomme rouge")
 const sansEmoji = t => String(t || "").replace(/[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu, "").replace(/\s+/g, " ").trim();
-let voixCoupee = false, generation = 0, audioLb = null;
+let voixCoupee = false, generation = 0, audioLb = null;   // audioLb: the recording playing (any language, js/sons.js)
+const ENREGISTREES = ["en", "de"];
 // the music listens (js/sons.js): it steps back while the voice speaks
 const signalerVoix = parle => document.dispatchEvent(new CustomEvent("voix", {detail: parle ? "debut" : "fin"}));
 // options.lent: a foreign word said slowly
 function dire(texte, lang = "fr", options){
   const t = sansEmoji(texte), moi = ++generation, lent = !!(options && options.lent);
-  if (TEST) {   // nothing is heard in the checks; a Luxembourgish passage without its recordings is noted
-    window.__dit = t;
+  if (TEST) {   // nothing is heard in the checks; a passage without its recordings is noted
+    window.__dit = t; (window.__dits = window.__dits || []).push({lang, texte: t});
+    if (ENREGISTREES.includes(lang)) chargerVoixEtrangeres().then(() => { if (!aSaVoix(t, lang)) (window.__sansEnregistrement = window.__sansEnregistrement || []).push({lang, texte: t}); });
     if (lang === "lb") chargerLexiqueLb().then(lex => { if (!enregistrementsLb(motsLb(t), lex)) (window.__lbMuet = window.__lbMuet || []).push(t); });
     return Promise.resolve();
   }
@@ -35,7 +44,8 @@ function dire(texte, lang = "fr", options){
   if (!t || voixCoupee) return Promise.resolve();
   signalerVoix(true);
   const fini = () => { if (moi === generation) signalerVoix(false); };
-  const p = lang === "lb" ? direLb(t, moi) : parler(t, lang, lent);   // Luxembourgish: the recordings, nothing else
+  const p = lang === "lb" ? direLb(t, moi)   // Luxembourgish: the recordings, nothing else
+    : ENREGISTREES.includes(lang) ? direEtranger(t, lang, moi, lent) : parler(t, lang, lent);
   return p.then(fini, fini);
 }
 // in the Android app (android/), the web view has no speech synthesis: the tablet's own voice speaks, and tells when
@@ -65,6 +75,55 @@ function parler(t, lang, lent = false){
       setTimeout(() => { try { speechSynthesis.resume(); speechSynthesis.speak(u); } catch (e) { ok(); } }, 60);
     } catch (e) { fin(); }
   });
+}
+
+// English and German: the recordings of the pieces, one after the other (the same cut as outils/voix/decoupage.py)
+let indexVoix = null, promesseIndex = null;
+function chargerVoixEtrangeres(){
+  if (indexVoix) return Promise.resolve(indexVoix);
+  return promesseIndex = promesseIndex || (async () => {   // a network hiccup: asked again (nothing kept on failure)
+    for (let essai = 0; !indexVoix && essai < 3; essai++) {
+      try { const r = await fetch("donnees/voix_etrangeres.json"); if (r.ok) indexVoix = await r.json(); } catch (e) {}
+      if (!indexVoix) await new Promise(ok => setTimeout(ok, 400 * (essai + 1)));
+    }
+    promesseIndex = null;
+    return indexVoix || {};
+  })();
+}
+chargerVoixEtrangeres();
+const morceauxEtrangers = t => t.split(/[,;:.!?…]+/).map(s => s.trim()).filter(s => /[\p{L}\p{N}]/u.test(s));
+const cleVoix = t => t.toLowerCase().replace(/[’`]/g, "'").replace(/[^\p{L}\p{N}' -]/gu, " ").replace(/\s+/g, " ").trim();
+const fichierVoix = (m, lang) => { const f = indexVoix && indexVoix[lang] && indexVoix[lang][cleVoix(m)]; return f ? `assets/audio/${lang}/${f}` : null; };
+// a text whose every piece has its recording (a quote of a French text can then be said with its own voice)
+const aSaVoix = (t, lang) => { const m = morceauxEtrangers(sansEmoji(t)); return ENREGISTREES.includes(lang) && m.length > 0 && m.every(x => fichierVoix(x, lang)); };
+// true when ended (or stopped by taire), false when it could not play
+function jouerEnregistrement(u){
+  return new Promise(fin => {
+    const a = audioLb = new Audio(u);
+    let fait = false, minuteur = setTimeout(() => fini(true), 6000);
+    const fini = v => { if (!fait) { fait = true; clearTimeout(minuteur); fin(v); } };
+    a.onloadedmetadata = () => { if (!fait && isFinite(a.duration)) { clearTimeout(minuteur); minuteur = setTimeout(() => fini(true), a.duration * 1000 + 1500); } };
+    a.onended = () => fini(true); a.onpause = () => fini(true); a.onerror = () => fini(false);
+    a.play().catch(() => fini(false));
+  });
+}
+async function direEtranger(t, lang, moi, lent){
+  await chargerVoixEtrangeres();
+  for (const m of morceauxEtrangers(t)) {
+    if (moi !== generation) return;
+    const f = fichierVoix(m, lang);
+    if (f && ((await jouerEnregistrement(f)) || (moi === generation && await jouerEnregistrement(f + "?essai=1")))) continue;
+    if (moi !== generation) return;
+    if (voixManquante(lang)) { (window.__voixManquante = window.__voixManquante || []).push({lang, texte: m}); console.warn("pas de voix", LOCALES[lang], ":", m); continue; }
+    await parler(m, lang, lent);
+  }
+}
+// the device has no voice of this language: better silent than read by a voice of another language
+function voixManquante(lang){
+  try { if (window.AcademiaAndroid) return !!(AcademiaAndroid.pret() && !AcademiaAndroid.langue(LOCALES[lang])); } catch (e) { return false; }
+  if (!("speechSynthesis" in window)) return true;
+  if (!voixListe.length) chargerVoix();
+  return voixListe.length > 0 && !voixPour(lang);   // an empty list (voices not loaded yet): the language set on the line decides
 }
 
 // Luxembourgish: the recordings of the words, one after the other ("d'Kaz": the article, then the word)

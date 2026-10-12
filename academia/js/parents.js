@@ -148,7 +148,8 @@ function vueReglages(v){
 // for the grown-ups: how the pictures are drawn, and any that could not be loaded
 function diagnosticImages(){
   const r = JEU.renderer, moteur = r && r.type === Phaser.WEBGL ? `WebGL ${TEXTURE_MAX}` : "sans carte graphique", manque = [...ECHECS];
-  const app = window.AcademiaAndroid ? ` · application Android ${AcademiaAndroid.version()}` : "";
+  const app = !window.AcademiaAndroid ? "" : ` · application Android ${AcademiaAndroid.version()}`
+    + (AcademiaAndroid.pret() ? "" : " · aucune voix sur cet appareil (activer « Services vocaux Google » dans les réglages)");
   return `Version ${VERSION}${app} · images ${QUALITE === "hd" ? "haute définition" : "légères"} · ${moteur} · `
     + (manque.length ? `dessins non chargés : ${manque.join(", ")} (réseau ?)` : "tous les dessins sont chargés");
 }

@@ -11,6 +11,8 @@
 
 Mots et phrases luxembourgeois : enregistrements du **Lëtzebuerger Online Dictionnaire** (Zenter fir d'Lëtzebuerger Sprooch, https://lod.lu), ceux des mots et de quelques phrases d'exemple du dictionnaire, copiés dans `audio/lb/` pour jouer sans réseau et coupés à leur première forme (« Hond, Hënn, Honn » devient « Hond ») ; jeu de données « LOD, Linguistesch Daten » sous licence **CC0 1.0** sur https://data.public.lu/fr/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/ (vérifié le 05/10/2026, licence et page copiées dans `outils/contenu/sources/`). Chaque entrée garde l'adresse de son enregistrement d'origine dans `donnees/lexique_lb.json` ; fabriqué par `outils/contenu/`.
 
+Mots et phrases anglais et allemands (`audio/en/`, `audio/de/`) : voix neuronales **Azure** de Microsoft (en-GB-LibbyNeural et de-DE-KatjaNeural, quelques mots avec en-GB-SoniaNeural et de-DE-AmalaNeural), enregistrées pour le jeu par `outils/voix/`.
+
 Musique et bruitages (`audio/musique/`, `audio/sons/`), tous sous licence **CC0 1.0**, licences lues sur leur page le 05/10/2026 et copiées dans `outils/sons/sources/` :
 1. Village et accueil : « Home Town » de **Juhani Junkala** (JRPG Music Pack 2 Towns, https://opengameart.org/content/jrpg-pack-2-towns).
 2. Combats : « Children's March Theme » de **Cleyton Kauffman** (https://opengameart.org/content/childrens-march-theme).

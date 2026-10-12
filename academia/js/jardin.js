@@ -10,9 +10,9 @@ const CULTURES = {
   carotte: {nom: "carotte", pluriel: "carottes", une: "une carotte", prix: 5, recolte: [3, 5], en: "carrot", de: "die Karotte", lb: "d'Muert"},
   fraise: {nom: "fraise", pluriel: "fraises", une: "une fraise", prix: 6, recolte: [4, 6], en: "strawberry", de: "die Erdbeere", lb: "d'Äerdbier"},
   pomme_de_terre: {nom: "pomme de terre", pluriel: "pommes de terre", une: "une pomme de terre", prix: 5, recolte: [3, 5], en: "potato", de: "die Kartoffel", lb: "d'Gromper"},
-  tomate: {nom: "tomate", pluriel: "tomates", une: "une tomate", prix: 6, recolte: [3, 5], en: "tomato", de: "die Tomate", lb: ""},
-  salade: {nom: "salade", pluriel: "salades", une: "une salade", prix: 4, recolte: [1, 2], en: "lettuce", de: "der Salat", lb: ""},
-  citrouille: {nom: "citrouille", pluriel: "citrouilles", une: "une citrouille", prix: 8, recolte: [1, 2], en: "pumpkin", de: "der Kürbis", lb: ""}
+  tomate: {nom: "tomate", pluriel: "tomates", une: "une tomate", prix: 6, recolte: [3, 5], en: "tomato", de: "die Tomate", lb: "d'Tomat"},
+  salade: {nom: "salade", pluriel: "salades", une: "une salade", prix: 4, recolte: [1, 2], en: "lettuce", de: "der Salat", lb: "d'Zalot"},
+  citrouille: {nom: "citrouille", pluriel: "citrouilles", une: "une citrouille", prix: 8, recolte: [1, 2], en: "pumpkin", de: "der Kürbis", lb: "de Kürbis"}
 };
 const MATIERES_JARDIN = ["maths", "anglais", "allemand", "luxembourgeois", "logique", "sciences"];
 
