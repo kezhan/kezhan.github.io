@@ -257,3 +257,188 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 @media (prefers-reduced-motion: reduce){ .sprite-hd.vivant, .ecran.plein, .palpite, .logo-eclat, .dlg-choix .suite, .dlg-choix .epees, .coucou .tete{animation:none} }
 /* automated recette (#test): nothing moves */
 .test *, .test *::before, .test *::after{animation:none !important; transition:none !important}
+
+/* sac : trois onglets dessinés, Équipe, Badges et Album (js/equipe.js, js/album.js). La carte tient dans l'écran : rien
+   n'y défile, une page trop pleine de l'album se tourne avec ses flèches. */
+#equipe{padding-top:max(10px, 4vh); padding-bottom:10px}
+#equipe .sac{max-height:calc(100vh - max(10px, 4vh) - 10px); max-height:calc(100dvh - max(10px, 4vh) - 10px); padding:14px 16px}
+.entete-sac{flex:none; margin-bottom:10px; align-items:center}
+.onglets-sac{display:flex; gap:8px; flex:1; min-width:0}
+.onglets-sac button{flex:1 1 0; min-width:0; max-width:210px; min-height:58px; display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:6px 10px; border-radius:18px; background:var(--papier2); font:700 21px var(--titre); color:#6b6390; box-shadow:0 4px 0 rgba(29,22,64,.18)}
+.onglets-sac button[aria-selected="true"]{background:var(--or); color:var(--encre); box-shadow:0 4px 0 rgba(29,22,64,.35)}
+.onglets-sac button:active{transform:translateY(3px); box-shadow:0 1px 0 rgba(29,22,64,.3)}
+.ico-onglet{display:flex; align-items:flex-end; justify-content:center; width:42px; height:42px; flex:none}
+.ico-onglet .icone{width:38px; height:38px; vertical-align:0}
+.ico-onglet .sprite{height:42px}
+.vue-sac{flex:1 1 auto; min-height:0; display:flex; flex-direction:column; overflow:auto}
+.vue-sac > *{flex:1 1 auto; min-height:0}
+.sac .liste-equipe{align-content:start}
+.sac .pied-sac{flex:none; margin-top:10px}
+
+/* the team: under the drawing its three attacks, on its corner its element; alone, the full card */
+.sac .fiche{align-items:flex-start}
+.fiche-gauche{display:flex; flex-direction:column; align-items:center; gap:4px; flex:none}
+.element-coin{position:absolute; right:0; top:0; width:32px; height:32px; border-radius:50%; background:#fff; border:2px solid #E7E1FF;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 2px 0 rgba(29,22,64,.15)}
+.element-coin .icone{width:24px; height:24px; vertical-align:0}
+.vignette .element-coin{right:6px; top:6px; width:28px; height:28px} .vignette .element-coin .icone{width:21px; height:21px}
+.attaques-fiche{display:flex; gap:7px}
+.attaque-fiche{width:36px; height:36px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
+  box-shadow:0 2px 0 rgba(29,22,64,.22); flex:none}
+.attaque-fiche.rapide{background:#CFF2FF} .attaque-fiche.massive{background:#FFD8C9} .attaque-fiche.combo{background:linear-gradient(135deg, #FFE68A, #FFC6F0)}
+.attaque-fiche .icone{width:26px; height:26px; vertical-align:0}
+.fiche.inconnue .attaque-fiche, .fiche.inconnue .element-coin, .vignette.inconnue .element-coin{filter:grayscale(1); opacity:.5}
+.liste-equipe .fiche-dessin{width:112px}
+.liste-equipe .fiche-corps .moyen{padding:4px 10px; gap:6px; font-size:16px}
+.liste-equipe .fiche-corps .moyen .icone{width:24px; height:24px}
+.boutons-fiche{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.fiche-seule{container-type:inline-size}
+.fiche-seule .fiche{padding:12px 16px 14px 8px; gap:14px; align-items:center}
+.fiche-seule .fiche-dessin{width:170px; height:150px}
+.fiche-seule .fiche-dessin .niv{font-size:16px; padding:5px 10px}
+.fiche-seule .fiche-corps{gap:7px}
+.fiche-seule .fiche-corps > b{font-size:30px}
+.fiche-seule .barrexp.petite{height:12px}
+.fiche-seule .etoiles svg{width:22px; height:22px}
+.element-fiche{align-self:flex-start; display:inline-flex; align-items:center; gap:6px; padding:3px 14px 3px 5px; border-radius:999px; background:#fff;
+  border:2px solid #E7E1FF; font:700 18px var(--titre); color:var(--nuit2); cursor:pointer}
+.element-fiche .icone{width:30px; height:30px; vertical-align:0}
+.attaques-fiche.complete{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px}
+.attaques-fiche.complete .attaque-fiche{width:auto; height:auto; min-height:58px; border-radius:18px; padding:6px 10px 6px 8px; justify-content:flex-start;
+  gap:8px; text-align:left; box-shadow:0 3px 0 rgba(29,22,64,.22)}
+.attaques-fiche.complete .icone{width:36px; height:36px}
+.attaque-fiche > span{min-width:0} .attaque-fiche b{display:block; font:700 18px/1.1 var(--titre); white-space:normal; overflow:visible}
+.attaque-fiche small{display:block; font-size:13px; line-height:1.15; color:#5d5585}
+.formes-fiche{display:flex; align-items:center; gap:4px}
+.forme-sac{display:flex; flex-direction:column; align-items:center; gap:2px; min-width:76px; padding:5px 8px 4px; border-radius:16px; background:#fff;
+  box-shadow:0 2px 0 rgba(29,22,64,.15)}
+.forme-sac small{font:700 13px/1.1 var(--titre); color:var(--nuit2); white-space:nowrap}
+.forme-sac.actuelle{outline:3px solid var(--or); background:#FFF8DA}
+.forme-sac.a-venir .sprite{filter:brightness(0) opacity(.3)}
+.forme-sac.a-venir small{color:#8c84ad}
+.fleche-forme .icone{width:20px; height:20px; opacity:.45; vertical-align:0}
+.fiche-seule .boutons-fiche{margin-top:2px} .fiche-seule .boutons-fiche .retour{margin-top:0}
+.fiche-seule .boutons-fiche .moyen{min-height:52px; align-self:auto}
+@container (max-width:620px){
+  .attaques-fiche.complete{grid-template-columns:1fr; gap:6px} .attaques-fiche.complete .attaque-fiche{min-height:48px}
+  .fiche-seule .fiche{flex-direction:column; align-items:stretch; gap:6px; padding:10px 12px} .fiche-seule .fiche-gauche{align-self:center}
+  .fiche-seule .fiche-dessin{width:150px; height:130px}
+}
+
+/* badges: the medal of each house, grey until its chief is beaten, and its stars */
+.badges-sac{display:flex; flex-direction:column; gap:8px}
+.compte-sac{margin:0; font:700 19px var(--titre); color:var(--nuit2); flex:none}
+.compte-sac .icone{width:1.4em; height:1.4em; vertical-align:-.35em}
+.grille-badges{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; align-content:start; --med:min(128px, 17vh, 24vw)}
+.badge-sac{display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px 12px; border-radius:22px; background:var(--papier2);
+  box-shadow:0 3px 0 rgba(29,22,64,.15); min-width:0}
+.badge-sac.gagne{background:#FFF3C4; outline:3px solid #FFE07A}
+.medaille-sac{position:relative; display:block; width:var(--med); height:var(--med)}
+.medaille-sac .icone{width:100%; height:100%; vertical-align:0}
+.badge-sac:not(.gagne) .medaille-sac .icone{filter:grayscale(1) contrast(.75); opacity:.4}
+.medaille-sac .fois{position:absolute; right:-6px; bottom:4px; background:var(--nuit2); color:#fff; font:700 14px/1 var(--titre); border:2px solid #fff;
+  border-radius:999px; padding:4px 7px}
+.etoiles-sac{display:flex; gap:3px} .etoiles-sac svg{width:24px; height:24px; display:block}
+.etoiles-sac .vide svg{filter:grayscale(1); opacity:.28}
+.badge-sac b{font:700 16px/1.15 var(--titre); text-align:center; max-width:100%}
+.badge-sac b .icone{width:1.3em; height:1.3em; vertical-align:-.3em}
+.badge-sac:not(.gagne) b{color:#8c84ad}
+
+/* album: four pages (Ombres, shiny ones, stickers, notebook), arrows when a page is too full for the screen */
+.album-sac{display:flex; flex-direction:column; gap:8px}
+.tete-album{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 10px; flex:none}
+.pages-album{display:flex; gap:6px; flex-wrap:wrap}
+.page-album{display:inline-flex; align-items:center; gap:6px; min-height:50px; padding:4px 10px 4px 6px; border-radius:16px; background:var(--papier2);
+  font:700 17px var(--titre); color:#6b6390; box-shadow:0 3px 0 rgba(29,22,64,.15)}
+.page-album[aria-selected="true"]{background:#E6DEFF; color:var(--encre); box-shadow:inset 0 0 0 3px var(--nuit2)}
+.ico-page{width:36px; height:36px; display:flex; align-items:flex-end; justify-content:center; flex:none}
+.ico-page .icone{width:34px; height:34px; vertical-align:0} .ico-page .sprite{height:34px}
+.compte-page{font:700 13px/1 var(--titre); background:#fff; border-radius:999px; padding:3px 7px; color:var(--nuit2)}
+.fleches-album{display:flex; align-items:center; gap:8px; margin-left:auto}
+.fleche-album.rond{width:50px; height:50px; background:var(--or)}
+.fleche-album[disabled]{opacity:.35; pointer-events:none}
+.num-feuillet{font:700 17px var(--titre); color:var(--nuit2); min-width:34px; text-align:center}
+.feuille-album{flex:1 1 auto; min-height:0; overflow:hidden; padding:10px; border-radius:20px;
+  background:radial-gradient(circle at 12px 12px, rgba(155,107,242,.12) 0 2px, transparent 3px) 0 0/24px 24px, #F7F2FF}
+.grille-album{display:grid; gap:10px; align-content:start}
+.feuille-album.ombres .grille-album, .feuille-album.brillantes .grille-album{grid-template-columns:repeat(5, minmax(0, 1fr))}
+.case-ombre{position:relative; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px 10px; border-radius:20px; background:#fff;
+  box-shadow:0 3px 0 rgba(29,22,64,.12); min-width:0}
+.case-ombre .cadre{position:relative; width:100%; aspect-ratio:1.15; max-height:var(--cadre, 150px); container-type:size; display:flex;
+  align-items:flex-end; justify-content:center}
+.case-ombre .cadre .sprite{height:min(100cqh, calc(100cqw / 1.4))}
+.case-ombre:not(.vue) .sprite{filter:brightness(0) opacity(.28)}
+.case-ombre b{font:700 17px/1.1 var(--titre); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.case-ombre:not(.vue) b{color:#9a93b8}
+.case-ombre .compteur{position:absolute; top:6px; right:6px; background:var(--nuit2); color:#fff; font:700 15px/1 var(--titre); border:2px solid #fff;
+  border-radius:999px; padding:4px 8px}
+.case-ombre.brillante.vue{background:radial-gradient(circle at 50% 42%, #FFFBE0, #FFE58A 75%); box-shadow:0 0 0 3px #FFD45C, 0 3px 0 rgba(29,22,64,.12)}
+.case-ombre.brillante.vue .sprite{filter:drop-shadow(0 0 5px #FFF3A6) drop-shadow(0 0 3px #FFC93C)}
+.case-ombre.brillante:not(.vue){background:#FFFBEA}
+.case-ombre .eclat{position:absolute; width:20%; max-width:26px; pointer-events:none; animation:luit 1.6s ease-in-out infinite}
+.case-ombre .eclat.e1{left:6%; top:8%} .case-ombre .eclat.e2{right:8%; top:30%; animation-delay:-.5s} .case-ombre .eclat.e3{left:16%; bottom:6%; animation-delay:-1s}
+.feuille-album.autocollants .grille-album, .album-vide .places{display:grid; grid-template-columns:repeat(auto-fill, minmax(96px, 1fr)); gap:10px; width:100%}
+.sac .autocollant{display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 2px; background:none}
+.sac .collant{width:80px; height:80px; border-radius:24px; background:#fff; box-shadow:0 0 0 3px #E2D9FF, 0 5px 0 rgba(29,22,64,.16);
+  display:flex; align-items:center; justify-content:center; transform:rotate(var(--penche, 0deg))}
+.sac .collant .icone, .sac .collant img{width:60px; height:60px; vertical-align:0}
+.sac .autocollant small{font:700 13px var(--titre); color:#6b6390}
+.sac .autocollant.attend .collant{background:rgba(255,255,255,.5); box-shadow:none; outline:3px dashed #C9B8FF; outline-offset:-3px}
+.sac .autocollant.attend .icone{opacity:.3; filter:grayscale(1)}
+.album-vide{display:flex; flex-direction:column; gap:10px; align-items:center}
+.album-vide p{margin:0; color:#6b6390; text-align:center}
+.feuille-album.carnet .grille-album{grid-template-columns:repeat(auto-fill, minmax(230px, 1fr))}
+.tampon-carte{position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-height:112px; padding:10px 12px;
+  border-radius:18px; text-align:left; border:2px solid #E2D9FF; background:repeating-linear-gradient(180deg, #fff 0 25px, #EAF1FF 25px 27px)}
+.q-carnet{font:700 15px/1.3 var(--texte); color:var(--encre); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; max-width:100%}
+.q-carnet .icone{width:1.35em; height:1.35em; vertical-align:-.32em}
+.reponse-carnet{display:inline-flex; align-items:center; gap:6px; min-height:44px; font:700 26px/1 var(--titre); color:var(--nuit2); max-width:62%}
+.reponse-carnet .q-rang{font-size:36px} .reponse-carnet .q-points, .reponse-carnet .q-legende{display:none}
+.reponse-carnet .icone{width:36px; height:36px}
+.reponse-carnet .q-tas{font-size:13px}
+.tampon-marque{position:absolute; right:10px; bottom:12px; transform:rotate(-9deg); display:inline-flex; align-items:center; gap:4px; padding:3px 10px 3px 6px;
+  border:3px solid #2A9A5F; border-radius:12px; color:#1E7A48; background:rgba(255,255,255,.8); font:700 16px var(--titre); text-transform:uppercase; letter-spacing:.03em}
+.tampon-marque .icone{width:22px; height:22px; vertical-align:0}
+.date-carnet{font:700 12px var(--titre); color:#8c84ad}
+.tampon-carte.vide-carnet{flex-direction:row; align-items:center; gap:12px; max-width:420px; min-height:0}
+.tampon-carte.vide-carnet > .icone{width:64px; height:64px; opacity:.6}
+
+/* grown-ups' corner (js/parents.js): the ranked mistakes, the real time played */
+.vue-parents .titre-parents{margin:10px 0 2px; font:700 18px var(--titre); color:var(--nuit2)}
+.vue-parents .titre-parents:first-child{margin-top:2px}
+.dernieres{display:inline-flex; align-items:center; gap:3px; white-space:nowrap; font-size:14px; color:#5d5585}
+.dernieres i{width:11px; height:11px; border-radius:50%; flex:none}
+.dernieres i.juste{background:var(--vert)} .dernieres i.rate{background:var(--rouge)}
+.note-parents{margin:8px 4px; color:#5d5585; font-size:15px}
+
+/* phone upright: the tabs' words under their pictures, everything a little smaller */
+@media (max-width:560px){
+  #equipe .sac{padding:10px}
+  .onglets-sac{gap:6px}
+  .onglets-sac button{flex-direction:column; gap:2px; min-height:66px; padding:4px; font-size:15px}
+  .ico-onglet{width:36px; height:36px} .ico-onglet .icone{width:34px; height:34px} .ico-onglet .sprite{height:36px}
+  .badge-sac b{font-size:13px} .etoiles-sac svg{width:18px; height:18px}
+  .page-album{min-height:46px; padding:3px 8px 3px 4px; font-size:14px} .ico-page{width:30px; height:30px} .ico-page .icone{width:28px; height:28px}
+  .feuille-album.ombres .grille-album, .feuille-album.brillantes .grille-album{grid-template-columns:repeat(3, minmax(0, 1fr))}
+  .case-ombre b{font-size:13px}
+  .feuille-album.carnet .grille-album{grid-template-columns:1fr}
+}
+/* a low screen (a phone held sideways, a small window): one row of medals, the pages' words hidden */
+@media (max-height:500px){
+  #equipe{padding-top:6px; padding-bottom:6px}
+  #equipe .sac{max-height:calc(100vh - 12px); max-height:calc(100dvh - 12px); padding:8px 12px}
+  .entete-sac{margin-bottom:6px}
+  .onglets-sac button{min-height:46px; font-size:18px; padding:3px 8px}
+  .ico-onglet{width:34px; height:34px} .ico-onglet .icone{width:30px; height:30px} .ico-onglet .sprite{height:34px}
+  .sac .pied-sac{margin-top:6px} .sac .parents{min-height:40px}
+  .grille-badges{grid-template-columns:repeat(6, minmax(0, 1fr)); --med:min(96px, 23vh)} .compte-sac{display:none}
+  .badge-sac{padding:6px 4px 8px} .badge-sac b{font-size:13px} .etoiles-sac svg{width:18px; height:18px}
+  .album-sac{gap:6px} .page-album{min-height:44px} .titre-page{display:none} .fleche-album.rond{width:44px; height:44px}
+  .feuille-album{padding:6px} .case-ombre{--cadre:96px; padding:4px 4px 6px} .case-ombre b{font-size:15px}
+  .fiche-seule .fiche{padding:6px 12px 8px 4px; gap:10px} .fiche-seule .fiche-dessin{width:140px; height:120px}
+  .fiche-seule .fiche-corps{gap:4px} .fiche-seule .fiche-corps > b{font-size:24px}
+  .element-fiche{font-size:16px; padding:2px 12px 2px 4px} .element-fiche .icone{width:24px; height:24px}
+  .attaques-fiche.complete .attaque-fiche{min-height:48px; padding:4px 8px} .attaque-fiche small{display:none} .formes-fiche{display:none}
+  .fiche-seule .boutons-fiche .moyen{min-height:46px}
+}

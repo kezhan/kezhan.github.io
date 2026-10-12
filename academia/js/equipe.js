@@ -1,11 +1,25 @@
-/* Académia : le sac de l'équipe, pour l'enfant. Tous les compagnons en fiches basses (le dessin avec son niveau en
-   pastille, le nom, la barre d'XP, une étoile par notion réussie en jeu, la charge du combo, un bouton) ; ceux qu'il
-   reste à libérer en silhouette. Le compagnon choisi suit le héros et combat. Au téléphone (ou sur un écran bas), des
-   vignettes qui ouvrent la fiche. Toucher un dessin fait dire son nom. Les pourcentages et les réglages sont dans le
-   coin Parents (js/parents.js), ouvert par un appui long sur « Parents ». */
+/* Académia : le sac de l'enfant, en trois onglets dessinés : Équipe, Badges et Album (js/album.js). Rien n'y défile.
+   Équipe : tous les compagnons en fiches basses (le dessin avec son niveau en pastille et le symbole de son élément,
+   ses trois attaques en icônes, le nom, la barre d'XP, une étoile par notion réussie en jeu, la charge du combo, un
+   bouton) ; ceux qu'il reste à libérer en silhouette. Le compagnon choisi suit le héros et combat. Au téléphone (ou
+   sur un écran bas), des vignettes. Toucher un compagnon libéré ouvre sa fiche complète : son élément, ses trois
+   attaques (rapide, massive, combo) écrites pour le grand, et la voix les dit pour la petite ; ses trois formes, celles
+   à venir en silhouette avec le niveau qui les apporte. Les pourcentages et les
+   réglages sont dans le coin Parents (js/parents.js), ouvert par un appui long sur « Parents ». */
 const ETOILE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.2l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z" '
   + 'fill="#FFCF3D" stroke="#1D1640" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.2 8.6l1.5-.2" stroke="#FFF6C9" stroke-width="1.6" stroke-linecap="round"/></svg>';
 const sacCompact = () => matchMedia("(max-width: 560px), (max-height: 500px)").matches;
+// the three attacks (js/compagnons.js, attaquesDe): their drawn icon (the same as in the fight) and what the voice says
+const ATTAQUES_SAC = [
+  {cls: "rapide", icone: "eclair", genre: "l'attaque rapide", aide: "Une question facile"},
+  {cls: "massive", icone: "choc", genre: "la frappe massive", aide: "Plus dur, plus d'XP"},
+  {cls: "combo", icone: "etoile", genre: "le combo", aide: "Trois bonnes réponses de suite"}];
+// each family's element (FAMILLES[f].element): its drawn symbol (outils/icones, icones_sac.py) and how it is said
+// (names of the bag's own: the fights may have their ELEMENTS and elementDe, js/compagnons.js)
+const ELEMENTS_SAC = {"géométrie": ["element_geometrie", "la géométrie"], vent: ["element_vent", "le vent"],
+  pierre: ["element_pierre", "la pierre"], "lumière": ["element_lumiere", "la lumière"],
+  "stratégie": ["element_strategie", "la stratégie"], nature: ["element_nature", "la nature"]};
+const elementSac = f => { const e = FAMILLES[f].element, x = ELEMENTS_SAC[e]; return {mot: e, icone: x ? x[0] : "etoile", dit: x ? x[1] : e}; };
 
 // a notion the child succeeded in play (never one only taken for known when the game was created: js/adaptatif.js,
 // placer): gagneeEnJeu() of the engine, or, with an engine that does not have it, mastered with two right answers
@@ -15,14 +29,42 @@ const reussieEnJeu = n => {
 };
 const notionsReussies = matiere => notionsDe(matiere).filter(reussieEnJeu);
 
-function ouvrirEquipe(){
+let ongletSacCourant = "equipe";
+// the bag opens on its Team tab, or on the one asked (« badges », « album »: a sticker just won can be shown)
+function ouvrirEquipe(onglet){
   const p = P(); if (!p) return;
   const m = JEU.scene.getScene("monde");
   if (ecranCourant === "monde" && (dialogueOuvert() || (m && (m.verrou || m.moment)))) return;
   if (m && m.chemin) { m.chemin = []; m.pnjVise = null; }
   montrer("equipe");
-  dessinerEquipe();
+  ongletSac(["badges", "album"].includes(onglet) ? onglet : "equipe", true);
 }
+// a tab of the bag: its view drawn, the others hidden; the voice names it when the child touches it
+function ongletSac(nom, muet){
+  ongletSacCourant = nom;
+  document.querySelectorAll("#ongletsSac [data-onglet]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.onglet === nom)));
+  const c = actif(), ico = $("icoOngletEquipe");   // the Team tab shows the companion who follows the hero
+  if (ico && c && ico.dataset.cle !== cleDe(c)) { ico.replaceChildren(spriteCompagnon(c, 40)); ico.dataset.cle = cleDe(c); }
+  $("vueSac").dataset.onglet = nom;
+  $("badgesSac").hidden = nom !== "badges"; $("albumSac").hidden = nom !== "album";
+  if (nom === "equipe") dessinerEquipe();
+  else { $("listeEquipe").hidden = $("ficheEquipe").hidden = true; (nom === "badges" ? dessinerBadges : dessinerAlbum)($(nom === "badges" ? "badgesSac" : "albumSac")); }
+  if (!muet) dire({equipe: "Ton équipe !", badges: texteOngletBadges(), album: "Ton album !"}[nom]);
+}
+document.querySelectorAll("#ongletsSac [data-onglet]").forEach(b => {
+  b.onclick = () => { sfx.tap(); ongletSac(b.dataset.onglet); };
+});
+// turned or resized while open: the open tab is drawn again for the new screen (fiches or thumbnails, pages)
+let redessinSac = 0;
+addEventListener("resize", () => {
+  clearTimeout(redessinSac);
+  redessinSac = setTimeout(() => {
+    if ($("equipe").hidden) return;
+    if (ongletSacCourant === "equipe" && !$("ficheEquipe").hidden) return ouvrirFiche($("ficheEquipe").dataset.famille);
+    ongletSac(ongletSacCourant, true);
+  }, 150);
+});
+
 function dessinerEquipe(){
   const p = P(), l = $("listeEquipe"), compact = sacCompact();
   l.innerHTML = ""; l.hidden = false; $("ficheEquipe").hidden = true;
@@ -32,31 +74,89 @@ function dessinerEquipe(){
 }
 const compagnonDe = f => P().compagnons.find(x => x.famille === f) || null;
 const A_REGION = {dojo: "au ", albion: "au ", germania: "à la ", duche: "à la ", jardin: "au ", observatoire: "à l'"};
-// what the voice says about a companion whose drawing is touched
+// what the voice says about a companion whose drawing is touched: name, level, element, attacks, next evolution
 function direCompagnon(f){
-  const c = compagnonDe(f), r = REGIONS.find(x => x.famille === f);
-  if (!c) return dire(`Un compagnon à libérer, ${A_REGION[r.id] || "à "}${r.nom} !`);
-  const st = stade(c);
-  dire(`${nomCompagnon(c)}, niveau ${c.niveau} !` + (st < 3 ? ` Il évolue au niveau ${PALIERS[st]}.` : " C'est sa forme ultime !"));
+  const c = compagnonDe(f), r = REGIONS.find(x => x.famille === f), e = elementSac(f);
+  if (!c) return dire(`Un compagnon à libérer, ${A_REGION[r.id] || "à "}${r.nom} ! Son élément : ${e.dit}.`);
+  const st = stade(c), [a, b, k] = attaquesDe(c);
+  dire(`${nomCompagnon(c)}, niveau ${c.niveau} ! Son élément : ${e.dit}. Ses attaques : ${a}, ${b} et ${k}.`
+    + (st < 3 ? ` Il évolue au niveau ${PALIERS[st]}.` : " C'est sa forme ultime !"));
 }
-// a companion's card: drawing and level, name, XP, stars, combo charge, one button
-function ficheCompagnon(f){
+function direAttaque(c, i){
+  const A = ATTAQUES_SAC[i];
+  if (!c) return dire("Libère ce compagnon pour découvrir ses attaques !");
+  dire(`${attaquesDe(c)[i]} : ${A.genre}. ${A.aide} !`);
+}
+// the three attacks: small icons to touch (a list card), or written out with their kind (the full card); never a
+// <button> in a list card (the card's own button is the only one there)
+function attaquesFiche(f, complete){
+  const c = compagnonDe(f), noms = c ? attaquesDe(c) : ["???", "???", "???"], l = el("div", "attaques-fiche" + (complete ? " complete" : ""));
+  ATTAQUES_SAC.forEach((A, i) => {
+    const b = el(complete ? "button" : "span", "attaque-fiche " + A.cls);
+    if (!complete) { b.setAttribute("role", "button"); b.tabIndex = 0; b.setAttribute("aria-label", c ? noms[i] : "Attaque à découvrir"); b.title = c ? noms[i] : ""; }
+    b.append(iconeDom(A.icone));
+    if (complete) { const t = el("span"), n = el("b"), s = el("small"); n.textContent = affiche(noms[i]); s.textContent = affiche(A.aide); t.append(n, s); b.append(t); }
+    b.onclick = ev => { ev.stopPropagation(); sfx.tap(); sauterDessin(b); direAttaque(c, i); };
+    l.append(b);
+  });
+  return l;
+}
+// the element's drawn symbol, on a corner of the drawing (a card or a thumbnail), or with its word (the full card)
+function elementFiche(f, complete){
+  const e = elementSac(f), d = el("span", complete ? "element-fiche" : "element-coin");
+  d.append(iconeDom(e.icone));
+  if (complete) d.append(e.mot[0].toUpperCase() + e.mot.slice(1));
+  else d.title = e.mot;
+  if (complete) d.onclick = () => { sfx.tap(); sauterDessin(d); dire(`Son élément : ${e.dit} !`); };
+  return d;
+}
+// a companion's card: drawing and level, name, XP, stars, combo charge, attacks, element, one button; `complete`:
+// the card opened alone (attacks written out, its three forms, back button)
+function ficheCompagnon(f, complete = false){
   const p = P(), c = compagnonDe(f), r = REGIONS.find(x => x.famille === f);
   const d = el("div", "fiche" + (c ? "" : " inconnue") + (c && c.id === p.actif ? " active" : ""));
-  const dessin = el("div", "fiche-dessin"), fig = c ? spriteCompagnon(c, 92) : imageHD(f + "1", "face", 84);
+  d.dataset.famille = f;
+  const gauche = el("div", "fiche-gauche"), dessin = el("div", "fiche-dessin"), fig = c ? spriteCompagnon(c, complete ? 120 : 92) : imageHD(f + "1", "face", 84);
   dessin.append(fig);
-  if (c) dessin.append(el("span", "niv", `Niv. ${c.niveau}`));
-  dessin.onclick = () => { sauterDessin(fig); direCompagnon(f); };
+  if (c) dessin.append(el("span", "niv", `Niv. ${c.niveau}`));
+  if (!complete) dessin.append(elementFiche(f, false));
+  dessin.onclick = () => { sfx.tap(); sauterDessin(fig); direCompagnon(f); if (c && !complete) ouvrirFiche(f); };
+  gauche.append(dessin);
+  if (!complete) gauche.append(attaquesFiche(f, false));
   const corps = el("div", "fiche-corps", "<b></b>");
   corps.querySelector("b").textContent = c ? affiche(nomCompagnon(c)) : "???";
+  if (complete) corps.append(elementFiche(f, true));
   if (!c) corps.append(ecrireIcones(el("small"), `À libérer : ${r.icone} ${r.nom}`));   // the house's drawn symbol (js/icones.js)
   else {
     corps.append(el("div", "barrexp petite", `<i style="width:${Math.min(100, 100 * c.xp / xpPour(c.niveau))}%"></i>`), etoilesFiche(c));
-    if (c.id !== p.actif) { const b = ecrireIcones(el("button", "moyen"), "⚔️ Avec moi !"); b.onclick = () => choisirCompagnon(c); corps.append(b); }
-    else corps.append(ecrireIcones(el("span", "suit"), "🐾 Te suit partout"));
+    if (complete) corps.append(attaquesFiche(f, true), formesFiche(c));
+    const boutons = el("div", "boutons-fiche");
+    if (complete) { const retour = ecrireIcones(el("button", "moyen gris retour"), "⬅ Équipe"); retour.onclick = () => { sfx.tap(); dessinerEquipe(); }; boutons.append(retour); }
+    if (c.id !== p.actif) { const b = ecrireIcones(el("button", "moyen"), "⚔️ Avec moi !"); b.onclick = () => choisirCompagnon(c); boutons.append(b); }
+    else boutons.append(ecrireIcones(el("span", "suit"), "🐾 Te suit partout"));
+    corps.append(boutons);
   }
-  d.append(dessin, corps);
+  d.append(gauche, corps);
   return d;
+}
+// its three forms (GDD §3): the ones reached in colour with their name, the ones to come in silhouette with the level
+// that brings them (their names stay a surprise)
+function formesFiche(c){
+  const F = FAMILLES[c.famille], st = stade(c), l = el("div", "formes-fiche");
+  [1, 2, 3].forEach(k => {
+    if (k > 1) { const s = el("span", "fleche-forme"); s.append(iconeDom("suivant")); l.append(s); }
+    const b = el("button", "forme-sac" + (k === st ? " actuelle" : k > st ? " a-venir" : "")), fig = imageHD(c.famille + k, "face", 52), n = el("small");
+    n.textContent = k <= st ? affiche(F.noms[k - 1]) : `Niv. ${PALIERS[k - 1]}`;
+    b.append(fig, n);
+    b.setAttribute("aria-label", k <= st ? F.noms[k - 1] : `Forme secrète, niveau ${PALIERS[k - 1]}`);
+    b.onclick = () => {
+      sfx.tap(); sauterDessin(fig);
+      dire(k === st ? `${F.noms[k - 1]} : sa forme d'aujourd'hui !` : k < st ? `${F.noms[k - 1]} : sa forme d'avant.`
+        : `Une forme secrète ! ${nomCompagnon(c)} la prendra au niveau ${PALIERS[k - 1]}.`);
+    };
+    l.append(b);
+  });
+  return l;
 }
 // one star per notion succeeded in play (five drawn, then « +n »), and the combo's charge when there is one (c.charge,
 // kept on the companion from one fight to the next by js/combat.js)
@@ -81,19 +181,20 @@ function vignetteCompagnon(f){
   const fig = c ? spriteCompagnon(c, 76) : imageHD(f + "1", "face", 70);
   b.prepend(fig); b.querySelector("b").textContent = c ? nomCompagnon(c) : "???";
   if (c) b.append(el("span", "niv", String(c.niveau)));
+  b.append(elementFiche(f, false));
   b.onclick = () => { sfx.tap(); direCompagnon(f); if (c) ouvrirFiche(f); else sauterDessin(fig); };
   return b;
 }
+// a freed companion's card alone, in the place of the list (« ⬅ Équipe » brings the list back)
 function ouvrirFiche(f){
   const l = $("listeEquipe"), v = $("ficheEquipe");
-  l.hidden = true; v.hidden = false; v.innerHTML = "";
-  const retour = ecrireIcones(el("button", "moyen gris retour"), "⬅ Équipe");
-  retour.onclick = () => { sfx.tap(); dessinerEquipe(); };
-  v.append(ficheCompagnon(f), retour);
+  if (!f || !compagnonDe(f)) return dessinerEquipe();
+  l.hidden = true; v.hidden = false; v.innerHTML = ""; v.dataset.famille = f;
+  v.append(ficheCompagnon(f, true));
 }
 function choisirCompagnon(c){
   const p = P(); p.actif = c.id; sauver(); sfx.juste(); dire(`${nomCompagnon(c)}, à toi !`);
-  dessinerEquipe();
+  ongletSac("equipe", true);
   const m = JEU.scene.getScene("monde"); if (m && m.majCompagnon) m.majCompagnon();
 }
 function fermerEquipe(){ window.__calme = performance.now() + 250; montrer("monde"); }

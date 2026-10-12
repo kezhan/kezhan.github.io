@@ -16,7 +16,10 @@ const ICONES = [
   "haut_parleur", "cadenas", "cadenas_ouvert", "images", "enregistrer", "ouvrir", "crayon",
   // one symbol per house (so per subject) and one medal per region
   "maison_dojo", "maison_albion", "maison_germania", "maison_duche", "maison_jardin", "maison_observatoire",
-  "medaille_dojo", "medaille_albion", "medaille_germania", "medaille_duche", "medaille_jardin", "medaille_observatoire"
+  "medaille_dojo", "medaille_albion", "medaille_germania", "medaille_duche", "medaille_jardin", "medaille_observatoire",
+  // the bag: the album, the stamp of a mistake repaired, a sticker, and one symbol per companions' element
+  "album", "tampon", "autocollant", "element_geometrie", "element_vent", "element_pierre", "element_lumiere",
+  "element_strategie", "element_nature"
 ];
 // the system emojis the interface wrote, and the drawn icon shown in their place (without the emoji variation sign)
 const EMOJI_ICONES = {

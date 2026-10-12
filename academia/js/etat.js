@@ -2,7 +2,7 @@
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». Une copie de secours est gardée ; une partie abîmée ou
    d'une version plus ancienne est réparée ; deux onglets ouverts ne s'effacent pas la partie l'un de l'autre. */
-const VERSION = "0.10";
+const VERSION = "0.11";
 const CLE = "academia.v1", CLE_COPIE = "academia.v1.copie";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;
@@ -14,7 +14,14 @@ function nouveauProfil(nom, age){
     regions: {},                          // id -> {niveau, etape, badges}
     maitrise: {},                         // notion -> {ok, ko, hist}  (hist: "1101…", the latest answers)
     erreurs: [],                          // missed questions, replayed by the next boss (revanche)
-    hist: []};                            // fights: {t, region, gagne, xp, bonnes, total}
+    hist: [],                             // fights: {t, region, gagne, xp, bonnes, total}
+    // the album in the bag: Ombres consoled by kind {cle: count}, shiny ones met {cle: true}, stickers [{id, jour}],
+    // mistakes repaired [{question, reponse, matiere, t}] (the latest 50)
+    album: {ombres: {}, brillantes: {}, autocollants: [], reparees: []},
+    missions: {jour: "", liste: []},      // the day's missions from the Sage: {id, texte, but, fait, autocollant}
+    histoire: {},                         // the village's story: moments already seen (id -> ISO date)
+    accessoires: {possedes: [], porte: {}},   // bought from the merchant; porte: famille -> accessory worn
+    temps: {}};                           // time really played, per day ("2026-10-12" -> ms)
 }
 const normNom = s => s.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 function profilParNom(nom){ return Object.values(E.profils).find(p => normNom(p.nom) === normNom(nom)) || null; }
@@ -27,8 +34,18 @@ function lireSauvegarde(cle){
 function reparer(p){
   if (!p || typeof p !== "object" || !p.id || !p.nom) return null;
   const base = nouveauProfil(String(p.nom), Number(p.age) || 6), q = {...base, ...p};
-  ["regions", "maitrise"].forEach(k => { if (!q[k] || typeof q[k] !== "object" || Array.isArray(q[k])) q[k] = base[k]; });
+  const objet = v => !!v && typeof v === "object" && !Array.isArray(v);
+  ["regions", "maitrise", "histoire", "temps"].forEach(k => { if (!objet(q[k])) q[k] = base[k]; });
   ["compagnons", "erreurs", "hist"].forEach(k => { if (!Array.isArray(q[k])) q[k] = []; });
+  // the newer parts (0.11): each field back to its starting shape when it is missing or damaged
+  const forme = (k, objets, listes) => {
+    q[k] = objet(q[k]) ? {...base[k], ...q[k]} : base[k];
+    objets.forEach(c => { if (!objet(q[k][c])) q[k][c] = {}; });
+    listes.forEach(c => { if (!Array.isArray(q[k][c])) q[k][c] = []; });
+  };
+  forme("album", ["ombres", "brillantes"], ["autocollants", "reparees"]);
+  forme("missions", [], ["liste"]); if (typeof q.missions.jour !== "string") q.missions.jour = "";
+  forme("accessoires", ["porte"], ["possedes"]);
   q.jokers = {...base.jokers, ...(q.jokers && typeof q.jokers === "object" ? q.jokers : {})};
   q.compagnons = q.compagnons.filter(c => c && c.id && FAMILLES[c.famille]);
   if (!q.compagnons.some(c => c.id === q.actif)) q.actif = q.compagnons[0] ? q.compagnons[0].id : null;

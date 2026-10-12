@@ -3,8 +3,10 @@
    Onglets, chacun un tableau :
    1. Matières : par matière, la notion du moment, les notions réussies en jeu, la précision (à découvrir avant dix
       réponses), les erreurs gardées ; une ligne touchée montre les notions de la matière et leur état.
-   2. Erreurs : les questions ratées, que le prochain chef d'Ombres reposera (revanche).
-   3. Temps : par jour, le temps de jeu estimé d'après les combats, les combats, les bonnes réponses.
+   2. Erreurs : le classement des erreurs fréquentes, d'abord les notions qui résistent (le plus d'erreurs parmi leurs
+      huit dernières réponses), puis les questions gardées que le prochain chef d'Ombres reposera (revanche).
+   3. Temps : par jour, le temps de jeu réel (js/temps.js), estimé d'après les combats pour les jours d'avant ce
+      compteur ; les combats, les bonnes réponses.
    4. Réglages : images (le jeu redémarre après accord), musique de ce Gardien (js/sons.js), sauvegarde dans un
       fichier et reprise, état des images.
    Tout vient de la partie enregistrée (js/etat.js) : ce coin ne note rien de nouveau. */
@@ -97,34 +99,77 @@ function vueNotions(v, r){
   });
   v.append(retour, t);
 }
+// the mistakes, ranked: first the notions that resist (the most mistakes among their last eight answers, then in all),
+// then the questions kept for the bosses' revenge, the same question counted once with how often it was missed
+const titreParents = (v, texte) => { const h = el("h3", "titre-parents"); h.textContent = texte; v.append(h); };
+const noteParents = (v, texte) => { const n = el("p", "note-parents"); n.textContent = texte; v.append(n); };
 function vueErreurs(v){
-  const l = [...(P().erreurs || [])].reverse();
-  if (!l.length) return videParents(v, "Aucune erreur gardée : le prochain chef d'Ombres n'aura pas de revanche à proposer.");
-  const t = tableauParents(["Matière", "Question", "Bonne réponse"]);
-  l.forEach(q => t.ligne([NOMS_MATIERES[q.matiere] || q.matiere || "", [q.question, q.visuel].filter(Boolean).join(" "), String(q.reponse)]));
-  v.append(t);
+  const p = P(), maitrise = p.maitrise || {}, compteFautes = s => [...String(s || "")].filter(c => c === "0").length;
+  const resistent = Object.entries(maitrise).map(([id, e]) => ({n: notionDe(id), e})).filter(x => x.n && x.e && x.e.ko > 0)
+    .map(x => ({...x, recentes: compteFautes(String(x.e.hist || "").slice(-8)), vues: String(x.e.hist || "").slice(-8).length}))
+    .filter(x => maitrisee(x.n) ? x.recentes >= 2 : true)   // a notion known that slipped once does not resist
+    .sort((a, b) => b.recentes - a.recentes || b.e.ko - a.e.ko || a.e.ok - b.e.ok).slice(0, 12);
+  const gardees = new Map();
+  (p.erreurs || []).forEach((q, i) => {
+    const cle = [q.matiere, q.question, q.visuel, q.reponse].join("|"), g = gardees.get(cle) || {q, fois: 0, dernier: 0};
+    g.fois++; g.dernier = i; gardees.set(cle, g);
+  });
+  const reparees = ((p.album || {}).reparees || []).length;
+  if (!resistent.length && !gardees.size) return videParents(v, "Aucune erreur pour l'instant : rien ne résiste, et le prochain chef d'Ombres n'aura pas de revanche à proposer."
+    + (reparees ? ` Erreurs réparées en revanche : ${reparees}.` : ""));
+  if (resistent.length) {
+    titreParents(v, "Les notions qui résistent");
+    const t = tableauParents(["Notion", "Matière", "Dernières réponses", "Erreurs", "État"], [3], [1, 4]);
+    resistent.forEach(({n, e, recentes, vues}) => {
+      const dernieres = el("span", "dernieres");   // the last eight answers, oldest first: green right, red missed
+      [...String(e.hist || "").slice(-8)].forEach(c => dernieres.append(el("i", c === "1" ? "juste" : "rate")));
+      dernieres.append(` ${recentes} ratée${recentes > 1 ? "s" : ""} sur ${vues}`);
+      const etat = el("span", "etat-notion " + (maitrisee(n) ? "au-depart" : e.chute ? "en-travail" : "du-moment"));
+      etat.textContent = maitrisee(n) ? "sue, à revoir" : e.chute ? "retombée" : "en travail";
+      t.ligne([n.titre, NOMS_MATIERES[n.matiere] || n.matiere, dernieres, String(e.ko), etat]);
+    });
+    v.append(t);
+  }
+  if (gardees.size) {
+    titreParents(v, "Les questions gardées pour la revanche");
+    const t = tableauParents(["Question", "Bonne réponse", "Matière", "Fois"], [3], [2]);
+    [...gardees.values()].sort((a, b) => b.fois - a.fois || b.dernier - a.dernier).forEach(({q, fois}) =>
+      t.ligne([[q.question, q.visuel].filter(Boolean).join(" "), String(q.reponse), NOMS_MATIERES[q.matiere] || q.matiere || "", String(fois)]));
+    v.append(t);
+  }
+  if (reparees) noteParents(v, `Erreurs réparées en revanche : ${reparees} (un tampon chacune dans le carnet de l'album, au sac).`);
 }
-// time played per day, estimated from the fights (each one is dated when it ends): fights less than a quarter of an
-// hour apart belong to the same sitting, which lasts from its first fight to its last, plus one fight
+// time played per day: really counted (js/temps.js) from the day the counter came; before, estimated from the fights
+// (each one is dated when it ends): fights less than a quarter of an hour apart belong to the same sitting, which lasts
+// from its first fight to its last, plus one fight
 function vueTemps(v){
-  const jours = new Map();
-  [...(P().hist || [])].map(x => ({...x, ms: Date.parse(x.t)})).filter(x => x.ms).sort((a, b) => a.ms - b.ms).forEach(x => {
-    const cle = new Date(x.ms).toLocaleDateString("fr-FR", {weekday: "short", day: "numeric", month: "short"});
-    const j = jours.get(cle) || {combats: 0, bonnes: 0, total: 0, ms: 0, debut: null, dernier: null};
+  const p = P(), jours = new Map(), cle = ms => typeof jourTemps === "function" ? jourTemps(ms) : new Date(ms).toISOString().slice(0, 10);
+  const prendre = d => jours.get(d) || jours.set(d, {combats: 0, bonnes: 0, total: 0, ms: 0, debut: null, dernier: null, reel: 0}).get(d);
+  [...(p.hist || [])].map(x => ({...x, ms: Date.parse(x.t)})).filter(x => x.ms).sort((a, b) => a.ms - b.ms).forEach(x => {
+    const j = prendre(cle(x.ms));
     if (j.dernier === null || x.ms - j.dernier > SEANCE_PAUSE_MS) { if (j.debut !== null) j.ms += j.dernier - j.debut + SEANCE_COMBAT_MS; j.debut = x.ms; }
     j.dernier = x.ms; j.combats++; j.bonnes += x.bonnes || 0; j.total += x.total || 0;
-    jours.set(cle, j);
   });
-  if (!jours.size) return videParents(v, "Pas encore de combat : le temps de jeu se compte à partir du premier.");
-  const t = tableauParents(["Jour", "Temps de jeu", "Combats", "Bonnes réponses"], [1, 2, 3], [2]), somme = {ms: 0, combats: 0, bonnes: 0, total: 0};
-  const minutes = ms => `≈ ${Math.max(1, Math.round(ms / 60000))} min`;
-  [...jours.entries()].reverse().slice(0, 30).forEach(([jour, j]) => {
-    const ms = j.ms + j.dernier - j.debut + SEANCE_COMBAT_MS;
-    t.ligne([jour, minutes(ms), String(j.combats), `${j.bonnes} sur ${j.total}`]);
-    somme.ms += ms; somme.combats += j.combats; somme.bonnes += j.bonnes; somme.total += j.total;
+  Object.entries(p.temps || {}).forEach(([d, ms]) => { if (/^\d{4}-\d\d-\d\d$/.test(d) && ms > 0) prendre(d).reel = ms; });
+  if (!jours.size) return videParents(v, "Pas encore de temps de jeu : il se compte dès que l'enfant joue.");
+  const duree = ms => { const m = Math.round(ms / 60000); return m < 1 ? "< 1 min" : m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}`; };
+  const lignes = [...jours.entries()].sort((a, b) => b[0].localeCompare(a[0])).slice(0, 30).map(([d, j]) => {
+    const estime = j.debut === null ? 0 : j.ms + j.dernier - j.debut + SEANCE_COMBAT_MS;
+    return {d, j, ms: j.reel || estime, estime: !j.reel};
   });
-  t.ligne(["Total", minutes(somme.ms), String(somme.combats), `${somme.bonnes} sur ${somme.total}`], "total");
+  // the last seven days at a glance
+  const semaine = lignes.filter(l => l.d >= cle(Date.now() - 6 * 864e5)), somme = semaine.reduce((n, l) => n + l.ms, 0);
+  if (semaine.length) noteParents(v, `Ces sept derniers jours : ${semaine.some(l => l.estime) ? "≈ " : ""}${duree(somme)} de jeu, en ${semaine.length} jour${semaine.length > 1 ? "s" : ""}.`);
+  const t = tableauParents(["Jour", "Temps de jeu", "Combats", "Bonnes réponses"], [1, 2, 3], [2]), total = {ms: 0, combats: 0, bonnes: 0, total: 0, estime: false};
+  const nomJour = d => { const [a, m, j] = d.split("-").map(Number); return new Date(a, m - 1, j).toLocaleDateString("fr-FR", {weekday: "short", day: "numeric", month: "short"}); };
+  lignes.forEach(({d, j, ms, estime}) => {
+    t.ligne([d === cle(Date.now()) ? `Aujourd'hui (${nomJour(d)})` : nomJour(d), (estime ? "≈ " : "") + duree(ms), String(j.combats), j.total ? `${j.bonnes} sur ${j.total}` : ""]);
+    total.ms += ms; total.combats += j.combats; total.bonnes += j.bonnes; total.total += j.total; total.estime = total.estime || estime;
+  });
+  t.ligne(["Total", (total.estime ? "≈ " : "") + duree(total.ms), String(total.combats), total.total ? `${total.bonnes} sur ${total.total}` : ""], "total");
   v.append(t);
+  noteParents(v, "Le temps compte quand la page est ouverte et que l'enfant a touché l'écran dans les deux dernières minutes. "
+    + "« ≈ » : estimé d'après les combats, pour les jours d'avant ce compteur.");
 }
 
 function vueReglages(v){
