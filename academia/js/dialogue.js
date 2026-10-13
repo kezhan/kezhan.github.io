@@ -2,17 +2,21 @@
    le chef des Ombres derrière sa porte), le texte qui s'écrit au rythme de la voix (un toucher l'affiche en entier),
    les lignes lues l'une après l'autre, des boutons de choix à la fin, lus eux aussi quand ils ont une phrase (dit).
    Un émoji de l'interface dans une ligne ou un bouton est montré par son icône dessinée (js/icones.js).
-   Pendant qu'elle est ouverte, le village attend (js/jeu/monde.js, occupe), sauf sur la dernière ligne : un toucher sur
-   le village la ferme et compte comme un toucher du village (l'Ombre touchée lance la marche).
+   Pendant qu'elle est ouverte, le village attend (js/jeu/monde.js, occupe) : un toucher sur le village passe à la ligne
+   suivante, comme un toucher sur la boîte (avancerDialogue) ; sur la dernière ligne, il la ferme et compte comme un
+   toucher du village (l'Ombre touchée lance la marche).
    dialogue(nom, portrait, lignes, choix, opts) ; opts : quitter (un toucher sur le village ferme aussi une dernière
    ligne qui a des boutons, sans rien choisir), instantane (le texte d'un coup : une question aux parents),
    ligne(i, voix) (appelé à chaque ligne, voix : la promesse de la voix), fin() (appelé à la fermeture). */
-const DLG = {fermable: false, fermer: null};
+const DLG = {fermable: false, fermer: null, suivante: null};
 const dialogueOuvert = () => !$("dialogue").hidden;
 const dialogueFermable = () => dialogueOuvert() && DLG.fermable;
 // closes the open dialogue as if the child had walked away (no choice made); sansCalme: the touch that closed it
 // goes on to the village
 function fermerDialogue(sansCalme){ if (DLG.fermer) DLG.fermer(null, sansCalme); }
+// a touch on the village while a line that is not the last is shown: the next line at once (never through choice
+// buttons); false when there is nothing to move on
+function avancerDialogue(){ return dialogueOuvert() && !!DLG.suivante && DLG.suivante(); }
 
 // the face in the box: a villager's portrait, or a creature drawn from its sheet (a boss)
 function portraitDialogue(cle){
@@ -21,6 +25,9 @@ function portraitDialogue(cle){
   if (typeAtlas(cle) === "humains") { const img = el("img"); img.alt = ""; box.append(img); imageReessayee(img, `${DOSSIER_HD}/portraits/${cle}.png`); }
   else box.append(imageHD(cle, "face", 72));
 }
+
+// French punctuation keeps its word: no line starts with « : », « ! » or « ? » (a no-break space before them)
+const insecables = t => String(t).replace(/ ([:;!?»])/g, "\u00a0$1").replace(/« /g, "«\u00a0");
 
 function dialogue(nom, portrait, lignes, choix, opts = {}){
   if (DLG.fermer) DLG.fermer(null, true);   // a dialogue opened over another one takes its place
@@ -45,7 +52,7 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
   };
   const entier = () => { if (!minuteur) return false; clearInterval(minuteur); minuteur = null; ecrit.append(...reste.childNodes); return true; };
   const fermer = (apres, sansCalme) => {
-    clearInterval(minuteur); d.hidden = true; d.onclick = null; DLG.fermer = null; DLG.fermable = false; taire();
+    clearInterval(minuteur); d.hidden = true; d.onclick = null; DLG.fermer = null; DLG.suivante = null; DLG.fermable = false; taire();
     if (!sansCalme) window.__calme = performance.now() + 250;
     if (opts.fin) opts.fin();
     if (apres) apres();
@@ -53,7 +60,7 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
   DLG.fermer = fermer;
   const afficher = () => {
     const derniere = i === lignes.length - 1, avecChoix = derniere && choix && choix.length;
-    ecrire(lignes[i]); b.innerHTML = "";
+    ecrire(insecables(lignes[i])); b.innerHTML = "";
     const dits = avecChoix ? choix.map(c => c.dit).filter(Boolean) : [];
     const voix = dire([lignes[i], ...dits].join(" "));
     if (opts.ligne) opts.ligne(i, voix);
@@ -72,10 +79,13 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
     }
   };
   // a touch on the box: the whole line first, then the next line (never through its choice buttons)
-  d.onclick = () => {
-    if (entier()) return;
-    if (choix && choix.length && i === lignes.length - 1) return;
+  const suivante = () => {
+    if (choix && choix.length && i === lignes.length - 1) return false;
+    clearInterval(minuteur); minuteur = null;
     sfx.tap(); i++; if (i < lignes.length) afficher(); else fermer();
+    return true;
   };
+  d.onclick = () => { if (!entier()) suivante(); };
+  DLG.suivante = () => i < lignes.length - 1 && suivante();   // the last line: the village closes it itself (fermable)
   afficher();
 }

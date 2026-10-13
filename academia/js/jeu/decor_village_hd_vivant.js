@@ -18,6 +18,7 @@ const VIVANT_HD = (() => {
     const lueur = (x, y, d, echelle) => {
       const g = poser(scene, "lueur", x, y, d, {echelle});
       if (g) { g.setBlendMode(Phaser.BlendModes.ADD).setAlpha(.55); tw({targets: g, alpha: .25, duration: 1300, yoyo: true, repeat: -1, ease: "Sine.easeInOut"}); }
+      return g;
     };
     rendu.maisons.forEach(m => {
       const p = q => VILLAGE_HD.point(m.nom, q, m.x, m.y), d = profondeur(m.ligne, 1);
@@ -37,7 +38,7 @@ const VIVANT_HD = (() => {
       const o = p("etoile"), g = o && poser(scene, "eclat", o.x, o.y, d + 2, {echelle: .9});
       if (g) { g.setTint(0xFFF3B0).setAlpha(.9); tw({targets: g, scale: g.scale * .45, angle: 45, duration: 900, yoyo: true, repeat: -1, ease: "Sine.easeInOut"}); }
     });
-    rendu.lumieres.forEach(l => { if (l.x !== undefined) lueur(l.x, l.y, l.profondeur, 1.3); });
+    rendu.lumieres.forEach(l => { if (l.x !== undefined) l.lueur = lueur(l.x, l.y, l.profondeur, 1.3); });   // put out by js/jeu/arbre_monde.js
     if (rendu.drapeau) { const k = rendu.drapeau.scaleX; tw({targets: rendu.drapeau, scaleX: k * .8, scaleY: k * 1.04, duration: 520, yoyo: true, repeat: -1, ease: "Sine.easeInOut"}); }
     mare(scene, rendu, tw, boucle);
     papillons(scene, carte, rendu, anim);

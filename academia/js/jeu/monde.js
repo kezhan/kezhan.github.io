@@ -2,7 +2,8 @@
    les obstacles) ou avec les flèches ; son compagnon le suit ; les habitants parlent (js/jeu/vie_village.js) ; toucher
    une maison mène à sa porte (js/jeu/portes_village.js) ; dans les hautes herbes, des Ombres violettes
    (js/jeu/ombres_village.js) : en toucher une, ou juste à côté, lance le combat. Une main et une flèche guident l'enfant
-   qui ne sait plus quoi faire (js/jeu/guide_village.js). */
+   qui ne sait plus quoi faire (js/jeu/guide_village.js). Au milieu de la place, l'Arbre-Monde, les cadeaux des chefs et le
+   panneau des missions (js/jeu/arbre_monde.js) ; ce que le village raconte (js/jeu/histoire_village.js). */
 const PAS_MS = 170;
 
 class Monde extends Phaser.Scene {
@@ -15,6 +16,7 @@ class Monde extends Phaser.Scene {
     chargerEffetsHD(this.load, QUALITE);
     chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
+    chargerPlaceHD(this.load);   // the square of the Arbre-Monde (js/jeu/arbre_monde.js)
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
   }
@@ -28,7 +30,12 @@ class Monde extends Phaser.Scene {
     this.majPanneaux();
     this.vie = new VieVillage(this);   // villagers who breathe, wave and talk
     this.pnj = this.carte.pnj.map(n => ({...n, s: this.vie.habitant(n)}));
-    const p = P(), pos = p.position || this.carte.depart;
+    const p = P();
+    let pos = p.position || this.carte.depart;
+    // saved on a tile taken since (the Arbre-Monde, the fountain… on the square): the nearest free tile
+    for (let r = 1; !this.libre(pos.x, pos.y) && r <= 4; r++) pos = [[0, r], [-r, 0], [r, 0], [0, -r], [-r, r], [r, r], [-r, -r], [r, -r]]
+      .map(([a, b]) => ({x: pos.x + a, y: pos.y + b})).find(v => this.libre(v.x, v.y)) || pos;
+    if (!this.libre(pos.x, pos.y)) pos = this.carte.depart;
     this.case = {x: pos.x, y: pos.y};
     this.heros = spriteHumain(this, herosHD(p), pos.x, pos.y).setDepth(profondeur(pos.y, 6));
     ombreAuSolHD(this, this.heros);
@@ -45,6 +52,8 @@ class Monde extends Phaser.Scene {
     this.guide = new GuideVillage(this);     // the arrow before the first fight, the hand when nothing happens
     this.silhouettes = new SilhouettesHD(this);   // the hero and the companion seen through what hides them
     this.jardin = new JardinVillage(this);        // the vegetable garden opens the child's garden
+    this.place = new ArbreMonde(this);            // the Arbre-Monde, the chiefs' gifts, the board of the missions
+    this.histoire = new HistoireVillage(this);    // the goal, the gifts given back, the villagers' words, the evening
     window.__calme = performance.now() + 300;
     // touch: walk where the child taps (a villager: go and talk; a house, its roof or its sign: go to its door; an Ombre
     // or right next to it: go and fight; the companion: it jumps for joy)
@@ -64,13 +73,15 @@ class Monde extends Phaser.Scene {
   }
   toucher(ptr){
     if (dialogueFermable()) fermerDialogue(true);   // the last line of a dialogue: the touch closes it and goes on
+    else if ((!ptr.upElement || ptr.upElement === this.game.canvas) && avancerDialogue()) return;   // another line: the next one
     if (this.occupe()) return;
     const wx = ptr.worldX, wy = ptr.worldY;
     if (this.vie.toucherCompagnon(wx, wy)) return;
-    this.jardin.vise = false;
+    this.jardin.vise = false; this.place.vise = null;
     const o = this.ombres.touchee(wx, wy);
     if (o) return this.allerVers(o.x, o.y);
     if (this.jardin.touche(wx, wy)) return;
+    if (this.place.touche(wx, wy)) return;   // the Arbre-Monde, the board of the missions
     let x = Math.floor(wx / CASE), y = Math.floor(wy / CASE);
     const r = maisonToucheeHD(this, wx, wy), m = this.carte.maison;
     if (r && !(m[y] && m[y][x] === r)) for (let b = 0; b < HAUT; b++) { const a = m[b].indexOf(r); if (a >= 0) { x = a; y = b; break; } }
@@ -189,21 +200,23 @@ class Monde extends Phaser.Scene {
   arreter(){ reposHumain(this.heros, this.dir); if (this.compagnon) reposCreature(this.compagnon); }
   arrive(){
     const p = P(); p.position = {...this.case}; sauver();
-    if (this.jardin.arrive()) return;
+    if (this.jardin.arrive() || this.place.arrive()) return;
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
   }
   update(time){
     devoilerHD(this, [this.heros, this.compagnon], this.panneaux);   // a sign in front of the hero turns see-through
     this.silhouettes.suivre([this.heros, this.compagnon]);           // what hides them: their silhouette shows through
     cadrerPanneauxHD(this, this.panneaux);   // signs never under the top bar nor cut by an edge
-    this.portes.update(time); this.guide.update(time);
+    this.portes.update(time); this.guide.update(time); this.histoire.update(time);
     if (this.enMarche || this.occupe() || !this.touches) return;
     const t = this.touches, d = t.left.isDown ? [-1, 0] : t.right.isDown ? [1, 0] : t.up.isDown ? [0, -1] : t.down.isDown ? [0, 1] : null;
     if (d && this.libre(this.case.x + d[0], this.case.y + d[1])) { this.guide.toucher(); this.chemin = [[this.case.x + d[0], this.case.y + d[1]]]; this.pas(); }
   }
   parler(n){
     this.vie.parler(n.s);
-    dialogue(n.nom, n.cle, n.dit, null, {ligne: (i, voix) => this.vie.mains(n.s, voix), fin: () => this.vie.repos(n.s)});
+    const h = this.histoire.lignes(n);   // what they say depends on the game (js/jeu/histoire_village.js)
+    dialogue(n.nom, n.cle, h.lignes, h.choix || null, {quitter: !!h.choix, ligne: (i, voix) => { this.vie.mains(n.s, voix); if (h.ligne) h.ligne(i); },
+      fin: () => { this.vie.repos(n.s); if (h.fin) h.fin(); }});
   }
   devantPorte(regionId){ this.chemin = []; this.pnjVise = null; entrerMaison(regionId); }
   // a point of the world on the screen, in CSS pixels (the camera's view as it is drawn at this frame)

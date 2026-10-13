@@ -18,6 +18,7 @@ class Chargement extends Phaser.Scene {
     chargerGuideHD(this.load, QUALITE);
     chargerFondsHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
+    if (typeof chargerPlaceHD === "function") chargerPlaceHD(this.load);   // the square of the Arbre-Monde, asleep (js/jeu/arbre_monde.js)
   }
   create(){
     window.__jeuPret = true;

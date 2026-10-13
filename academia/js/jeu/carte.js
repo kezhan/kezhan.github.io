@@ -20,7 +20,7 @@ function construireCarte(){
   // the ground of each tile (herbe, sable, place) and whether something already stands on it
   const sol = grille("herbe"), pris = grille(false), bloque = grille(false), herbe = grille(null), maison = grille(null);
   // the same map as elements, in tiles: {type, x, y, w, h, ...} (type: chemin, place, maison, arbre, bordure, rochers, mare, barque, panneau,
-  // puits, lanterne, poteau, banc, potager, tonneaux, fleur, touffe)
+  // puits, lanterne, poteau, banc, potager, tonneaux, fleur, touffe; on the square: arbre_monde, fontaine, horloge, bac, panneau_missions)
   const elements = [];
   const hasard = (x, y) => Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;   // same map every time
   const sable = (x0, y0, w, h) => {
@@ -83,8 +83,12 @@ function construireCarte(){
     elements.push({type, x: x0, y: y0, w, h});
     for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) bloque[y][x] = true;
   };
-  lieu("puits", 13, 11, 2, 2); lieu("lanterne", 19, 11); lieu("lanterne", 22, 11); lieu("poteau", 16, 15);
+  lieu("puits", 13, 11, 2, 2); lieu("lanterne", 19, 10); lieu("lanterne", 22, 10); lieu("poteau", 16, 15);
   lieu("banc", 29, 13, 2, 1); lieu("potager", 2, 13, 3, 2); lieu("tonneaux", 39, 14);
+  // the square of the Arbre-Monde (js/jeu/arbre_monde.js): the tree on the rosette, what the beaten chiefs give back
+  // (the fountain, the clock, the flower boxes; the lanterns above), the Sage's board of the day's missions
+  lieu("arbre_monde", 21, 14, 2, 2); lieu("fontaine", 24, 12, 2, 2); lieu("horloge", 26, 15); lieu("panneau_missions", 18, 13);
+  [[17, 12], [17, 18], [25, 18], [26, 18]].forEach(([x, y]) => lieu("bac", x, y));
   // a few flowers on the grass (not blocking)
   for (let y = 2; y < HAUT - 2; y++) for (let x = 2; x < LARG - 2; x++)
     if (!pris[y][x] && !bloque[y][x] && sol[y][x] === "herbe" && hasard(x * 3, y * 7) < .05) {

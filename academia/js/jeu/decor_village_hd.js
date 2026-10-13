@@ -151,7 +151,7 @@ const VILLAGE_HD = (() => {
         const d = point(nom, "drapeau", x, y);   // the flag of the tower, waved by the wind
         if (d) rendu.drapeau = poser(scene, "drapeau", d.x, d.y, profondeur(ligne, 1));
       }
-      if (e.type === "lanterne") rendu.lumieres.push({...point(nom, "lumiere", x, y), profondeur: profondeur(ligne, 1)});
+      if (e.type === "lanterne") rendu.lumieres.push({...point(nom, "lumiere", x, y), profondeur: profondeur(ligne, 1), im});   // lit or not: js/jeu/arbre_monde.js
     });
   }
 

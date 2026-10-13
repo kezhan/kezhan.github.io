@@ -27,6 +27,7 @@ async function demarrer(){
     if (e.key === "Escape" && !$("equipe").hidden) { sfx.tap(); return fermerEquipe(); }
     if (e.key === "Escape" && !$("parents").hidden) { sfx.tap(); return fermerParents(); }
     if (e.key === "Escape" && !$("jardin").hidden) { sfx.tap(); return fermerJardin(); }
+    if (e.key === "Escape" && !$("missions").hidden) { sfx.tap(); return fermerMissions(); }   // the day's missions (js/missions.js)
     const d = $("dialogue");
     if ((e.key === "Enter" || e.key === " ") && !e.repeat && !d.hidden && d.onclick && !e.target.closest("button, input")) { e.preventDefault(); d.onclick(); }
   });
@@ -40,6 +41,7 @@ async function demarrer(){
 window.retourAndroid = () => {
   if (!$("grainesJardin").hidden) { $("grainesJardin").hidden = true; return true; }
   if (!$("jardin").hidden) { fermerJardin(); return true; }
+  if (!$("missions").hidden) { fermerMissions(); return true; }
   if (!$("parents").hidden) { fermerParents(); return true; }
   if (!$("equipe").hidden) { fermerEquipe(); return true; }
   if (ecranCourant === "creation" || ecranCourant === "choix") { ouvrirAccueil(); return true; }
