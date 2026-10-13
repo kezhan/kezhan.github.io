@@ -53,6 +53,13 @@
 .sachet .prix{display:inline-flex; align-items:center; gap:4px; font-size:17px}
 .sachet .prix .icone{width:22px; height:22px}
 .sachet.cher{opacity:.55}
+/* the plants' German names (the garden is next to the Montagne de Germania), the French in small */
+.sachet b{color:#7D5130}
+.sachet small.fr{font:600 14px/1.1 var(--texte, inherit); color:#5d5585}
+.parcelle .nom-plante{position:absolute; left:50%; bottom:3%; transform:translateX(-50%); padding:2px 9px; border-radius:999px;
+  background:rgba(255,253,245,.94); color:#7D5130; font:700 clamp(11px, 1.6vw, 15px)/1.3 var(--titre); white-space:nowrap;
+  box-shadow:0 2px 0 rgba(29,22,64,.2); pointer-events:none}
+.allemand-jardin b{color:#7D5130}
 
 #jardin .panneau{--scene:26vh; z-index:6}
 .arrosoir-vol{position:fixed; z-index:50; width:clamp(80px, 12vw, 150px); height:auto; transform-origin:40% 60%; pointer-events:none}

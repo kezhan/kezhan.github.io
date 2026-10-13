@@ -22,9 +22,23 @@ function imgJardin(nom, cls){
 // a line shown in the garden's bubble and said by the voice
 function annoncerJardin(texte){
   const b = $("bulleJardin");
-  ecrireIcones(b, texte); b.hidden = false;
+  ecrireIcones(b, affiche(texte)); b.hidden = false;   // « ! » never alone at the start of a line
   clearTimeout(JARDIN.bulle); JARDIN.bulle = setTimeout(() => { b.hidden = true; }, 2600 + texte.length * 45);
   return dire(texte);
+}
+
+// the garden lies next to the Montagne de Germania: every plant is named in German, with its article and its recorded
+// voice, the French in small to understand it (Kezhan, 13/10/2026: « indiquer les plantes en allemand »)
+const allemandDe = c => c.de;   // « die Karotte »: the article stays small, as in German
+// a French line, then « En allemand : die Karotte » written and said by the German voice
+function annoncerJardinDe(texte, c){
+  const b = $("bulleJardin");
+  ecrireIcones(b, affiche(texte));
+  const l = el("span", "allemand-jardin"), m = el("b");
+  m.textContent = allemandDe(c); l.append(affiche("En allemand :") + " ", m);
+  b.append(" ", l); b.hidden = false;
+  clearTimeout(JARDIN.bulle); JARDIN.bulle = setTimeout(() => { b.hidden = true; }, 4500 + texte.length * 45);
+  return suiteDeVoix([() => dire(texte), () => dire("En allemand :"), () => dire(c.de, "de")]);
 }
 
 function ouvrirJardin(){
@@ -58,9 +72,13 @@ function dessinerJardin(){
 function parcelleDom(pa, i){
   const e = etatParcelle(pa), b = el("button", "parcelle " + e);
   b.dataset.i = i; b.dataset.etat = e;
-  b.setAttribute("aria-label", pa.culture ? `${CULTURES[pa.culture].nom}, ${{soif: "à arroser", arrosee: "arrosée", mure: "mûre"}[e]}` : "Parcelle vide");
+  const c = pa.culture && CULTURES[pa.culture];
+  b.setAttribute("aria-label", c ? `${allemandDe(c)} (${c.nom}), ${{soif: "à arroser", arrosee: "arrosée", mure: "mûre"}[e]}` : "Parcelle vide");
   b.append(imgJardin(pa.arrosee === jour() ? "parcelle_mouillee" : "parcelle_seche", "sol"));
-  if (pa.culture) b.append(imgJardin(`${pa.culture}_${pa.stade}`, "plante"));
+  if (c) {
+    b.append(imgJardin(`${pa.culture}_${pa.stade}`, "plante"));
+    const n = el("span", "nom-plante"); n.textContent = allemandDe(c); b.append(n);   // its German name, under it
+  }
   if (e === "soif") b.append(imgJardin("goutte", "signe"));
   if (e === "mure") b.append(iconeDom("etoile", "signe"));
   b.onclick = () => toucherParcelle(i);
@@ -71,7 +89,7 @@ function toucherParcelle(i){
   const pa = jardinDe().parcelles[i];
   sfx.tap();
   ({vide: () => ouvrirGraines(i), soif: () => arroserParcelle(i), mure: () => recolterParcelle(i),
-    arrosee: () => annoncerJardin("Elle a bu aujourd'hui. Reviens demain pour l'arroser encore !")})[etatParcelle(pa)]();
+    arrosee: () => annoncerJardinDe("Elle a bu aujourd'hui. Reviens demain pour l'arroser encore !", CULTURES[pa.culture])})[etatParcelle(pa)]();
 }
 
 // ---- planting: the seed packets
@@ -87,9 +105,11 @@ function ouvrirGraines(i){
   Object.entries(CULTURES).forEach(([id, c]) => {
     const b = el("button", "sachet" + (p.etincelles < c.prix ? " cher" : ""));
     b.dataset.culture = id;
-    const nom = el("b"); nom.textContent = majuscule(c.nom);
+    const nom = el("b"); nom.textContent = allemandDe(c);   // the German name first, the French in small under it
+    const fr = el("small", "fr"); fr.textContent = majuscule(c.nom);
     const prix = el("span", "prix"); prix.append(iconeDom("etincelle"), " " + c.prix);
-    b.append(imgJardin("graines_" + id), nom, prix);
+    b.setAttribute("aria-label", `${allemandDe(c)}, ${c.nom}, ${c.prix} étincelles`);
+    b.append(imgJardin("graines_" + id), nom, fr, prix);
     b.onclick = () => planterParcelle(i, id);
     liste.append(b);
   });
@@ -104,7 +124,7 @@ function planterParcelle(i, id){
   $("grainesJardin").hidden = true;
   dessinerJardin();
   pousser(i);
-  annoncerJardin(`Des graines de ${c.nom} sont plantées ! Arrose-les avec une bonne réponse.`);
+  annoncerJardinDe(`Des graines de ${c.nom} sont plantées ! Arrose-les avec une bonne réponse.`, c);
 }
 // the plant of a plot pops (planted, or one stage taller)
 function pousser(i){
@@ -126,9 +146,9 @@ async function arroserParcelle(i){
     panneau.classList.add("cache"); ecran.classList.remove("question");
     if (!r.juste) return annoncerJardin("Presque ! Touche ta plante pour une autre question.");
     await arrosoir(i);
-    const st = arroser(i);
+    const culture = jardinDe().parcelles[i].culture, st = arroser(i);
     dessinerJardin(); pousser(i);
-    annoncerJardin(st >= STADE_MUR ? "Elle est mûre ! Touche-la pour la récolter." : "Bravo ! Ta plante a bu, elle grandit.");
+    annoncerJardinDe(st >= STADE_MUR ? "Elle est mûre ! Touche-la pour la récolter." : "Bravo ! Ta plante a bu, elle grandit.", CULTURES[culture]);
   } finally {
     JARDIN.occupe = false; panneau.classList.add("cache"); ecran.classList.remove("question");
   }
@@ -172,9 +192,10 @@ async function recolterParcelle(i){
   dessinerJardin();
   JARDIN.occupe = false;
   const nombre = `${r.n} ${r.n > 1 ? c.pluriel : c.nom} !`;
-  ecrireIcones($("bulleJardin"), `${majuscule(nombre)} En anglais : ${c.en}. En allemand : ${c.de}.` + (c.lb ? ` En luxembourgeois : ${c.lb}.` : ""));
+  ecrireIcones($("bulleJardin"), affiche(`${majuscule(nombre)} En allemand : ${allemandDe(c)}. En anglais : ${c.en}.` + (c.lb ? ` En luxembourgeois : ${c.lb}.` : "")));
   $("bulleJardin").hidden = false; clearTimeout(JARDIN.bulle); JARDIN.bulle = setTimeout(() => { $("bulleJardin").hidden = true; }, 9000);
-  const voix = [() => dire(`Tu as cueilli ${nombre} En anglais :`), () => dire(c.en, "en"), () => dire("En allemand :"), () => dire(c.de, "de")];
+  // German first: the garden is the Montagne de Germania's
+  const voix = [() => dire(`Tu as cueilli ${nombre} En allemand :`), () => dire(c.de, "de"), () => dire("En anglais :"), () => dire(c.en, "en")];
   if (c.lb && couvertLb(c.lb)) voix.push(() => dire("En luxembourgeois :"), () => dire(c.lb, "lb"));   // its recording, nothing else
   suiteDeVoix(voix);
 }
@@ -190,7 +211,8 @@ function dessinerPanier(){
     const b = el("button", "recolte"); b.dataset.culture = id;
     const n = el("b"); n.textContent = j.recoltes[id];
     b.append(imgJardin("recolte_" + id), n);
-    b.setAttribute("aria-label", c ? `Donner ${CULTURES[id].une} à ${nomCompagnon(c)}` : CULTURES[id].nom);
+    b.setAttribute("aria-label", (c ? `Donner ${CULTURES[id].une} à ${nomCompagnon(c)}` : CULTURES[id].nom) + ` (${allemandDe(CULTURES[id])})`);
+    b.title = allemandDe(CULTURES[id]);
     b.onclick = () => donnerAuCompagnon(id);
     l.append(b);
   });
@@ -205,7 +227,7 @@ async function donnerAuCompagnon(id){
   dessinerPanier();
   const f = $("panierJardin").querySelector(".compagnon-jardin");
   if (f) { f.replaceChildren(imageHD(cleDe(c), "joie", 110)); if (!calme()) f.animate([{transform: "translateY(0)"}, {transform: "translateY(-18px)"}, {transform: "translateY(0)"}], {duration: 420, iterations: 2}); }
-  await annoncerJardin(`Miam ! ${nom} a mangé ${CULTURES[id].une} : ${g.xp} points d'expérience !`);
+  await annoncerJardinDe(`Miam ! ${nom} a mangé ${CULTURES[id].une} : ${g.xp} points d'expérience !`, CULTURES[id]);
   if (g.evolue) { JARDIN.occupe = true; await sceneEvolution(c, g.stadeAvant); JARDIN.occupe = false; montrer("jardin"); }
   dessinerJardin();
 }

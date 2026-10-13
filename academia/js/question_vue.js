@@ -31,6 +31,7 @@ async function suiteDeVoix(etapes){
 // a French text whose « foreign words » are said with their own voice (der Bär, Moien…); in Luxembourgish, whatever
 // the recordings say entirely (« Maach d'Dier zou, dajee »), never the French voice
 function direMixte(texte, q){
+  texte = String(texte).replace(/(\d)[  ](?=\d{3}(?!\d))/g, "$1");   // 4 782 is said « quatre-mille… », not « 4, 782 »
   const lang = q.oreille || q.langue || "fr", mots = Q.mots[lang] || new Set(), parts = [];
   if (lang === "fr") return dire(texte);
   const etranger = w => mots.has(w.toLowerCase()) || (lang === "lb" ? couvertLb(w) : aSaVoix(w, lang));   // recorded: js/voix.js
@@ -56,7 +57,9 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
     const ligne = el("div", "q-enonce"), ecoute = el("button", "ecouter"), enonce = el("p", "enonce");
     ecoute.append(iconeDom("haut_parleur"));
     ecoute.setAttribute("aria-label", "Écouter"); ecoute.title = "Écouter";
-    enonce.textContent = typo(q.question); ligne.append(ecoute, enonce); haut.append(tete, ligne); boite.append(haut);
+    if (/[\d?]\/\d/.test(q.question) && typeof ecrireTexteQ === "function") ecrireTexteQ(enonce, typo(q.question));   // 3/4 as at school
+    else enonce.textContent = typo(q.question);
+    ligne.append(ecoute, enonce); haut.append(tete, ligne); boite.append(haut);
     let anim = null, reste = limite, depart = 0, cachee = false;
     const lancer = () => { depart = Date.now(); chrono = setTimeout(() => repondre(null), TEST ? 600000 : reste); if (anim) anim.play(); };
     if (limite) {
@@ -103,6 +106,7 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
       outils.append(potion, indice);
     }
     panneau.append(boite);
+    if (typeof ajusterFiguresQ === "function") ajusterFiguresQ(panneau);   // a drawing shrinks to fit (js/question_figures.js)
     grille.scrollIntoView({block: "nearest"});   // a low screen: the answers stay in sight, the top stays stuck
 
     // what the voice says: the foreign word first, twice and slowly; then the sentence; the answers when asked
@@ -161,17 +165,19 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
       boite.classList.add("corrige");
       const t = el("div", "explication");
       const rep = leg || q.reponse, point = /[.?!…]$/.test(rep) ? "" : ".";   // « What's your name? » keeps its own mark
-      const bonne = vf ? (q.reponse === "vrai" ? "C'est vrai !" : "C'est faux !") : `La bonne réponse est ${rep}${point}`;
+      const dessinee = !vf && !!(q.dessin && q.dessin.boutons);   // the answers are drawings (pizzas): the green one says it
+      const bonne = vf ? (q.reponse === "vrai" ? "C'est vrai !" : "C'est faux !") : dessinee ? "La bonne réponse est en vert." : `La bonne réponse est ${rep}${point}`;
       const l1 = el("b"); l1.textContent = typo((b ? "" : "Trop tard ! ") + bonne); t.append(l1);
       if (!b) l1.prepend(iconeDom("sablier"), " ");   // the time ran out: the hourglass
       if (q.explication) { const l2 = el("p"); l2.textContent = typo(q.explication); t.append(l2); }
       const suite = markOk(el("button", "moyen vert", "J'ai compris")); suite.append(iconeDom("pouce"));
       suite.onclick = () => { son("bouton"); sfx.tap(); taire(); fin({juste: false, ms}); };
       const correction = el("div", "q-correction"); correction.append(t, suite); corps.append(correction);
+      if (typeof ajusterFiguresQ === "function") ajusterFiguresQ(panneau);
       suite.scrollIntoView({block: "nearest"});
       // said aloud, a foreign answer stands between « » so that it gets its own voice (its recordings in Luxembourgish)
       const bonneDite = vf || leg || (q.oreille || lang) === "fr" ? bonne : `La bonne réponse est « ${rep} »${point}`;
-      const dite = vf || leg || sansEmoji(q.reponse) ? bonneDite : "Regarde la bonne réponse, en vert.";
+      const dite = !dessinee && (vf || leg || sansEmoji(q.reponse)) ? bonneDite : "Regarde la bonne réponse, en vert.";
       direMixte((b ? "" : "Trop tard ! ") + dite + (q.explication ? " " + q.explication : ""), q);
     }
   });

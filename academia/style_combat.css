@@ -181,3 +181,67 @@
   .attaque{flex-direction:column; text-align:center; gap:4px; padding:10px 6px; min-height:0} .attaque small{display:none}
   .attaque b{font-size:16px; line-height:1.15} .attaque .ico{width:36px; height:36px} .attaque > span:last-child{width:100%}
   .reponse{min-height:64px} .etat b{font-size:17px} .titre-bouclier{font-size:19px} .outil{min-width:50px; height:46px} .ecouter{width:56px; height:56px} }
+
+/* maths */
+/* the big one's drawings (js/question_figures.js): flat SVG, sized on the picture size of the panel (--img) */
+.q-figure{display:inline-block; line-height:0; flex:none}
+.q-figure svg{display:block; width:100%; height:100%}
+.question .visuel.figure{gap:8px 14px}
+.q-pizza{width:calc(var(--img) * 1.9); height:calc(var(--img) * 1.9)}
+.q-pizzas{display:inline-flex; gap:10px 22px; align-items:flex-end; flex-wrap:wrap; justify-content:center}
+.q-pizza-legende{display:inline-flex; flex-direction:column; align-items:center; gap:2px; font:700 clamp(22px, 3.6vw, 30px) var(--titre)}
+.q-pizza-legende .q-pizza{width:calc(var(--img) * 1.5); height:calc(var(--img) * 1.5)}
+.q-tablette{width:min(calc(var(--img) * 2.7), 86vw)}
+.q-posee{width:calc(var(--img) * 2.2)}
+.q-echiquier{width:clamp(150px, calc(var(--img) * 3.3), 300px)}
+.q-terre,.q-ombre{width:min(calc(var(--img) * 4.6), 100%); max-width:420px}
+/* a fraction written as at school, one above the other: in the sentence, in a button, under a pizza */
+.q-frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1; margin:0 .08em}
+.q-frac b{font-weight:700; padding:0 .14em}
+.q-frac i{display:block; align-self:stretch; height:max(3px, .08em); background:currentColor; border-radius:2px; margin:.05em 0}
+.q-frac b.trou{min-width:.9em; border:3px dashed var(--nuit2); border-radius:8px; color:var(--nuit2); padding:0 .1em}
+.question .enonce .q-frac{font-size:1.05em}
+.reponse .q-frac{font-size:.92em}
+/* answers drawn (a pizza to choose), and chess pieces: a picture like the others */
+.reponse.figure{padding:4px}
+.reponse.figure .q-pizza{width:calc(var(--img) * 1.2); height:calc(var(--img) * 1.2)}
+.q-piece{width:1em; height:1.14em; vertical-align:middle}
+.reponse .q-piece{width:.92em; height:1.05em}
+/* « Premier, deuxième »: the row in one block, as big as the screen allows (phone: about 56 px a picture, not 23) */
+.question .visuel.rangee .q-rang{flex-wrap:nowrap; gap:.14em; font-size:min(var(--img), calc((100vw - 56px) / (var(--n, 4) * 1.4)))}
+.question.corrige .visuel.figure .q-figure{max-width:100%}
+.question.corrige .q-pizza, .question.corrige .q-pizza-legende .q-pizza{width:calc(var(--img) * 1.2); height:calc(var(--img) * 1.2)}
+.question.corrige .q-echiquier{width:clamp(120px, calc(var(--img) * 2.4), 220px)}
+.question.corrige .q-terre, .question.corrige .q-ombre{width:min(calc(var(--img) * 3.2), 100%)}
+@media (orientation:landscape) and (min-width:700px) and (max-height:820px){
+  .question .visuel.rangee .q-rang{font-size:min(var(--img), calc(44vw / (var(--n, 4) * 1.2)))}
+  .q-milieu > .visuel.figure{max-width:52%}
+}
+/* a phone held sideways: beside the bigger row, a picture answer puts its name under the picture, never cut in two
+   (« vél / o ») */
+@media (max-height:500px){
+  .question .visuel.rangee .q-rang{font-size:min(var(--img), calc(18vw / var(--n, 4)))}   /* the row in its half of the panel, never cut */
+  .question:has(.visuel.rangee) .reponse.image{flex-direction:column; gap:2px; font-size:36px}
+  .question:has(.visuel.rangee) .reponse .q-legende{word-break:normal; overflow-wrap:normal}
+}
+/* a drawing too big for the panel, even at its smallest (js/question_figures.js, ajusterFiguresQ): the panel rises
+   higher over the arena, the Ombre still in sight */
+.panneau.haute:has(.visuel.figure){max-height:calc(100vh - var(--scene, 58vh) * .55 + 16px); max-height:calc(100dvh - var(--scene, 58vh) * .55 + 16px)}
+/* sentences as answers under a drawing (day and night): two by two, smaller letters, never a word cut in two */
+.question:has(.visuel.figure) .reponses:has(.q-mot.phrase){grid-template-columns:repeat(2, minmax(0, 1fr))}
+.question:has(.visuel.figure) .reponse .q-mot.phrase{font-size:clamp(18px, 2.3vw, 26px); word-break:normal; overflow-wrap:normal; hyphens:none}
+.question:has(.visuel.figure) .reponse:has(.q-mot.phrase){min-height:60px}
+/* a phone held sideways (the panel beside the arena): the drawing on the left, the answers stacked on its right; after
+   a mistake, the answers in one small row and the explanation under them (never three columns squeezed side by side) */
+#combat[data-mode="cote"] .question:has(.visuel.figure) .q-milieu > .visuel.figure{max-width:42%}
+#combat[data-mode="cote"] .question:has(.visuel.figure) .reponses:is(.n2, .n3, :has(.q-mot.phrase)){grid-template-columns:1fr}
+#combat[data-mode="cote"] .question.corrige:has(.visuel.figure) .q-corps{grid-template-columns:1fr}
+#combat[data-mode="cote"] .question.corrige:has(.visuel.figure) .reponses{grid-template-columns:repeat(auto-fit, minmax(52px, 1fr))}
+#combat[data-mode="cote"] .question.corrige:has(.visuel.figure) .reponses:has(.q-mot.phrase){grid-template-columns:repeat(2, minmax(0, 1fr))}
+#combat[data-mode="cote"] .question.corrige:has(.visuel.figure) .reponse .q-legende{display:none}
+/* upright: under a drawing, the four coloured discs or chess pieces stand in one row (the drawing keeps its room) */
+@media (orientation:portrait){
+  .question:has(.visuel.figure) .reponses.n4:has(.reponse.image){grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px}
+  .question:has(.visuel.figure) .reponse.image{font-size:calc(var(--img) * .8); padding:6px 2px}
+  .question:has(.visuel.figure) .reponse.image .q-legende{font-size:14px; line-height:1.05; text-align:center}
+}

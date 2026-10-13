@@ -20,6 +20,15 @@
 {"id": "mult_trous", "matiere": "maths", "titre": "Multiplications à trous", "ordre": 19, "prerequis": ["tables_toutes"], "age_min": 8, "generateur": "multiplication_trou", "params": {"tables": [2, 3, 4, 5, 6, 7, 8, 9]}, "grande": true},
 {"id": "division", "matiere": "maths", "titre": "Divisions avec les tables", "ordre": 20, "prerequis": ["mult_trous", "partage"], "age_min": 8, "generateur": "division", "params": {"tables": [2, 3, 4, 5, 6, 7, 8, 9]}, "grande": true},
 {"id": "problemes_mult_div", "matiere": "maths", "titre": "Problèmes : groupes et partages", "ordre": 21, "prerequis": ["division"], "age_min": 8, "generateur": "probleme", "params": {"ops": ["mult", "div"], "max": 60}, "grande": true},
+{"id": "nombres_10000", "matiere": "maths", "titre": "Nombres jusqu'à 10 000", "ordre": 22, "prerequis": ["comparer_100"], "age_min": 8, "generateur": "grands_nombres", "params": {}},
+{"id": "ranger_10000", "matiere": "maths", "titre": "Comparer et ranger jusqu'à 10 000", "ordre": 23, "prerequis": ["nombres_10000"], "age_min": 8, "generateur": "ranger_nombres", "params": {}},
+{"id": "fractions_parts", "matiere": "maths", "titre": "Fractions : moitié, tiers, quart", "ordre": 24, "prerequis": ["doubles_moities", "partage"], "age_min": 8, "generateur": "fractions", "params": {"mode": "parts"}},
+{"id": "mult_2chiffres", "matiere": "maths", "titre": "Multiplications à deux chiffres", "ordre": 25, "prerequis": ["tables_toutes", "add_100"], "age_min": 9, "generateur": "mult_grande", "params": {}},
+{"id": "division_reste", "matiere": "maths", "titre": "Division avec reste", "ordre": 26, "prerequis": ["division"], "age_min": 9, "generateur": "division_reste", "params": {}},
+{"id": "fraction_quantite", "matiere": "maths", "titre": "Fraction d'une quantité", "ordre": 27, "prerequis": ["fractions_parts", "division"], "age_min": 9, "generateur": "fractions", "params": {"mode": "quantite"}},
+{"id": "problemes_2_etapes", "matiere": "maths", "titre": "Problèmes en deux étapes", "ordre": 28, "prerequis": ["problemes_mult_div", "sous_100"], "age_min": 9, "generateur": "probleme_etapes", "params": {}},
+{"id": "fractions_comparer", "matiere": "maths", "titre": "Comparer des fractions", "ordre": 29, "prerequis": ["fractions_parts"], "age_min": 10, "generateur": "fractions", "params": {"mode": "comparer"}},
+{"id": "fractions_egales", "matiere": "maths", "titre": "Fractions égales", "ordre": 30, "prerequis": ["fractions_comparer"], "age_min": 10, "generateur": "fractions", "params": {"mode": "egales"}},
 {"id": "en_animaux", "matiere": "anglais", "titre": "Animaux", "ordre": 1, "prerequis": [], "age_min": 4},
 {"id": "en_couleurs", "matiere": "anglais", "titre": "Couleurs", "ordre": 2, "prerequis": [], "age_min": 4},
 {"id": "en_nombres", "matiere": "anglais", "titre": "Nombres", "ordre": 3, "prerequis": [], "age_min": 4},
@@ -64,6 +73,8 @@
 {"id": "lo_suites_longues", "matiere": "logique", "titre": "Suites plus longues", "ordre": 9, "prerequis": ["lo_suites"], "age_min": 7},
 {"id": "lo_solides", "matiere": "logique", "titre": "Solides", "ordre": 10, "prerequis": ["lo_formes_cotes"], "age_min": 7},
 {"id": "lo_deduction", "matiere": "logique", "titre": "Qui est le plus ?", "ordre": 11, "prerequis": ["lo_ordre"], "age_min": 7},
+{"id": "lo_echecs", "matiere": "logique", "titre": "Échecs : les déplacements", "ordre": 12, "prerequis": ["lo_rang"], "age_min": 7, "generateur": "echecs", "params": {}},
+{"id": "lo_echecs_regles", "matiere": "logique", "titre": "Échecs : valeurs et règles", "ordre": 13, "prerequis": ["lo_echecs"], "age_min": 8},
 {"id": "sc_animaux_petits", "matiere": "sciences", "titre": "Animaux et leurs petits", "ordre": 1, "prerequis": [], "age_min": 4},
 {"id": "sc_vivant", "matiere": "sciences", "titre": "Vivant ou non vivant", "ordre": 2, "prerequis": [], "age_min": 5},
 {"id": "sc_saisons", "matiere": "sciences", "titre": "Saisons", "ordre": 3, "prerequis": [], "age_min": 5},
@@ -71,5 +82,6 @@
 {"id": "sc_corps", "matiere": "sciences", "titre": "Corps humain", "ordre": 5, "prerequis": ["sc_sens"], "age_min": 7},
 {"id": "sc_plantes", "matiere": "sciences", "titre": "Plantes", "ordre": 6, "prerequis": ["sc_vivant"], "age_min": 7},
 {"id": "sc_milieux", "matiere": "sciences", "titre": "Animaux et leurs milieux", "ordre": 7, "prerequis": ["sc_animaux_petits"], "age_min": 7},
-{"id": "sc_eau", "matiere": "sciences", "titre": "Eau et ses états", "ordre": 8, "prerequis": ["sc_saisons"], "age_min": 7}
+{"id": "sc_eau", "matiere": "sciences", "titre": "Eau et ses états", "ordre": 8, "prerequis": ["sc_saisons"], "age_min": 7},
+{"id": "sc_jour_nuit", "matiere": "sciences", "titre": "Jour et nuit", "ordre": 9, "prerequis": ["sc_saisons"], "age_min": 7}
 ]

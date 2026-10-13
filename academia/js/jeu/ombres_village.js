@@ -1,6 +1,7 @@
 /* Académia : les Ombres qu'on voit dans les hautes herbes. Une par touffe, violette comme au combat, un peu plus grande
    que les compagnons pour qu'un doigt la trouve ; elle se promène dans son herbe sans jamais venir coller le héros.
-   La toucher (ou toucher juste à côté, diagonales comprises), ou passer juste à côté, lance le combat ; battue, elle
+   La toucher (ou toucher juste à côté, diagonales comprises) lance le combat ; passer à côté sans l'avoir touchée la
+   fait seulement lever les yeux (jamais de combat par hasard, Kezhan, 13/10/2026) ; battue, elle
    s'efface dans un nuage et une autre revient un peu plus tard. L'enfant voit ce qu'il chasse. */
 const OMBRE_REVIENT_MS = 5000, OMBRE_PAS_MS = 1500, HAUTEUR_OMBRE = 19;
 const aUnPas = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) <= 1;   // the same tile or one of the eight around
@@ -74,6 +75,12 @@ class OmbresVillage {
   }
   // the child chose this one: it stops and hops, so that the hero can reach it
   viser(o){ o.fige = true; if (!TEST && !o.bouge) this.s.tweens.add({targets: o.s, y: o.y * CASE + o.s.dy - 4, duration: 120, yoyo: true}); }
+  // the hero walks past without having touched it: it looks up with a little hop, once, and no fight starts
+  coucou(o){
+    if (TEST || o.bouge || o.combat || o.coucou) return;
+    o.coucou = true;
+    this.s.tweens.add({targets: o.s, y: o.y * CASE + o.s.dy - 3, duration: 110, yoyo: true, onComplete: () => { o.coucou = false; }});
+  }
   // after its fight: beaten, it vanishes in a puff and another one comes back later; otherwise it wanders again
   apres(o, gagne){
     if (!o) return;

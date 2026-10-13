@@ -226,7 +226,14 @@ class HistoireVillage {
     return this.parole("hugo", `Hourra ! ${F.noms[ev.stade - 2]} a évolué : c'est maintenant ${F.noms[ev.stade - 1]} !`);
   }
   // ---------- what the villagers say (Monde.parler) ----------
+  // each villager opens with a word of their language (js/jeu/langues_habitants.js); the lines of the story follow
   lignes(n){
+    const h = this.lignesHistoire(n), salut = typeof salutHabitant === "function" ? salutHabitant(n) : null;
+    if (!salut) return h;
+    const suite = h.ligne;
+    return {...h, lignes: [salut.ligne, ...h.lignes], langue: salut.langue, ligne: suite ? i => { if (i > 0) suite(i - 1); } : undefined};
+  }
+  lignesHistoire(n){
     if (n.cle === "sage") return this.lignesSage();
     const p = P(), petit = p.age <= 5, c = actif(), l = [];
     if (n.cle === "hugo") {

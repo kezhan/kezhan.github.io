@@ -62,7 +62,9 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
     const derniere = i === lignes.length - 1, avecChoix = derniere && choix && choix.length;
     ecrire(insecables(lignes[i])); b.innerHTML = "";
     const dits = avecChoix ? choix.map(c => c.dit).filter(Boolean) : [];
-    const voix = dire([lignes[i], ...dits].join(" "));
+    // a villager's « foreign words » in their own recorded voice, the rest in French (js/jeu/langues_habitants.js)
+    const texte = [lignes[i], ...dits].join(" ");
+    const voix = opts.langue && typeof direMixte === "function" ? direMixte(texte, {langue: opts.langue}) : dire(texte);
     if (opts.ligne) opts.ligne(i, voix);
     DLG.fermable = derniere && (!avecChoix || !!opts.quitter);
     if (avecChoix) choix.forEach((c, k) => {

@@ -191,8 +191,12 @@ class Monde extends Phaser.Scene {
     const {x, y} = this.case;
     if (ecranCourant !== "monde" || this.verrou) { this.chemin = []; this.pnjVise = null; return this.pas(); }   // a menu opened while walking: stop here
     if (this.carte.herbe[y][x]) { effetHD(this, "herbe", this.heros.x, this.heros.y, CASE, this.heros.depth + 3); secouerHerbeHD(this, x, y); }   // tall grass rustles
-    const o = this.ombres.pres(x, y);
+    // only the Ombre the child touched starts a fight (Kezhan, 13/10/2026: never by accident while walking past);
+    // another one next to the path looks up and hops
+    const o = this.ombreVisee && !this.ombreVisee.combat && aUnPas(this.ombreVisee, this.case) ? this.ombreVisee : null;
     if (o) { this.enMarche = false; this.arreter(); return this.rencontre(o); }
+    const frolee = this.ombres.pres(x, y);
+    if (frolee) this.ombres.coucou(frolee);
     const porte = this.carte.portes.find(p => p.x === x && p.y === y);
     if (porte && !this.chemin.length) { this.enMarche = false; this.arreter(); return this.devantPorte(porte.region); }
     this.pas();
@@ -215,7 +219,7 @@ class Monde extends Phaser.Scene {
   parler(n){
     this.vie.parler(n.s);
     const h = this.histoire.lignes(n);   // what they say depends on the game (js/jeu/histoire_village.js)
-    dialogue(n.nom, n.cle, h.lignes, h.choix || null, {quitter: !!h.choix, ligne: (i, voix) => { this.vie.mains(n.s, voix); if (h.ligne) h.ligne(i); },
+    dialogue(n.nom, n.cle, h.lignes, h.choix || null, {quitter: !!h.choix, langue: h.langue, ligne: (i, voix) => { this.vie.mains(n.s, voix); if (h.ligne) h.ligne(i); },
       fin: () => { this.vie.repos(n.s); if (h.fin) h.fin(); }});
   }
   devantPorte(regionId){ this.chemin = []; this.pnjVise = null; entrerMaison(regionId); }
