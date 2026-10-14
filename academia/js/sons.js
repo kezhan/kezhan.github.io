@@ -1,6 +1,8 @@
 /* Académia : la musique et les bruitages. Une musique douce au village (et à l'accueil), vive au combat, un thème pour
    le chef de maison ; des fanfares courtes pour la victoire, le badge, le compagnon libéré, l'évolution et le niveau ;
-   des bruitages pour les boutons, les pas, les coups, le bouclier, la porte, les rires. Les fichiers sont dans
+   des bruitages pour les boutons, les pas, les coups, le bouclier, la porte, les rires ; au combat, l'Ombre qui
+   s'enfuit dans les herbes, la petite musique d'une Ombre brillante, le tampon d'une erreur réparée et le tintement
+   des étincelles qui arrivent au compteur. Les fichiers sont dans
    assets/audio/musique et assets/audio/sons, fabriqués par outils/sons/ (sources CC0 et leurs licences, mesures).
    1. Tout passe par Web Audio, dans le contexte des petits sons de js/outils.js. Un navigateur ne joue rien avant le
       premier toucher : la musique voulue part à ce moment-là.
@@ -28,6 +30,8 @@
     pas: {f: ["pas1", "pas2", "pas3", "pas4"], v: .14, varie: .12}, rencontre: {f: ["rencontre"], v: .5},
     rire: {f: ["rire"], v: .4, varie: .05}, joie: {f: ["joie"], v: .4, varie: .05}, scintille: {f: ["scintille"], v: .35},
     magie: {f: ["magie"], v: .45}, tic: {f: ["tic"], v: .28}, etoile: {f: ["etoile"], v: .4},
+    fuite: {f: ["fuite"], v: .5}, tampon: {f: ["tampon"], v: .55}, piece: {f: ["etoile"], v: .16},
+    brillante: {f: ["brillante"], v: .5, fanfare: true},
     porte: {f: ["porte"], v: .55, fanfare: true}, niveau: {f: ["niveau"], v: .5, fanfare: true}, repos: {f: ["repos"], v: .5, fanfare: true},
     victoire: {f: ["victoire"], v: .55, fanfare: true}, badge: {f: ["badge"], v: .55, fanfare: true},
     compagnon: {f: ["compagnon"], v: .55, fanfare: true}, eclosion: {f: ["eclosion"], v: .6, fanfare: true}
@@ -41,6 +45,9 @@
     victoire: () => ecranCourant === "combat" || ecranCourant === "fin" ? null : "compagnon"};   // a won fight has its fanfare
   const ORDRE = ["bouton", "juste", "faux", "pas1", "pas2", "pas3", "pas4", "coup1", "coup2", "coup3", "critique", "bouclier", "rencontre",
     "rire", "joie", "porte", "victoire", "scintille", "repos", "niveau", "badge", "compagnon", "magie", "tic", "etoile", "eclosion"];
+  // the fights' rarer sounds (an Ombre that runs away, a shining one, a mistake repaired): after the fight's music, so
+  // that the village's first seconds are never slower
+  const ORDRE_COMBAT = ["fuite", "tampon", "brillante"];
   const MUSIQUES_GARDEES = 2;          // decoded music in memory at most (a 90 s loop, mono, 48 kHz: 17 MB)
 
   let ctx = null, debloque = false, voulue = null, courante = null, parle = false, fanfares = 0, cible = 1;
@@ -108,7 +115,8 @@
   }
   async function precharger(){
     for (const f of ORDRE) await charger(`sons/${f}.mp3`);
-    if (!courante || courante.nom === "village") chargerMusique("combat");   // the first fight starts at once
+    if (!courante || courante.nom === "village") await chargerMusique("combat");   // the first fight starts at once
+    for (const f of ORDRE_COMBAT) await charger(`sons/${f}.mp3`);
   }
 
   // ---- levels: the music steps back while the voice speaks and while a fanfare plays; cut for this Gardien
@@ -240,6 +248,7 @@
     journal("son", nom);
     if (nom === "evolution" || nom === "badge" || nom === "compagnon") suivreMoments();
     if (nom === "pas") { pasGauche = !pasGauche; return void jouer("pas", {pan: pasGauche ? -.15 : .15}); }
+    if (nom === "piece") return void jouer("piece", {vitesse: 1.5 + Math.random() * .25});   // a won sparkle reaches the counter: a high bell
     jouer(DU_JEU[nom] || nom);
   }
   // screens without a call of their own: the welcome screens have the village's music; a fight that did not ask for
@@ -280,5 +289,5 @@
   // read by the checks (outils/sons/scripts/essai.py): nothing here changes the game
   window.__sons = {etat: () => ({contexte: ctx ? ctx.state : "aucun", debloque, voulue, piste: courante && courante.nom, parle, fanfares,
     musique: musiqueOn(), cible, niveau: canal.musique ? Math.round(canal.musique.gain.value * 100) / 100 : null,
-    prets: [...prets.keys()], joues: joues.slice(-40)})};
+    prets: [...prets.keys()], joues: joues.slice()})};   // the whole journal (80): a fight's sparkles add to it
 })();

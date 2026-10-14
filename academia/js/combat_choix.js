@@ -1,8 +1,10 @@
 /* Académia : le choix de l'attaque, au tour du compagnon (GDD §4). Jusqu'à 5 ans, un seul gros bouton avec le
    visage du compagnon, et l'étoile du combo qu'on touche quand elle brille ; la voix dit quoi toucher. À partir de
    6 ans, les trois attaques, lues à voix haute quand le panneau monte, le Sablier qui donne dix secondes de plus au
-   combo minuté, et la fuite (touchée deux fois). Rend {action: rapide | massive | combo | fuite, sablier}. */
-function choisirAttaque(panneau, c, {boss = false, premier = false} = {}){
+   combo minuté, et la fuite (touchée deux fois). Devant une Ombre brillante (`brillante`, à partir de 6 ans), les
+   boutons disent que l'attaque rapide glisse sur elle et que la frappe massive la touche (js/combat.js).
+   Rend {action: rapide | massive | combo | fuite, sablier}. */
+function choisirAttaque(panneau, c, {boss = false, premier = false, brillante = false} = {}){
   return new Promise(fin => {
     const p = P(), A = attaquesDe(c), nom = nomCompagnon(c), pret = (c.charge || 0) >= COMBO_PLEIN;
     panneau.innerHTML = ""; panneau.classList.remove("cache"); panneau.classList.add("choix");
@@ -25,8 +27,8 @@ function choisirAttaque(panneau, c, {boss = false, premier = false} = {}){
       b.onclick = () => { if (!b.disabled) choisir(action, titre); };
       g.append(b); return b;
     };
-    markOk(bouton("rapide", "eclair", A[0], "Une question facile", "rapide"));
-    bouton("massive", "choc", A[1], boss ? "Le défi du chef !" : "Plus dur, plus d'XP !", "massive");
+    markOk(bouton("rapide", "eclair", A[0], brillante ? "Glisse sur l'Ombre brillante" : "Une question facile", "rapide"));
+    bouton("massive", "choc", A[1], boss ? "Le défi du chef !" : brillante ? "Touche l'Ombre brillante !" : "Plus dur, plus d'XP !", "massive");
     const combo = bouton("combo" + (pret ? " prete" : ""), "etoile", A[2], pret ? "Prêt : trois bonnes réponses !" : "Trois bonnes réponses de suite", "combo");
     combo.querySelector("span:last-child").append(el("div", "jauge-combo", `<i style="width:${100 * (c.charge || 0) / COMBO_PLEIN}%"></i>`));
     combo.disabled = !pret;
@@ -52,7 +54,8 @@ function choisirAttaque(panneau, c, {boss = false, premier = false} = {}){
     };
     l.append(fuite); panneau.append(l);
     // the voice reads the choices as the panel rises (all of it on the first turn, the names after)
-    dire(premier ? `${A[0]} : une question facile. ${A[1]} : plus dur.` + (pret ? ` Ou ${A[2]} : le combo est prêt !` : "")
+    dire(premier ? (brillante ? `${A[0]} glisse sur elle. ${A[1]} la touche !` : `${A[0]} : une question facile. ${A[1]} : plus dur.`)
+      + (pret ? ` Ou ${A[2]} : le combo est prêt !` : "")
       : `${A[0]}, ou ${A[1]} ?` + (pret ? ` Ou ${A[2]} !` : ""));
 
     // up to 5 years: the companion's face to touch, and the star of the combo once it shines

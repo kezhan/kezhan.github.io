@@ -2,7 +2,8 @@
    accourt, l'Ombre surgit d'une bouffée ; le boss : l'écran s'assombrit, son bandeau passe avec son portrait, il tombe
    sur son estrade dans la poussière et fait la grimace). Les coups : la gerbe de la famille du compagnon vole jusqu'à
    l'Ombre (js/jeu/attaques_hd.js), le chiffre naît sur son ventre. Le boss qui se fâche à mi-vie, l'attaque ultime
-   (arène assombrie, compagnon en grand au premier plan, nom qui traverse l'écran), l'Ombre qui s'enfuit.
+   (arène assombrie, compagnon en grand au premier plan, nom qui traverse l'écran), l'Ombre qui s'enfuit dans les
+   herbes avec son bruit. Une Ombre brillante : plus grosse, dorée, scintillante ; une attaque rapide glisse sur elle.
    En recette (TEST) et pour qui préfère moins de mouvement (calme()), tout se résout tout de suite. */
 function spectacle(S, vue, c, o, region){
   const scene = async () => {   // the scene once it is drawn (a slow network: its drawings may still be coming)
@@ -40,6 +41,26 @@ function spectacle(S, vue, c, o, region){
       await Promise.all([vol, anim("lui", "esquive")]);
       await wait(200);
     },
+    async glisse(){   // a quick attack on a shining Ombre: it shines brighter and slips aside, golden
+      const s = S(); if (!s) return;
+      const vol = anim("moi", "attaque");
+      await wait(140);
+      if (!S()) return;
+      s.effet("lui", "esquive", 1.05); s.texte("lui", "Elle brille !", "#FFE38A", .8);
+      await Promise.all([vol, anim("lui", "esquive")]);
+      await wait(200);
+    },
+    // a creature's middle on the screen, or the arena's middle, in CSS pixels (for what HTML draws over the scene);
+    // beside the panel (a phone held sideways), the arena's middle is between the creatures: the panel's place then,
+    // empty while the stamp is there
+    ou(cible){
+      const s = S(), r = RATIO, L = s && s.L;
+      if (!s) return [innerWidth / 2, innerHeight * .3];
+      if (cible === "arene") return L.mode === "cote" ? [(L.zone.x + L.zone.w + (L.w - L.zone.w) / 2) / r, L.h * .45 / r]
+        : [(L.zone.x + L.zone.w / 2) / r, L.zone.h * .42 / r];
+      const t = s[cible];
+      return t ? [t.x / r, (t.y - t.displayHeight * .55) / r] : [innerWidth / 2, innerHeight * .3];
+    },
     async coupOmbre(n){
       const s = S(); if (!s) return;
       await anim("lui", "attaque");
@@ -54,7 +75,10 @@ function spectacle(S, vue, c, o, region){
     },
     async phase2(){ $("etatLui").classList.add("fache"); const s = S(); if (s) await s.phase2(); },
     async ultime(nom){ const s = S(); if (s) await s.ultime(nom); },
-    async fuite(){ const s = S(); if (s) await s.fuite(); },
+    async fuite(){   // it hops back into the grass: its sound (outils/sons), its little run
+      if (typeof jouerSon === "function") jouerSon("fuite");
+      const s = S(); if (s) await s.fuite();
+    },
     ko: k => anim(k, "ko"),
     joie: () => anim("moi", "joie")
   });
@@ -89,8 +113,17 @@ SceneCombat.prototype.promesse = function(ms, f){
     f(ok);
   });
 };
-// before the entrance: the companion waits off screen, the Ombre is not there yet (a boss waits above the screen)
+// before the entrance: the companion waits off screen, the Ombre is not there yet (a boss waits above the screen).
+// A shining Ombre is bigger (never wider than the room for a creature), glows gold and twinkles (js/jeu/ombres_regions.js)
 SceneCombat.prototype.preparerEntree = function(){
+  if (this.d.o.brillante) quandAtlas(this, this.d.o.cle, () => {
+    const s = this.lui; if (!s || !s.active) return;
+    if (s.souffle) s.souffle.stop();
+    s.base = Math.min(s.base * 1.2, this.L.lMax / s.width); s.setScale(s.base);
+    if (!TEST) s.souffle = this.tweens.add({targets: s, scaleY: s.base * 1.03, scaleX: s.base * .985, duration: 1000, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
+    halo(this, s, OR_BRILLANT, 1.12, .7);
+    scintillerOmbre(this, s, {cadence: 300, taille: .16});
+  });
   if (TEST || this.d.vu) return;
   this.moi.x = -this.moi.displayWidth - 200 * RATIO;
   if (this.d.o.boss) this.lui.y = -40 * RATIO; else this.lui.setAlpha(0);

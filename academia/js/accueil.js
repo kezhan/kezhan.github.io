@@ -133,9 +133,9 @@ function ouvrirChoix(){
       jaillir(x, y, {pieces: ["etincelle", "etoile", "etoile_p"], n: 18, angle: [0, 360], gravite: 260, vitesse: [160, 340], taille: [16, 30], duree: [700, 1100]});
       ajouterCompagnon(f, 1);
       dire(`${F.noms[0]} rejoint ton équipe !`);
-      const mots = p.age <= 5 ? [`Touche une Ombre violette dans l'herbe haute : ${F.noms[0]} va la combattre !`]
+      const mots = p.age <= 5 ? [`Touche une Ombre dans l'herbe haute : ${F.noms[0]} va la combattre !`]
         : [`Bienvenue à Académia, ${p.nom} !`, "Derrière toi, l'Arbre-Monde dort, tout gris. Chaque badge gagné chez un chef des Ombres le réveillera !",
-           `Des Ombres violettes se cachent dans les hautes herbes. Touche-en une : ${F.noms[0]} va la combattre !`];
+           `Des Ombres se cachent dans les hautes herbes. Touche-en une : ${F.noms[0]} va la combattre !`];
       if (p.age > 5 && p.histoire) p.histoire.but = new Date().toISOString();   // the goal is said (js/jeu/histoire_village.js); the little one hears it after her first fight
       setTimeout(() => entrerMonde(() => setTimeout(() => dialogue("Le Sage", "sage", mots), TEST ? 0 : 400)), TEST ? 0 : 900);
     };

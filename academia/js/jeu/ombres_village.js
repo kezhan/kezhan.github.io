@@ -1,4 +1,4 @@
-/* Académia : les Ombres qu'on voit dans les hautes herbes. Une par touffe, violette comme au combat, un peu plus grande
+/* Académia : les Ombres qu'on voit dans les hautes herbes. Une par touffe, aux couleurs de sa maison, un peu plus grande
    que les compagnons pour qu'un doigt la trouve ; elle se promène dans son herbe sans jamais venir coller le héros.
    La toucher (ou toucher juste à côté, diagonales comprises) lance le combat ; passer à côté sans l'avoir touchée la
    fait seulement lever les yeux (jamais de combat par hasard, Kezhan, 13/10/2026) ; battue, elle
@@ -6,13 +6,25 @@
 const OMBRE_REVIENT_MS = 5000, OMBRE_PAS_MS = 1500, HAUTEUR_OMBRE = 19;
 const aUnPas = (a, b) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y)) <= 1;   // the same tile or one of the eight around
 
+/* Les Ombres des maisons (js/jeu/ombres_regions.js) : chacune dans la teinte et la parure de sa maison, sa lueur
+   violette autour, comme au combat. Une sur vingt environ est brillante : dorée, plus grande, une lueur d'or et des
+   étincelles ; la première fois qu'elle passe à l'écran, sa petite musique et la voix l'annoncent. Le combat a lieu
+   contre l'Ombre touchée, la même (js/jeu/lanceur.js). */
+const HAUTEUR_BRILLANTE = 23, OMBRES_TEINTES_APRES = 450, OMBRE_VUE_MAX = 1500;
+const voixOmbres = {parle: false};   // the voice is speaking (the « voix » event of js/voix.js)
+document.addEventListener("voix", e => { voixOmbres.parle = e.detail === "debut"; });
+
 class OmbresVillage {
   constructor(scene){
     this.s = scene; this.liste = [];
     this.cases = {};   // region -> the tiles of its tall grass
     const h = scene.carte.herbe;
     for (let y = 0; y < HAUT; y++) for (let x = 0; x < LARG; x++) if (h[y][x]) (this.cases[h[y][x]] = this.cases[h[y][x]] || []).push({x, y});
+    // the first ones are dressed just after the Sage's word (0.4 s after the village opens, js/accueil.js), which
+    // never waits for them; the guide's arrow has one to show 0.7 s after
+    this.debut = TEST ? 0 : OMBRES_TEINTES_APRES;
     Object.keys(this.cases).forEach(r => this.poser(r, false));
+    this.debut = 0;
     scene.time.addEvent({delay: OMBRE_PAS_MS, loop: true, callback: () => this.promener()});
   }
   a(x, y){ return this.liste.find(o => o.x === x && o.y === y) || null; }
@@ -47,18 +59,55 @@ class OmbresVillage {
   poser(region, bouffee = true){
     const libres = this.cases[region].filter(c => !this.occupee(c.x, c.y) && this.loinDuHeros(c));
     if (!libres.length) { this.s.time.delayedCall(2000, () => this.poser(region, bouffee)); return null; }   // the hero stands in the grass: later
-    const c = libres[rnd(libres.length)], qui = ombre(regionDe(region), false);
-    const o = {region, x: c.x, y: c.y};
-    o.s = spriteCreature(this.s, qui.cle, c.x, c.y, HAUTEUR_OMBRE).setDepth(profondeur(c.y));
+    const c = libres[rnd(libres.length)], qui = ombre(regionDe(region), false), brillante = tirerBrillante();
+    const o = {region, x: c.x, y: c.y, cle: qui.cle, brillante};   // what the fight will meet (js/jeu/lanceur.js)
+    o.s = spriteCreature(this.s, qui.cle, c.x, c.y, brillante ? HAUTEUR_BRILLANTE : HAUTEUR_OMBRE).setDepth(profondeur(c.y));
     ombreAuSolHD(this.s, o.s);
-    halo(this.s, o.s, 0x7B4DFF, 1.14, .6);   // its violet glow (js/jeu/sprites_hd.js)
-    o.s.setAlpha(0); this.s.tweens.add({targets: o.s, alpha: 1, duration: TEST ? 1 : 400});
+    if (brillante) { halo(this.s, o.s, OR_BRILLANT, 1.2, .75); scintillerOmbre(this.s, o.s, {cadence: 420, taille: .3}); }
+    else halo(this.s, o.s, 0x7B4DFF, 1.14, .6);   // its violet glow (js/jeu/sprites_hd.js)
+    o.s.setAlpha(0);
+    this.teindre(o);
     if (bouffee) this.fumee(o);
     this.liste.push(o);
     return o;
   }
+  // its house's colours, gold when shining (js/jeu/ombres_regions.js), worked out a moment later, one Ombre every 60 ms
+  // and its small face only: the village shows at once; the Ombre fades in once dressed (its drawing late on a slow
+  // network: on arrival). Never hidden long: on a slow device (the game's clock crawls when the frames are slow), it
+  // shows in its own colours 1.5 s after its drawing has come, and is dressed when its colours are ready
+  teindre(o){
+    this.attente = (this.attente || 0) + 1;
+    const montrer = () => {
+      if (o.montree || !o.s.active) return;
+      o.montree = true; this.s.tweens.add({targets: o.s, alpha: 1, duration: TEST ? 1 : 400});
+    };
+    if (!TEST) quandAtlas(this.s, o.cle, () => setTimeout(montrer, OMBRE_VUE_MAX));
+    this.s.time.delayedCall(TEST ? 0 : (this.debut || 0) + 60 * this.attente, () => {
+      this.attente--;
+      quandAtlas(this.s, o.cle, () => {
+        if (!o.s.active) return;
+        const d = ombreTeinte(o.cle, o.region, {brillante: o.brillante, petit: true});
+        if (d !== o.s.hd) { o.s.hd = d; o.s.setTexture("hd_" + d, "face_petit"); }
+        montrer();
+      });
+    });
+  }
+  // a shining Ombre seen for the first time on the screen, golden already: its little tune, a burst of stars, the
+  // voice says it (once the voice is quiet: the guide's sentence is never cut)
+  annoncer(){
+    if (voixOmbres.parle) return;
+    const v = this.s.cameras.main.worldView;
+    const o = this.liste.find(x => x.brillante && !x.annoncee && !x.combat && x.s.active && x.s.alpha > .5 && x.s.hd !== x.cle
+      && v.contains(x.s.x, x.s.y - 8));
+    if (!o) return;
+    o.annoncee = true;
+    if (typeof jouerSon === "function") jouerSon("brillante");
+    effetHD(this.s, "apparition", o.s.x, o.s.y - o.s.displayHeight / 2, o.s.displayHeight, o.s.depth + 4);
+    dire("Oh ! Une Ombre brillante scintille dans les hautes herbes !");
+  }
   promener(){
     if (this.s.occupe()) return;
+    this.annoncer();
     this.liste.forEach(o => {
       if (o.fige || o.combat || o.bouge || Math.random() < .4) return;
       const herbe = this.s.carte.herbe;

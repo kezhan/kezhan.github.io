@@ -37,9 +37,11 @@ function entrerMonde(apres){
   JEU.scene.start("monde");
   majBarre();
 }
+// the fight is against the very Ombre touched in the grass: its kind, shining or not (js/jeu/ombres_village.js)
 function commencerCombat(regionId, boss){
+  const m = JEU.scene.getScene("monde"), o = !boss && m && m.ombreEnCombat;
   JEU.scene.sleep("monde");
-  lancerCombat(regionId, boss);
+  lancerCombat(regionId, boss, o && o.region === regionId ? {cle: o.cle, brillante: o.brillante} : null);
 }
 // through the open door to the boss: the village holds still and the screen closes in a star on the door
 // (js/transition.js, when the fights have it)
@@ -76,7 +78,7 @@ function entrerMaison(regionId){
   const r = regionDe(regionId), st = regionEtat(regionId), reste = ETAPES - st.etape;
   const nom = `${r.icone} ${r.nom}`;   // the house's drawn symbol before its name (js/icones.js), a padlock in the line
   if (reste > 0) return dialogue(nom, CLES_OMBRES["Néantik"], [`🔒 ${r.nom}. Une Ombre garde la porte fermée.`,
-    `Touche encore ${reste} Ombre${reste > 1 ? "s" : ""} violette${reste > 1 ? "s" : ""} dans les hautes herbes ${r.herbes}, et la porte s'ouvrira !`]);
+    `Touche encore ${reste} Ombre${reste > 1 ? "s" : ""} dans les hautes herbes ${r.herbes}, et la porte s'ouvrira !`]);
   if (typeof jouerSon === "function") jouerSon("porte");
   const entrer = () => entrerChezLeChef(regionId), boss = CLES_BOSS[regionId];
   if (P().age <= 5) return dialogue(nom, boss, [`🔓 La porte est ouverte : le ${r.boss} t'attend !`],

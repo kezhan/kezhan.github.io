@@ -239,3 +239,26 @@ function progresMatiere(matiere){
   const ns = notionsDe(matiere).filter(n => ageMin(n) <= ageDuJour(P()) + 2);
   return ns.length ? ns.filter(maitrisee).length / ns.length : 0;
 }
+
+// a revanche won: the mistake is repaired, written in the notebook of the bag (P().album.reparees, the latest 50:
+// {question, reponse, matiere, t} as js/etat.js says). Also kept when the question has them: its id, `legende` the
+// answer's name when it is a picture (« Hiver » for ❄️), `dire` what the voice said (for the little one), `visuel` a
+// short picture in emoji, and the language its words are said in (`langue`, `oreille`)
+const REPAREES_MAX = 50;
+function noterReparee(q){
+  const p = P();
+  if (!p || !q || !q.revanche) return null;
+  p.album = p.album && typeof p.album === "object" ? p.album : {};
+  const l = p.album.reparees = Array.isArray(p.album.reparees) ? p.album.reparees : [];
+  const e = {question: String(q.question || q.dire || ""), reponse: String(q.reponse), matiere: q.matiere || "", t: new Date().toISOString()};
+  if (q.id) e.id = String(q.id);
+  if (q.legendes && q.legendes[q.reponse]) e.legende = q.legendes[q.reponse];
+  if (q.dire && q.dire !== e.question) e.dire = String(q.dire);
+  if (typeof q.visuel === "string" && q.visuel && q.visuel.length <= 60) e.visuel = q.visuel;
+  if (q.langue && q.langue !== "fr") e.langue = q.langue;
+  if (q.oreille) e.oreille = q.oreille;
+  l.push(e);
+  if (l.length > REPAREES_MAX) l.splice(0, l.length - REPAREES_MAX);
+  sauver();
+  return e;
+}

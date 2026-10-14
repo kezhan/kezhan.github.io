@@ -66,19 +66,44 @@ const CLES_BOSS = {dojo: "vizir", albion: "roi", germania: "dragon", duche: "esp
 // answers (2 before 6 years), a boss after 5 (3 before 6). Each right answer takes off one `coup`, the companion's force
 // (the number seen on screen); the Ombre's own blows still grow with the companion
 const VIES = {ombre: [2, 3], boss: [3, 5]};
-function ombre(region, boss){
+// `vue`: the Ombre met in the grass ({cle, brillante}, js/jeu/ombres_village.js), the same one in the fight. `espece`
+// stays the drawing's own key (the album counts it) when `cle` becomes its region's tinted drawing (js/jeu/ombres_regions.js)
+function ombre(region, boss, vue = null){
   const r = regionDe(region.id), st = regionEtat(region.id), k = st.niveau, a = actif(), p = P();
   const base = a ? a.niveau : 1, coup = force(a || {niveau: 1}), petit = !!p && p.age <= 5;
   const coups = VIES[boss ? "boss" : "ombre"][petit ? 0 : 1];
-  if (boss) return {nom: r.boss, cle: CLES_BOSS[r.id], niveau: base + 1, coups, coup, pvMax: coups * coup,
-                    force: 3 + Math.ceil(base * .5) + k, boss: true};
+  if (boss) return {nom: r.boss, cle: CLES_BOSS[r.id], espece: CLES_BOSS[r.id], niveau: base + 1, coups, coup, pvMax: coups * coup,
+                    force: 3 + Math.ceil(base * .5) + k, boss: true, brillante: false};
   const n = st.etape + REGIONS.indexOf(r);   // each region has its own Ombre, and the next one changes
-  const nom = OMBRES[(n + k) % OMBRES.length];
-  return {nom, cle: CLES_OMBRES[nom], niveau: base, coups, coup, pvMax: coups * coup,
-          force: 3 + Math.ceil(base * .5) + Math.floor(k / 2), boss: false};
+  const vu = vue && OMBRES.find(x => CLES_OMBRES[x] === vue.cle);
+  const nom = vu || OMBRES[(n + k) % OMBRES.length];
+  return {nom, cle: CLES_OMBRES[nom], espece: CLES_OMBRES[nom], niveau: base, coups, coup, pvMax: coups * coup,
+          force: 3 + Math.ceil(base * .5) + Math.floor(k / 2), boss: false, brillante: !!(vue && vue.brillante)};
 }
 // the region's own family hits with more sparkle there (GDD §4: weaknesses): an effect and XP, never a shorter fight
 const superEfficace = (c, region) => c && FAMILLES[c.famille].matiere === regionDe(region.id).matiere;
+// its element in a sentence: « le vent de Plumix »
+const ELEMENTS = {"géométrie": "la géométrie", vent: "le vent", pierre: "la pierre", "lumière": "la lumière", "stratégie": "la stratégie",
+  nature: "la force des plantes"};
+const elementDe = c => `${ELEMENTS[FAMILLES[c.famille].element] || FAMILLES[c.famille].element} de ${nomCompagnon(c)}`;
+const DANS_REGION = {dojo: "au Dojo des Nombres", albion: "au Port d'Albion", germania: "à la Montagne de Germania",
+  duche: "dans la Vallée du Grand-Duché", jardin: "au Jardin des Éclats", observatoire: "à l'Observatoire"};
+// the Sage's tip at the start of a fight: the region's companion is in the bag but not chosen. Said at the first such
+// fight of a region, then one in four (never at every fight), for each child; null otherwise. The companion of a fight
+// is chosen in the bag, before it: the tip says so
+const ASTUCES_FAIBLESSE = {};
+function astuceFaiblesse(c, region){
+  const p = P(), r = regionDe(region.id);
+  const bon = p && c && c.famille !== r.famille && p.compagnons.find(x => x.famille === r.famille);
+  if (!bon) return null;
+  const k = `${p.id}:${r.id}`, n = ASTUCES_FAIBLESSE[k] = (ASTUCES_FAIBLESSE[k] == null ? -1 : ASTUCES_FAIBLESSE[k]) + 1;
+  if (n % 4) return null;
+  const ici = DANS_REGION[r.id] || "ici", nom = nomCompagnon(bon);
+  // up to 5 years, two short sentences without the element's word (« la géométrie » means nothing at 4)
+  if (p.age <= 5) return {compagnon: bon, texte: `${nom} est super fort ${ici} ! Prends-le la prochaine fois : il t'attend dans ton sac.`};
+  return {compagnon: bon, texte: `Astuce : ${elementDe(bon)} est super efficace ${ici} ! `
+    + `La prochaine fois, prends ${nom} avec toi : il t'attend dans ton sac.`};
+}
 
 // text shown on screen: a name never breaks at its hyphen (« Ombre- / Chagrin »: a word joiner after it), a number
 // stays with its word, and « ! ? : ; » keep their French space without ever starting a line (a no-break space: the

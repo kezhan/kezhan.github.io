@@ -3,6 +3,8 @@
    jamais et se voit tout de suite. Victoire : ruban, rayons qui tournent, confettis et étoiles dessinés, le compagnon
    en grand qui saute de joie (sa pose « joie »), deux lanceurs de confettis à ses pieds, sa coupe après un chef.
    Fatigue : bleu nuit doux, le compagnon fatigué (pose « fatigue ») qui respire lentement sous ses « Z » dessinés.
+   Les lignes disent aussi les étincelles gagnées, les erreurs réparées, une Ombre brillante ou une nouvelle espèce
+   consolée pour l'album.
    Une Ombre enfuie : rien de grave, elle attend dans les herbes. Une pose pas encore dessinée montre la face
    (imageHD). Les icônes des lignes sont dessinées (js/icones.js). Sur un écran bas, la carte passe en deux colonnes
    (style_scenes.css). */
@@ -37,12 +39,22 @@ function carteBilan(b, c, region, gain, xpAvant, fin){
     const corps = el("div", "bilan-corps"), lignes = el("div", "lignes");
     const lignesTexte = [];
     // a line, its emoji drawn; the voice reads the text without it (js/voix.js)
-    const ligne = (t, cls = "") => { lignes.append(ecrireIcones(el("p", "ligne-bilan " + cls), affiche(t))); lignesTexte.push(t); };
+    // (the voice says « étincelles » where the screen shows the drawn sparkle, whatever space is before it, and a
+    // pause where the screen has « · »)
+    const ligne = (t, cls = "") => {
+      lignes.append(ecrireIcones(el("p", "ligne-bilan " + cls), affiche(t)));
+      lignesTexte.push(t.replace(/\+(\d+)[\s  ]*✨/g, "+$1 étincelles").replace(/[\s  ]*·[\s  ]*/g, ", "));
+    };
     const s = n => n > 1 ? "s" : "";
     const nomAvant = FAMILLES[c.famille].noms[gain.stadeAvant - 1];
-    ligne(`${b.bonnes} bonne${s(b.bonnes)} réponse${s(b.bonnes)} sur ${b.total}` + (b.xp ? ` · +${b.xp} XP` : ""), "fort");
+    // a line never starts with « · », and « +n » stays with its unit
+    ligne(`${b.bonnes} bonne${s(b.bonnes)} réponse${s(b.bonnes)} sur ${b.total}` + (b.xp ? ` · +${b.xp} XP` : "")
+      + (b.etincelles ? ` · +${b.etincelles} ✨` : ""), "fort");
     if (fin.rattrapage > 1 && b.xp) ligne(`🚀 ${gain.evolue ? nomAvant : nomCompagnon(c)} rattrape les autres : XP doublée !`);
-    if (b.revanches) ligne(`🔁 ${b.revanches} revanche${s(b.revanches)} gagnée${s(b.revanches)} : XP triplée !`);
+    if (b.revanches) ligne(`🔁 ${b.revanches} erreur${s(b.revanches)} réparée${s(b.revanches)} : XP triplée !`);
+    // the album (js/progression.js): a shining Ombre, or a kind consoled for the first time
+    if (b.gagne && !b.boss && b.brillante) ligne("✨ Une Ombre brillante consolée : elle brille dans ton album !", "brillante");
+    else if (b.gagne && !b.boss && fin.premiere && b.nom) ligne(`🎉 Nouvelle Ombre dans ton album : ${b.nom} !`);
     if (b.defis) ligne(`👑 ${b.defis} défi${s(b.defis)} du chef réussi${s(b.defis)} !`);
     if (issue === "fatigue") ligne(b.xp > 0 ? "Ce n'est pas grave : il se repose et revient plus fort. Tu as gagné de l'expérience !" : "Ce n'est pas grave : ton compagnon se repose. Réessaie, tu vas y arriver !");
     if (issue === "fuite") ligne(b.boss ? `${majuscule(region.chef)} t'attend encore dans sa maison. Réessaie, tu vas y arriver !` : "Elle se cache dans les herbes. Retrouve-la : tu vas y arriver !");
@@ -72,7 +84,9 @@ function carteBilan(b, c, region, gain, xpAvant, fin){
     const toutes = [...lignes.children];
     if (calme()) toutes.forEach(x => x.classList.add("vu"));
     else toutes.forEach((x, i) => setTimeout(() => { if (!parti) x.classList.add("vu"); }, 250 + 280 * i));
-    dire(titre + ". " + lignesTexte.filter(t => !/^🚀/.test(t)).join(" "));
+    // a pause after each line (« … avant la porte. Tu trouves… »), never « Victoire !. »
+    const phrase = t => /[!?.…]$/.test(t.trim()) ? t.trim() : t.trim() + ".";
+    dire(phrase(titre) + " " + lignesTexte.filter(t => !/^🚀/.test(t)).map(phrase).join(" "));
     if (issue === "victoire") {
       if (typeof jouerSon === "function") jouerSon("victoire");
       setTimeout(() => { if (!parti) { const [x, y] = centre(fig); confettisDom(x, y, b.boss ? 46 : 30); } }, 120);

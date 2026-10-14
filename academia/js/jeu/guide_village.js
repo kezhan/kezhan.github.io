@@ -76,7 +76,7 @@ class GuideVillage {
     const maintenant = performance.now();
     if (maintenant - this.voixA > GUIDE_VOIX_ESPACE && !(typeof bulleVillageOuverte === "function" && bulleVillageOuverte())) {   // a villager speaking: the hand only
       this.voixA = maintenant;
-      dire(c.porte ? phrasePorte(regionDe(c.porte)) : "Touche une Ombre violette !");
+      dire(c.porte ? phrasePorte(regionDe(c.porte)) : "Touche une Ombre dans les hautes herbes !");
     }
   }
   cacherMain(){

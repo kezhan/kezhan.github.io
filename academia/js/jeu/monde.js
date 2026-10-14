@@ -1,7 +1,7 @@
 /* Académia : le village. Le héros marche case par case jusqu'à l'endroit touché (chemin trouvé en contournant
    les obstacles) ou avec les flèches ; son compagnon le suit ; les habitants parlent (js/jeu/vie_village.js) ; toucher
-   une maison mène à sa porte (js/jeu/portes_village.js) ; dans les hautes herbes, des Ombres violettes
-   (js/jeu/ombres_village.js) : en toucher une, ou juste à côté, lance le combat. Une main et une flèche guident l'enfant
+   une maison mène à sa porte (js/jeu/portes_village.js) ; dans les hautes herbes, des Ombres aux couleurs de leur maison
+   (js/jeu/ombres_village.js) : en toucher une, ou juste à côté, lance le combat (jamais en passant). Une main et une flèche guident l'enfant
    qui ne sait plus quoi faire (js/jeu/guide_village.js). Au milieu de la place, l'Arbre-Monde, les cadeaux des chefs et le
    panneau des missions (js/jeu/arbre_monde.js) ; ce que le village raconte (js/jeu/histoire_village.js). */
 const PAS_MS = 170;
