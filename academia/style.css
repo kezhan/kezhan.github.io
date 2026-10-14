@@ -442,3 +442,89 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
   .attaques-fiche.complete .attaque-fiche{min-height:48px; padding:4px 8px} .attaque-fiche small{display:none} .formes-fiche{display:none}
   .fiche-seule .boutons-fiche .moyen{min-height:46px}
 }
+/* marchand */
+/* the merchant's shop (js/marchand.js): the fitting room on the left (above in portrait), the shelves on the right;
+   every object a big button with its drawing and its price, nothing to scroll at any size */
+.carte.boutique{max-width:1000px; display:flex; flex-direction:column; --cabine-h:150px; --acc-h:56px; --joker-h:54px}
+.boutique .entete .pastille{margin-left:auto; background:var(--nuit2); color:#fff; font:700 21px var(--titre); padding:4px 14px}
+.portrait-marchand{width:48px; height:48px; border-radius:50%; border:3px solid var(--or); background:#E9DCC2; vertical-align:middle; object-fit:cover}
+.boutique-corps{display:grid; grid-template-columns:minmax(210px, 260px) 1fr; gap:14px; min-height:0}
+.cabine{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:12px 8px; border-radius:22px;
+  background:linear-gradient(180deg, #FFF3C4, var(--papier2))}
+/* the companion on a soft green spot of grass, under its feet in every layout */
+.cabine-scene{height:calc(var(--cabine-h) + 30px); display:flex; align-items:flex-end; justify-content:center; padding:0 16px 6px;
+  background:radial-gradient(ellipse 50% 9% at 50% 93%, rgba(61,190,122,.45), transparent 75%)}
+.cabine-scene > .habille, .cabine-scene > .sprite{height:var(--cabine-h) !important; cursor:pointer}
+.cabine-info{text-align:center; min-height:3.2em; display:flex; flex-direction:column; align-items:center; gap:2px}
+.cabine-info b{font:700 21px/1.15 var(--titre)}
+.cabine-info small{font:700 15px/1.25 var(--titre); color:#5d5585}
+.cabine-info small .icone{width:1.2em; height:1.2em; vertical-align:-.28em}
+.cabine-info small.encore{color:#1E7A48} .cabine-info small.manque{color:#A3283C}
+.qui-liste{display:flex; flex-wrap:wrap; gap:6px; justify-content:center}
+.qui{width:54px; height:54px; border-radius:16px; background:#fff; display:flex; align-items:flex-end; justify-content:center; padding:2px 2px 4px;
+  box-shadow:0 3px 0 rgba(29,22,64,.2)}
+.qui .sprite{height:42px !important}
+.qui[aria-pressed="true"]{outline:4px solid var(--or); background:#FFF3C4}
+.etals{display:flex; flex-direction:column; gap:8px; min-width:0}
+.rayon{display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:8px}
+.rayon-titre{grid-column:1 / -1; margin:0; font:700 17px var(--titre); color:var(--nuit2); display:flex; align-items:center; gap:6px}
+.rayon-titre .icone{width:1.3em; height:1.3em}
+.article{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:5px; min-height:108px;
+  padding:8px 4px; border-radius:18px; background:var(--papier2); box-shadow:0 4px 0 rgba(29,22,64,.25); transition:transform .12s}
+.article:active{transform:translateY(3px); box-shadow:0 1px 0 rgba(29,22,64,.25)}
+.article .dessin{flex:1; display:flex; align-items:center; justify-content:center; width:100%; min-height:0}
+.article .icone-joker{width:var(--joker-h); height:var(--joker-h); vertical-align:0}
+.acc-seul{width:min(100%, calc(var(--acc-h) * var(--a, 1))); max-height:var(--acc-h); aspect-ratio:var(--a, 1); background-repeat:no-repeat; flex:none}
+.article .prix{display:inline-flex; align-items:center; gap:3px; font:700 18px/1 var(--titre); background:#fff; border-radius:999px; padding:4px 10px; white-space:nowrap}
+.article .prix .icone{width:1.15em; height:1.15em; vertical-align:0}
+.article .prix.cher{color:#8a83ad}
+.article.possede .prix{background:var(--vert); padding:3px 16px}
+.article.porte{outline:4px solid var(--vert); background:#E3F7EA}
+.article.choisi{outline:4px solid var(--or); background:#FFF3C4; animation:palpite 1.2s ease-in-out infinite}
+.article img.encore{position:absolute; top:-9px; right:-9px; width:34px; height:34px; padding:5px; border-radius:50%; background:var(--or);
+  box-shadow:0 2px 0 rgba(29,22,64,.35)}
+.article .compte{position:absolute; top:6px; left:6px; font:700 13px/1 var(--titre); background:var(--nuit2); color:#fff; border-radius:999px; padding:3px 7px}
+.article .compte.plein{background:var(--vert)}
+.article.plein .dessin{opacity:.6}
+/* a companion dressed in a menu (js/jeu/accessoires.js, habillerDom): its drawing and the accessory's layers */
+.habille{position:relative; flex:none}
+.profil-scene .sprite + .habille{margin-left:-10px}
+.habille.vivant{animation:respire 2.4s ease-in-out infinite; transform-origin:50% 100%}
+.habille.saute, .habille.vivant.saute{animation:saute-menu .5s ease-out}
+.acc-couche{position:absolute; background-repeat:no-repeat; pointer-events:none}
+.acc-couche.miroir{transform:scaleX(-1)}
+/* portrait: the fitting room above, side by side with what is chosen */
+@media (orientation:portrait){
+  .boutique-corps{grid-template-columns:1fr}
+  .cabine{display:grid; grid-template-columns:auto 1fr; align-items:center; gap:6px 14px; padding:8px 14px}
+  .cabine-scene{grid-row:span 2}
+  .cabine-info{align-items:flex-start; text-align:left; justify-content:center; min-height:0}
+  .qui-liste{justify-content:flex-start}
+}
+@media (max-width:560px){
+  .carte.boutique{--cabine-h:104px; --acc-h:44px; --joker-h:44px}
+  .boutique .titre3{font-size:24px} .portrait-marchand{width:40px; height:40px}
+  .rayon{grid-template-columns:repeat(3, 1fr); gap:7px}
+  .article{min-height:92px; padding:6px 3px 7px}
+  .article .prix{font-size:16px; padding:3px 8px}
+  .cabine-info b{font-size:19px}
+  .qui{width:46px; height:46px} .qui .sprite{height:36px !important}
+}
+/* a low screen (a phone held sideways): every object on two rows, beside the fitting room */
+@media (max-height:500px){
+  .carte.boutique{--cabine-h:96px; --acc-h:34px; --joker-h:34px; padding:10px 12px}
+  .boutique .titre3{font-size:22px} .portrait-marchand{width:34px; height:34px}
+  .boutique .entete .pastille{font-size:18px}
+  .boutique-corps{grid-template-columns:180px 1fr; gap:10px}
+  .cabine{display:flex; padding:6px; gap:4px}
+  .cabine-scene{height:calc(var(--cabine-h) + 14px)}
+  .cabine-info{min-height:0; align-items:center; text-align:center}
+  .cabine-info b{font-size:16px} .cabine-info small{font-size:13px}
+  .qui{width:38px; height:38px; border-radius:12px} .qui .sprite{height:30px !important}
+  .etals{display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:6px; align-content:start}
+  .rayon{display:contents} .rayon-titre{display:none}
+  .article{min-height:96px; padding:5px 2px 6px; gap:3px}
+  .article .prix{font-size:14px; padding:3px 6px}
+  .article img.encore{width:28px; height:28px; top:-7px; right:-7px; padding:4px}
+}
+@media (prefers-reduced-motion: reduce){ .habille.vivant, .article.choisi{animation:none} }

@@ -15,7 +15,7 @@ function ouvrirAccueil(){
     const c = p.compagnons.find(x => x.id === p.actif) || p.compagnons[0];
     const b = el("button", "profil"), scene = el("div", "profil-scene");
     scene.append(imageHD(herosHD(p), "face", 104));
-    if (c) scene.append(spriteCompagnon(c, 70));
+    if (c) scene.append(habillerDom(spriteCompagnon(c, 70), c, accessoirePorte(c.famille, p)));   // what it wears (js/jeu/accessoires.js)
     const t = el("span", "", "<b></b><small></small>");
     t.querySelector("b").textContent = p.nom;
     t.querySelector("small").textContent = c ? affiche(`${nomCompagnon(c)} · niveau ${c.niveau}`) : "Pas encore de compagnon";

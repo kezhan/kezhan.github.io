@@ -22,6 +22,7 @@ class SceneCombat extends Phaser.Scene {
     // the creatures, feet on their stands
     this.lui = this.creature(o.cle, "face", L.lui, L.hLui, L.lMax);
     this.moi = this.creature(cleDe(c), "dos", L.moi, L.hMoi, L.lMax);
+    porterAccessoire(this, this.moi, c);   // what it wears (js/jeu/accessoires.js)
     halo(this, this.lui, o.boss ? 0xFF5EC9 : 0x7B4DFF, 1.06, .55);   // js/jeu/sprites_hd.js
     if (stade(c) === 3) halo(this, this.moi, 0xFFD45C, 1.06, .5);
     this.base = {lui: {x: this.lui.x, y: this.lui.y}, moi: {x: this.moi.x, y: this.moi.y}};

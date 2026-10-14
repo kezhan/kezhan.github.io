@@ -45,7 +45,7 @@ async function atlasJSON(cle, type){
   ECHECS.add(cle);
   return null;
 }
-const typeAtlas = cle => /^(heros_|sage$|hugo$|paco$)/.test(cle) ? "humains" : "creatures";
+const typeAtlas = cle => /^(heros_|sage$|hugo$|paco$|marchand$)/.test(cle) ? "humains" : "creatures";
 
 // load the atlases a scene needs (from preload, or at any time with chargerPuis); already loaded ones are skipped.
 // A sheet that fails is asked again half a second later under a new address (no broken copy from a cache).

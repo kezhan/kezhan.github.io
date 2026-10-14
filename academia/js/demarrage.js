@@ -18,6 +18,8 @@ async function demarrer(){
   $("equipe").onclick = e => { if (e.target === e.currentTarget) { sfx.tap(); fermerEquipe(); } };
   appuiLong($("btnParents"), APPUI_PARENTS_MS, () => { sfx.juste(); ouvrirParents(); });
   $("btnFermerJardin").onclick = () => { sfx.tap(); fermerJardin(); };   // the garden (js/jardin_vue.js)
+  $("btnFermerBoutique").onclick = () => { sfx.tap(); fermerBoutique(); };   // the merchant's shop (js/marchand.js)
+  $("boutique").onclick = e => { if (e.target === e.currentTarget) { sfx.tap(); fermerBoutique(); } };
   $("btnFermerParents").onclick = () => { sfx.tap(); fermerParents(); };
   $("parents").onclick = e => { if (e.target === e.currentTarget) { sfx.tap(); fermerParents(); } };
   document.querySelectorAll("#ongletsParents button").forEach(b => { b.onclick = () => { sfx.tap(); ongletParents(b.dataset.onglet); }; });
@@ -28,6 +30,7 @@ async function demarrer(){
     if (e.key === "Escape" && !$("parents").hidden) { sfx.tap(); return fermerParents(); }
     if (e.key === "Escape" && !$("jardin").hidden) { sfx.tap(); return fermerJardin(); }
     if (e.key === "Escape" && !$("missions").hidden) { sfx.tap(); return fermerMissions(); }   // the day's missions (js/missions.js)
+    if (e.key === "Escape" && !$("boutique").hidden) { sfx.tap(); return fermerBoutique(); }
     const d = $("dialogue");
     if ((e.key === "Enter" || e.key === " ") && !e.repeat && !d.hidden && d.onclick && !e.target.closest("button, input")) { e.preventDefault(); d.onclick(); }
   });
@@ -42,6 +45,7 @@ window.retourAndroid = () => {
   if (!$("grainesJardin").hidden) { $("grainesJardin").hidden = true; return true; }
   if (!$("jardin").hidden) { fermerJardin(); return true; }
   if (!$("missions").hidden) { fermerMissions(); return true; }
+  if (!$("boutique").hidden) { fermerBoutique(); return true; }
   if (!$("parents").hidden) { fermerParents(); return true; }
   if (!$("equipe").hidden) { fermerEquipe(); return true; }
   if (ecranCourant === "creation" || ecranCourant === "choix") { ouvrirAccueil(); return true; }

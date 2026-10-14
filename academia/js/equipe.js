@@ -116,7 +116,7 @@ function ficheCompagnon(f, complete = false){
   const p = P(), c = compagnonDe(f), r = REGIONS.find(x => x.famille === f);
   const d = el("div", "fiche" + (c ? "" : " inconnue") + (c && c.id === p.actif ? " active" : ""));
   d.dataset.famille = f;
-  const gauche = el("div", "fiche-gauche"), dessin = el("div", "fiche-dessin"), fig = c ? spriteCompagnon(c, complete ? 120 : 92) : imageHD(f + "1", "face", 84);
+  const gauche = el("div", "fiche-gauche"), dessin = el("div", "fiche-dessin"), fig = c ? habillerDom(spriteCompagnon(c, complete ? 120 : 92), c) : imageHD(f + "1", "face", 84);   // its accessory (js/jeu/accessoires.js)
   dessin.append(fig);
   if (c) dessin.append(el("span", "niv", `Niv. ${c.niveau}`));
   if (!complete) dessin.append(elementFiche(f, false));
@@ -178,7 +178,7 @@ function etoilesFiche(c){
 function vignetteCompagnon(f){
   const p = P(), c = compagnonDe(f);
   const b = el("button", "vignette" + (c ? "" : " inconnue") + (c && c.id === p.actif ? " active" : ""), "<b></b>");
-  const fig = c ? spriteCompagnon(c, 76) : imageHD(f + "1", "face", 70);
+  const fig = c ? habillerDom(spriteCompagnon(c, 76), c) : imageHD(f + "1", "face", 70);
   b.prepend(fig); b.querySelector("b").textContent = c ? nomCompagnon(c) : "???";
   if (c) b.append(el("span", "niv", String(c.niveau)));
   b.append(elementFiche(f, false));

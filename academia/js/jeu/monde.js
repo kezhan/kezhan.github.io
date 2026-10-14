@@ -54,6 +54,7 @@ class Monde extends Phaser.Scene {
     this.jardin = new JardinVillage(this);        // the vegetable garden opens the child's garden
     this.place = new ArbreMonde(this);            // the Arbre-Monde, the chiefs' gifts, the board of the missions
     this.histoire = new HistoireVillage(this);    // the goal, the gifts given back, the villagers' words, the evening
+    this.marchand = new MarchandVillage(this);    // the merchant's stall opens his shop (js/jeu/marchand_village.js)
     window.__calme = performance.now() + 300;
     // touch: walk where the child taps (a villager: go and talk; a house, its roof or its sign: go to its door; an Ombre
     // or right next to it: go and fight; the companion: it jumps for joy)
@@ -78,8 +79,10 @@ class Monde extends Phaser.Scene {
     const wx = ptr.worldX, wy = ptr.worldY;
     if (this.vie.toucherCompagnon(wx, wy)) return;
     this.jardin.vise = false; this.place.vise = null;
+    this.marchand.vise = false;   // the shop is opened only by the walk the stall itself started
     const o = this.ombres.touchee(wx, wy);
     if (o) return this.allerVers(o.x, o.y);
+    if (this.marchand.touche(wx, wy)) return;   // the merchant or his stall (js/jeu/marchand_village.js)
     if (this.jardin.touche(wx, wy)) return;
     if (this.place.touche(wx, wy)) return;   // the Arbre-Monde, the board of the missions
     let x = Math.floor(wx / CASE), y = Math.floor(wy / CASE);
@@ -116,6 +119,7 @@ class Monde extends Phaser.Scene {
       const t = this.traces[0] || this.case;
       this.compagnon = spriteCreature(this, cle, t.x, t.y).setDepth(profondeur(t.y, 4));
       ombreAuSolHD(this, this.compagnon);
+      porterAccessoire(this, this.compagnon, c);   // what it wears (js/jeu/accessoires.js)
     });
   }
   libre(x, y){ return x >= 0 && y >= 0 && x < LARG && y < HAUT && !this.carte.bloque[y][x]; }
@@ -205,6 +209,7 @@ class Monde extends Phaser.Scene {
   arrive(){
     const p = P(); p.position = {...this.case}; sauver();
     if (this.jardin.arrive() || this.place.arrive()) return;
+    if (this.marchand.arrive()) return;
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
   }
   update(time){

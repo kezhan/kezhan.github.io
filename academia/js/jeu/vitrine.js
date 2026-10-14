@@ -8,6 +8,7 @@ class Vitrine extends Phaser.Scene {
     const carte = construireCarte();
     dessinerVillageHD(this, carte);
     carte.pnj.forEach(n => { const s = spriteHumain(this, n.cle, n.x, n.y).setDepth(profondeur(n.y)); reposHumain(s, DIRS[n.dir]); ombreAuSolHD(this, s); });
+    dessinerEtal(this, carte);   // the merchant's stall (js/jeu/marchand_village.js)
     [["neantik", 26, 8], ["grisouille", 30, 21], ["brumichon", 9, 21]].forEach(([cle, x, y]) => {   // a few Ombres in the grass
       const o = spriteCreature(this, cle, x, y, HAUTEUR_OMBRE).setDepth(profondeur(y)); ombreAuSolHD(this, o);
     });
