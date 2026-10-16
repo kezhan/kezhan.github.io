@@ -8,7 +8,9 @@
    3. Jokers : Potion de clarté (elle clignote à la question qui suit une erreur) et Indice du sage (grisé quand la
       question n'a pas d'indice écrit) ; leur nombre baisse dès qu'on s'en sert.
    4. Une erreur montre la bonne réponse et l'explication, lue à voix haute (les mots étrangers avec leur voix), à côté
-      des réponses sur un écran large ; une bonne réponse dit le nom écrit sous l'image (« Hiver ! »).
+      des réponses sur un écran large ; une bonne réponse dit le nom écrit sous l'image (« Hiver ! »), et à une
+      question de langue le mot étranger trouvé, par sa voix enregistrée, puis son sens pour la petite (« pig… le
+      cochon ! ») : outils/voix/decoupage.py le refait (mot_reussi).
    5. Le minuteur du combo s'arrête quand la page est cachée et repart au retour, la question relue. */
 let erreurAvant = false;   // the potion blinks at the question that follows a mistake
 
@@ -19,12 +21,50 @@ function motEtranger(q){
   const m = lang !== "fr" && /^(.*?)«\s*(.+?)\s*»(.*)$/.exec(q.question);
   return m ? {mot: m[2], lang, avant: m[1].trim(), dans: true, apres: m[3].replace(/^[\s?!.]*$/, "").trim()} : null;
 }
-// voices one after the other; stops as soon as something else is said (an answer, « J'ai compris », the speaker again)
+// the foreign word found, heard again at the right answer: the answer itself when it is foreign (a question to the
+// ear), else the word the question said; with its meaning in French when the question gives one (the picture's
+// caption, or the start of its explanation: « « pig », c'est le cochon », « « Danke », ça veut dire « merci » : on
+// le dit… », up to its colon or its full stop). null without a word, or without its recording
+function motReussi(q, mot){
+  let w = "", lang = "fr";
+  if (q.oreille && q.oreille !== "fr" && !estVraiFaux(q)) { w = sansEmoji(q.reponse); lang = q.oreille; }
+  else if (mot) { w = mot.mot; lang = mot.lang; }
+  if (!w || lang === "fr" || !(lang === "lb" ? couvertLb(w) : aSaVoix(w, lang))) return null;
+  return {mot: w, lang, sens: sensReussi(q, w)};
+}
+function sensReussi(q, w){
+  const leg = q.legendes && q.legendes[q.reponse];
+  if (leg) return leg;
+  const m = /^«\s*(.+?)\s*»\s*,\s*(?:c'est|ce sont|ça veut dire)\s+([^:.]+)/.exec(sansEmoji(q.explication || ""));
+  if (!m || m[1].toLowerCase() !== w.toLowerCase()) return null;
+  const s = m[2].trim().replace(/^«\s*(.+?)\s*»$/, "$1");
+  return !s || /[«»]/.test(s) ? null : s;
+}
+// the word found being said again (and its meaning): what the fight or the garden says next waits for it to end, in
+// turn, instead of cutting it (the Ombre's « Danke! », then the badge's or the card's first words; 6 s at most each);
+// nothing waits for the voice, only the voice waits. Each voice joins the line even when nothing is said before it, so
+// that the next one waits for it too (the Ombre's « Danke! » said at once, then the card's words after it)
+let fileRedit = null;
+function apresRedit(f){
+  const avant = fileRedit ? Promise.race([fileRedit, wait(6000)]) : Promise.resolve();
+  const suite = avant.then(() => f()), fin = suite.then(() => {}, () => {});
+  fileRedit = fin; fin.then(() => { if (fileRedit === fin) fileRedit = null; });
+  return suite;
+}
+function redire(etapes){
+  const v = suiteDeVoix(etapes), fin = v.then(() => {}, () => {});
+  fileRedit = fin; fin.then(() => { if (fileRedit === fin) fileRedit = null; });
+  return v;
+}
+// voices one after the other; stops as soon as something else is said (an answer, « J'ai compris », the speaker again).
+// A step that is itself a chain (direMot: the word, then its meaning; direMixte) tells by its result whether it was cut:
+// its own voices are not something else
 async function suiteDeVoix(etapes){
   for (const e of etapes) {
     const r = e(), g = typeof generation !== "undefined" ? generation : 0;
-    await r;
-    if (typeof generation !== "undefined" && generation !== g) return false;
+    const v = await r;
+    if (v === false) return false;
+    if (v !== true && typeof generation !== "undefined" && generation !== g) return false;
   }
   return true;
 }
@@ -132,7 +172,8 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
       [...grille.children].forEach(b => b.classList.remove("lue"));
       ecoute.classList.remove("parle");
     }
-    ecoute.onclick = () => { son("bouton"); sfx.tap(); ecouter(!!q.oreille || petit); };
+    let reecoute = 0;   // the voice asked again (the game journal, js/journal.js)
+    ecoute.onclick = () => { reecoute++; son("bouton"); sfx.tap(); ecouter(!!q.oreille || petit); };
     ecouter(!!q.oreille);
 
     // the page hidden (another app on the tablet): the combo timer waits; back on the page, the question is said again
@@ -148,6 +189,8 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
     function repondre(b){
       if (fini) return; fini = true; clearTimeout(chrono); document.removeEventListener("visibilitychange", vu);
       const juste = !!b && b.dataset.v === q.reponse, ms = Date.now() - t0;
+      if (typeof noterJournal === "function") noterJournal("question", {id: q.id || null, n: q.notion || null, m: q.matiere || null, niv: q.niveau || null,
+        j: juste, r: b ? String(b.dataset.v).slice(0, 40) : null, ms, ec: reecoute});
       grille.classList.remove("attend");
       [...grille.children].forEach(x => { x.disabled = true; x.classList.remove("lue"); if (x.dataset.v === q.reponse) x.classList.add("juste"); });
       ecoute.classList.remove("parle");
@@ -157,7 +200,12 @@ function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {})
         sfx.juste();
         const [x, y] = centre(b);   // drawn sparkles burst from the right answer (js/effets_dom.js)
         jaillir(x, y, {pieces: ["etincelle", "etoile_p", "etincelle_p"], n: 10, angle: [0, 360], gravite: 240, vitesse: [130, 260], taille: [14, 26], duree: [600, 900]});
-        if (leg) dire(leg + " !"); else taire();
+        // a language question: the foreign word again, at the very moment it is found (its meaning after it for the
+        // little one; the big one sees it); the voice goes on over the attack, nothing waits for it (the fight's next
+        // words wait for it: apresRedit)
+        const redit = motReussi(q, mot);
+        if (redit) redire([() => dire(redit.mot, redit.lang), ...(petit && redit.sens ? [() => dire(redit.sens + " !")] : [])]);
+        else if (leg) dire(leg + " !"); else taire();
         return setTimeout(() => fin({juste, ms}), TEST ? 0 : 650);
       }
       sfx.faux(); if (b) b.classList.add("faux");

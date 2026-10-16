@@ -86,7 +86,10 @@ function carteBilan(b, c, region, gain, xpAvant, fin){
     else toutes.forEach((x, i) => setTimeout(() => { if (!parti) x.classList.add("vu"); }, 250 + 280 * i));
     // a pause after each line (« … avant la porte. Tu trouves… »), never « Victoire !. »
     const phrase = t => /[!?.…]$/.test(t.trim()) ? t.trim() : t.trim() + ".";
-    dire(phrase(titre) + " " + lignesTexte.filter(t => !/^🚀/.test(t)).map(phrase).join(" "));
+    // the little one first hears what the consoled Ombre's word meant (« C'est « merci », en allemand ! »: js/combat.js);
+    // the voice waits for that word and the last one found to end (js/question_vue.js), the card does not
+    const voix = (fin.avantVoix ? fin.avantVoix + " " : "") + phrase(titre) + " " + lignesTexte.filter(t => !/^🚀/.test(t)).map(phrase).join(" ");
+    apresRedit(() => parti ? null : dire(voix));
     if (issue === "victoire") {
       if (typeof jouerSon === "function") jouerSon("victoire");
       setTimeout(() => { if (!parti) { const [x, y] = centre(fig); confettisDom(x, y, b.boss ? 46 : 30); } }, 120);

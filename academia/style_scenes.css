@@ -314,3 +314,28 @@
 @keyframes annonce-pop{from{transform:translate(-50%, -50%) scale(.2) rotate(-20deg); opacity:0}
   70%{transform:translate(-50%, -50%) scale(1.08) rotate(4deg); opacity:1} to{transform:translate(-50%, -50%) scale(1) rotate(0)}}
 @media (prefers-reduced-motion: reduce){ .annonce-mission, .mission.faite .mission-prix img, .bulle-village{animation:none} }
+
+/* a foreign word said on the side (js/mots_du_jeu.js, bulleMot): a little bubble over the drawing that says it, or at
+   the top of the screen; touches go through it */
+.bulle-mot{position:fixed; z-index:45; display:flex; flex-direction:column; align-items:center; padding:5px 14px 7px; max-width:calc(100vw - 16px);
+  background:var(--papier); border:4px solid var(--encre); border-radius:18px; box-shadow:var(--ombre); pointer-events:none; animation:entree .25s; text-align:center}
+.bulle-mot b{font:700 22px/1.15 var(--titre); color:#7A2E8E; white-space:nowrap}
+.bulle-mot small{font:600 15px/1.2 var(--texte); color:#6b6390}
+.bulle-mot.haut{top:max(84px, env(safe-area-inset-top)); left:50%; transform:translateX(-50%)}
+/* a companion speaks in the villagers' bubble: its drawing in place of a portrait; its word, then the meaning */
+.bulle-village .bv-sprite{flex:none; height:64px; --h:64px}
+.bulle-village p .mot-etranger{font-size:22px; color:#7A2E8E}
+.bulle-village p .sens-mot{font-size:15px}
+@media (max-height:500px), (max-width:440px){ .bulle-village .bv-sprite{height:46px; --h:46px} .bulle-village p .mot-etranger{font-size:19px} }
+/* a sticker won: its name in a language under « Mission réussie ! » */
+.annonce-mission .mot-annonce{display:flex; flex-direction:column; align-items:center; padding:4px 16px 6px; background:var(--papier); border:4px solid var(--encre);
+  border-radius:18px; box-shadow:var(--ombre)}
+.annonce-mission .mot-annonce b{font:700 clamp(22px, 4vmin, 30px)/1.15 var(--titre); color:#7A2E8E; text-shadow:none}
+.annonce-mission .mot-annonce small{font:600 16px var(--texte); color:#6b6390}
+/* the day's missions: the day in the title, its names in the three languages under it; the villagers to visit */
+.carte-missions .titre3 .missions-jour{display:block; font:700 16px/1.25 var(--titre); color:#7A2E8E}
+.mission-dessin .mission-portraits{display:flex; align-items:center}
+.mission-dessin .mission-portraits img{width:38px; height:38px; margin:0 -5px; border-radius:50%; border:2px solid var(--encre); background:#E9DCC2; object-fit:cover}
+@media (max-width:640px){ .mission-dessin .mission-portraits img{width:30px; height:30px; margin:0 -6px} .carte-missions .titre3 .missions-jour{font-size:14px} }
+@media (max-height:500px){ .mission-dessin .mission-portraits img{width:28px; height:28px} }
+@media (prefers-reduced-motion: reduce){ .bulle-mot{animation:none} }

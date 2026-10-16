@@ -10,10 +10,10 @@
 <link rel="apple-touch-icon" href="icones/icone-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&display=swap">
-<link rel="stylesheet" href="style.css?v=90649179">
-<link rel="stylesheet" href="style_combat.css?v=90649179">
-<link rel="stylesheet" href="style_scenes.css?v=90649179">
-<link rel="stylesheet" href="style_jardin.css?v=90649179">
+<link rel="stylesheet" href="style.css?v=a116496f">
+<link rel="stylesheet" href="style_combat.css?v=a116496f">
+<link rel="stylesheet" href="style_scenes.css?v=a116496f">
+<link rel="stylesheet" href="style_jardin.css?v=a116496f">
 <script>
 /* Before everything. Opened as a file (a double click on index.html), the game cannot read its pictures and
    questions; a script that did not come (the network cut during the first visit) stops it. In both cases a clear
@@ -147,10 +147,12 @@
   <div class="panneau cache" id="panneauJardin"></div>
 </section>
 
-<!-- THE DAY'S MISSIONS: the Sage's three missions, drawn and said, each with its sticker to win (js/missions.js) -->
+<!-- THE DAY'S MISSIONS: the Sage's three missions, drawn and said, each with its sticker to win (js/missions.js); the
+     title is the day of the week, with its name in English, German and Luxembourgish under it -->
+
 <section id="missions" class="ecran voile" hidden>
   <div class="carte large carte-missions">
-    <div class="entete"><img class="missions-sage" id="missionsSage" alt=""><h2 class="titre3">Missions du jour</h2><button class="rond fermer" id="btnFermerMissions" aria-label="Fermer"><img class="icone" data-icone="croix" alt=""></button></div>
+    <div class="entete"><img class="missions-sage" id="missionsSage" alt=""><h2 class="titre3" id="missionsTitre">Missions du jour</h2><button class="rond fermer" id="btnFermerMissions" aria-label="Fermer"><img class="icone" data-icone="croix" alt=""></button></div>
     <div class="missions-liste" id="missionsListe"></div>
     <p class="missions-pied" id="missionsPied"></p>
   </div>
@@ -190,73 +192,75 @@
 <div class="toast" id="toast" hidden></div>
 
 <script src="vendor/phaser/phaser.min.js"></script>
-<script src="js/outils.js?v=90649179"></script>
-<script src="js/etat.js?v=90649179"></script>
-<script src="js/voix.js?v=90649179"></script>
-<script src="js/sons.js?v=90649179"></script>
-<script src="js/compagnons.js?v=90649179"></script>
-<script src="js/questions/maths.js?v=90649179"></script>
-<script src="js/questions/maths_mult.js?v=90649179"></script>
-<script src="js/questions/maths_nombres.js?v=90649179"></script>
-<script src="js/questions/maths_calcul.js?v=90649179"></script>
-<script src="js/questions/maths_fractions.js?v=90649179"></script>
-<script src="js/questions/logique.js?v=90649179"></script>
-<script src="js/questions/echecs.js?v=90649179"></script>
-<script src="js/questions.js?v=90649179"></script>
-<script src="js/adaptatif.js?v=90649179"></script>
-<script src="js/sprite_dom.js?v=90649179"></script>
-<script src="js/dialogue.js?v=90649179"></script>
-<script src="js/question_figures.js?v=90649179"></script>
-<script src="js/question_dessin.js?v=90649179"></script>
-<script src="js/question_vue.js?v=90649179"></script>
-<script src="js/combat.js?v=90649179"></script>
-<script src="js/combat_choix.js?v=90649179"></script>
-<script src="js/astuces.js?v=90649179"></script>
-<script src="js/progression.js?v=90649179"></script>
-<script src="js/bilan.js?v=90649179"></script>
-<script src="js/moments.js?v=90649179"></script>
-<script src="js/effets_dom.js?v=90649179"></script>
-<script src="js/evolution.js?v=90649179"></script>
-<script src="js/liberation.js?v=90649179"></script>
-<script src="js/transition.js?v=90649179"></script>
-<script src="js/equipe.js?v=90649179"></script>
-<script src="js/album.js?v=90649179"></script>
-<script src="js/temps.js?v=90649179"></script>
-<script src="js/parents.js?v=90649179"></script>
-<script src="js/jardin.js?v=90649179"></script>
-<script src="js/jardin_vue.js?v=90649179"></script>
-<script src="js/missions.js?v=90649179"></script>
-<script src="js/marchand.js?v=90649179"></script>
-<script src="js/accueil.js?v=90649179"></script>
-<script src="js/jeu/carte.js?v=90649179"></script>
-<script src="js/jeu/qualite.js?v=90649179"></script>
-<script src="js/icones.js?v=90649179"></script>
-<script src="js/jeu/decor_village_hd_pieces.js?v=90649179"></script>
-<script src="js/jeu/decor_village_hd.js?v=90649179"></script>
-<script src="js/jeu/decor_village_hd_vivant.js?v=90649179"></script>
-<script src="js/jeu/decor_village_hd_jeu.js?v=90649179"></script>
-<script src="js/jeu/chargement.js?v=90649179"></script>
-<script src="js/jeu/sprites_hd.js?v=90649179"></script>
-<script src="js/jeu/accessoires.js?v=90649179"></script>
-<script src="js/jeu/effets_hd.js?v=90649179"></script>
-<script src="js/jeu/fond_combat_hd.js?v=90649179"></script>
-<script src="js/jeu/silhouettes_hd.js?v=90649179"></script>
-<script src="js/jeu/vie_village.js?v=90649179"></script>
-<script src="js/jeu/portes_village.js?v=90649179"></script>
-<script src="js/jeu/guide_village.js?v=90649179"></script>
-<script src="js/jeu/jardin_village.js?v=90649179"></script>
-<script src="js/jeu/arbre_monde.js?v=90649179"></script>
-<script src="js/jeu/histoire_village.js?v=90649179"></script>
-<script src="js/jeu/langues_habitants.js?v=90649179"></script>
-<script src="js/jeu/marchand_village.js?v=90649179"></script>
-<script src="js/jeu/monde.js?v=90649179"></script>
-<script src="js/jeu/vitrine.js?v=90649179"></script>
-<script src="js/jeu/scene_combat.js?v=90649179"></script>
-<script src="js/jeu/combat_spectacle.js?v=90649179"></script>
-<script src="js/jeu/attaques_hd.js?v=90649179"></script>
-<script src="js/jeu/ombres_regions.js?v=90649179"></script>
-<script src="js/jeu/ombres_village.js?v=90649179"></script>
-<script src="js/jeu/lanceur.js?v=90649179"></script>
-<script src="js/demarrage.js?v=90649179"></script>
+<script src="js/outils.js?v=a116496f"></script>
+<script src="js/etat.js?v=a116496f"></script>
+<script src="js/journal.js?v=a116496f"></script>
+<script src="js/voix.js?v=a116496f"></script>
+<script src="js/sons.js?v=a116496f"></script>
+<script src="js/compagnons.js?v=a116496f"></script>
+<script src="js/questions/maths.js?v=a116496f"></script>
+<script src="js/questions/maths_mult.js?v=a116496f"></script>
+<script src="js/questions/maths_nombres.js?v=a116496f"></script>
+<script src="js/questions/maths_calcul.js?v=a116496f"></script>
+<script src="js/questions/maths_fractions.js?v=a116496f"></script>
+<script src="js/questions/logique.js?v=a116496f"></script>
+<script src="js/questions/echecs.js?v=a116496f"></script>
+<script src="js/questions.js?v=a116496f"></script>
+<script src="js/adaptatif.js?v=a116496f"></script>
+<script src="js/sprite_dom.js?v=a116496f"></script>
+<script src="js/dialogue.js?v=a116496f"></script>
+<script src="js/question_figures.js?v=a116496f"></script>
+<script src="js/question_dessin.js?v=a116496f"></script>
+<script src="js/question_vue.js?v=a116496f"></script>
+<script src="js/mots_du_jeu.js?v=a116496f"></script>
+<script src="js/combat.js?v=a116496f"></script>
+<script src="js/combat_choix.js?v=a116496f"></script>
+<script src="js/astuces.js?v=a116496f"></script>
+<script src="js/progression.js?v=a116496f"></script>
+<script src="js/bilan.js?v=a116496f"></script>
+<script src="js/moments.js?v=a116496f"></script>
+<script src="js/effets_dom.js?v=a116496f"></script>
+<script src="js/evolution.js?v=a116496f"></script>
+<script src="js/liberation.js?v=a116496f"></script>
+<script src="js/transition.js?v=a116496f"></script>
+<script src="js/equipe.js?v=a116496f"></script>
+<script src="js/album.js?v=a116496f"></script>
+<script src="js/temps.js?v=a116496f"></script>
+<script src="js/parents.js?v=a116496f"></script>
+<script src="js/jardin.js?v=a116496f"></script>
+<script src="js/jardin_vue.js?v=a116496f"></script>
+<script src="js/missions.js?v=a116496f"></script>
+<script src="js/marchand.js?v=a116496f"></script>
+<script src="js/accueil.js?v=a116496f"></script>
+<script src="js/jeu/carte.js?v=a116496f"></script>
+<script src="js/jeu/qualite.js?v=a116496f"></script>
+<script src="js/icones.js?v=a116496f"></script>
+<script src="js/jeu/decor_village_hd_pieces.js?v=a116496f"></script>
+<script src="js/jeu/decor_village_hd.js?v=a116496f"></script>
+<script src="js/jeu/decor_village_hd_vivant.js?v=a116496f"></script>
+<script src="js/jeu/decor_village_hd_jeu.js?v=a116496f"></script>
+<script src="js/jeu/chargement.js?v=a116496f"></script>
+<script src="js/jeu/sprites_hd.js?v=a116496f"></script>
+<script src="js/jeu/accessoires.js?v=a116496f"></script>
+<script src="js/jeu/effets_hd.js?v=a116496f"></script>
+<script src="js/jeu/fond_combat_hd.js?v=a116496f"></script>
+<script src="js/jeu/silhouettes_hd.js?v=a116496f"></script>
+<script src="js/jeu/vie_village.js?v=a116496f"></script>
+<script src="js/jeu/portes_village.js?v=a116496f"></script>
+<script src="js/jeu/guide_village.js?v=a116496f"></script>
+<script src="js/jeu/jardin_village.js?v=a116496f"></script>
+<script src="js/jeu/arbre_monde.js?v=a116496f"></script>
+<script src="js/jeu/histoire_village.js?v=a116496f"></script>
+<script src="js/jeu/langues_habitants.js?v=a116496f"></script>
+<script src="js/jeu/marchand_village.js?v=a116496f"></script>
+<script src="js/jeu/monde.js?v=a116496f"></script>
+<script src="js/jeu/vitrine.js?v=a116496f"></script>
+<script src="js/jeu/scene_combat.js?v=a116496f"></script>
+<script src="js/jeu/combat_spectacle.js?v=a116496f"></script>
+<script src="js/jeu/attaques_hd.js?v=a116496f"></script>
+<script src="js/jeu/ombres_regions.js?v=a116496f"></script>
+<script src="js/jeu/ombres_village.js?v=a116496f"></script>
+<script src="js/jeu/lanceur.js?v=a116496f"></script>
+<script src="js/demarrage.js?v=a116496f"></script>
 </body>
 </html>

@@ -4,7 +4,9 @@
    bouton) ; ceux qu'il reste à libérer en silhouette. Le compagnon choisi suit le héros et combat. Au téléphone (ou
    sur un écran bas), des vignettes. Toucher un compagnon libéré ouvre sa fiche complète : son élément, ses trois
    attaques (rapide, massive, combo) écrites pour le grand, et la voix les dit pour la petite ; ses trois formes, celles
-   à venir en silhouette avec le niveau qui les apporte. Les pourcentages et les
+   à venir en silhouette avec le niveau qui les apporte ; d'où vient son nom (Bärli de « der Bär », l'ours ; Léiwchen
+   de « de Léiw », le lion) et le mot de son élément dans les trois langues quand il est enregistré (le vent : wind,
+   der Wind, de Wand). Un compagnon de langue choisi répond dans sa langue. Les pourcentages et les
    réglages sont dans le coin Parents (js/parents.js), ouvert par un appui long sur « Parents ». */
 const ETOILE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.2l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z" '
   + 'fill="#FFCF3D" stroke="#1D1640" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.2 8.6l1.5-.2" stroke="#FFF6C9" stroke-width="1.6" stroke-linecap="round"/></svg>';
@@ -74,14 +76,34 @@ function dessinerEquipe(){
 }
 const compagnonDe = f => P().compagnons.find(x => x.famille === f) || null;
 const A_REGION = {dojo: "au ", albion: "au ", germania: "à la ", duche: "à la ", jardin: "au ", observatoire: "à l'"};
-// what the voice says about a companion whose drawing is touched: name, level, element, attacks, next evolution
+// where a companion's name comes from (written in its full card, said with it): Bärli from « der Bär », the bear, in
+// German; Léiwchen from « de Léiw », the lion, in Luxembourgish, the red lion of the flag (their recordings,
+// js/mots_du_jeu.js); Melusino recalls Mélusine, for the big one. null for the others
+const ORIGINES_NOMS = {barli: {cle: "ours", langue: "de"}, leiwchen: {cle: "lion", langue: "lb", plus: "le lion rouge du drapeau"}};
+function origineNom(c){
+  if (c.famille === "leiwchen" && stade(c) === 3) return P().age > 5 ? {texte: "Melusino rappelle Mélusine, la fée de la légende de Luxembourg."} : null;
+  const o = ORIGINES_NOMS[c.famille], m = o && typeof motDuJeu === "function" ? motDuJeu(o.cle, o.langue) : null;
+  return m ? {m, texte: `Son nom vient de « ${m.mot} » : ${m.sens}, en ${m.nom}${o.plus ? `, ${o.plus} !` : "."}`} : null;
+}
+// its words, said: the foreign one by its own voice, the French around it by the French voice
+function voixOrigine(o, avant = "", apres = ""){
+  if (!o.m) return [() => dire(`${avant}${o.texte}${apres}`)];
+  const [debut, fin] = o.texte.split(`« ${o.m.mot} »`);
+  return [() => dire(avant + debut), () => dire(o.m.mot, o.m.langue), () => dire(fin + apres)];
+}
+// what the voice says about a companion whose drawing is touched: name, level, where its name comes from, element,
+// attacks, next evolution
 function direCompagnon(f){
   const c = compagnonDe(f), r = REGIONS.find(x => x.famille === f), e = elementSac(f);
   if (!c) return dire(`Un compagnon à libérer, ${A_REGION[r.id] || "à "}${r.nom} ! Son élément : ${e.dit}.`);
-  const st = stade(c), [a, b, k] = attaquesDe(c);
-  dire(`${nomCompagnon(c)}, niveau ${c.niveau} ! Son élément : ${e.dit}. Ses attaques : ${a}, ${b} et ${k}.`
-    + (st < 3 ? ` Il évolue au niveau ${PALIERS[st]}.` : " C'est sa forme ultime !"));
+  const st = stade(c), [a, b, k] = attaquesDe(c), o = origineNom(c);
+  const debut = `${nomCompagnon(c)}, niveau ${c.niveau} ! `, reste = `Son élément : ${e.dit}. Ses attaques : ${a}, ${b} et ${k}.`
+    + (st < 3 ? ` Il évolue au niveau ${PALIERS[st]}.` : " C'est sa forme ultime !");
+  if (!o) return dire(debut + reste);
+  suiteDeVoix(voixOrigine(o, debut, " " + reste));
 }
+// the element's word in the three languages, when they are recorded (the wind: « wind », « der Wind », « de Wand »)
+const motsElement = f => typeof motsDuJeu === "function" && MOTS_DU_JEU[FAMILLES[f].element] ? ["en", "de", "lb"].map(l => motDuJeu(FAMILLES[f].element, l)).filter(Boolean) : [];
 function direAttaque(c, i){
   const A = ATTAQUES_SAC[i];
   if (!c) return dire("Libère ce compagnon pour découvrir ses attaques !");
@@ -107,7 +129,12 @@ function elementFiche(f, complete){
   d.append(iconeDom(e.icone));
   if (complete) d.append(e.mot[0].toUpperCase() + e.mot.slice(1));
   else d.title = e.mot;
-  if (complete) d.onclick = () => { sfx.tap(); sauterDessin(d); dire(`Son élément : ${e.dit} !`); };
+  if (complete) d.onclick = () => {
+    sfx.tap(); sauterDessin(d);
+    const mots = motsElement(f);   // then its word in each language, by its own voice
+    if (!mots.length) return dire(`Son élément : ${e.dit} !`);
+    suiteDeVoix([() => dire(`Son élément : ${e.dit} !`), ...mots.flatMap(m => [() => dire(`En ${m.nom} :`), () => dire(m.mot, m.langue)])]);
+  };
   return d;
 }
 // a companion's card: drawing and level, name, XP, stars, combo charge, attacks, element, one button; `complete`:
@@ -125,7 +152,17 @@ function ficheCompagnon(f, complete = false){
   if (!complete) gauche.append(attaquesFiche(f, false));
   const corps = el("div", "fiche-corps", "<b></b>");
   corps.querySelector("b").textContent = c ? affiche(nomCompagnon(c)) : "???";
+  const o = complete && c ? origineNom(c) : null;
+  if (o) {   // where its name comes from: the foreign word in bold, said again when touched
+    const l = el("button", "origine-nom"), cite = o.m ? affiche(`« ${o.m.mot} »`) : "", [debut, fin] = o.m ? affiche(o.texte).split(cite) : [affiche(o.texte), ""];
+    l.append(debut);
+    if (o.m) { const w = el("b"); w.lang = o.m.langue; w.textContent = cite; l.append(w, fin); }
+    l.onclick = () => { sfx.tap(); suiteDeVoix(voixOrigine(o)); };
+    corps.append(l);
+  }
   if (complete) corps.append(elementFiche(f, true));
+  const mots = complete ? motsElement(f) : [];
+  if (mots.length) { const m = el("small", "mots-element"); m.textContent = mots.map(x => x.mot).join(" · "); corps.append(m); }
   if (!c) corps.append(ecrireIcones(el("small"), `À libérer : ${r.icone} ${r.nom}`));   // the house's drawn symbol (js/icones.js)
   else {
     corps.append(el("div", "barrexp petite", `<i style="width:${Math.min(100, 100 * c.xp / xpPour(c.niveau))}%"></i>`), etoilesFiche(c));
@@ -193,7 +230,14 @@ function ouvrirFiche(f){
   v.append(ficheCompagnon(f, true));
 }
 function choisirCompagnon(c){
-  const p = P(); p.actif = c.id; sauver(); sfx.juste(); dire(`${nomCompagnon(c)}, à toi !`);
+  const p = P(); p.actif = c.id; sauver(); sfx.juste();
+  // a language companion answers in its language, written over its drawing (its meaning for the little one, the first times)
+  const w = motCompagnon(c.famille);
+  if (w) suiteDeVoix([() => dire(`${nomCompagnon(c)}, à toi !`), () => {
+    bulleMot(document.querySelector("#listeEquipe .fiche.active .fiche-dessin, #listeEquipe .vignette.active"), w);
+    return direMot(w);
+  }]);
+  else dire(`${nomCompagnon(c)}, à toi !`);
   ongletSac("equipe", true);
   const m = JEU.scene.getScene("monde"); if (m && m.majCompagnon) m.majCompagnon();
 }

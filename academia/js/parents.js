@@ -202,7 +202,9 @@ function diagnosticImages(){
 // the child's game in a file, to keep it or to carry it to another tablet; and back from such a file
 function enregistrerPartie(){
   const p = P(), jour = new Date().toISOString().slice(0, 10);
-  const contenu = JSON.stringify({jeu: "academia", version: VERSION, enregistre: new Date().toISOString(), profil: p}, null, 1);
+  if (typeof viderJournal === "function") viderJournal();
+  const journal = typeof lireJournal === "function" ? lireJournal(p.id) : [];   // read by outils/tablette/analyser_journal.py
+  const contenu = JSON.stringify({jeu: "academia", version: VERSION, enregistre: new Date().toISOString(), profil: p, journal}, null, 1);
   const nom = `academia-${normNom(p.nom).replace(/[^a-z0-9]+/g, "-")}-${jour}.json`;
   if (window.AcademiaAndroid) {   // the Android app writes it in Downloads (android/, Pont.java)
     const ok = AcademiaAndroid.enregistrer(nom, contenu);

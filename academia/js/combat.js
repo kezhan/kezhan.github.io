@@ -10,7 +10,8 @@
    touche. Au début d'un combat, le Sage souffle parfois quel compagnon du sac est super efficace ici (son élément).
    Chez le chef, la revanche s'annonce, et chaque erreur réparée reçoit son tampon et sa ligne dans le carnet du sac.
    Chaque bonne réponse rapporte des étincelles tout de suite : « +n » vole jusqu'au compteur, en haut à gauche sous la
-   case de l'Ombre (à la place de la barre du village, cachée pendant le combat). */
+   case de l'Ombre (à la place de la barre du village, cachée pendant le combat). Consolée, l'Ombre dit merci dans la
+   langue de sa maison (« Thank you! », « Danke! », « Merci »), pendant qu'elle s'envole : le combat n'en dure pas plus. */
 const COMBO_PLEIN = 3;
 // questions before the end (shields and combo questions count): the companion then finishes the fight
 const plafondQuestions = boss => P().age <= 5 ? (boss ? 7 : 5) : (boss ? 12 : 7);
@@ -90,12 +91,14 @@ async function lancerCombat(regionId, boss, vue0 = null){
     if (!r.juste) apresErreur = true;
     return r;
   };
-  // a revanche won: the stamp on the arena, the mistake written in the notebook (js/adaptatif.js)
+  // a revanche won: the stamp on the arena, the mistake written in the notebook (js/adaptatif.js); the stamp lands at
+  // once, its voice follows the word found said again (js/question_vue.js), and what comes next waits for both (the
+  // voice 3 s at most)
   const reparee = q => {
     noterReparee(q);
-    dire("Erreur réparée !");
+    const voix = apresRedit(() => dire("Erreur réparée !"));
     const [x, y] = vue.ou("arene");
-    return tamponDom("Erreur réparée !", x, y);
+    return Promise.all([tamponDom("Erreur réparée !", x, y), Promise.race([voix, wait(3000)])]);
   };
   const charger = juste => { c.charge = juste ? Math.min(COMBO_PLEIN, (c.charge || 0) + 1) : 0; };
   const tirage = async mecanique => {
@@ -116,13 +119,15 @@ async function lancerCombat(regionId, boss, vue0 = null){
     if (sup && !superDit && o.pv > 0) {   // said too: the little one does not read (and hears no « géométrie » at 4)
       superDit = true;
       const t = petit ? `C'est super efficace : ${nomCompagnon(c)} est super fort ici !` : `C'est super efficace : ${elementDe(c)} !`;
-      dire(t); await bulle(t, 1300);
+      // after the word just found, never over it (js/question_vue.js), and never over the next question; the voice of
+      // the attack's choice waits for it in turn (its promise holds the line)
+      apresRedit(() => !panneau.classList.contains("cache") && panneau.querySelector(".question") ? null : dire(t)); await bulle(t, 1300);
     }
     else if (crit && !ultime && o.pv > 0) await bulle("Coup critique !", 800);
     if (boss && !phase2 && o.pv > 0 && o.pv <= Math.ceil(o.coups / 2) * o.coup) {   // half its life gone: the boss gets cross
       phase2 = true;
       const t = `${majuscule(region.chef)} se fâche ! Courage, ${p.nom} !`;
-      dire(t); await vue.phase2(); await bulle(t, 1500);
+      apresRedit(() => dire(t)); await vue.phase2(); await bulle(t, 1500);   // after the word found, never over it
     }
     await wait(300);
   };
@@ -135,7 +140,7 @@ async function lancerCombat(regionId, boss, vue0 = null){
         bilan.fuite = true; break;
       }
       const t = `✨ ${nomCompagnon(c)} donne le coup final !`;
-      dire(t); await bulle(t, 1200);
+      apresRedit(() => dire(t)); await bulle(t, 1200);   // after the word found, never over it
       await frapper(o.coups, "critique"); o.pv = 0; vue.maj();
       break;
     }
@@ -221,6 +226,7 @@ async function lancerCombat(regionId, boss, vue0 = null){
   if (abandon()) return;
   bilan.gagne = o.pv <= 0;
   if (bilan.gagne) {
+    remercier(o, region, bilan);   // « Danke! »: said while it floats away, in the time the fight already waits
     await vue.ko("lui"); sfx.victoire(); vue.joie();
     if (typeof jouerAmbiance === "function") jouerAmbiance("victoire");
   } else if (!bilan.fuite) {
@@ -232,6 +238,22 @@ async function lancerCombat(regionId, boss, vue0 = null){
   return terminerCombat(bilan);
 }
 
+// the consoled Ombre thanks the child in its house's language (« Thank you! » at Albion, « Danke! » at Germania,
+// « Merci » in the Grand-Duché; the day's language elsewhere): its recording, and the word in the text box with its
+// meaning in small, while it floats away (the KO and the 700 ms after it: the fight is not longer). The little one
+// hears the meaning at the start of the next voice, the first times (bilan.merci, js/progression.js)
+function remercier(o, region, bilan){
+  const m = typeof motDuJeu === "function" ? motDuJeu("merci", langueDeMaison(region.id)) : null;
+  if (!m) return;
+  bilan.merci = {...m, direSens: sensADire(m)};
+  // the last word found ends first, and the badge's or the card's voice waits for this one (js/question_vue.js)
+  apresRedit(() => dire(m.mot, m.langue));
+  const b = $("bulleCombat"), mot = el("b", "mot-etranger"), sens = el("small", "sens-mot");
+  mot.lang = m.langue; mot.textContent = m.mot; sens.textContent = m.sens;
+  $("panneau").classList.add("cache");
+  b.classList.remove("sage", "parle"); b.replaceChildren(mot, " ", sens); b.hidden = false;
+  setTimeout(() => { if (b.firstChild === mot) b.hidden = true; }, TEST ? 0 : 1900);
+}
 // the album of the bag (js/etat.js keeps its shape)
 const albumDe = p => p.album = p.album && typeof p.album === "object" ? p.album : {ombres: {}, brillantes: {}, autocollants: [], reparees: []};
 // the étincelles counter of the fight, top left like the village's bar (hidden during a fight): just under the Ombre's

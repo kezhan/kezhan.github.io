@@ -53,10 +53,12 @@ function choisirAttaque(panneau, c, {boss = false, premier = false, brillante = 
       setTimeout(() => { delete fuite.dataset.sur; ecrireIcones(fuite, "🏃 S'enfuir"); }, 3000);
     };
     l.append(fuite); panneau.append(l);
-    // the voice reads the choices as the panel rises (all of it on the first turn, the names after)
-    dire(premier ? (brillante ? `${A[0]} glisse sur elle. ${A[1]} la touche !` : `${A[0]} : une question facile. ${A[1]} : plus dur.`)
+    // the voice reads the choices as the panel rises (all of it on the first turn, the names after), once the word just
+    // found has been said again (js/question_vue.js, apresRedit), unless the child has already chosen
+    const lire = premier ? (brillante ? `${A[0]} glisse sur elle. ${A[1]} la touche !` : `${A[0]} : une question facile. ${A[1]} : plus dur.`)
       + (pret ? ` Ou ${A[2]} : le combo est prêt !` : "")
-      : `${A[0]}, ou ${A[1]} ?` + (pret ? ` Ou ${A[2]} !` : ""));
+      : `${A[0]}, ou ${A[1]} ?` + (pret ? ` Ou ${A[2]} !` : "");
+    apresRedit(() => choisi ? null : dire(lire));
 
     // up to 5 years: the companion's face to touch, and the star of the combo once it shines
     function petitPanneau(){
@@ -74,8 +76,9 @@ function choisirAttaque(panneau, c, {boss = false, premier = false, brillante = 
       if (pret) scintiller(e);
       e.onclick = () => { if (pret) choisir("combo"); };
       g.append(b, e); panneau.append(g);
-      dire(pret ? `L'étoile brille ! Touche l'étoile : ${nom} va lancer ${A[2]} !`
-        : premier ? `À toi, ${p.nom} ! Touche ${nom} pour attaquer !` : `Touche ${nom} !`);
+      const lire = pret ? `L'étoile brille ! Touche l'étoile : ${nom} va lancer ${A[2]} !`
+        : premier ? `À toi, ${p.nom} ! Touche ${nom} pour attaquer !` : `Touche ${nom} !`;
+      apresRedit(() => choisi ? null : dire(lire));
     }
   });
 }

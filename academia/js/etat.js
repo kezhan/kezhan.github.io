@@ -2,7 +2,7 @@
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». Une copie de secours est gardée ; une partie abîmée ou
    d'une version plus ancienne est réparée ; deux onglets ouverts ne s'effacent pas la partie l'un de l'autre. */
-const VERSION = "0.15";
+const VERSION = "0.16";
 const CLE = "academia.v1", CLE_COPIE = "academia.v1.copie";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;
@@ -19,7 +19,9 @@ function nouveauProfil(nom, age){
     // mistakes repaired [{question, reponse, matiere, t}] (the latest 50)
     album: {ombres: {}, brillantes: {}, autocollants: [], reparees: []},
     missions: {jour: "", liste: []},      // the day's missions from the Sage: {id, texte, but, fait, autocollant}
-    histoire: {},                         // the village's story: moments already seen (id -> ISO date)
+    // the village's story: moments already seen (id -> ISO date; visite_<villager>, a visit of the day); mots: the
+    // foreign words whose meaning the little one heard ("de:merci" -> times, js/mots_du_jeu.js)
+    histoire: {mots: {}},
     accessoires: {possedes: [], porte: {}},   // bought from the merchant; porte: famille -> accessory worn
     temps: {}};                           // time really played, per day ("2026-10-12" -> ms)
 }
@@ -46,6 +48,8 @@ function reparer(p){
   forme("album", ["ombres", "brillantes"], ["autocollants", "reparees"]);
   forme("missions", [], ["liste"]); if (typeof q.missions.jour !== "string") q.missions.jour = "";
   forme("accessoires", ["porte"], ["possedes"]);
+  // the words' meanings heard (js/mots_du_jeu.js): an older story has none, a damaged one starts again
+  if (!objet(q.histoire.mots)) q.histoire = {...q.histoire, mots: {}};
   q.jokers = {...base.jokers, ...(q.jokers && typeof q.jokers === "object" ? q.jokers : {})};
   q.compagnons = q.compagnons.filter(c => c && c.id && FAMILLES[c.famille]);
   if (!q.compagnons.some(c => c.id === q.actif)) q.actif = q.compagnons[0] ? q.compagnons[0].id : null;
@@ -93,7 +97,7 @@ function creerProfil(nom, age){
   E.profils[p.id] = p; choisirProfil(p.id);
   return p;
 }
-function supprimerProfil(id){ supprimes.add(id); delete E.profils[id]; if (E.courant === id) E.courant = null; sauver(); }
+function supprimerProfil(id){ supprimes.add(id); delete E.profils[id]; if (typeof effacerJournal === "function") effacerJournal(id); if (E.courant === id) E.courant = null; sauver(); }
 
 /* companions of the current child */
 const actif = () => { const p = P(); return p && p.compagnons.find(c => c.id === p.actif) || null; };
@@ -109,6 +113,7 @@ function regionEtat(id){
 }
 function noterCombat(entree){
   const p = P(); p.hist.push({t: new Date().toISOString(), ...entree});
+  if (typeof noterJournal === "function") noterJournal("combat", entree);   // the game journal (js/journal.js)
   if (p.hist.length > 300) p.hist.splice(0, p.hist.length - 300);
   sauver();
 }

@@ -74,7 +74,9 @@ class GuideVillage {
       s.tweens.add({targets: k, y: k.y - 5, duration: 150, yoyo: true, repeat: 2, ease: "Quad.easeOut"});
     }
     const maintenant = performance.now();
-    if (maintenant - this.voixA > GUIDE_VOIX_ESPACE && !(typeof bulleVillageOuverte === "function" && bulleVillageOuverte())) {   // a villager speaking: the hand only
+    // a villager speaking, or a word being said (js/mots_du_jeu.js): the hand only
+    if (maintenant - this.voixA > GUIDE_VOIX_ESPACE && !(typeof bulleVillageOuverte === "function" && bulleVillageOuverte())
+      && !(typeof voixEnCours === "function" && voixEnCours())) {
       this.voixA = maintenant;
       dire(c.porte ? phrasePorte(regionDe(c.porte)) : "Touche une Ombre dans les hautes herbes !");
     }

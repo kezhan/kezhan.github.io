@@ -83,3 +83,9 @@
   .sachet img{height:70px}
 }
 @media (prefers-reduced-motion:reduce){ .parcelle .signe{animation:none} }
+
+/* the harvest counted in German, fruit by fruit, over the basket (js/jardin_vue.js) */
+.compte-recolte{position:absolute; top:-6px; left:50%; transform:translateX(-50%); z-index:3; padding:2px 14px 4px; border:4px solid var(--encre);
+  border-radius:999px; background:var(--papier); font:700 26px/1.1 var(--titre); color:#7D5130; box-shadow:0 4px 0 rgba(29,22,64,.3); pointer-events:none}
+.compte-recolte:empty{display:none}
+.bulle-jardin .mot-etranger{color:#7D5130}

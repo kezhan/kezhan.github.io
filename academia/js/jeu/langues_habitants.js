@@ -3,25 +3,35 @@
    l'anglais, Paco l'allemand. À chaque visite, il commence par un mot ou une petite phrase de sa langue, dite par sa
    voix enregistrée (l'anglais et l'allemand : donnees/voix_etrangeres.json ; le luxembourgeois : lod.lu), puis le sens
    en français, pour que la petite comprenne : « « Hello! » : c'est « bonjour », en anglais ! ». Le mot change d'une
-   visite à l'autre. Un mot sans enregistrement n'est jamais pris (pas de voix approximative). */
+   visite à l'autre. Un mot sans enregistrement n'est jamais pris (pas de voix approximative). Les mots sont ceux de la
+   liste du jeu (js/mots_du_jeu.js), que les outils des voix relisent.
+   Chaque visite du jour est notée dans P().histoire (visite_sage, visite_hugo, visite_paco : la mission « Dis bonjour »,
+   js/missions.js). Juste après un éternuement du compagnon, l'habitant qui a dit « Gesundheit! » le redit quand on le
+   touche, avec son sens (js/jeu/vie_village.js). */
 const LANGUES_HABITANTS = {
-  sage: {langue: "lb", nom: "luxembourgeois", mots: [["Moien", "bonjour"], ["Gudde Moien", "bonjour, le matin"], ["Merci", "merci"], ["Äddi", "au revoir"]]},
-  hugo: {langue: "en", nom: "anglais", mots: [["Hello!", "bonjour"], ["How are you?", "comment vas-tu ?"], ["Have a nice day!", "bonne journée"],
-    ["Well done!", "bravo"], ["Thank you!", "merci"], ["Goodbye!", "au revoir"]]},
-  paco: {langue: "de", nom: "allemand", mots: [["Hallo!", "bonjour"], ["Wie geht's?", "comment vas-tu ?"], ["Einen schönen Tag!", "bonne journée"],
-    ["Gut gemacht!", "bravo"], ["Danke!", "merci"], ["Tschüss!", "au revoir"]]}
+  sage: {langue: "lb", nom: "luxembourgeois", mots: ["bonjour", "bonjour_matin", "merci", "au_revoir"]},
+  hugo: {langue: "en", nom: "anglais", mots: ["bonjour", "comment_vas_tu", "bonne_journee", "bravo", "merci", "au_revoir"]},
+  paco: {langue: "de", nom: "allemand", mots: ["bonjour", "comment_vas_tu", "bonne_journee", "bravo", "merci", "au_revoir"]}
 };
 const VISITES_HABITANTS = {};   // in this sitting: the next word of each villager
+const MOT_EN_ATTENTE = {};      // a word just said by a villager (« Gesundheit! » after a sneeze): said again at the visit
 
-// the words of a villager that have their recording here (the Luxembourgish lexicon loads with the game)
+// the words of a villager that have their recording here, as [word, meaning] (the Luxembourgish lexicon loads with
+// the game)
 function motsDits(L){
-  return L.mots.filter(([mot]) => L.langue === "lb" ? typeof couvertLb === "function" && couvertLb(mot) : typeof aSaVoix === "function" && aSaVoix(mot, L.langue));
+  return (typeof motsDuJeu === "function" ? motsDuJeu(L.mots, L.langue) : []).map(m => [m.mot, m.sens]);
 }
 // the first line of a villager: a word of their language and its meaning; null when they have none (or none recorded)
 function salutHabitant(n){
   const L = LANGUES_HABITANTS[n.cle]; if (!L) return null;
-  const mots = motsDits(L); if (!mots.length) return null;
-  const i = VISITES_HABITANTS[n.cle] = ((VISITES_HABITANTS[n.cle] ?? -1) + 1) % mots.length;
-  const [mot, sens] = mots[i];
+  const attente = MOT_EN_ATTENTE[n.cle]; delete MOT_EN_ATTENTE[n.cle];
+  let mot, sens;
+  if (attente) ({mot, sens} = attente);
+  else {
+    const mots = motsDits(L); if (!mots.length) return null;
+    const i = VISITES_HABITANTS[n.cle] = ((VISITES_HABITANTS[n.cle] ?? -1) + 1) % mots.length;
+    [mot, sens] = mots[i];
+  }
+  if (typeof noterHistoire === "function") noterHistoire("visite_" + n.cle);   // the day's visit (the « Dis bonjour » mission)
   return {langue: L.langue, ligne: `« ${mot} » : c'est « ${sens} », en ${L.nom} !`};
 }

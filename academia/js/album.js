@@ -4,7 +4,8 @@
    2. Album, en quatre pages : les Ombres consolées (P().album.ombres : silhouette avant, couleur et compteur après),
       les Ombres brillantes (P().album.brillantes), les autocollants des missions du Sage (P().album.autocollants), le
       carnet des erreurs réparées (P().album.reparees : un tampon par erreur, la question et sa bonne réponse). Le
-      combat et les missions remplissent ces champs ; un album vide montre les places qui attendent.
+      combat et les missions remplissent ces champs ; un album vide montre les places qui attendent. Un autocollant
+      dont le nom est enregistré dans les trois langues l'écrit dessous, et chaque toucher le dit dans la suivante.
    Rien ne défile : une page trop pleine pour l'écran se tourne avec deux flèches. Toucher un dessin le fait dire. */
 const regionLue = id => (P().regions || {})[id] || {niveau: 1, etape: 0, badges: 0};   // read only: nothing written
 // a badge's stars: the best kept by the region (js/progression.js), or the best of its boss fights (older games)
@@ -155,16 +156,30 @@ function infoAutocollant(a){
     icone: (cat && cat.icone) || (ICONES.includes(id) ? id : DESSINS_AUTOCOLLANTS[h % DESSINS_AUTOCOLLANTS.length]),
     texte: (m && m.texte) || (a && a.texte) || ""};
 }
+// a sticker whose name is recorded in the three languages (js/missions.js, nomEtranger) shows it under itself, in one
+// language; the first touch says the word written, each next touch the next language (« L'autocollant du soleil ! En
+// allemand : die Sonne »)
+const TOURS_AUTOCOLLANTS = {};   // in this sitting: the language shown for each sticker
 function caseAutocollant(a, i){
   const x = infoAutocollant(a), b = el("button", "autocollant"), s = el("span", "collant"), d = el("small");
   if (x.image) { const im = el("img"); im.alt = ""; im.src = x.image; s.append(im); } else s.append(iconeDom(x.icone));
   b.style.setProperty("--penche", `${((x.id.length * 7 + (i || 0) * 5) % 13) - 6}deg`);
   d.textContent = jourLisible(x.jour);
-  b.append(s, d);
+  const etranger = () => typeof nomEtranger === "function" ? nomEtranger(x.id, TOURS_AUTOCOLLANTS[x.id] ?? (i || 0)) : null;
+  const motEcrit = el("small", "mot-autocollant"), ecrire = w => { motEcrit.lang = w ? w.langue : ""; motEcrit.textContent = w ? w.mot : ""; };
+  ecrire(etranger());
+  b.append(s, ...(motEcrit.textContent ? [motEcrit] : []), d);
+  let premier = true;
   b.onclick = () => {
     sfx.tap(); sauterDessin(s);
     const quand = jourLisible(x.jour, "long"), mission = sansEmoji(x.texte).replace(/[\s.!]+$/, "");   // « Console trois Ombres. »
-    dire(`${x.nom ? `L'autocollant ${x.nom}` : "Un autocollant"}${quand ? `, gagné le ${quand}` : ""} !${mission ? ` Ta mission : ${mission}.` : ""}`);
+    const suite = `${quand ? `Gagné le ${quand} !` : ""}${mission ? ` Ta mission : ${mission}.` : ""}`;
+    if (!premier) TOURS_AUTOCOLLANTS[x.id] = (TOURS_AUTOCOLLANTS[x.id] ?? (i || 0)) + (motEcrit.isConnected ? 1 : 0);
+    premier = false;
+    const w = motEcrit.isConnected ? etranger() : null;
+    if (!w) return dire(`${x.nom ? `L'autocollant ${x.nom}` : "Un autocollant"}${quand ? `, gagné le ${quand}` : ""} !${mission ? ` Ta mission : ${mission}.` : ""}`);
+    ecrire(w);   // the word said is the word written
+    suiteDeVoix([() => dire(`L'autocollant ${x.nom} ! En ${w.nom} :`), () => dire(w.mot, w.langue), ...(suite.trim() ? [() => dire(suite)] : [])]);
   };
   return b;
 }

@@ -38,7 +38,8 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
   // counts as one letter (its picture is made once, then moves from the rest to the written part)
   const ecrit = el("span"), reste = el("span", "dlg-reste");
   t.replaceChildren(ecrit, reste);
-  let i = 0, minuteur = null;
+  let i = 0, minuteur = null, vite = 0;   // vite: lines touched before they were all written (the game journal)
+  const t0 = Date.now();
   const lettresParSeconde = P() && P().age <= 5 ? 12 : 14;
   const fusionner = a => a.reduce((f, x) => { if (typeof x === "string" && typeof f[f.length - 1] === "string") f[f.length - 1] += x; else f.push(x); return f; }, []);
   const ecrire = texte => {
@@ -53,6 +54,7 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
   const entier = () => { if (!minuteur) return false; clearInterval(minuteur); minuteur = null; ecrit.append(...reste.childNodes); return true; };
   const fermer = (apres, sansCalme) => {
     clearInterval(minuteur); d.hidden = true; d.onclick = null; DLG.fermer = null; DLG.suivante = null; DLG.fermable = false; taire();
+    if (typeof noterJournal === "function") noterJournal("dialogue", {nom: sansEmoji(String(nom)).trim(), n: lignes.length, vu: Math.min(i + 1, lignes.length), vite, ms: Date.now() - t0});
     if (!sansCalme) window.__calme = performance.now() + 250;
     if (opts.fin) opts.fin();
     if (apres) apres();
@@ -87,7 +89,7 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
     sfx.tap(); i++; if (i < lignes.length) afficher(); else fermer();
     return true;
   };
-  d.onclick = () => { if (!entier()) suivante(); };
+  d.onclick = () => { if (entier()) vite++; else suivante(); };
   DLG.suivante = () => i < lignes.length - 1 && suivante();   // the last line: the village closes it itself (fermable)
   afficher();
 }

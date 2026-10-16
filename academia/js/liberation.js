@@ -1,10 +1,13 @@
 /* Académia : quand le chef d'une maison tombe, deux grands moments avant le bilan. Le badge de la région (dessiné :
    forme, couleur et symbole de la maison, outils/effets/) tombe en grand comme une médaille, se balance et brille ;
-   ses étoiles (une à trois, js/progression.js) s'allument une à une, celle qui manque se regagne en revenant.
-   Puis le compagnon libéré : le chef consolé devient lumière, une bulle d'ombre éclate en étoiles, le compagnon sort
-   en grand ; la voix dit qu'il est libre, et deux gros boutons : « Avec moi ! » (il suit le héros tout de suite)
-   ou « Dans le sac ». Un toucher accélère, rien ne se saute. */
-async function sceneBadge(region, etoiles, etoilesAvant, suite){
+   ses étoiles (une à trois, js/progression.js) s'allument une à une, comptées dans la langue de la maison (« one,
+   two, three », « eins, zwei, drei », « eent, zwee, dräi » ; ailleurs la langue du jour), celle qui manque se regagne
+   en revenant. Puis le compagnon libéré : le chef consolé devient lumière, une bulle d'ombre éclate en étoiles, le
+   compagnon sort en grand ; la voix dit qu'il est libre, il salue dans sa langue (« Hallo! », écrit dans une bulle),
+   puis la voix dit qu'il veut venir avec toi ; deux gros boutons : « Avec moi ! » (il suit le héros tout de suite) ou « Dans le sac ». Un toucher accélère, rien ne
+   se saute. */
+// `avant`: a sentence said first (the meaning of the consoled chief's « Danke! » for the little one, js/combat.js)
+async function sceneBadge(region, etoiles, etoilesAvant, suite, avant = ""){
   const M = ouvrirMoment("badge");
   if (typeof jouerSon === "function") jouerSon("badge");
   M.m.innerHTML = fondMoment() + `<p class="titre-moment"></p><div class="scene-moment"><div class="medaille"><img alt=""></div></div>`
@@ -16,8 +19,13 @@ async function sceneBadge(region, etoiles, etoilesAvant, suite){
   M.q(".titre-moment").textContent = "Tu gagnes un badge !";
   const nom = M.q(".nom-moment"); nom.textContent = affiche(region.badge);
   const best = Math.max(etoiles, etoilesAvant || 0), le = /^[AEIOUÉ]/.test(region.badge) ? "l'" : "le ";
-  const phrase = `Tu gagnes ${le}${region.badge} ! ` + (best === 3 ? "Trois étoiles : bravo !" : best === 2 ? "Deux étoiles !" : "Une étoile !");
-  dire(phrase);
+  const bravo = best === 3 ? "Trois étoiles : bravo !" : best === 2 ? "Deux étoiles !" : "Une étoile !";
+  // its stars are counted in the house's language (« one, two, three! », « eins, zwei, drei! », « eent, zwee, dräi! »;
+  // the day's language in the other houses), each star lighting with its number; all recorded, or none counted
+  const nombres = typeof motsDuJeu === "function" ? motsDuJeu(["un", "deux", "trois"].slice(0, best), langueDeMaison(region.id)) : [];
+  const compter = nombres.length === best ? nombres : null;
+  // its voice after the chief's « Danke! » and the last word found (js/question_vue.js, apresRedit)
+  const debut = apresRedit(() => dire(`${avant ? avant + " " : ""}Tu gagnes ${le}${region.badge} !` + (compter ? "" : " " + bravo)));
   // the medal falls from above, bounces, swings, then shines
   await M.animer(med, [{transform: "translateY(-120vh) rotate(-14deg)"}, {transform: "translateY(4%) rotate(5deg)", offset: .72},
     {transform: "translateY(-3%) rotate(-3deg)", offset: .86}, {transform: "translateY(0) rotate(0)"}], {duration: 900, easing: "cubic-bezier(.4,0,.6,1)"});
@@ -30,12 +38,15 @@ async function sceneBadge(region, etoiles, etoilesAvant, suite){
     const e = el("img", "etoile-badge" + (i < best ? " pleine" : "")); e.alt = ""; e.src = pieceDom("etoile");
     rang.append(e);
   }
+  if (compter) await Promise.race([debut, wait(5000)]);   // the badge's name ends before the counting
   for (let i = 0; i < best; i++) {
-    await M.attendre(260);
+    if (!compter) await M.attendre(260);
     const e = rang.children[i]; e.classList.add("vu");
     if (!calme() && i >= (etoilesAvant || 0)) { const [x, y] = centre(e); jaillir(x, y, {pieces: ["etincelle"], n: 6, angle: [0, 360], gravite: 0, vitesse: [80, 160], taille: [12, 20], duree: [500, 700], z: 63, parent: M.m}); }
+    if (compter) await Promise.all([Promise.race([dire(compter[i].mot, compter[i].langue), wait(1500)]), M.attendre(300)]);   // the next one with the voice
   }
   [...rang.children].slice(best).forEach(e => e.classList.add("vu"));
+  if (compter) dire(bravo);
   if (best < 3) {
     const t = `Reviens battre ${region.chef} : ${best === 2 ? "la troisième étoile t'attend" : "deux étoiles t'attendent"} !`;
     const s = M.q(".sous-moment"); s.textContent = affiche(t); s.classList.add("vu");
@@ -84,14 +95,29 @@ async function sceneLiberation(libere, region){
   const t = `${nom} est libre !`;
   const n = M.q(".nom-moment"); n.textContent = affiche(t); n.classList.add("vu");
   const s = M.q(".sous-moment"); s.textContent = affiche("Il veut venir avec toi !"); s.classList.add("vu");
-  dire(`${t} Il veut venir avec toi !`);
+  // a companion of a language house: the voice says it is free, then it greets in its language, written over it as it
+  // says it (« Hallo! »; its meaning for the little one, the first times), then « Il veut venir avec toi ! » just
+  // before the buttons; the voice of the choice waits for them, never cuts them (js/question_vue.js). A choice already
+  // made: no meaning and no invitation left to say; the scene stays until it has greeted (`salue`)
+  const salut = typeof motDuJeu === "function" ? motDuJeu("bonjour", langueCompagnon(libere.famille)) : null;
+  const choisi = () => { const l = M.q(".boutons-moment"); return M.etat.fini || !!(l && l.dataset.choisi); };
+  let salue = Promise.resolve();
+  if (salut) {
+    let dit; const salutDit = new Promise(r => { dit = r; });
+    const chaine = redire([() => dire(t), () => {
+      if (M.etat.fini) { dit(); return null; }
+      bulleMot(libre, salut); const v = direMot(salut, choisi() ? {sens: false} : {}); v.then(dit, dit); return v;
+    }, () => choisi() ? null : dire("Il veut venir avec toi !")]);
+    salue = Promise.race([salutDit, chaine]);   // the chain cut before the greeting: no waiting for it
+  } else dire(`${t} Il veut venir avec toi !`);
   await M.attendre(700);
   const choix = await M.boutons([{texte: "⚔️ Avec moi !", valeur: "moi", cls: "avec-moi"}, {texte: "🎒 Dans le sac", valeur: "sac", cls: "gris dans-sac"}]);
   const p = P();
-  if (choix === "moi") { p.actif = libere.id; sauver(); dire(`${nom}, à toi ! Il te suit partout.`); }
-  else dire(`${nom} t'attend dans le sac.`);
+  if (choix === "moi") { p.actif = libere.id; sauver(); }
+  // after its greeting (a recording, which attendreVoix does not hear): the scene ends with this voice, 3 s at most
+  const voixChoix = apresRedit(() => dire(choix === "moi" ? `${nom}, à toi ! Il te suit partout.` : `${nom} t'attend dans le sac.`));
   libre.classList.add(choix === "moi" ? "content" : "range");
-  await Promise.all([M.attendre(650), Promise.race([wait(2500), new Promise(r => setTimeout(r, 300)).then(() => attendreVoix())])]);
+  await Promise.all([M.attendre(650), Promise.race([wait(8000), salue.then(() => Promise.race([wait(3000), voixChoix]))])]);
   M.fermer();
 }
 // the voice has finished (or never started); at most a few seconds

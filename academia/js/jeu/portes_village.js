@@ -5,7 +5,8 @@
    maison (le panneau planté devant la maison les compte aussi, js/jeu/decor_village_hd_jeu.js).
    Ouverte : la porte s'est ouverte, sa lumière dorée bat doucement, une flèche rebondit au-dessus, des étincelles
    montent ; la fenêtre de la maison s'allume et, de temps en temps, l'ombre du chef y passe (au Jardin et à
-   l'Observatoire, dans l'entrée même).
+   l'Observatoire, dans l'entrée même). Une maison de langue a sa petite enseigne : « Welcome! », « Willkommen! »,
+   « Wëllkomm », que son chef dit quand la porte s'ouvre (js/mots_du_jeu.js).
    Quand la quatrième Ombre tombe, la caméra glisse jusqu'à la maison, la quatrième étoile s'allume, la brume s'envole,
    la porte s'ouvre devant l'enfant et la voix le dit (elle le redit 10 s plus tard sans toucher, js/jeu/guide_village.js),
    puis la caméra revient au héros. Sans ces dessins (une table plus ancienne), la brume et la lumière sont des formes
@@ -43,7 +44,7 @@ class PortesVillage {
   }
   vider(p){
     p.objets.forEach(o => { this.s.tweens.killTweensOf(o); o.destroy(); });
-    p.objets = []; p.etoiles = []; p.yeux = null; p.brume = null; p.fenetres = null;
+    p.objets = []; p.etoiles = []; p.yeux = null; p.brume = null; p.fenetres = null; p.enseigne = p.enseigneSens = null;
     [p.minuteur, p.passage].forEach(m => { if (m) m.remove(); });
     p.minuteur = p.passage = null;
   }
@@ -85,6 +86,16 @@ class PortesVillage {
       const f = garder(s.add.image(p.x, haut - 7, "fx_guide_fleche").setOrigin(.5, 1).setDepth(9700));
       f.setScale(10 / f.height);
       if (anim) s.tweens.add({targets: f, y: f.y - 4, duration: 420, yoyo: true, repeat: -1, ease: "Quad.easeOut"});
+    }
+    // a language house: its welcome on a little sign over the open door, above the arrow (written only: its chief
+    // says it by its recording when the door opens and when the child comes in, js/jeu/lanceur.js)
+    // (its meaning in small under it, for the big one who reads)
+    const bienvenue = typeof LANGUE_MAISON === "object" && LANGUE_MAISON[p.region] ? MOTS_DU_JEU.bienvenue[LANGUE_MAISON[p.region]] : null;
+    if (bienvenue) {
+      const ecrire = (texte, y, taille, couleur) => garder(s.add.text(p.x, y, texte, {fontFamily: "Fredoka, sans-serif", fontSize: taille, color: couleur,
+        fontStyle: "bold", stroke: "#1D1640", strokeThickness: 2, padding: {x: 2, y: 1}}).setOrigin(.5, 1).setResolution(12).setDepth(9700));
+      p.enseigne = ecrire(bienvenue, haut - 26, "6px", "#FFF3B0");
+      p.enseigneSens = ecrire(MOTS_DU_JEU.bienvenue.fr, haut - 21, "4px", "#FFFFFF");
     }
     if (anim && s.textures.exists("fx_etincelle_p")) p.minuteur = s.time.addEvent({delay: 520, loop: true, callback: () => {
       const e = s.add.image(p.x + (Math.random() - .5) * p.w, bas - 2, "fx_etincelle_p").setDepth(p.prof + .3).setTint(0xFFF3B0);
@@ -168,7 +179,9 @@ class PortesVillage {
           effetHD(s, "evolution", p.x, p.y, p.h, p.prof + .5);
         }
         if (typeof jouerSon === "function") jouerSon("porte");
-        dire(phrasePorte(r));
+        // a language house: its chief calls « Welcome! » (its recording) before the French sentence, never in its place
+        const w = LANGUE_MAISON[region] && typeof motDuJeu === "function" ? motDuJeu("bienvenue", LANGUE_MAISON[region]) : null;
+        if (w) suiteDeVoix([() => direMot(w), () => dire(phrasePorte(r))]); else dire(phrasePorte(r));
       });
     };
     if (calme()) { ouvrirLa(); s.guide.rappelPorte(region); return; }

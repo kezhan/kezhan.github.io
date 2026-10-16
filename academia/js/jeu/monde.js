@@ -73,24 +73,27 @@ class Monde extends Phaser.Scene {
     this.cameras.main.setZoom(z * RATIO);
   }
   toucher(ptr){
+    // what each touch did, for the game journal (js/journal.js): « rien » is a drawing the child did not understand
+    const note = q => { if (typeof noterJournal === "function") noterJournal("village", {x: Math.floor(ptr.worldX / CASE), y: Math.floor(ptr.worldY / CASE), q}); };
     if (dialogueFermable()) fermerDialogue(true);   // the last line of a dialogue: the touch closes it and goes on
-    else if ((!ptr.upElement || ptr.upElement === this.game.canvas) && avancerDialogue()) return;   // another line: the next one
-    if (this.occupe()) return;
+    else if ((!ptr.upElement || ptr.upElement === this.game.canvas) && avancerDialogue()) return note("dialogue");   // another line: the next one
+    if (this.occupe()) return note("occupe");
     const wx = ptr.worldX, wy = ptr.worldY;
-    if (this.vie.toucherCompagnon(wx, wy)) return;
+    if (this.vie.toucherCompagnon(wx, wy)) return note("compagnon");
     this.jardin.vise = false; this.place.vise = null;
     this.marchand.vise = false;   // the shop is opened only by the walk the stall itself started
     const o = this.ombres.touchee(wx, wy);
-    if (o) return this.allerVers(o.x, o.y);
-    if (this.marchand.touche(wx, wy)) return;   // the merchant or his stall (js/jeu/marchand_village.js)
-    if (this.jardin.touche(wx, wy)) return;
-    if (this.place.touche(wx, wy)) return;   // the Arbre-Monde, the board of the missions
+    if (o) { note("ombre"); return this.allerVers(o.x, o.y); }
+    if (this.marchand.touche(wx, wy)) return note("marchand");   // the merchant or his stall (js/jeu/marchand_village.js)
+    if (this.jardin.touche(wx, wy)) return note("jardin");
+    if (this.place.touche(wx, wy)) return note("place");   // the Arbre-Monde, the board of the missions
     let x = Math.floor(wx / CASE), y = Math.floor(wy / CASE);
     const r = maisonToucheeHD(this, wx, wy), m = this.carte.maison;
     if (r && !(m[y] && m[y][x] === r)) for (let b = 0; b < HAUT; b++) { const a = m[b].indexOf(r); if (a >= 0) { x = a; y = b; break; } }
     const n = this.pnj.find(q => q.x === x && (q.y === y || q.y === y + 1));
     if (n) this.vie.saluer(n.s);   // the villager waves at once, the hero walks to talk
     this.allerVers(x, y, n);
+    note(n ? "habitant" : r ? "maison" : this.enMarche || this.chemin.length || ecranCourant !== "monde" ? "marche" : "rien");
   }
   // the name of a house, its badges, a padlock once its door is open; without its drawn sign, also the Ombres beaten
   texteEtiquette(regionId){

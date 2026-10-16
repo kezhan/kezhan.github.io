@@ -528,3 +528,13 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
   .article img.encore{width:28px; height:28px; top:-7px; right:-7px; padding:4px}
 }
 @media (prefers-reduced-motion: reduce){ .habille.vivant, .article.choisi{animation:none} }
+
+/* foreign words said outside the questions (js/mots_du_jeu.js): the word in bold and colour, its meaning in small */
+.mot-etranger{font-family:var(--titre); font-weight:700; color:#7A2E8E}
+.sens-mot{font-weight:600; font-size:.8em; color:#6b6390}
+.starter .devise{display:block; margin-top:2px; font:700 15px var(--titre); color:#7A2E8E}
+.sac .autocollant small.mot-autocollant{font:700 14px var(--titre); color:#7A2E8E; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.fiche-corps .origine-nom{align-self:flex-start; background:none; padding:0; text-align:left; color:#5d5585; font-size:15px; line-height:1.25}
+.fiche-corps .origine-nom b{font:700 17px var(--titre); color:#7A2E8E; white-space:nowrap}
+.fiche-corps .mots-element{font:700 15px var(--titre); color:#7A2E8E}
+@media (max-height:500px){ .fiche-corps .origine-nom{font-size:14px} .fiche-corps .origine-nom b{font-size:15px} }

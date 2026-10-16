@@ -34,7 +34,9 @@ async function sceneEvolution(c, stadeAvant){
   const nom = M.q(".nom-moment"), sous = M.q(".sous-moment");
   nom.textContent = affiche(`${apres} !`); nom.classList.add("vu");
   sous.textContent = affiche(`Nouvelle attaque : ${attaque}`);
-  dire(`${avant} est devenu ${apres} ! Nouvelle attaque : ${attaque} !`);
+  // Melusino recalls Mélusine, the fairy of Luxembourg's legend: one French sentence more for the big one
+  const legende = c.famille === "leiwchen" && stade(c) === 3 && P().age > 5 ? " Melusino rappelle Mélusine, la fée de la légende de Luxembourg." : "";
+  dire(`${avant} est devenu ${apres} ! Nouvelle attaque : ${attaque} !${legende}`);
   await M.attendre(400);
   sous.classList.add("vu");
   await M.attendre(200);

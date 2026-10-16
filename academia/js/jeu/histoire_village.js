@@ -9,10 +9,13 @@
    3. Les habitants parlent de la partie : le Sage montre la prochaine maison (la caméra y va pendant qu'il en parle) et
       ouvre les missions, Hugo fête la dernière évolution, Paco dit qui reste à libérer.
    4. Après une vingtaine de minutes de jeu dans la journée (P().temps, compté ici), le soleil se couche doucement, le
-      compagnon bâille, le Sage dit au revoir ; le jeu reste jouable.
+      compagnon bâille et dit qu'il est fatigué dans une langue (« I'm tired… »), le Sage dit au revoir et finit par
+      « Gutt Nuecht » ; le jeu reste jouable.
    Les annonces passent dans une bulle qui ne bloque rien (#bulleVillage) : la voix la lit, le jeu continue dessous.
+   Un mot étranger y passe aussi (bulleMotVillage : le mot en gras, son sens en petit, le dessin de qui le dit) ; ce que
+   le village raconte de lui-même attend qu'une voix ait fini (js/mots_du_jeu.js, voixEnCours).
    Ce qui a été vu est noté dans P().histoire (id -> date ISO) : but, missions, soir, fete, arbre_<n>, cadeau_<région>,
-   evolution_<famille>_<stade>, missions_vues. */
+   evolution_<famille>_<stade>, missions_vues, visite_<habitant> ; et mots (js/mots_du_jeu.js). */
 const SOIR_MS = 20 * 60000, BAILLE_MS = 45000, BULLE_MIN_MS = 3500, BULLE_MAX_MS = 9000, REGARD_MS = 650;
 const LE_REGION = {dojo: "le ", albion: "le ", germania: "la ", duche: "la ", jardin: "le ", observatoire: "l'"};
 const EN_LETTRES = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six"];
@@ -49,18 +52,48 @@ function tempsJoue(p = P()){
   return Math.max(TEMPS_LOCAL.cle === p.id + jour() ? TEMPS_LOCAL.base + TEMPS_LOCAL.ms : 0, (p.temps && Number(p.temps[jour()])) || 0);
 }
 
-// a villager (or the tree) says something without stopping the game; the promise ends when the bubble goes
-function bulleVillage(cle, nom, texte){
-  const b = $("bulleVillage"); if (!b) return Promise.resolve();
-  const moi = bulleVillage.n = (bulleVillage.n || 0) + 1, im = $("bvPortrait");
-  if (cle === "arbre") im.src = `${dossierPlace()}arbre_monde_${Math.max(0, etatArbre())}.png`; else imageReessayee(im, `${DOSSIER_HD}/portraits/${cle}.png`);
-  $("bvNom").textContent = nom; ecrireIcones($("bvTexte"), insecables(texte)); b.hidden = false;
-  const t0 = performance.now(), voix = dire(texte);
+// who speaks in the bubble: a villager's portrait (or the tree), or a companion's drawing (an object: its stage)
+function portraitBulle(qui){
+  const b = $("bulleVillage"), im = $("bvPortrait"), avant = b.querySelector(".bv-sprite");
+  if (avant) avant.remove();
+  im.hidden = typeof qui === "object";
+  b.dataset.qui = typeof qui === "object" ? "compagnon" : qui;
+  if (typeof qui === "object") { const s = spriteCompagnon(qui, 60); s.classList.add("bv-sprite"); im.after(s); }
+  else if (qui === "arbre") im.src = `${dossierPlace()}arbre_monde_${Math.max(0, etatArbre())}.png`;
+  else imageReessayee(im, `${DOSSIER_HD}/portraits/${qui}.png`);
+}
+// the bubble stays while its voice speaks (9 s at most), and 3.5 s at least
+function finBulle(moi, voix){
+  const b = $("bulleVillage"), t0 = performance.now();
   return Promise.race([Promise.resolve(voix), wait(BULLE_MAX_MS)])
     .then(() => wait(Math.max(700, BULLE_MIN_MS - (performance.now() - t0))))
     .then(() => { if (bulleVillage.n === moi) b.hidden = true; });
 }
+// a villager (or the tree) says something without stopping the game; the promise ends when the bubble goes. `langue`:
+// the « » of the text in that language are said by their own recordings (direMixte), the rest in French; `note`: a
+// meaning written in small after the text, never said (the big one reads it)
+function bulleVillage(cle, nom, texte, langue, note){
+  const b = $("bulleVillage"); if (!b) return Promise.resolve();
+  const moi = bulleVillage.n = (bulleVillage.n || 0) + 1;
+  portraitBulle(cle);
+  $("bvNom").textContent = nom; ecrireIcones($("bvTexte"), insecables(texte)); b.hidden = false;
+  if (note) { const s = el("small", "sens-mot"); s.textContent = note; $("bvTexte").append(" ", s); }
+  return finBulle(moi, langue ? direMixte(texte, {langue}) : dire(texte));
+}
+// a word of a foreign language in the same bubble (js/mots_du_jeu.js): who says it, the word in bold and its meaning in
+// small; `voix`: the voice that says it (else the word by its own voice, its meaning for the little one the first times)
+function bulleMotVillage(qui, nom, m, voix){
+  const b = $("bulleVillage"); if (!b || !m) return Promise.resolve();
+  const moi = bulleVillage.n = (bulleVillage.n || 0) + 1;
+  portraitBulle(qui);
+  const mot = el("b", "mot-etranger"), sens = el("small", "sens-mot");
+  mot.lang = m.langue; mot.textContent = m.mot; sens.textContent = m.sens;
+  $("bvNom").textContent = nom; $("bvTexte").replaceChildren(mot, " ", sens); b.hidden = false;
+  return finBulle(moi, voix || direMot(m));
+}
 const bulleVillageOuverte = () => !!$("bulleVillage") && !$("bulleVillage").hidden;
+// a villager (or the tree) is telling something: never cut by a word said on the side
+const habitantParle = () => bulleVillageOuverte() && $("bulleVillage").dataset.qui !== "compagnon";
 document.addEventListener("ecran", e => { if (e.detail !== "monde" && $("bulleVillage")) $("bulleVillage").hidden = true; });
 
 class HistoireVillage {
@@ -78,6 +111,7 @@ class HistoireVillage {
     if (now < this.prochain) return;
     this.prochain = now + 400;
     if (ecranCourant !== "monde" || this.occupee || s.moment || s.verrou || dialogueOuvert() || !P()) return;
+    if (typeof voixEnCours === "function" && voixEnCours()) return;   // a word being said (a greeting, a companion) ends first
     if (this.aReveiller()) return this.raconter(() => this.reveiller());
     verifierMissions();
     const m = missionADire();
@@ -96,7 +130,7 @@ class HistoireVillage {
     this.occupee = true;
     Promise.resolve().then(f).catch(e => console.error(e)).then(() => { this.occupee = false; this.prochain = performance.now() + 900; });
   }
-  parole(cle, texte){ return bulleVillage(cle, {sage: "Le Sage", hugo: "Hugo", paco: "Paco", arbre: "L'Arbre-Monde"}[cle] || "", texte); }
+  parole(cle, texte, langue, note){ return bulleVillage(cle, {sage: "Le Sage", hugo: "Hugo", paco: "Paco", arbre: "L'Arbre-Monde"}[cle] || "", texte, langue, note); }
   // ---------- the goal, the day's missions ----------
   // the tree out of sight (the hero far from the square, a narrow screen): the camera goes and shows it while the Sage
   // names it, then comes back to the hero and the child plays again (the bubble goes on)
@@ -281,12 +315,20 @@ class HistoireVillage {
       fin: () => { if (regard === "la") retour(); }};
   }
   // ---------- the evening ----------
+  // the companion's first yawn says « I'm tired… » or « Ich bin müde… » (its house's language, else the day's one of
+  // the two); the Sage ends with « Gutt Nuecht », his language (each by its recording only, js/mots_du_jeu.js)
   coucher(){
     noterHistoire("soir");
     const p = P(), c = actif();
     this.crepuscule(true);
-    return wait(2400).then(() => { this.baille = performance.now() + BAILLE_MS; this.bailler(); return wait(1200); })
-      .then(() => this.parole("sage", `Le soleil se couche sur Académia. Bravo pour aujourd'hui, ${p.nom} !${c ? ` ${nomCompagnon(c)} bâille : il va bientôt dormir.` : ""} À demain !`));
+    return wait(2400).then(() => { this.baille = performance.now() + BAILLE_MS; return Promise.all([this.bailler(true), wait(1200)]); })
+      .then(() => {
+        const fin = `Le soleil se couche sur Académia. Bravo pour aujourd'hui, ${p.nom} !${c ? ` ${nomCompagnon(c)} bâille : il va bientôt dormir.` : ""} À demain !`;
+        const m = typeof motDuJeu === "function" ? motDuJeu("bonne_nuit", "lb") : null;
+        if (!m) return this.parole("sage", fin);
+        const sens = sensADire(m);   // said for the little one, written in small for the big one
+        return this.parole("sage", `${fin} « ${m.mot} » !` + (sens ? ` ${phraseSens(m)}` : ""), "lb", sens ? "" : m.sens);
+      });
   }
   // a warm dusk over the village (a colour multiplied over the whole view), the lanterns glowing through it
   crepuscule(anime){
@@ -307,17 +349,30 @@ class HistoireVillage {
       s.tweens.add({targets: g, alpha: .5, duration: anime && this.anim ? 5000 : 1, onComplete: () => { if (this.anim) s.tweens.add({targets: g, alpha: .3, duration: 1400, yoyo: true, repeat: -1, ease: "Sine.easeInOut"}); }});
     });
   }
-  // the companion yawns: it stretches slowly, a little sleepy cloud rises over it
-  bailler(){
-    const s = this.s, k = s.compagnon; if (!k || !k.active || !dessine(k) || s.enMarche) return;
+  // the companion yawns: it stretches slowly, a little sleepy cloud rises over it; `parle`: it says it is tired, in a
+  // foreign language (the promise ends with its voice)
+  bailler(parle){
+    const s = this.s, k = s.compagnon; if (!k || !k.active || !dessine(k) || s.enMarche) return Promise.resolve();
+    const c = actif(), voix = parle && c && typeof motDuJeu === "function" ? this.direFatigue(c) : Promise.resolve();
     if (this.anim) {
       arreterSouffle(k);
       s.tweens.add({targets: k, scaleY: k.base * 1.12, scaleX: k.base * .94, duration: 650, hold: 450, yoyo: true, ease: "Sine.easeInOut", onComplete: () => { if (k.active) reposCreature(k); }});
     }
-    if (!s.textures.exists("ico_dodo")) return;
+    if (!s.textures.exists("ico_dodo")) return voix;
     const z = s.add.image(k.x + 5, k.y - k.displayHeight * .9, "ico_dodo").setDepth(9995), t = 7 / z.height;
     z.setScale(this.anim ? 0 : t);
     if (this.anim) s.tweens.add({targets: z, scale: t, y: z.y - 9, x: z.x + 3, alpha: {from: 1, to: 0}, duration: 2400, ease: "Sine.easeOut", onComplete: () => z.destroy()});
     else s.time.delayedCall(1500, () => z.destroy());
+    return voix;
+  }
+  // « I'm tired… » (Plumix), « Ich bin müde… » (Bärli), the others in the day's language of the two (no recorded
+  // Luxembourgish for it yet), in the bubble with the companion's drawing; the promise ends with the voice
+  direFatigue(c){
+    const l = langueCompagnon(c.famille), langue = l === "en" || l === "de" ? l : langueDuJour() === "de" ? "de" : "en";
+    const m = motDuJeu("fatigue", langue);
+    if (!m) return Promise.resolve();
+    const voix = direMot(m);
+    bulleMotVillage(c, nomCompagnon(c), m, voix);
+    return voix;
   }
 }

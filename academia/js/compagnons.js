@@ -41,15 +41,19 @@ const force = c => 6 + c.niveau;
 // XP needed to go from level n to n+1: quick at first, slower later
 const xpPour = n => 10 + 6 * n;
 
-// the houses; `icone` is written in the texts and shown as the house's drawn symbol (js/icones.js, EMOJI_ICONES)
+// the houses; `icone` is written in the texts and shown as the house's drawn symbol (js/icones.js, EMOJI_ICONES).
+// `desc` is said by the French voice, so always in French; `devise`, the same in the house's language, is written with
+// its capital letters and said only by its own recording (js/accueil.js)
 const REGIONS = [
   {id: "dojo", herbes: "à droite du chemin du Dojo", nom: "Dojo des Nombres", icone: "🥋", matiere: "maths", famille: "matty", desc: "Compter et calculer",
    boss: "Grand Vizir des Nombres", chef: "le Vizir", badge: "Badge de Pythagore"},
   {id: "albion", herbes: "sous le port, près de la mare", nom: "Port d'Albion", icone: "⛵", matiere: "anglais", famille: "plumix", desc: "Parler anglais",
    boss: "Roi du Quotidien", chef: "le Roi", badge: "Badge de la Boussole"},
-  {id: "germania", herbes: "en bas, près des rochers", nom: "Montagne de Germania", icone: "⛰️", matiere: "allemand", famille: "barli", desc: "Deutsch sprechen",
+  {id: "germania", herbes: "en bas, près des rochers", nom: "Montagne de Germania", icone: "⛰️", matiere: "allemand", famille: "barli", desc: "Parler allemand",
+   devise: {langue: "de", texte: "Deutsch sprechen"},
    boss: "Dragon du Temps", chef: "le Dragon", badge: "Badge des Runes"},
-  {id: "duche", herbes: "à droite de la maison rouge", nom: "Vallée du Grand-Duché", icone: "🏰", matiere: "luxembourgeois", famille: "leiwchen", desc: "Lëtzebuergesch schwätzen",
+  {id: "duche", herbes: "à droite de la maison rouge", nom: "Vallée du Grand-Duché", icone: "🏰", matiere: "luxembourgeois", famille: "leiwchen", desc: "Parler luxembourgeois",
+   devise: {langue: "lb", texte: "Lëtzebuergesch schwätzen"},
    boss: "Esprit des Traditions", chef: "l'Esprit", badge: "Badge du Lion rouge"},
   {id: "jardin", herbes: "à gauche du pavillon", nom: "Jardin des Éclats", icone: "🌸", matiere: "logique", famille: "cavalin", desc: "Formes, couleurs, suites",
    boss: "Gardien des Énigmes", chef: "le Gardien", badge: "Badge du Cristal"},

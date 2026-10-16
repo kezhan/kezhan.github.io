@@ -2,8 +2,30 @@
    l'herbe, une Ombre qui sort la tête des hautes herbes. Chaque enfant retrouve sa partie en touchant sa carte (son
    héros et son compagnon en pied, son prénom dit à voix haute) ; un nouveau Gardien donne son prénom et son âge (la
    voix répète l'âge, un gâteau montre ses bougies), choisit son héros (« C'est toi ? »), puis son premier compagnon,
-   et entre dans le village. */
+   et entre dans le village. Le Gardien qui revient est salué selon l'heure dans la langue du jour (« Gudde Moien »,
+   « Hello! », « Guten Abend! »), écrite un instant en haut de l'écran, puis par son prénom ; Plumix et Léiwchen
+   disent un mot de leur langue quand on les touche (js/mots_du_jeu.js). */
 const STARTERS = ["poussik", "matty", "plumix", "leiwchen"];
+
+// the greeting of the time of day in the day's language (its recording only), then the child's first name; the
+// meaning for the little one, the first times. Without a recorded word: « Bonjour Sam ! », as before
+function saluerGardien(p){
+  const h = new Date().getHours(), cle = h < 12 ? "bonjour_matin" : h < 18 ? "bonjour" : "bonsoir";
+  return motsPrets().then(() => {
+    if (P() !== p) return;
+    const m = motDuJeu(cle, langueDuJour());
+    if (!m) return dire(`Bonjour ${p.nom} !`);
+    bulleMot(null, m, {ms: 3500});
+    const sens = sensADire(m);
+    return suiteDeVoix([() => dire(m.mot, m.langue), () => dire(`${p.nom} !`), ...(sens ? [() => dire(phraseSens(m))] : [])]);
+  });
+}
+// a companion's word of its language, written over its drawing and said after its name (`sens`: the meaning too)
+function direNomEtMot(f, dessin, nom, sens){
+  const m = motCompagnon(f);
+  if (!m) return dire(nom);
+  return suiteDeVoix([() => dire(nom), () => { bulleMot(dessin, m); return direMot(m, sens === undefined ? {} : {sens}); }]);
+}
 
 function ouvrirAccueil(){
   fermerDialogue();
@@ -20,13 +42,17 @@ function ouvrirAccueil(){
     t.querySelector("b").textContent = p.nom;
     t.querySelector("small").textContent = c ? affiche(`${nomCompagnon(c)} · niveau ${c.niveau}`) : "Pas encore de compagnon";
     b.append(scene, t);
-    b.onclick = () => { sfx.tap(); choisirProfil(p.id); dire(`Bonjour ${p.nom} !`); p.compagnons.length ? entrerMonde() : ouvrirChoix(); };
+    b.onclick = () => {   // no companion yet: the first companion's screen speaks at once
+      sfx.tap(); choisirProfil(p.id);
+      if (p.compagnons.length) { saluerGardien(p); entrerMonde(); } else ouvrirChoix();
+    };
     l.append(b);
   });
   ecrireIcones($("btnNouveau"), Object.keys(E.profils).length ? "✨ Nouveau Gardien" : "✨ Commencer l'aventure");
 }
 // the bottom of the home screen: the four first companions breathing on the grass, and an Ombre peeking out of the
-// tall grass (a touch: it ducks; a companion touched hops and says its name)
+// tall grass (a touch: it ducks; a companion touched hops and says its name, and a word of its language for Plumix and
+// Léiwchen, without its meaning: nobody has chosen a game yet)
 function decorAccueil(){
   const d = $("decorAccueil");
   if (d.childElementCount) return;
@@ -35,7 +61,7 @@ function decorAccueil(){
   STARTERS.forEach((f, i) => {
     const s = imageHD(f + "1", "face", h); s.classList.add("starter-deco");
     s.style.left = `${3 + i * pas}%`; s.style.animationDelay = `${-i * .6}s`;
-    s.onclick = () => { sauterDessin(s); dire(FAMILLES[f].noms[0] + " !"); };
+    s.onclick = () => { sauterDessin(s); direNomEtMot(f, s, FAMILLES[f].noms[0] + " !", false); };
     d.append(s);
   });
   const coucou = el("div", "coucou"), tete = imageHD("neantik", "face", petit ? 58 : 80);
@@ -121,7 +147,12 @@ function ouvrirChoix(){
     const b = el("div", "starter");
     const fig = imageHD(f + "1", "face", 150); b.append(fig);
     b.append(el("h3"), el("p")); b.querySelector("h3").textContent = F.noms[0];
-    b.querySelector("p").textContent = `${F.desc} Il aime : ${r.desc.toLowerCase()}.`;
+    const aime = `${F.desc} Il aime : ${r.desc.toLowerCase()}.`;   // French only: the French voice reads it
+    b.querySelector("p").textContent = aime;
+    if (r.devise) {   // the same in the house's language, with its capital letters (« Lëtzebuergesch schwätzen »)
+      const d = el("small", "devise"); d.lang = r.devise.langue; d.textContent = affiche(`« ${r.devise.texte} »`);
+      b.querySelector("p").append(" ", d);
+    }
     const choisir = el("button", "gros", "Je te choisis !");
     if (i === 0) markOk(choisir);
     choisir.onclick = e => {
@@ -139,7 +170,16 @@ function ouvrirChoix(){
       if (p.age > 5 && p.histoire) p.histoire.but = new Date().toISOString();   // the goal is said (js/jeu/histoire_village.js); the little one hears it after her first fight
       setTimeout(() => entrerMonde(() => setTimeout(() => dialogue("Le Sage", "sage", mots), TEST ? 0 : 400)), TEST ? 0 : 900);
     };
-    b.onclick = () => { sauterDessin(fig); dire(`${F.noms[0]}. ${F.desc} Il aime : ${r.desc.toLowerCase()}.`); };
+    // touched: the card said in French; the motto in its language only by its own recording (never the French voice);
+    // then a word of its language for a language companion (its meaning for the little one, the first times)
+    b.onclick = () => {
+      sauterDessin(fig);
+      const devise = r.devise && motEnregistre(r.devise.texte, r.devise.langue) ? ` « ${r.devise.texte} »` : "";
+      const carte = () => devise ? direMixte(`${F.noms[0]}. ${aime}${devise}`, {langue: r.devise.langue}) : dire(`${F.noms[0]}. ${aime}`);
+      const m = motCompagnon(f);
+      if (!m) return carte();
+      suiteDeVoix([carte, () => { bulleMot(fig, m); return direMot(m); }]);
+    };
     b.append(choisir); s.append(b);
   });
 }

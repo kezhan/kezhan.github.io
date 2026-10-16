@@ -5,9 +5,11 @@
       terre devient mouillée et la plante grandit d'un stade sous les yeux de l'enfant ; fausse, l'explication, et on
       peut réessayer avec une autre question ;
    3. arrosée aujourd'hui : elle grandira demain ;
-   4. mûre : la récolte vole jusqu'au panier, comptée ; la voix dit son nom en français, en anglais, en allemand et
-      en luxembourgeois (l'enregistrement de lod.lu seulement).
-   Le panier garde les récoltes ; en toucher une la donne au compagnon (de l'XP, et son évolution s'il la gagne).
+   4. mûre : la récolte vole jusqu'au panier, fruit après fruit, comptée en allemand (« eins, zwei, drei… », le nombre
+      écrit sur le panier) ; la voix dit son nom en français, en anglais, en allemand et en luxembourgeois
+      (l'enregistrement de lod.lu seulement).
+   Le panier garde les récoltes ; en toucher une la donne au compagnon (de l'XP, et son évolution s'il la gagne) :
+   « Guten Appetit! » avant qu'il mange, « Danke! » après (js/mots_du_jeu.js).
    Les règles sont dans js/jardin.js, les dessins dans assets/<qualité>/jardin (outils/village/scripts/jardin.py). */
 if (!ECRANS.includes("jardin")) ECRANS.push("jardin");   // one more screen for montrer() (js/outils.js)
 const srcJardin = nom => `${DOSSIER_HD}/jardin/${nom}.png`;
@@ -39,6 +41,14 @@ function annoncerJardinDe(texte, c){
   b.append(" ", l); b.hidden = false;
   clearTimeout(JARDIN.bulle); JARDIN.bulle = setTimeout(() => { b.hidden = true; }, 4500 + texte.length * 45);
   return suiteDeVoix([() => dire(texte), () => dire("En allemand :"), () => dire(c.de, "de")]);
+}
+
+// a German word in the garden's bubble, its meaning in small (`qui`: who says it, before it)
+function motJardin(m, qui){
+  const b = $("bulleJardin"), mot = el("b", "mot-etranger"), sens = el("small", "sens-mot");
+  mot.lang = m.langue; mot.textContent = m.mot; sens.textContent = m.sens;
+  b.replaceChildren(...(qui ? [affiche(`${qui} :`) + " "] : []), mot, " ", sens); b.hidden = false;
+  clearTimeout(JARDIN.bulle); JARDIN.bulle = setTimeout(() => { b.hidden = true; }, 3500);
 }
 
 function ouvrirJardin(){
@@ -148,7 +158,10 @@ async function arroserParcelle(i){
     await arrosoir(i);
     const culture = jardinDe().parcelles[i].culture, st = arroser(i);
     dessinerJardin(); pousser(i);
-    annoncerJardinDe(st >= STADE_MUR ? "Elle est mûre ! Touche-la pour la récolter." : "Bravo ! Ta plante a bu, elle grandit.", CULTURES[culture]);
+    // after the foreign word found, said again (js/question_vue.js), never over it; the child touched something else
+    // meanwhile (a new bubble): left out
+    const b0 = JARDIN.bulle;
+    apresRedit(() => JARDIN.bulle === b0 && !$("jardin").hidden ? annoncerJardinDe(st >= STADE_MUR ? "Elle est mûre ! Touche-la pour la récolter." : "Bravo ! Ta plante a bu, elle grandit.", CULTURES[culture]) : null);
   } finally {
     JARDIN.occupe = false; panneau.classList.add("cache"); ecran.classList.remove("question");
   }
@@ -175,29 +188,42 @@ function arrosoir(i){
   return wait(1100).then(() => a.remove());
 }
 
-// ---- picking: the crop flies to the basket, counted, and its name in four languages
+// ---- picking: the crop flies to the basket, counted in German fruit by fruit (« eins, zwei, drei… », the number
+// written over the basket), then its name in four languages
+const NOMBRES_JARDIN = ["un", "deux", "trois", "quatre", "cinq", "six"];   // a harvest gives 1 to 6 (js/jardin.js)
 async function recolterParcelle(i){
   const r = recolter(i); if (!r) return;
   const c = CULTURES[r.culture], depart = $("parcelles").children[i].getBoundingClientRect(), panier = $("panierJardin").getBoundingClientRect();
   JARDIN.occupe = true;
   sfx.victoire();
-  if (!calme()) for (let k = 0; k < r.n; k++) {
+  const voler = k => {   // one fruit flies from the plot into the basket
+    if (calme()) return;
     const v = imgJardin("recolte_" + r.culture, "recolte-vol");
     v.style.left = `${depart.left + depart.width / 2}px`; v.style.top = `${depart.top + depart.height / 2}px`;
     document.body.append(v);
     const dx = panier.left + 60 - depart.left - depart.width / 2, dy = panier.top + panier.height / 2 - depart.top - depart.height / 2;
     v.animate([{transform: "translate(-50%,-50%) scale(.3)"}, {transform: "translate(-50%,-150%) scale(1.1)", offset: .35}, {transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(.5)`}],
-      {duration: 750, delay: k * 160, easing: "cubic-bezier(.3,.7,.4,1)", fill: "both"}).onfinish = () => v.remove();
-  }
+      {duration: 750, easing: "cubic-bezier(.3,.7,.4,1)", fill: "both"}).onfinish = () => v.remove();
+  };
   dessinerJardin();
   JARDIN.occupe = false;
+  // the count: each German number recorded, or the fruits fly as before (160 ms apart) without it
+  const nombres = NOMBRES_JARDIN.slice(0, r.n).map(k => typeof motDuJeu === "function" ? motDuJeu(k, "de") : null);
+  const compte = nombres.every(Boolean) ? el("b", "compte-recolte") : null;
+  if (compte) { compte.lang = "de"; $("panierJardin").append(compte); $("bulleJardin").hidden = true; }   // the old message goes: eyes on the fruits
+  let volees = 0;
+  const reste = () => { for (; volees < r.n; volees++) voler(volees); };   // the voice cut by another one: the rest fly at once
+  const comptage = compte ? nombres.map((m, k) => () => { voler(k); volees = k + 1; compte.textContent = m.mot; return Promise.all([dire(m.mot, "de"), wait(450)]); })
+    : [() => { for (let k = 0; k < r.n; k++) setTimeout(() => voler(k), k * 160); volees = r.n; }];
   const nombre = `${r.n} ${r.n > 1 ? c.pluriel : c.nom} !`;
-  ecrireIcones($("bulleJardin"), affiche(`${majuscule(nombre)} En allemand : ${allemandDe(c)}. En anglais : ${c.en}.` + (c.lb ? ` En luxembourgeois : ${c.lb}.` : "")));
-  $("bulleJardin").hidden = false; clearTimeout(JARDIN.bulle); JARDIN.bulle = setTimeout(() => { $("bulleJardin").hidden = true; }, 9000);
+  const bulle = () => {
+    ecrireIcones($("bulleJardin"), affiche(`${majuscule(nombre)} En allemand : ${allemandDe(c)}. En anglais : ${c.en}.` + (c.lb ? ` En luxembourgeois : ${c.lb}.` : "")));
+    $("bulleJardin").hidden = false; clearTimeout(JARDIN.bulle); JARDIN.bulle = setTimeout(() => { $("bulleJardin").hidden = true; }, 9000);
+  };
   // German first: the garden is the Montagne de Germania's
-  const voix = [() => dire(`Tu as cueilli ${nombre} En allemand :`), () => dire(c.de, "de"), () => dire("En anglais :"), () => dire(c.en, "en")];
+  const voix = [...comptage, () => { bulle(); return dire(`Tu as cueilli ${nombre} En allemand :`); }, () => dire(c.de, "de"), () => dire("En anglais :"), () => dire(c.en, "en")];
   if (c.lb && couvertLb(c.lb)) voix.push(() => dire("En luxembourgeois :"), () => dire(c.lb, "lb"));   // its recording, nothing else
-  suiteDeVoix(voix);
+  if (!(await suiteDeVoix(voix))) reste();
 }
 
 // ---- the basket: the crops, and the companion who eats them
@@ -226,8 +252,13 @@ async function donnerAuCompagnon(id){
   sfx.niveau();
   dessinerPanier();
   const f = $("panierJardin").querySelector(".compagnon-jardin");
+  // « Guten Appetit! » before it eats, « Danke! » from the companion after (their recordings; their meaning for the
+  // little one, the first times): words to say again at the family table
+  const appetit = typeof motDuJeu === "function" ? motDuJeu("bon_appetit", "de") : null, danke = typeof motDuJeu === "function" ? motDuJeu("merci", "de") : null;
+  if (appetit) { motJardin(appetit); await direMot(appetit); }
   if (f) { f.replaceChildren(imageHD(cleDe(c), "joie", 110)); if (!calme()) f.animate([{transform: "translateY(0)"}, {transform: "translateY(-18px)"}, {transform: "translateY(0)"}], {duration: 420, iterations: 2}); }
-  await annoncerJardinDe(`Miam ! ${nom} a mangé ${CULTURES[id].une} : ${g.xp} points d'expérience !`, CULTURES[id]);
+  const fini = await annoncerJardinDe(`Miam ! ${nom} a mangé ${CULTURES[id].une} : ${g.xp} points d'expérience !`, CULTURES[id]);
+  if (fini && danke && !$("jardin").hidden) { motJardin(danke, nom); await direMot(danke); }   // nothing else said meanwhile
   if (g.evolue) { JARDIN.occupe = true; await sceneEvolution(c, g.stadeAvant); JARDIN.occupe = false; montrer("jardin"); }
   dessinerJardin();
 }

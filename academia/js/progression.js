@@ -28,6 +28,9 @@ function etoilesDe(b){
 async function terminerCombat(b){
   const p = P(), c = actif(), region = regionDe(b.region), st = regionEtat(b.region);
   const fin = {libere: null, badge: null, etoiles: 0, etoilesAvant: st.etoiles || 0, joker: null, cadeau: false};
+  // the consoled Ombre said « Danke! » (js/combat.js): its meaning opens the next voice for the little one, the first
+  // times (the badge's, or the card's)
+  fin.avantVoix = b.merci && b.merci.direSens ? phraseSens(b.merci) : "";
   const plus = k => { if ((p.jokers[k] || 0) < JOKER_MAX) { p.jokers[k] = (p.jokers[k] || 0) + 1; return true; } return false; };
   if (b.gagne) {
     b.xp += 10 + 4 * st.niveau + (b.boss ? 20 : 0) + (b.brillante ? 15 : 0);
@@ -61,7 +64,7 @@ async function terminerCombat(b){
   prechargerMoments([fin.libere && cleDe(fin.libere), gain.evolue && cleDe(c), b.boss && CLES_BOSS[region.id]].filter(Boolean),
     fin.badge ? ["badge_" + region.id, "etoile"] : []);
   // the big moments first, each one its own scene; then the card; then the evolution
-  if (fin.badge) await sceneBadge(region, fin.etoiles, fin.etoilesAvant, !!fin.libere);
+  if (fin.badge) { await sceneBadge(region, fin.etoiles, fin.etoilesAvant, !!fin.libere, fin.avantVoix); fin.avantVoix = ""; }
   if (fin.libere) await sceneLiberation(fin.libere, region);
   await carteBilan(b, c, region, gain, xpAvant, fin);
   if (gain.evolue) await sceneEvolution(c, gain.stadeAvant);

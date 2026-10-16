@@ -8,6 +8,11 @@
    l'album du sac (P().album.autocollants : {id, jour, texte}).
    L'écran des missions (#missions) s'ouvre en touchant le panneau du Sage sur la place (js/jeu/arbre_monde.js) ou par
    le Sage : trois cartes dessinées, dites par la voix au toucher, leur avancement en points, l'autocollant à gagner.
+   Son titre est le jour de la semaine, avec son nom en anglais, en allemand et en luxembourgeois dessous ; à la
+   première ouverture du jour, la voix le dit en français, puis dans la langue du jour (« Aujourd'hui, c'est mercredi :
+   Mëttwoch ! »). Une mission « Dis bonjour à Hugo, à Paco et au Sage » envoie écouter les mots des habitants (leurs
+   visites du jour, P().histoire). Un autocollant gagné se nomme aussi dans une langue, tour à tour (« Le soleil, en
+   anglais : sun »), pour les sept dont les trois noms sont enregistrés (js/mots_du_jeu.js, mêmes clés).
    Autocollants : outils/village/scripts/autocollants.py (assets/hd/autocollants, assets/leger/autocollants). */
 if (!ECRANS.includes("missions")) ECRANS.push("missions");   // one more screen for montrer() (js/outils.js)
 const MISSIONS_PAR_JOUR = 3;
@@ -23,6 +28,16 @@ const AUTOCOLLANTS = {};
  ["chat", "Le chat", "du chat"], ["trefle", "Le trèfle", "du trèfle"], ["cadeau", "Le cadeau", "du cadeau"],
  ["dino", "Le dinosaure", "du dinosaure"], ["hibou", "Le hibou", "du hibou"]
 ].forEach(([id, titre, nom]) => { AUTOCOLLANTS[id] = {nom, titre}; Object.defineProperty(AUTOCOLLANTS[id], "image", {enumerable: true, get: () => srcAutocollant(id)}); });
+// a sticker's name in a language, when it is recorded (js/mots_du_jeu.js: the same key), else null; the languages
+// come in turn (`tour`: a number that grows)
+function nomEtranger(id, tour){
+  if (typeof MOTS_DU_JEU !== "object" || !MOTS_DU_JEU[id]) return null;
+  for (let k = 0; k < LANGUES_JOUR.length; k++) {
+    const m = motDuJeu(id, LANGUES_JOUR[(tour + k) % LANGUES_JOUR.length]);
+    if (m) return m;
+  }
+  return null;
+}
 // the drawn icons the missions show (on the board of the square too)
 const ICONES_MISSIONS = ["pattes", "epees", "etoile", "etincelle", "couronne", "revanche", "niveau", "fusee", "cadenas_ouvert", "chouette", ...REGIONS.map(r => "maison_" + r.id)];
 
@@ -85,7 +100,12 @@ const TYPES_MISSIONS = {
     compte: (p, m) => (m.depart || []).some(i => parcelles(p)[i] && etatParcelle(parcelles(p)[i]) !== "mure") ? 1 : 0},
   planter: {groupe: "jardin", possible: p => parcelles(p).some(pa => !pa.culture) && p.etincelles >= 4, creer: () => ({but: 1}),
     texte: () => "Plante une graine dans ton jardin.", dessin: () => ({jardin: "graines_carotte"}),
-    compte: p => parcelles(p).some(pa => pa.semee === jour()) ? 1 : 0}
+    compte: p => parcelles(p).some(pa => pa.semee === jour()) ? 1 : 0},
+  // the villagers' words: a visit to each of the three today, each one saying a word of their language
+  // (js/jeu/langues_habitants.js notes the visits in P().histoire)
+  bonjour: {groupe: "exploit", possible: () => typeof salutHabitant === "function", creer: () => ({but: 3}),
+    texte: () => "Dis bonjour à Hugo, à Paco et au Sage.", dessin: () => ({portraits: ["hugo", "paco", "sage"], icone: "chouette"}),
+    compte: p => ["sage", "hugo", "paco"].filter(n => duJour((p.histoire || {})["visite_" + n])).length}
 };
 
 // a little random that gives the same draw for the same child on the same day
@@ -153,16 +173,22 @@ function missionADire(){
 // it flies into the bag (the album is there); nothing to touch, the game goes on under it
 function annoncerMission(m){
   const a = AUTOCOLLANTS[m.autocollant] || {nom: ""}, toutes = missionsDuJour().every(x => x.fait) && !MISSIONS_A_DIRE.length;   // said once, with the last one
-  const voix = dire(`Bravo, mission réussie ! Tu gagnes l'autocollant ${a.nom} pour ton album !` + (toutes ? " Toutes les missions du jour sont réussies !" : ""));
+  // its name in a language, in turn from one sticker to the next (« Le soleil, en anglais : sun »), said and written
+  const p = P(), w = nomEtranger(m.autocollant, (p && p.album && p.album.autocollants.length) || 0);
+  const gagne = `Bravo, mission réussie ! Tu gagnes l'autocollant ${a.nom} pour ton album !`, bravo = toutes ? " Toutes les missions du jour sont réussies !" : "";
+  const voix = w ? suiteDeVoix([() => dire(gagne), () => dire(`${a.titre}, en ${w.nom} :`), () => dire(w.mot, w.langue), ...(bravo ? [() => dire(bravo)] : [])])
+    : dire(gagne + bravo);
   if (typeof jouerSon === "function") jouerSon("etoile");
   const d = el("div", "annonce-mission"), im = el("img"), t = el("b");
   im.alt = ""; im.src = srcAutocollant(m.autocollant); t.textContent = "Mission réussie !";
-  d.append(im, t); document.body.append(d);
+  d.append(im, t);
+  if (w) { const n = el("span", "mot-annonce"), mot = el("b"), s = el("small"); mot.lang = w.langue; mot.textContent = w.mot; s.textContent = w.sens; n.append(mot, " ", s); d.append(n); }
+  document.body.append(d);
   const [x, y] = centre(im);
   if (typeof jaillir === "function") jaillir(x, y, {pieces: ["etoile", "etincelle", "confetti_jaune", "confetti_rose"], n: 18, angle: [0, 360], gravite: 300, vitesse: [160, 360], taille: [14, 26], duree: [700, 1100], z: 31});
   const fin = () => { if (d.isConnected) d.remove(); };
   const sac = $("btnEquipe"), b = sac && !$("barre").hidden ? sac.getBoundingClientRect() : null;
-  return Promise.race([Promise.resolve(voix), wait(4500)]).then(() => wait(calme() ? 0 : 500)).then(() => {
+  return Promise.race([Promise.resolve(voix), wait(w ? 7500 : 4500)]).then(() => wait(calme() ? 0 : 500)).then(() => {
     if (calme() || !b || !b.width || !d.animate) return fin();
     const r = im.getBoundingClientRect();
     const an = d.animate([{transform: "translate(-50%, -50%)", opacity: 1},
@@ -185,6 +211,11 @@ function dessinMissionDom(m){
   const d = (TYPES_MISSIONS[m.id] || {dessin: () => ({icone: "etoile"})}).dessin(m), f = document.createDocumentFragment();
   const c = d.compagnon && compagnonMission(P(), d.compagnon);
   if (c) { f.append(imageHD(cleDe(c), "face", 64)); if (d.icone) f.append(iconeDom(d.icone, "mission-badge")); }
+  else if (d.portraits) {   // the villagers to visit, side by side
+    const g = el("span", "mission-portraits");
+    d.portraits.forEach(k => { const i = el("img"); i.alt = ""; imageReessayee(i, `${DOSSIER_HD}/portraits/${k}.png`); g.append(i); });
+    f.append(g);
+  }
   else if (d.jardin) { const i = el("img", "mission-jardin"); i.alt = ""; i.src = srcJardin(d.jardin); f.append(i); }
   else f.append(iconeDom(d.icone || "etoile"));
   return f;
@@ -215,20 +246,43 @@ function dessinerMissions(){
   if (l[0]) markOk($("missionsListe").firstChild);
   $("missionsPied").textContent = faites === l.length ? "Toutes les missions sont réussies. Bravo !" : "Chaque mission réussie donne un autocollant pour ton album.";
 }
+// today's day of the week, by Date.getDay() (Sunday first): its French name, which is its key in MOTS_DU_JEU
+const JOURS_SEMAINE = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+const jourSemaine = () => JOURS_SEMAINE[new Date().getDay()];
+// the title: the day, its names in the three languages under it (written even unrecorded: nothing is said there)
+function titreMissions(){
+  const j = jourSemaine(), e = typeof MOTS_DU_JEU === "object" ? MOTS_DU_JEU[j] : null, t = $("missionsTitre");
+  t.textContent = majuscule(j);
+  if (e) {
+    const s = el("small", "missions-jour");
+    LANGUES_JOUR.slice(1).concat(LANGUES_JOUR[0]).filter(l => e[l]).forEach((l, i) => {   // English, German, Luxembourgish
+      const w = el("span"); w.lang = l; w.textContent = e[l];
+      if (i) s.append(" · "); s.append(w);
+    });
+    t.append(s);
+  }
+}
 function ouvrirMissions(){
   const p = P(); if (!p || !preparerMissions(p)) return;
   verifierMissions();
   montrer("missions");
   p.histoire = p.histoire && typeof p.histoire === "object" ? p.histoire : {};
   const premiere = !missionsVues();
-  p.histoire.missions_vues = new Date().toISOString(); sauver();
+  // the day said once a day: in French, then in the day's language by its recording (« Mëttwoch »)
+  const jourDit = !duJour(p.histoire.jour_dit), j = jourSemaine(), mj = jourDit && typeof motDuJeu === "function" ? motDuJeu(j, langueDuJour()) : null;
+  p.histoire.missions_vues = new Date().toISOString();
+  if (mj) p.histoire.jour_dit = p.histoire.missions_vues;   // noted once really said (the recordings' index loaded)
+  sauver();
   imageReessayee($("missionsSage"), `${DOSSIER_HD}/portraits/sage.png`);
+  titreMissions();
   dessinerMissions();
   const l = missionsDuJour(), restent = l.filter(m => !m.fait).length;
   // the little one hears them all the first time; then a touch on a mission says it again
-  if (!restent) dire("Tes missions du jour sont toutes réussies. Bravo ! Reviens demain pour de nouvelles missions.");
-  else if (p.age <= 5 && premiere) dire("Voici tes missions du jour. " + l.map(m => m.texte).join(" ") + " Touche une mission pour l'écouter encore.");
-  else dire(premiere ? "Voici tes missions du jour. Touche une mission pour l'écouter." : `Encore ${restent} mission${restent > 1 ? "s" : ""} à réussir. Touche une mission pour l'écouter.`);
+  const texte = !restent ? "Tes missions du jour sont toutes réussies. Bravo ! Reviens demain pour de nouvelles missions."
+    : p.age <= 5 && premiere ? "Voici tes missions du jour. " + l.map(m => m.texte).join(" ") + " Touche une mission pour l'écouter encore."
+    : premiere ? "Voici tes missions du jour. Touche une mission pour l'écouter." : `Encore ${restent} mission${restent > 1 ? "s" : ""} à réussir. Touche une mission pour l'écouter.`;
+  if (mj) suiteDeVoix([() => dire(`Aujourd'hui, c'est ${j} :`), () => dire(mj.mot, mj.langue), () => dire(texte)]);
+  else dire(texte);
   majPanneauMissions();
 }
 function fermerMissions(){

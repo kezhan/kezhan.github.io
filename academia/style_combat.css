@@ -279,3 +279,7 @@
   .question:has(.visuel.figure) .reponse.image{font-size:calc(var(--img) * .8); padding:6px 2px}
   .question:has(.visuel.figure) .reponse.image .q-legende{font-size:14px; line-height:1.05; text-align:center}
 }
+
+/* the consoled Ombre's thanks in the text box (js/combat.js): the word, its meaning in small */
+.bulle .mot-etranger{font-size:1.15em}
+.bulle .sens-mot{font-size:.75em}
