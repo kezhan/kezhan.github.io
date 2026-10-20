@@ -1,0 +1,137 @@
+/* Demonstration interactive : la file de tri des mails (module 03) */
+.demo { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; margin: 8px 0 26px; }
+.demo-bar { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+.demo-ctl { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--ink-soft); }
+.demo-ctl input[type=range] { width: 160px; accent-color: var(--crimson); }
+.demo-ctl b { font-family: var(--display); color: var(--navy); min-width: 3.2em; }
+.btn.ghost-dark { background: transparent; color: var(--navy); border: 1.5px solid var(--line); }
+.btn.ghost-dark:hover { background: var(--sand-l); }
+.demo-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+.demo-kpis > div { background: var(--sand-l); border-radius: 12px; padding: 12px 14px; display: flex; align-items: baseline; gap: 10px; }
+.demo-kpis b { font-family: var(--display); font-size: 1.7rem; font-weight: 800; color: var(--crimson); }
+.demo-kpis span { font-size: .84rem; color: var(--ink-soft); }
+.demo-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+@media (max-width: 940px) { .demo-grid { grid-template-columns: 1fr; } .demo-kpis { grid-template-columns: 1fr; } }
+.demo-col-head { font-family: var(--display); font-size: .7rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 10px; }
+.demo-mail { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: #fff; }
+.demo-mail.revue { border-color: var(--amber); background: #fffaf0; }
+.demo-obj { font-weight: 700; color: var(--navy); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.demo-txt { font-size: .9rem; color: var(--ink-soft); line-height: 1.5; }
+.demo-txt mark { background: #fde7c2; color: var(--navy); border-radius: 4px; padding: 0 3px; }
+.demo-badge { font-size: .74rem; font-weight: 700; border-radius: 20px; padding: 2px 10px; }
+.demo-badge.ok { background: var(--teal-w); color: var(--teal); }
+.demo-badge.warn { background: var(--amber-w); color: var(--amber); }
+.demo-actions { display: flex; gap: 8px; margin-top: 10px; }
+.demo-actions button, .demo-actions select { font: inherit; font-size: .85rem; border-radius: 8px; border: 1px solid var(--line); padding: 6px 12px; background: #fff; cursor: pointer; }
+.demo-actions button { background: var(--navy); color: #fff; border-color: var(--navy); font-weight: 700; }
+.demo-dict { display: grid; gap: 8px; }
+.demo-cat { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: .86rem; }
+.demo-cat b { display: block; color: var(--navy); margin-bottom: 2px; }
+.demo-cat span { color: var(--ink-soft); }
+.demo-note { font-size: .8rem; color: var(--ink-mute); margin-top: 12px; line-height: 1.45; }
+/* a l'impression : ni la barre de commande, ni les compteurs (ils valent zero
+   tant qu'on n'a pas clique) ; un mail ou une famille du dictionnaire reste entier */
+@media print { .demo-bar, .demo-kpis { display: none; } .demo-mail, .demo-cat { break-inside: avoid; } }
+
+/* Demos autonomes (un fichier HTML chacune, dossier demos/) integrees dans
+   une page par iframe. A l'impression, l'iframe est remplacee par un renvoi. */
+.demo-embed { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: #fff; margin: 8px 0 26px; }
+.demo-embed .demo-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: var(--sand-l); border-bottom: 1px solid var(--line); font-size: .86rem; color: var(--ink-soft); }
+.demo-embed .demo-head b { font-family: var(--display); color: var(--navy); }
+.demo-embed .demo-head a { font-weight: 700; white-space: nowrap; }
+.demo-embed iframe { display: block; width: 100%; border: 0; background: #fff; }
+.demo-embed .print-note { display: none; padding: 16px 18px; font-size: .9rem; color: var(--ink-soft); }
+@media print { .demo-embed { break-inside: avoid; } .demo-embed iframe { display: none; } .demo-embed .print-note { display: block; } }
+
+/* Une demo ne s'embarque pas en cadre : un vrai site ne se visite pas dans une
+   iframe, et une seule grande capture ne dit pas ce que l'outil fait. La page
+   annonce donc la demo par ses etapes, une capture legendee chacune
+   (capture_demos.py pose les images, _demos_en_images.py pose la galerie), et
+   le bouton ouvre la demo en plein ecran. A l'impression, les captures restent
+   et le bouton disparait : le PDF montre le travail au lieu d'un renvoi. */
+.demo-shot .demo-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; padding: 18px; }
+.demo-shot .demo-steps figure { margin: 0; }
+/* height: auto est indispensable : les `<img>` portent leur taille reelle en
+   attributs (poser_tailles_images.py) pour que la place soit reservee avant
+   l'arrivee du fichier, et sans cette ligne la hauteur en pixels s'appliquerait */
+.demo-shot .demo-steps img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.demo-shot .demo-steps a:hover img { border-color: var(--crimson); }
+.demo-shot .demo-steps figcaption { margin-top: 8px; font-size: .88rem; line-height: 1.45; color: var(--ink-soft); }
+.demo-shot .demo-steps figcaption b { display: inline-flex; align-items: center; justify-content: center;
+  width: 19px; height: 19px; margin-right: 7px; border-radius: 50%; background: var(--navy); color: #fff;
+  font-family: var(--display); font-size: .72rem; vertical-align: 1px; }
+.demo-shot .demo-cta { display: inline-flex; align-items: center; gap: 9px; margin: 0 18px 20px;
+  background: var(--crimson); color: #fff; font-weight: 700; font-size: .92rem; padding: 12px 20px; border-radius: 999px; }
+.demo-shot .demo-cta:hover { background: var(--crimson-d); text-decoration: none; }
+.demo-shot .demo-cta svg { width: 16px; height: 16px; }
+@media (max-width: 700px) { .demo-shot .demo-steps { grid-template-columns: 1fr; } }
+
+/* Deux captures par demo, cote a cote, et le bouton ouvre la demo. Il y a eu
+   un carrousel ici, avec fleches et numeros ; retire le 7 septembre, sur la
+   regle de Kezhan : une demo est un site a visiter, pas une bande dessinee, et
+   la faire defiler sur place retenait le lecteur devant des images au lieu de
+   l'envoyer sur l'outil. La regle des deux captures est tenue par
+   capture_demos.py, qui refuse d'en produire une troisieme. */
+.demo-shot .demo-steps figure { position: relative; }
+/* une seule capture prend toute la largeur plutot que la moitie */
+.demo-shot .demo-steps figure:only-child { grid-column: 1 / -1; }
+.demo-shot .demo-steps a { display: block; }
+/* le lien est l'action principale : la capture le dit au survol */
+.demo-shot .demo-steps a::after { content: ""; position: absolute; inset: 0;
+  border-radius: 10px; box-shadow: inset 0 0 0 0 var(--crimson);
+  transition: box-shadow .15s ease; pointer-events: none; }
+.demo-shot .demo-steps a:hover::after { box-shadow: inset 0 0 0 2px var(--crimson); }
+.demo-shot .demo-cta { margin-top: 4px; }
+
+/* Sur le papier, les deux captures cote a cote et la note qui renvoie a la
+   demo : un lien ne se clique pas sur une feuille. */
+@media print {
+  /* le lien « ouvrir en plein ecran » ne sert a rien sur papier : le chemin
+     de la demo est rappele par la note d'impression */
+  .demo-shot .demo-cta, .demo-shot .demo-head a { display: none; }
+  .demo-shot .demo-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; padding: 12px; }
+  .demo-shot .demo-steps figure { display: block; break-inside: avoid; }
+  .demo-shot .demo-steps a::after { display: none; }
+  .demo-shot .demo-steps figcaption { font-size: .68rem; margin-top: 4px; line-height: 1.3; }
+  .demo-shot .demo-steps figcaption b { width: 14px; height: 14px; font-size: .58rem; margin-right: 4px; }
+}
+
+/* La hauteur de l'attribut `height` n'est qu'un REPLI : build.py ajuste
+   l'iframe a la hauteur reelle de son contenu, qui change avec les filtres,
+   la bascule cartes/tableau et la largeur. Le repli sert quand l'iframe est
+   une origine opaque, typiquement en ouvrant les fichiers en file://.
+   Ne pas remettre de hauteur fixe plus PETITE que le contenu : c'est ce qui
+   produisait une barre de defilement dans une page qui defile deja. Le
+   panorama fait 1339px en cartes, 1626px en tableau, 3353px sous 760px. */
+@media (max-width: 760px) {
+  .demo-embed iframe[src*="snake"] { height: 640px; }
+}
+
+/* L'analogie lexicale pas a pas (module 02, _analogie_widget.py) : quatre cas,
+   un panneau visible, quatre etapes revelees au clic. A l'impression, les
+   quatre panneaux en grille, toutes les etapes visibles, le « ? » masque. */
+.an-tabs { gap: 8px; }
+.an-tab { font: inherit; font-size: .86rem; font-weight: 700; border-radius: 20px; border: 1.5px solid var(--line); background: #fff; color: var(--navy); padding: 6px 14px; cursor: pointer; }
+.an-tab:hover { background: var(--sand-l); }
+.an-tab.is-on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.an-panels { max-width: 680px; margin: 0 auto; }
+.an-panel { display: none; cursor: pointer; }
+.an-panel.is-on { display: block; }
+.an-s, .an-q { transition: opacity .35s; }
+.an-s.is-off, .an-q.is-off { opacity: 0; }
+.an-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+.an-text { margin: 0; flex: 1 1 320px; font-size: .95rem; color: var(--ink-soft); min-height: 2.6em; }
+.an-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.an-note { display: none; font-size: .9rem; color: var(--ink-mute); margin: 8px 0 0; }
+@media print {
+  .an-bar { display: none; }
+  /* Une colonne a l'impression, pas deux : sur deux colonnes chaque schema
+     ne fait que 338 px sur la page, son texte tombe a 5,4 pt et devient
+     illisible. En pleine largeur il passe a 10 pt sans rien redessiner. */
+  .an-panels { max-width: none; display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .an-panel { display: block; }
+  .an-s.is-off { opacity: 1; }
+  .an-q { display: none; }
+  .an-note { display: block; }
+  #demo-analogie { break-inside: avoid; }
+}

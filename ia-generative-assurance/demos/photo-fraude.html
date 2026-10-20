@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Une photo de reçu retouchée : ce que lit le prototype, ce que voit la vérification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#13264A; --crimson:#BA1C3A; --steel:#3B547D; --teal:#1F6F6B; --amber:#92661D;
+    --sand:#E9E4E1; --sand-l:#F7F4F2; --line:#dcd8d4; --ink:#1f2733; --soft:#4a5567; --muted:#78828f;
+    --display:"Manrope","Segoe UI",sans-serif; --sans:"Inter","Segoe UI",Arial,sans-serif;
+    --mono:"JetBrains Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--ink);background:var(--sand-l);padding:14px 14px 26px;font-size:14.5px}
+  .wrap{max-width:1080px;margin:0 auto}
+
+  .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--navy);color:#fff;
+       border-radius:12px;padding:11px 16px;margin-bottom:12px}
+  .top .logo{width:30px;height:30px;border-radius:8px;background:var(--crimson);color:#fff;display:grid;
+             place-items:center;font-family:var(--display);font-weight:800;font-size:.95rem;flex:none}
+  .top .qui{display:flex;align-items:center;gap:10px}
+  .top b{font-family:var(--display);font-size:.98rem;display:block;line-height:1.15}
+  .top .qui span{font-size:.76rem;color:#a9b7cc}
+  .legende{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-left:auto;font-size:.76rem;color:#c6d1e2}
+  .tag{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;border-radius:999px;
+       padding:2px 9px;white-space:nowrap}
+  .tag.ia{background:#fbeef1;color:var(--crimson)}
+  .tag.regle{background:#e8f3f2;color:var(--teal)}
+  .tag.humain{background:#fdf3e2;color:var(--amber)}
+
+  .grille{display:grid;grid-template-columns:1fr 1.1fr;gap:12px;align-items:start}
+  @media(max-width:760px){.grille{grid-template-columns:1fr}}
+  .col{display:grid;gap:12px;align-content:start}
+  .carte{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+         box-shadow:0 1px 2px rgba(19,38,74,.05),0 6px 18px rgba(19,38,74,.045)}
+  .carte h2{font-family:var(--display);font-size:.95rem;margin:0 0 3px;color:var(--navy);
+            display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .carte .sub{margin:0 0 11px;font-size:.79rem;color:var(--muted);line-height:1.45}
+
+  .cadre{position:relative;background:#5b5f66;border-radius:9px;padding:10px;display:grid;place-items:center}
+  .cadre canvas{width:100%;max-width:440px;height:auto;display:block;border-radius:3px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  .cadre canvas#ela{position:absolute;top:10px;left:50%;transform:translateX(-50%);pointer-events:none;mix-blend-mode:screen;opacity:.9}
+  .cadre canvas#ela[hidden]{display:none}
+  .sous-cadre{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.8rem;color:var(--soft)}
+  .sous-cadre input{accent-color:var(--crimson)}
+
+  .commandes{display:grid;gap:10px}
+  .champ{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+  .champ label{grid-column:1/3;font-size:.72rem;color:var(--muted);letter-spacing:.02em}
+  .champ input[type=number],.champ select{font:inherit;font-size:.9rem;border:1px solid var(--line);border-radius:8px;padding:6px 9px;background:#fff;color:var(--ink);width:100%;grid-column:1/3}
+  .champ input:focus,.champ select:focus{outline:none;border-color:var(--steel);box-shadow:0 0 0 3px rgba(59,84,125,.12)}
+  .case{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--soft)}
+  .case input{accent-color:var(--teal)}
+  .btn{font:inherit;font-size:.8rem;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;color:var(--soft);justify-self:start}
+  .btn:hover{border-color:var(--steel);color:var(--navy)}
+
+  /* ce que lit le prototype : un texte, plausible, sans aucun doute */
+  .lecture{font-family:var(--mono);font-size:.78rem;line-height:1.6;background:var(--sand-l);border-radius:9px;padding:10px 12px;color:var(--ink);white-space:pre}
+  .lecture b{color:var(--crimson);font-weight:500}
+  .avis{margin-top:8px;font-size:.82rem;line-height:1.45;color:var(--soft)}
+  .avis b{color:var(--navy)}
+
+  .indices{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .indices li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:.82rem;line-height:1.45;color:var(--soft)}
+  .indices .puce{width:10px;height:10px;border-radius:50%;margin-top:5px;background:var(--sand)}
+  .indices li.ok .puce{background:var(--teal)} .indices li.ko .puce{background:var(--crimson)}
+  .indices li.ko{border-color:#f2c3cd;background:#fff6f7}
+  .indices b{display:block;color:var(--navy);font-weight:600}
+  .indices .mesure{font-family:var(--mono);font-size:.72rem;color:var(--muted);display:block;margin-top:2px}
+
+  .verdict{margin-top:10px;border-radius:10px;padding:12px 14px;font-size:.86rem;line-height:1.45}
+  .verdict b{display:block;font-family:var(--display);font-size:1rem;margin-bottom:2px}
+  .verdict.rien{background:#e8f3f2;color:var(--teal)}
+  .verdict.verifier{background:#fdf3e2;color:var(--amber)}
+  .verdict.stop{background:#fbeef1;color:var(--crimson)}
+
+  .note{font-size:.76rem;color:var(--muted);line-height:1.55;margin:14px 0 0}
+  .note b{color:var(--soft)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="qui">
+      <span class="logo">€</span>
+      <div><b>Une photo de reçu, un total recollé</b><span>ce que lit le prototype, ce que voit la vérification</span></div>
+    </div>
+    <div class="legende">
+      <span class="tag ia">IA</span> lit le texte de la photo
+      <span class="tag regle">Règle</span> mesure l'image
+      <span class="tag humain">Humain</span> tranche
+    </div>
+  </header>
+
+  <div class="grille">
+
+    <div class="col">
+      <div class="carte">
+        <h2>La pièce reçue <span class="tag humain">Humain</span></h2>
+        <p class="sub">Une photo de facture, fictive, prise au téléphone. À l'œil, rien ne cloche.</p>
+        <div class="cadre">
+          <canvas id="photo" width="440" height="560"></canvas>
+          <canvas id="ela" width="440" height="560" hidden></canvas>
+        </div>
+        <label class="sous-cadre"><input type="checkbox" id="voir-ela"> voir la carte de compression, ce que la règle 3 regarde</label>
+      </div>
+
+      <div class="carte">
+        <h2>Retoucher la photo <span class="tag humain">Humain</span></h2>
+        <p class="sub">Jouez le fraudeur. Changez le total, choisissez le soin apporté, et regardez à droite ce qui vous trahit.</p>
+        <div class="commandes">
+          <div class="champ"><label>Total TTC à faire apparaître (l'original est 1 686,00 €)</label><input type="number" id="total" step="1" value="1686"></div>
+          <div class="champ"><label>Soin de la retouche</label>
+            <select id="soin">
+              <option value="0">grossier : une autre police, un peu plus grande</option>
+              <option value="1">moyen : la même police, à peine plus grande, un peu décalée</option>
+              <option value="2">soigné : même police, même taille, même ligne</option>
+            </select></div>
+          <label class="case"><input type="checkbox" id="coherent"> recoller aussi le HT, la TVA et une ligne, pour que les comptes tombent juste</label>
+          <button class="btn" id="reset">Remettre la photo d'origine</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="carte">
+        <h2>Ce que lit le prototype <span class="tag ia">IA</span></h2>
+        <p class="sub">Le modèle lit le texte de la photo. Il lit bien. C'est le problème : un chiffre plausible ne lui donne aucune raison de douter.</p>
+        <div class="lecture" id="lecture"></div>
+        <div class="avis" id="avis"></div>
+      </div>
+
+      <div class="carte">
+        <h2>Ce que voit la vérification <span class="tag regle">Règle</span></h2>
+        <p class="sub">Trois règles, sans modèle, calculées ici sur la photo affichée. Deux regardent les pixels, pas le texte.</p>
+        <ul class="indices" id="indices"></ul>
+        <div class="verdict rien" id="verdict"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="note"><b>Facture fictive dessinée dans la page, aucun appel à un modèle.</b>
+  L'arithmétique se contourne : il suffit de recoller aussi le HT et la TVA. La matière de l'image, non : une zone recollée a été compressée une fois, le reste deux fois, et cette différence se mesure. C'est ce qu'un prototype qui « lit le document » ne fait pas tout seul, et c'est pour cela que la vérification est un métier à part, qui vient après le prototype.</p>
+</div>
+
+<script>
+  // ------------------------------------------------------------------
+  // La facture d'origine. Les lignes font le HT, le HT fait la TVA, la TVA
+  // fait le TTC : tout tombe juste, comme sur une vraie facture.
+  // ------------------------------------------------------------------
+  const ORIG = {lignes:[["Vitrage feuillete 44.2, 1,2 m2", 1200], ["Pose et deplacement", 180], ["Joint silicone, finitions", 25]]};
+  ORIG.ht = ORIG.lignes.reduce((a, l) => a + l[1], 0);
+  ORIG.tva = Math.round(ORIG.ht * 20) / 100;
+  ORIG.ttc = ORIG.ht + ORIG.tva;
+
+  // le grain sort d'un generateur a graine fixe : la meme photo a chaque
+  // ouverture, donc les captures du site ne changent pas a chaque passage
+  let graine = 20260909;
+  function hasard(){ graine |= 0; graine = graine + 0x6D2B79F5 | 0; let t = Math.imul(graine ^ graine >>> 15, 1 | graine); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+  const L = 440, H = 560;
+  // ou sont ecrits les montants : la meme grille sert a dessiner et a mesurer
+  const X_MONTANT = 392, Y_LIGNES = [232, 262, 292], Y_HT = 352, Y_TVA = 382, Y_TTC = 424;
+  const POLICE = 'bold 15px "Courier New", Courier, monospace';
+  const eur = v => v.toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  function dessinerFacture(ctx, v){
+    ctx.fillStyle = "#fbfaf6"; ctx.fillRect(0, 0, L, H);
+    ctx.fillStyle = "#1c1f26"; ctx.textAlign = "left";
+    ctx.font = 'bold 19px "Courier New", Courier, monospace'; ctx.fillText("VITRERIE MARTIN & FILS", 40, 70);
+    ctx.font = '13px "Courier New", Courier, monospace';
+    ctx.fillText("4 rue des Tanneurs, 49000 Angers", 40, 92);
+    ctx.fillText("SIRET 812 345 678 00019", 40, 110);
+    ctx.fillText("FACTURE N. 2026-0142", 40, 150); ctx.fillText("12/01/2026", 300, 150);
+    ctx.fillText("Client : M. LEROUX, sinistre bris de glace", 40, 170);
+    ctx.fillRect(40, 190, 360, 1);
+    ctx.font = POLICE;
+    v.lignes.forEach((l, i) => { ctx.fillText(l[0], 40, Y_LIGNES[i]); ctx.textAlign = "right"; ctx.fillText(eur(l[1]), X_MONTANT, Y_LIGNES[i]); ctx.textAlign = "left"; });
+    ctx.fillRect(40, 318, 360, 1);
+    ctx.fillText("Total HT", 40, Y_HT); ctx.textAlign = "right"; ctx.fillText(eur(v.ht), X_MONTANT, Y_HT); ctx.textAlign = "left";
+    ctx.fillText("TVA 20 %", 40, Y_TVA); ctx.textAlign = "right"; ctx.fillText(eur(v.tva), X_MONTANT, Y_TVA); ctx.textAlign = "left";
+    ctx.font = 'bold 17px "Courier New", Courier, monospace';
+    ctx.fillText("TOTAL TTC", 40, Y_TTC); ctx.textAlign = "right"; ctx.fillText(eur(v.ttc) + " EUR", X_MONTANT + 8, Y_TTC); ctx.textAlign = "left";
+    ctx.font = '12px "Courier New", Courier, monospace';
+    ctx.fillText("Reglement a reception. Merci de votre confiance.", 40, 480);
+    ctx.fillText("Facture fictive, demonstration.", 40, 520);
+  }
+
+  // la prise de vue : une legere rotation, une lumiere qui tombe d'un cote, du
+  // grain, puis l'enregistrement JPEG du telephone. C'est la « photo » d'origine.
+  function photographier(){
+    const c = document.createElement("canvas"); c.width = L; c.height = H;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#3d4047"; ctx.fillRect(0, 0, L, H);
+    ctx.save(); ctx.translate(L / 2, H / 2); ctx.rotate(0.012); ctx.translate(-L / 2, -H / 2);
+    dessinerFacture(ctx, ORIG); ctx.restore();
+    const g = ctx.createLinearGradient(0, 0, L, H); g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(1, "rgba(0,0,0,.16)");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, L, H);
+    const im = ctx.getImageData(0, 0, L, H), d = im.data;
+    for (let i = 0; i < d.length; i += 4) { const b = (hasard() - .5) * 14; d[i] += b; d[i + 1] += b; d[i + 2] += b; }
+    ctx.putImageData(im, 0, 0);
+    return encoder(c, 0.58);
+  }
+  function encoder(canvas, q){
+    return new Promise(res => { const img = new Image(); img.onload = () => res(img); img.src = canvas.toDataURL("image/jpeg", q); });
+  }
+  function surCanvas(img){ const c = document.createElement("canvas"); c.width = L; c.height = H; c.getContext("2d").drawImage(img, 0, 0); return c; }
+
+  // ------------------------------------------------------------------
+  // La retouche : un rectangle de la couleur du papier par-dessus l'ancien
+  // montant, le nouveau montant ecrit dessus, et un nouvel enregistrement
+  // JPEG. Trois niveaux de soin, du montage visible a l'oeil au montage
+  // que seule l'image trahit encore.
+  // ------------------------------------------------------------------
+  const ZONES = {ttc:{x:290, y:Y_TTC - 17, l:120, h:24}, ht:{x:300, y:Y_HT - 14, l:100, h:20}, tva:{x:300, y:Y_TVA - 14, l:100, h:20}, l1:{x:300, y:Y_LIGNES[0] - 14, l:100, h:20}};
+  function coller(ctx, zone, texte, soin, gras){
+    // la couleur du papier, echantillonnee juste a cote : un fraudeur fait
+    // pareil, et le rectangle plat qu'il pose n'a plus le grain de la photo
+    const p = ctx.getImageData(zone.x, zone.y, zone.l, zone.h).data;
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let i = 0; i < p.length; i += 4) if ((p[i] + p[i + 1] + p[i + 2]) / 3 > 150) { r += p[i]; g += p[i + 1]; b += p[i + 2]; n++; }
+    ctx.fillStyle = `rgb(${Math.round(r / n)},${Math.round(g / n)},${Math.round(b / n)})`;
+    ctx.fillRect(zone.x, zone.y, zone.l, zone.h);
+    if (soin > 0) {
+      // le fraudeur soigneux remet du grain sur sa piece : a l'oeil elle se
+      // fond, mais ce grain n'a connu qu'un seul enregistrement JPEG
+      const im = ctx.getImageData(zone.x, zone.y, zone.l, zone.h), d = im.data;
+      for (let i = 0; i < d.length; i += 4) { const k = (hasard() - .5) * 14; d[i] += k; d[i + 1] += k; d[i + 2] += k; }
+      ctx.putImageData(im, zone.x, zone.y);
+    }
+    const base = gras ? 17 : 15;
+    const taille = soin === 0 ? base + 2 : soin === 1 ? Math.round(base * 1.1) : base;
+    const police = soin === 0 ? "Arial, Helvetica, sans-serif" : '"Courier New", Courier, monospace';
+    const dy = soin === 0 ? 3 : soin === 1 ? 2 : 0;
+    ctx.fillStyle = "#1c1f26"; ctx.textAlign = "right"; ctx.font = `bold ${taille}px ${police}`;
+    ctx.fillText(texte, zone.x + zone.l - (gras ? 10 : 18), zone.y + zone.h - 6 + dy);
+    ctx.textAlign = "left";
+  }
+
+  // ------------------------------------------------------------------
+  // Les trois regles. Aucune ne lit le texte avec un modele : la premiere
+  // fait des additions, les deux autres regardent les pixels.
+  // ------------------------------------------------------------------
+  function encre(ctx, zone){
+    // la boite des pixels sombres dans une zone : hauteur des chiffres et
+    // ligne de base, ce qu'une autre police ou une autre taille change
+    const d = ctx.getImageData(zone.x, zone.y, zone.l, zone.h).data;
+    let ymin = 1e9, ymax = -1, n = 0;
+    for (let y = 0; y < zone.h; y++) for (let x = 0; x < zone.l; x++) {
+      const i = (y * zone.l + x) * 4, lum = (d[i] + d[i + 1] + d[i + 2]) / 3;
+      if (lum < 115) { n++; if (y < ymin) ymin = y; if (y > ymax) ymax = y; }
+    }
+    return n ? {haut:ymax - ymin + 1, base:zone.y + ymax} : null;
+  }
+  async function carteCompression(canvas){
+    // l'analyse de niveau d'erreur : on recompresse toute l'image a une
+    // qualite fixe et on regarde ou elle change. Une zone deja compressee
+    // deux fois ne bouge presque plus ; une zone fraiche bouge beaucoup.
+    const re = surCanvas(await encoder(canvas, 0.7));
+    const a = canvas.getContext("2d").getImageData(0, 0, L, H).data, b = re.getContext("2d").getImageData(0, 0, L, H).data;
+    const diff = new Float32Array(L * H);
+    for (let i = 0; i < L * H; i++) diff[i] = (Math.abs(a[i * 4] - b[i * 4]) + Math.abs(a[i * 4 + 1] - b[i * 4 + 1]) + Math.abs(a[i * 4 + 2] - b[i * 4 + 2])) / 3;
+    return diff;
+  }
+  function moyenne(diff, zone){
+    let s = 0, n = 0;
+    for (let y = zone.y; y < zone.y + zone.h; y++) for (let x = zone.x; x < zone.x + zone.l; x++) { s += diff[y * L + x]; n++; }
+    return s / n;
+  }
+  // la reference : les libelles de gauche des memes lignes. Meme encre, meme
+  // photo, jamais recolles. Comparer a du papier nu donnerait un faux
+  // positif : un trait net reagit toujours plus a la recompression qu'un fond.
+  const REFERENCES = [...Y_LIGNES, Y_HT, Y_TVA, Y_TTC].map(y => ({x:40, y:y - 17, l:150, h:24}));
+  function moyenneHors(diff){
+    return REFERENCES.reduce((a, z) => a + moyenne(diff, z), 0) / REFERENCES.length;
+  }
+
+  // ------------------------------------------------------------------
+  // Le tout : on part de la photo d'origine, on retouche, on affiche, on mesure.
+  // ------------------------------------------------------------------
+  const $ = s => document.querySelector(s);
+  const photo = $("#photo"), ela = $("#ela");
+  let PHOTO0 = null, occupe = false, refaireEncore = false;
+
+  async function refaire(){
+    if (occupe) { refaireEncore = true; return; }
+    occupe = true;
+    const ttc = Math.max(0, +$("#total").value || 0), soin = +$("#soin").value, coherent = $("#coherent").checked;
+    const retouche = Math.abs(ttc - ORIG.ttc) > 0.005;
+    const v = {lignes:ORIG.lignes.map(l => l.slice()), ht:ORIG.ht, tva:ORIG.tva, ttc:ORIG.ttc};
+    let affichee, zonesCollees = [];
+    if (!retouche) {
+      affichee = surCanvas(PHOTO0);
+    } else {
+      const c = surCanvas(PHOTO0), ctx = c.getContext("2d");
+      v.ttc = ttc;
+      coller(ctx, ZONES.ttc, eur(ttc) + " EUR", soin, true); zonesCollees.push(ZONES.ttc);
+      if (coherent) {
+        v.ht = Math.round(ttc / 1.2 * 100) / 100; v.tva = Math.round((ttc - v.ht) * 100) / 100;
+        v.lignes[0][1] = Math.round((v.ht - ORIG.lignes[1][1] - ORIG.lignes[2][1]) * 100) / 100;
+        coller(ctx, ZONES.ht, eur(v.ht), soin, false); coller(ctx, ZONES.tva, eur(v.tva), soin, false); coller(ctx, ZONES.l1, eur(v.lignes[0][1]), soin, false);
+        zonesCollees.push(ZONES.ht, ZONES.tva, ZONES.l1);
+      }
+      affichee = surCanvas(await encoder(c, 0.92));   // le second enregistrement, celui du fraudeur
+    }
+    photo.getContext("2d").drawImage(affichee, 0, 0);
+    const ctx = affichee.getContext("2d");
+
+    // ce que lit le prototype
+    $("#lecture").innerHTML = v.lignes.map(l => l[0].padEnd(32) + eur(l[1]).padStart(10)).join("\n") +
+      "\n" + "Total HT".padEnd(32) + eur(v.ht).padStart(10) + "\n" + "TVA 20 %".padEnd(32) + eur(v.tva).padStart(10) +
+      "\n" + "TOTAL TTC".padEnd(32) + `<b>${eur(v.ttc).padStart(10)}</b>`;
+    $("#avis").innerHTML = retouche
+      ? `<b>Le prototype lit ${eur(v.ttc)} € et passe.</b> Le montant est plausible pour un vitrage, l'écriture est nette, le modèle n'a rien pour douter. Il ferait la même chose avec un vrai document.`
+      : `<b>Le prototype lit ${eur(v.ttc)} € et passe.</b> Ici il a raison. Il aurait aussi raison de passer si le chiffre était faux : il lit, il ne vérifie pas.`;
+
+    // regle 1 : les comptes
+    const sommeLignes = Math.round(v.lignes.reduce((a, l) => a + l[1], 0) * 100) / 100;
+    const ttcAttendu = Math.round(v.ht * 1.2 * 100) / 100;
+    const r1ok = Math.abs(sommeLignes - v.ht) < 0.011 && Math.abs(ttcAttendu - v.ttc) < 0.011 && Math.abs(v.ht + v.tva - v.ttc) < 0.011;
+    // regle 2 : la typographie, mesuree sur les pixels
+    const refs = Y_LIGNES.map((y, i) => encre(ctx, {x:300, y:y - 14, l:100, h:20})).filter(Boolean);
+    const hautRef = refs.reduce((a, e) => a + e.haut, 0) / refs.length;
+    const m = encre(ctx, {x:ZONES.ttc.x, y:ZONES.ttc.y, l:ZONES.ttc.l, h:ZONES.ttc.h});
+    const hautAttendu = hautRef * 17 / 15;                 // le TTC est en 17 px sur l'original
+    const ecartHaut = m ? m.haut / hautAttendu : 1;
+    const ecartBase = m ? m.base - (Y_TTC + 1) : 0;         // la ligne de base attendue, sous la rotation
+    const r2ok = Math.abs(ecartHaut - 1) < 0.09 && Math.abs(ecartBase) < 3;
+    // regle 3 : la compression
+    const diff = await carteCompression(affichee);
+    const dedans = moyenne(diff, ZONES.ttc), dehors = moyenneHors(diff);
+    const ratio = dedans / Math.max(dehors, 0.05);
+    const r3ok = ratio < 1.7;
+    // la carte, en surimpression si on la demande
+    const ec = ela.getContext("2d"), im = ec.createImageData(L, H);
+    for (let i = 0; i < L * H; i++) { const s = Math.min(255, diff[i] * 14); im.data[i * 4] = s; im.data[i * 4 + 1] = s * .25; im.data[i * 4 + 2] = s * .35; im.data[i * 4 + 3] = 255; }
+    ec.putImageData(im, 0, 0);
+
+    const regles = [
+      {ok:r1ok, nom:"Les comptes tombent-ils juste ?", oui:"lignes, HT, TVA et TTC se répondent", non:`les lignes font ${eur(sommeLignes)}, le HT dit ${eur(v.ht)}, le TTC attendu serait ${eur(ttcAttendu)}`,
+       mesure:`somme des lignes ${eur(sommeLignes)} · HT x 1,2 = ${eur(ttcAttendu)} · TTC lu ${eur(v.ttc)}`},
+      {ok:r2ok, nom:"Les chiffres du total ont-ils la même typographie que le reste ?", oui:"même hauteur d'encre, même ligne de base que les autres montants", non:"la hauteur des chiffres ou leur ligne de base ne suit pas le reste de la facture",
+       mesure:m ? `hauteur ${m.haut} px pour ${hautAttendu.toFixed(1)} attendus · ligne de base décalée de ${ecartBase} px` : "aucune encre mesurable"},
+      {ok:r3ok, nom:"La zone du total a-t-elle la même histoire de compression que le reste ?", oui:"la recompression change la zone autant que le reste : une seule prise de vue", non:"la zone du total réagit beaucoup plus à la recompression : elle a été enregistrée à part",
+       mesure:`variation moyenne ${dedans.toFixed(2)} dans la zone contre ${dehors.toFixed(2)} ailleurs, rapport ${ratio.toFixed(2)}`},
+    ];
+    $("#indices").innerHTML = regles.map((r, i) => `<li class="${r.ok ? "ok" : "ko"}"><span class="puce"></span><div><b>${i + 1}. ${r.nom}</b>${r.ok ? r.oui : r.non}<span class="mesure">${r.mesure}</span></div></li>`).join("");
+    const n = regles.filter(r => !r.ok).length;
+    const vd = $("#verdict");
+    vd.className = "verdict " + (n === 0 ? "rien" : n === 1 ? "verifier" : "stop");
+    vd.innerHTML = n === 0 ? "<b>Rien à signaler</b>Aucune règle ne réagit. Ce n'est pas une preuve d'authenticité, c'est l'absence d'indice."
+      : n === 1 ? "<b>À vérifier</b>Un seul indice, circonstanciel : une revue humaine, pas une accusation."
+      : `<b>Incohérent, revue humaine</b>${n} règles sur 3 réagissent. Le dossier ne se règle pas sur cette pièce : demander l'original, ou la facture au vitrier.`;
+
+    occupe = false;
+    if (refaireEncore) { refaireEncore = false; refaire(); }
+  }
+
+  ["#total", "#soin", "#coherent"].forEach(s => $(s).addEventListener("input", refaire));
+  $("#reset").addEventListener("click", () => { $("#total").value = ORIG.ttc; $("#soin").value = "0"; $("#coherent").checked = false; refaire(); });
+  $("#voir-ela").addEventListener("change", e => { ela.hidden = !e.target.checked; });
+
+  photographier().then(img => { PHOTO0 = img; refaire(); });
+</script>
+</body>
+</html>
