@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V3. PM d’une rente viagère différée sur table prospective · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">V3. PM d’une rente viagère différée sur table prospective</h1>
+      <p class="lede">Cette fiche illustre la démarche B avec un volet sensibilités systématique. Ce que vous apprenez n’est pas le calcul de PM, mais comment paramétrer un calcul pour produire un tableau de sensibilités défendable (chocs taux, mortalité, capital), et comment distinguer best estimate et PM prudente dans un même cadre.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle, et E, industrialiser (sensibilités)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="14.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="14.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>La provision mathématique (PM) d’un contrat vie représente l’engagement de l’assureur envers l’assuré à la date du calcul. Calculée de façon prospective, elle vaut la valeur actuelle probable (VAP) des prestations futures moins la VAP des primes futures : ce que l’assureur devra payer, moins ce qu’il recevra encore, chaque flux actualisé et pondéré par la probabilité que l’assuré soit en vie à sa date.</p>
+<p>Le contrat de cette fiche est une <strong>rente viagère différée</strong>. L’assuré a 60 ans en 2026 ; son contrat porte déjà 100 000 EUR d’épargne acquise ; il verse encore 5 000 EUR par an jusqu’à 64 ans, et reçoit à partir de 65 ans une rente garantie de 8 000 EUR par an, à vie. Pas de contre-assurance : un décès avant 65 ans ne donne lieu à aucune prestation.</p>
+<p>Avec des flux en début d’année, sa PM à la date du calcul s’écrit :</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathrm{PM} &amp;= \underbrace{\sum_{t=5}^{60} 8\,000\; v(t)\; {}_tp_{60}}_{\text{VAP des prestations}} \;-\; \underbrace{\sum_{t=0}^{4} 5\,000\; v(t)\; {}_tp_{60}}_{\text{VAP des primes}}, \\[6pt]
+{}_tp_{60} &amp;= \prod_{s=0}^{t-1} \left(1 - q_{60+s,\,2026+s}\right), \qquad v(t) = (1 + r_t)^{-t},
+\end{aligned}
+\]</span></p>
+<p>où <span class="math inline">\(q_{60+s,\,2026+s}\)</span> est la probabilité de décès à <span class="math inline">\(60+s\)</span> ans en <span class="math inline">\(2026+s\)</span>, lue en diagonale dans la table prospective, et <span class="math inline">\(r_t\)</span> le taux zéro-coupon de maturité <span class="math inline">\(t\)</span> ; <span class="math inline">\({}_0p_{60} = v(0) = 1\)</span>.</p>
+<p>Le calcul est déterministe et repose sur deux hypothèses : la mortalité (combien de temps l’assuré paie, puis reçoit) et l’actualisation (ce que vaut aujourd’hui un euro versé dans trente ans). Sur des engagements de 30 à 60 ans, chacune pèse lourd.</p>
+<p>Ce cas illustre <strong>l’organisation des données</strong> (table prospective lue telle que V2 l’a persistée, contrôlée par son empreinte ; courbe et contrat tenus à part), <strong>l’optimisation du code</strong> (survie, actualisation et VAP calculées sans boucle sur toute la durée du contrat), <strong>la gouvernance</strong> (best estimate, PM prudente, choc réglementaire et sensibilités dans un même tableau) et <strong>le pilotage IA</strong> (5 prompts, dont un qui demande le sens de la prudence au lieu de l’imposer).</p>
+</section>
+<section class="level2" data-number="14.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="14.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On lit la table prospective que V2 a persistée dans <code>_resources/</code> : même table, mêmes hypothèses, et l’empreinte MD5 inscrite dans ses métadonnées vérifie qu’on lit bien celle-là. La courbe des taux est simulée ; elle tient lieu de la courbe sans risque que publie l’EIOPA. Le contrat tient dans un dictionnaire : un seul endroit où lire ses caractéristiques.</p>
+<div class="cell" data-execution_count="1" id="fd9e2cd7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> hashlib</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="co"># Table prospective produite par V2 : format long, contrôlée contre son empreinte</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>DOSSIER <span class="op">=</span> Path(<span class="st">"_resources"</span>)</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>table_longue <span class="op">=</span> pd.read_parquet(DOSSIER <span class="op">/</span> <span class="st">"lc_table_prospective_2026.parquet"</span>)</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>meta <span class="op">=</span> json.loads((DOSSIER <span class="op">/</span> <span class="st">"lc_table_prospective_2026.meta.json"</span>).read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>))</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>empreinte <span class="op">=</span> hashlib.md5(table_longue.to_csv(index<span class="op">=</span><span class="va">False</span>).encode(<span class="st">"utf-8"</span>)).hexdigest()</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="cf">assert</span> empreinte <span class="op">==</span> meta[<span class="st">"md5_contenu"</span>], <span class="st">"la table ne correspond pas à ses métadonnées"</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>table_q <span class="op">=</span> table_longue.pivot(index<span class="op">=</span><span class="st">"age"</span>, columns<span class="op">=</span><span class="st">"annee"</span>, values<span class="op">=</span><span class="st">"qx"</span>)  <span class="co"># âge x année</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Table V2 : </span><span class="sc">{</span><span class="bu">len</span>(table_longue)<span class="sc">}</span><span class="ss"> lignes, âges </span><span class="sc">{</span>table_q<span class="sc">.</span>index<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>table_q<span class="sc">.</span>index<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">, "</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>      <span class="ss">f"années </span><span class="sc">{</span>table_q<span class="sc">.</span>columns<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>table_q<span class="sc">.</span>columns<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">, md5 conforme (</span><span class="sc">{</span>empreinte[:<span class="dv">8</span>]<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="co"># Courbe des taux zéro-coupon, simulée : croissante, de 0,6 % à 1 an vers 3 %</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>maturites <span class="op">=</span> np.arange(<span class="dv">1</span>, <span class="dv">71</span>)</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>courbe_actu <span class="op">=</span> pd.Series(<span class="fl">0.005</span> <span class="op">+</span> <span class="fl">0.025</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>maturites <span class="op">/</span> <span class="dv">25</span>)), index<span class="op">=</span>maturites, name<span class="op">=</span><span class="st">"taux_zc"</span>)</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>courbe_actu.index.name <span class="op">=</span> <span class="st">"maturite"</span></span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a></span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a><span class="co"># Le contrat : rente viagère différée, sans contre-assurance décès</span></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>CONTRAT <span class="op">=</span> {</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>    <span class="st">"age"</span>: <span class="dv">60</span>,</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>    <span class="st">"annee"</span>: <span class="dv">2026</span>,</span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>    <span class="st">"epargne_acquise"</span>: <span class="fl">100_000.0</span>,   <span class="co"># EUR, déjà au compte du contrat</span></span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>    <span class="st">"prime_annuelle"</span>: <span class="fl">5_000.0</span>,      <span class="co"># EUR, versée de 60 à 64 ans</span></span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>    <span class="st">"age_debut_rente"</span>: <span class="dv">65</span>,</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>    <span class="st">"rente_annuelle"</span>: <span class="fl">8_000.0</span>,      <span class="co"># EUR, viagère, à partir de 65 ans</span></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>    <span class="st">"age_max"</span>: <span class="dv">120</span>,</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>}</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a><span class="cf">for</span> k, val <span class="kw">in</span> CONTRAT.items():</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>val<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Taux zéro-coupon :"</span>, <span class="st">", "</span>.join(<span class="ss">f"</span><span class="sc">{</span>m<span class="sc">}</span><span class="ss"> ans </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> courbe_actu<span class="sc">.</span>loc[m]<span class="sc">:.2f}</span><span class="ss"> %"</span> <span class="cf">for</span> m <span class="kw">in</span> (<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">60</span>)))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Table V2 : 7371 lignes, âges 30-120, années 2020-2100, md5 conforme (a0422ea1)
+  age : 60
+  annee : 2026
+  epargne_acquise : 100000.0
+  prime_annuelle : 5000.0
+  age_debut_rente : 65
+  rente_annuelle : 8000.0
+  age_max : 120
+Taux zéro-coupon : 1 ans 0.60 %, 10 ans 1.32 %, 20 ans 1.88 %, 30 ans 2.25 %, 60 ans 2.77 %</code></pre>
+</div>
+</div>
+<p>La table est conforme à son empreinte. Elle couvre les âges 30 à 120 et les années 2020 à 2100 : assez pour suivre l’assuré jusqu’à 120 ans, en 2086. La courbe monte de 0,60 % à 1 an à 1,88 % à 20 ans et 2,77 % à 60 ans.</p>
+</section>
+<section class="level2" data-number="14.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="14.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Probabilités de survie.</strong> <em>“Lis la table prospective persistée par V2 (<code>_resources/lc_table_prospective_2026.parquet</code>, format long), vérifie son empreinte contre ses métadonnées, et calcule pour un assuré de 60 ans en 2026 la probabilité d’être en vie à chaque date t = 0 à 60, en suivant la diagonale de la table. Sans boucle, et arrête-toi si l’assuré sort de la table.”</em></p></li>
+<li><p><strong>Flux contractuels.</strong> <em>“Construis deux vecteurs : les primes (5 000 EUR par an de 60 à 64 ans, cinq versements) et les prestations (rente de 8 000 EUR par an de 65 à 120 ans). Flux en début d’année, versés seulement si l’assuré est en vie.”</em></p></li>
+<li><p><strong>Actualisation.</strong> <em>“À partir de la courbe zéro-coupon <code>courbe_actu</code>, construis v(t) = (1 + r_t)^(−t) pour t = 0 à 60. Sans boucle.”</em></p></li>
+<li><p><strong>Calcul de la PM.</strong> <em>“PM = VAP des prestations futures − VAP des primes futures. Compare-la à l’épargne acquise de 100 000 EUR, sans la retrancher, et dis ce que l’écart signifie.”</em></p></li>
+<li><p><strong>Sensibilités et prudence.</strong> <em>“Calcule la PM sous : taux ±50 bp, mortalité ±10 %, choc de longévité de la formule standard (−20 % sur les taux de mortalité), épargne acquise −10 %. Pour une PM prudente, choisis le sens de la marge qui protège l’assureur sur une rente et justifie-le. Traduis chaque choc de mortalité en années d’espérance de vie à 65 ans.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="14.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="14.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="14.4.1" id="étape-1.-probabilités-de-survie">
+<h3 class="anchored" data-anchor-id="étape-1.-probabilités-de-survie" data-number="14.4.1"> Étape 1. Probabilités de survie</h3>
+<div class="cell" data-execution_count="2" id="43addbfa">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> probabilites_survie(table_q: pd.DataFrame, age: <span class="bu">int</span>, annee: <span class="bu">int</span>) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="co">"""p(t) = probabilité d'être en vie à la date t, pour t = 0 à (âge max - âge).</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="co">    Lecture en diagonale : à la date s, l'assuré a age + s ans, en annee + s. Sans boucle.</span></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    pas <span class="op">=</span> np.arange(table_q.index.<span class="bu">max</span>() <span class="op">-</span> age <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    lignes <span class="op">=</span> table_q.index.get_indexer(age <span class="op">+</span> pas)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    colonnes <span class="op">=</span> table_q.columns.get_indexer(annee <span class="op">+</span> pas)</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>    <span class="cf">assert</span> (lignes <span class="op">&gt;=</span> <span class="dv">0</span>).<span class="bu">all</span>() <span class="kw">and</span> (colonnes <span class="op">&gt;=</span> <span class="dv">0</span>).<span class="bu">all</span>(), <span class="st">"âge ou année hors de la table"</span></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    q <span class="op">=</span> table_q.to_numpy()[lignes, colonnes]</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate([[<span class="fl">1.0</span>], np.cumprod(<span class="dv">1</span> <span class="op">-</span> q[:<span class="op">-</span><span class="dv">1</span>])])</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>horizon <span class="op">=</span> CONTRAT[<span class="st">"age_max"</span>] <span class="op">-</span> CONTRAT[<span class="st">"age"</span>]</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>px <span class="op">=</span> probabilites_survie(table_q, CONTRAT[<span class="st">"age"</span>], CONTRAT[<span class="st">"annee"</span>])</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Horizon : </span><span class="sc">{</span>horizon<span class="sc">}</span><span class="ss"> ans, </span><span class="sc">{</span><span class="bu">len</span>(px)<span class="sc">}</span><span class="ss"> dates (t = 0 à </span><span class="sc">{</span>horizon<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a><span class="cf">for</span> t_ <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>):</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"p(</span><span class="sc">{</span>t_<span class="sc">:2d}</span><span class="ss">) = </span><span class="sc">{</span>px[t_]<span class="sc">:.4f}</span><span class="ss">   probabilité d'être en vie à </span><span class="sc">{</span>CONTRAT[<span class="st">'age'</span>] <span class="op">+</span> t_<span class="sc">}</span><span class="ss"> ans, en </span><span class="sc">{</span>CONTRAT[<span class="st">'annee'</span>] <span class="op">+</span> t_<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Horizon : 60 ans, 61 dates (t = 0 à 60)
+p( 0) = 1.0000   probabilité d'être en vie à 60 ans, en 2026
+p( 5) = 0.9623   probabilité d'être en vie à 65 ans, en 2031
+p(20) = 0.7473   probabilité d'être en vie à 80 ans, en 2046
+p(30) = 0.4080   probabilité d'être en vie à 90 ans, en 2056
+p(40) = 0.0589   probabilité d'être en vie à 100 ans, en 2066
+p(50) = 0.0005   probabilité d'être en vie à 110 ans, en 2076</code></pre>
+</div>
+</div>
+<p>La diagonale suit l’assuré : 61 ans en 2027, 62 ans en 2028, et ainsi de suite. Il a 96,2 % de chances d’atteindre 65 ans et de toucher sa rente, 74,7 % d’atteindre 80 ans, 40,8 % d’atteindre 90 ans, 5,9 % d’atteindre 100 ans, 0,05 % d’atteindre 110 ans. La table étant fermée à 120 ans, les probabilités s’éteignent d’elles-mêmes. L’<code>assert</code> arrête le calcul si l’assuré sort de la table, au lieu de lire en silence une mauvaise case.</p>
+</section>
+<section class="level3" data-number="14.4.2" id="étape-2.-flux-contractuels">
+<h3 class="anchored" data-anchor-id="étape-2.-flux-contractuels" data-number="14.4.2"> Étape 2. Flux contractuels</h3>
+<div class="cell" data-execution_count="3" id="df0fa256">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>t <span class="op">=</span> np.arange(horizon <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>age_t <span class="op">=</span> CONTRAT[<span class="st">"age"</span>] <span class="op">+</span> t</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>primes <span class="op">=</span> np.where(age_t <span class="op">&lt;</span> CONTRAT[<span class="st">"age_debut_rente"</span>], CONTRAT[<span class="st">"prime_annuelle"</span>], <span class="fl">0.0</span>)</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>prestations <span class="op">=</span> np.where(age_t <span class="op">&gt;=</span> CONTRAT[<span class="st">"age_debut_rente"</span>], CONTRAT[<span class="st">"rente_annuelle"</span>], <span class="fl">0.0</span>)</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>flux <span class="op">=</span> pd.DataFrame({<span class="st">"t"</span>: t, <span class="st">"age"</span>: age_t, <span class="st">"prime"</span>: primes, <span class="st">"prestation"</span>: prestations})</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Primes : </span><span class="sc">{</span>(primes <span class="op">&gt;</span> <span class="dv">0</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> versements, de </span><span class="sc">{</span>age_t[primes <span class="op">&gt;</span> <span class="dv">0</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>age_t[primes <span class="op">&gt;</span> <span class="dv">0</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss"> ans"</span>)</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rente  : jusqu'à </span><span class="sc">{</span>(prestations <span class="op">&gt;</span> <span class="dv">0</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> arrérages, de </span><span class="sc">{</span>age_t[prestations <span class="op">&gt;</span> <span class="dv">0</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>age_t[prestations <span class="op">&gt;</span> <span class="dv">0</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss"> ans"</span>)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a><span class="bu">print</span>(flux.iloc[[<span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">30</span>, <span class="dv">60</span>]].to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Primes : 5 versements, de 60 à 64 ans
+Rente  : jusqu'à 56 arrérages, de 65 à 120 ans
+ t  age  prime  prestation
+ 0   60 5000.0         0.0
+ 4   64 5000.0         0.0
+ 5   65    0.0      8000.0
+ 6   66    0.0      8000.0
+30   90    0.0      8000.0
+60  120    0.0      8000.0</code></pre>
+</div>
+</div>
+<p>Cinq primes, de 60 à 64 ans, puis la rente à partir de 65 ans : jusqu’à 56 arrérages, si l’assuré atteint 120 ans. Aucune année ne porte à la fois une prime et un arrérage. Les deux vecteurs restent séparés, pour que chaque VAP se lise à part.</p>
+</section>
+<section class="level3" data-number="14.4.3" id="étape-3.-actualisation">
+<h3 class="anchored" data-anchor-id="étape-3.-actualisation" data-number="14.4.3"> Étape 3. Actualisation</h3>
+<div class="cell" data-execution_count="4" id="85a709c1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">def</span> facteurs_actualisation(courbe: pd.Series, horizon: <span class="bu">int</span>) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    <span class="co">"""v(t) = (1 + r_t)^(-t) pour t = 0 à horizon, r_t taux zéro-coupon de maturité t. Sans boucle."""</span></span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>    m <span class="op">=</span> np.arange(<span class="dv">1</span>, horizon <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>    r <span class="op">=</span> courbe.reindex(m).ffill().to_numpy()   <span class="co"># au-delà de la courbe : dernier taux (non utilisé ici)</span></span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate([[<span class="fl">1.0</span>], (<span class="dv">1</span> <span class="op">+</span> r) <span class="op">**</span> <span class="op">-</span>m])</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>v <span class="op">=</span> facteurs_actualisation(courbe_actu, horizon)</span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a><span class="cf">for</span> t_ <span class="kw">in</span> (<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">60</span>):</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"v(</span><span class="sc">{</span>t_<span class="sc">:2d}</span><span class="ss">) = </span><span class="sc">{</span>v[t_]<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>v( 5) = 0.9537
+v(10) = 0.8767
+v(20) = 0.6895
+v(30) = 0.5134
+v(40) = 0.3731
+v(60) = 0.1937</code></pre>
+</div>
+</div>
+<p>Un euro versé dans 20 ans vaut 0,69 euro aujourd’hui, dans 40 ans 0,37 euro, dans 60 ans 0,19 euro.</p>
+</section>
+<section class="level3" data-number="14.4.4" id="étape-4.-calculer-la-pm-et-la-comparer-à-lépargne-acquise">
+<h3 class="anchored" data-anchor-id="étape-4.-calculer-la-pm-et-la-comparer-à-lépargne-acquise" data-number="14.4.4"> Étape 4. Calculer la PM et la comparer à l’épargne acquise</h3>
+<div class="cell" data-execution_count="5" id="b9c3b21b">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>vap_prestations <span class="op">=</span> (v <span class="op">*</span> px <span class="op">*</span> prestations).<span class="bu">sum</span>()</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>vap_primes <span class="op">=</span> (v <span class="op">*</span> px <span class="op">*</span> primes).<span class="bu">sum</span>()</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>pm <span class="op">=</span> vap_prestations <span class="op">-</span> vap_primes</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>epargne <span class="op">=</span> CONTRAT[<span class="st">"epargne_acquise"</span>]</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"VAP des prestations futures (rente)  : </span><span class="sc">{</span>vap_prestations<span class="sc">:12,.0f}</span><span class="ss"> EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"VAP des primes futures               : </span><span class="sc">{</span>vap_primes<span class="sc">:12,.0f}</span><span class="ss"> EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PM = VAP prestations - VAP primes    : </span><span class="sc">{</span>pm<span class="sc">:12,.0f}</span><span class="ss"> EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Épargne acquise                      : </span><span class="sc">{</span>epargne<span class="sc">:12,.0f}</span><span class="ss"> EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Épargne acquise - PM                 : </span><span class="sc">{</span>epargne <span class="op">-</span> pm<span class="sc">:12,.0f}</span><span class="ss"> EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>au_dela_20 <span class="op">=</span> (v <span class="op">*</span> px <span class="op">*</span> prestations)[t <span class="op">&gt;</span> <span class="dv">20</span>].<span class="bu">sum</span>() <span class="op">/</span> vap_prestations</span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Part de la VAP des prestations versée au-delà de 20 ans : </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> au_dela_20<span class="sc">:.1f}</span><span class="ss"> %"</span>)</span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Arrérage à 100 ans (t = 40) : survie </span><span class="sc">{</span>px[<span class="dv">40</span>]<span class="sc">:.4f}</span><span class="ss">, actualisation </span><span class="sc">{</span>v[<span class="dv">40</span>]<span class="sc">:.4f}</span><span class="ss">, "</span></span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>      <span class="ss">f"VAP </span><span class="sc">{</span>CONTRAT[<span class="st">'rente_annuelle'</span>] <span class="op">*</span> px[<span class="dv">40</span>] <span class="op">*</span> v[<span class="dv">40</span>]<span class="sc">:.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>VAP des prestations futures (rente)  :      128 101 EUR
+VAP des primes futures               :       24 270 EUR
+PM = VAP prestations - VAP primes    :      103 831 EUR
+Épargne acquise                      :      100 000 EUR
+Épargne acquise - PM                 :       -3 831 EUR
+
+Part de la VAP des prestations versée au-delà de 20 ans : 27.4 %
+Arrérage à 100 ans (t = 40) : survie 0.0589, actualisation 0.3731, VAP 176 EUR</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="6" id="cell-fig-pm-decomposition">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>net <span class="op">=</span> prestations <span class="op">-</span> primes</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>ax.bar(age_t, net, color<span class="op">=</span><span class="st">"#9ca3af"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"Flux nominaux"</span>)</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>ax.bar(age_t, px <span class="op">*</span> net, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, label<span class="op">=</span><span class="st">"Flux probabilisés"</span>)</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>ax.bar(age_t, v <span class="op">*</span> px <span class="op">*</span> net, color<span class="op">=</span><span class="st">"#047857"</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, label<span class="op">=</span><span class="st">"Flux probabilisés et actualisés"</span>)</span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Âge de l'assuré"</span>)</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>ax.set_ylabel(<span class="st">"EUR par an (sorties &gt; 0, entrées &lt; 0)"</span>)</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>ax.set_title(<span class="st">"Ce qui entre dans la PM, année par année"</span>)</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>ax.legend()</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-pm-decomposition">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pm-decomposition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="471" src="img/fig-pm-decomposition-output-1_ca3db2c7.png" width="1143"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pm-decomposition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 14.1: Flux nets de l’assureur (prestations moins primes) : nominaux, probabilisés, probabilisés et actualisés
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La VAP des prestations vaut 128 101 EUR, celle des primes futures 24 270 EUR : la PM prospective est de <strong>103 831 EUR</strong>.</p>
+<p><strong>L’épargne acquise ne se retranche pas de la PM, elle se compare à elle.</strong> Les 100 000 EUR déjà au compte sont ce que l’assureur a mis de côté pour ce contrat ; les prestations qu’ils doivent financer sont déjà dans la VAP des sorties. La comparaison dit si ce qui a été mis de côté suffit, et ici il manque 3 831 EUR : avec la mortalité prospective et la courbe d’aujourd’hui, la rente garantie coûte plus que l’épargne acquise et les primes à venir. L’écart est à provisionner, ou à expliquer.</p>
+<p>La figure montre l’effet conjugué de la survie et de l’actualisation : les arrérages nominaux restent à 8 000 EUR jusqu’à 120 ans, leur valeur probabilisée et actualisée tombe d’environ 7 300 EUR à 65 ans à 4 100 EUR à 80 ans, et devient négligeable après 105 ans. L’arrérage de 100 ans, à <span class="math inline">\(t = 40\)</span>, n’est versé qu’avec une probabilité de 5,9 % et chaque euro y vaut 0,37 euro : il pèse 176 EUR en VAP. Plus d’un quart de la VAP des prestations (27,4 %) vient d’arrérages versés au-delà de 20 ans, là où la courbe des taux n’est plus observée (voir les pièges).</p>
+</section>
+<section class="level3" data-number="14.4.5" id="étape-5.-sensibilités-pm-prudente-et-choc-de-longévité">
+<h3 class="anchored" data-anchor-id="étape-5.-sensibilités-pm-prudente-et-choc-de-longévité" data-number="14.4.5"> Étape 5. Sensibilités, PM prudente et choc de longévité</h3>
+<div class="cell" data-execution_count="7" id="a942d936">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="kw">def</span> calculer_pm(contrat: <span class="bu">dict</span>, table_q: pd.DataFrame, courbe: pd.Series,</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>                choc_mortalite: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>, choc_taux: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>    <span class="co">"""PM = VAP(prestations) - VAP(primes), sous un choc relatif sur les q_x et un choc additif sur les taux."""</span></span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>    table <span class="op">=</span> (table_q <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> choc_mortalite)).clip(upper<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a>    table.loc[table.index.<span class="bu">max</span>()] <span class="op">=</span> <span class="fl">1.0</span>          <span class="co"># le choc ne doit pas rouvrir la table à 120 ans</span></span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>    horizon <span class="op">=</span> contrat[<span class="st">"age_max"</span>] <span class="op">-</span> contrat[<span class="st">"age"</span>]</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>    p <span class="op">=</span> probabilites_survie(table, contrat[<span class="st">"age"</span>], contrat[<span class="st">"annee"</span>])</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>    v <span class="op">=</span> facteurs_actualisation(courbe <span class="op">+</span> choc_taux, horizon)</span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>    age_t <span class="op">=</span> contrat[<span class="st">"age"</span>] <span class="op">+</span> np.arange(horizon <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a>    primes <span class="op">=</span> np.where(age_t <span class="op">&lt;</span> contrat[<span class="st">"age_debut_rente"</span>], contrat[<span class="st">"prime_annuelle"</span>], <span class="fl">0.0</span>)</span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>    prestations <span class="op">=</span> np.where(age_t <span class="op">&gt;=</span> contrat[<span class="st">"age_debut_rente"</span>], contrat[<span class="st">"rente_annuelle"</span>], <span class="fl">0.0</span>)</span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a>    <span class="cf">return</span> (v <span class="op">*</span> p <span class="op">*</span> (prestations <span class="op">-</span> primes)).<span class="bu">sum</span>()</span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a></span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a><span class="kw">def</span> e65_assure(table_q: pd.DataFrame, choc_mortalite: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a>    <span class="co">"""Espérance de vie de l'assuré à 65 ans (en 2031), sur la diagonale de la table choquée."""</span></span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a>    table <span class="op">=</span> (table_q <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> choc_mortalite)).clip(upper<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a>    table.loc[table.index.<span class="bu">max</span>()] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb12-18"><a aria-hidden="true" href="#cb12-18" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">+</span> probabilites_survie(table, <span class="dv">65</span>, CONTRAT[<span class="st">"annee"</span>] <span class="op">+</span> <span class="dv">5</span>)[<span class="dv">1</span>:].<span class="bu">sum</span>()</span>
+<span id="cb12-19"><a aria-hidden="true" href="#cb12-19" tabindex="-1"></a></span>
+<span id="cb12-20"><a aria-hidden="true" href="#cb12-20" tabindex="-1"></a>scenarios <span class="op">=</span> [</span>
+<span id="cb12-21"><a aria-hidden="true" href="#cb12-21" tabindex="-1"></a>    (<span class="st">"Best estimate"</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb12-22"><a aria-hidden="true" href="#cb12-22" tabindex="-1"></a>    (<span class="st">"Taux -50 bp"</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.005</span>),</span>
+<span id="cb12-23"><a aria-hidden="true" href="#cb12-23" tabindex="-1"></a>    (<span class="st">"Taux +50 bp"</span>, <span class="fl">0.0</span>, <span class="fl">0.005</span>),</span>
+<span id="cb12-24"><a aria-hidden="true" href="#cb12-24" tabindex="-1"></a>    (<span class="st">"Mortalité -10 %"</span>, <span class="op">-</span><span class="fl">0.10</span>, <span class="fl">0.0</span>),</span>
+<span id="cb12-25"><a aria-hidden="true" href="#cb12-25" tabindex="-1"></a>    (<span class="st">"Mortalité +10 %"</span>, <span class="fl">0.10</span>, <span class="fl">0.0</span>),</span>
+<span id="cb12-26"><a aria-hidden="true" href="#cb12-26" tabindex="-1"></a>    (<span class="st">"Choc longévité, formule standard (-20 %)"</span>, <span class="op">-</span><span class="fl">0.20</span>, <span class="fl">0.0</span>),</span>
+<span id="cb12-27"><a aria-hidden="true" href="#cb12-27" tabindex="-1"></a>    (<span class="st">"PM prudente (mortalité -10 %, taux -25 bp)"</span>, <span class="op">-</span><span class="fl">0.10</span>, <span class="op">-</span><span class="fl">0.0025</span>),</span>
+<span id="cb12-28"><a aria-hidden="true" href="#cb12-28" tabindex="-1"></a>]</span>
+<span id="cb12-29"><a aria-hidden="true" href="#cb12-29" tabindex="-1"></a>sensibilites <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb12-30"><a aria-hidden="true" href="#cb12-30" tabindex="-1"></a>    [(nom, calculer_pm(CONTRAT, table_q, courbe_actu, cm, ct), e65_assure(table_q, cm))</span>
+<span id="cb12-31"><a aria-hidden="true" href="#cb12-31" tabindex="-1"></a>     <span class="cf">for</span> nom, cm, ct <span class="kw">in</span> scenarios],</span>
+<span id="cb12-32"><a aria-hidden="true" href="#cb12-32" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">"scenario"</span>, <span class="st">"PM"</span>, <span class="st">"e65 de l'assuré"</span>],</span>
+<span id="cb12-33"><a aria-hidden="true" href="#cb12-33" tabindex="-1"></a>)</span>
+<span id="cb12-34"><a aria-hidden="true" href="#cb12-34" tabindex="-1"></a>be <span class="op">=</span> sensibilites.loc[<span class="dv">0</span>, <span class="st">"PM"</span>]</span>
+<span id="cb12-35"><a aria-hidden="true" href="#cb12-35" tabindex="-1"></a>sensibilites[<span class="st">"écart au BE"</span>] <span class="op">=</span> sensibilites[<span class="st">"PM"</span>] <span class="op">-</span> be</span>
+<span id="cb12-36"><a aria-hidden="true" href="#cb12-36" tabindex="-1"></a>sensibilites[<span class="st">"écart (%)"</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> sensibilites[<span class="st">"écart au BE"</span>] <span class="op">/</span> be</span>
+<span id="cb12-37"><a aria-hidden="true" href="#cb12-37" tabindex="-1"></a>sensibilites[<span class="st">"épargne - PM"</span>] <span class="op">=</span> epargne <span class="op">-</span> sensibilites[<span class="st">"PM"</span>]</span>
+<span id="cb12-38"><a aria-hidden="true" href="#cb12-38" tabindex="-1"></a><span class="bu">print</span>(sensibilites.<span class="bu">round</span>({<span class="st">"PM"</span>: <span class="dv">0</span>, <span class="st">"e65 de l'assuré"</span>: <span class="dv">2</span>, <span class="st">"écart au BE"</span>: <span class="dv">0</span>, <span class="st">"écart (%)"</span>: <span class="dv">1</span>, <span class="st">"épargne - PM"</span>: <span class="dv">0</span>})</span>
+<span id="cb12-39"><a aria-hidden="true" href="#cb12-39" tabindex="-1"></a>      .to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb12-40"><a aria-hidden="true" href="#cb12-40" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Épargne acquise -10 % : PM inchangée à </span><span class="sc">{</span>be<span class="sc">:,.0f}</span><span class="ss"> EUR ; épargne - PM = </span><span class="sc">{</span><span class="fl">0.9</span> <span class="op">*</span> epargne <span class="op">-</span> be<span class="sc">:,.0f}</span><span class="ss"> EUR"</span></span>
+<span id="cb12-41"><a aria-hidden="true" href="#cb12-41" tabindex="-1"></a>      .replace(<span class="st">","</span>, <span class="st">" "</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                  scenario       PM  e65 de l'assuré  écart au BE  écart (%)  épargne - PM
+                             Best estimate 103831.0            22.14          0.0        0.0       -3831.0
+                               Taux -50 bp 114085.0            22.14      10254.0        9.9      -14085.0
+                               Taux +50 bp  94598.0            22.14      -9233.0       -8.9        5402.0
+                           Mortalité -10 % 107861.0            23.00       4030.0        3.9       -7861.0
+                           Mortalité +10 % 100138.0            21.37      -3693.0       -3.6        -138.0
+  Choc longévité, formule standard (-20 %) 112300.0            23.97       8469.0        8.2      -12300.0
+PM prudente (mortalité -10 %, taux -25 bp) 113117.0            23.00       9286.0        8.9      -13117.0
+
+Épargne acquise -10 % : PM inchangée à 103 831 EUR ; épargne - PM = -13 831 EUR</code></pre>
+</div>
+</div>
+<p>Le tableau se lit par hypothèse.</p>
+<p><strong>Les taux.</strong> −50 bp font monter la PM de 9,9 % (114 085 EUR), +50 bp la font baisser de 8,9 %. C’est la plus forte sensibilité du tableau : une rente est un engagement long.</p>
+<p><strong>La mortalité.</strong> −10 % sur tous les <span class="math inline">\(q_x\)</span> ajoute 0,86 an à l’espérance de vie de l’assuré à 65 ans (de 22,14 à 23,00 ans) et 3,9 % à la PM ; +10 % en retire 3,6 %. Le sens de la prudence se lit ici : pour une rente, c’est la longévité qui coûte, la marge abaisse donc la mortalité. Le choc de longévité de la formule standard de Solvabilité II, une baisse de 20 % des taux de mortalité, ajoute 1,84 an à l’espérance de vie (23,97 ans) et 8 469 EUR à l’engagement, soit 8,2 % : c’est l’ordre de grandeur du SCR de longévité de ce contrat, avant agrégation avec les autres risques. Ce choc s’applique au best estimate, pas à une PM prudente.</p>
+<p><strong>La prudence.</strong> La PM prudente cumule une marge dans le bon sens sur chaque hypothèse, mortalité −10 % et taux −25 bp. Elle vaut 113 117 EUR, 8,9 % au-dessus du best estimate, et l’épargne acquise la couvre encore moins (13 117 EUR manquants). C’est une approximation pédagogique : la PM des comptes sociaux se calcule avec les tables TGH05/TGF05 et un taux technique plafonné par le code des assurances, le best estimate Solvabilité II avec des hypothèses réalistes propres à l’organisme et la courbe sans risque de l’EIOPA.</p>
+<p><strong>L’épargne.</strong> Un choc sur l’épargne acquise ne change pas la PM, il change sa couverture : avec 10 % d’épargne en moins, la PM reste à 103 831 EUR et l’écart passe de −3 831 à −13 831 EUR.</p>
+</section>
+</section>
+<section class="level2" data-number="14.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="14.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Une première version de cette fiche calculait la PM et sa version prudente ainsi :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>pm_economique <span class="op">=</span> vap_sorties <span class="op">-</span> vap_entrees <span class="op">-</span> capital_constitue      <span class="co"># capital constitué : 100 000 EUR</span></span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>pm_prudentielle <span class="op">=</span> calculer_pm(contrat, table, courbe, mortality_shock<span class="op">=+</span><span class="fl">0.10</span>) <span class="op">-</span> capital_constitue</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>marge <span class="op">=</span> (pm_prudentielle <span class="op">-</span> pm_economique) <span class="op">/</span> pm_economique          <span class="co"># « marge de prudence +10 % sur qx »</span></span></code></pre></div></div>
+<p>Elle concluait : « La marge prudentielle reflète l’incertitude sur la mortalité et les taux. Le delta entre BE et prudentielle est ce que l’actuaire doit défendre en revue. » Avec la table et le contrat de cette fiche, que donnent ces trois lignes, et qu’est-ce qui ne va pas ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<div class="cell" data-execution_count="8" id="c0e08882">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>ancienne_pm <span class="op">=</span> vap_prestations <span class="op">-</span> vap_primes <span class="op">-</span> epargne</span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>ancienne_prudente <span class="op">=</span> calculer_pm(CONTRAT, table_q, courbe_actu, choc_mortalite<span class="op">=</span><span class="fl">0.10</span>) <span class="op">-</span> epargne</span>
+<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"« PM économique »      : </span><span class="sc">{</span>ancienne_pm<span class="sc">:9,.0f}</span><span class="ss"> EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb15-4"><a aria-hidden="true" href="#cb15-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"« PM prudentielle »    : </span><span class="sc">{</span>ancienne_prudente<span class="sc">:9,.0f}</span><span class="ss"> EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb15-5"><a aria-hidden="true" href="#cb15-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"« Marge prudentielle » : </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> (ancienne_prudente <span class="op">-</span> ancienne_pm) <span class="op">/</span> ancienne_pm<span class="sc">:9.1f}</span><span class="ss"> %"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>« PM économique »      :     3 831 EUR
+« PM prudentielle »    :       138 EUR
+« Marge prudentielle » :     -96.4 %</code></pre>
+</div>
+</div>
+<p>Les trois lignes affichent une « PM économique » de 3 831 EUR, une « PM prudentielle » de 138 EUR et une « marge prudentielle » de −96,4 %. Trois erreurs :</p>
+<ol type="1">
+<li><strong>L’épargne acquise retranchée.</strong> La PM prospective vaut <span class="math inline">\(\mathrm{VAP}(\text{prestations futures}) - \mathrm{VAP}(\text{primes futures})\)</span>, ici 103 831 EUR. L’épargne acquise n’est pas un flux futur : elle est déjà au bilan, et les prestations qu’elle doit financer sont déjà dans la VAP des sorties. Le chiffre affiché n’est pas une PM, c’est l’insuffisance de l’épargne face à la PM. Une provision de 3 831 EUR pour une rente de 8 000 EUR par an qui démarre dans cinq ans aurait dû alerter.</li>
+<li><strong>La prudence à l’envers.</strong> Sur une rente, le risque est que l’assuré vive longtemps. +10 % sur les <span class="math inline">\(q_x\)</span> raccourcit la vie, et la « PM prudentielle » sort sous la PM de départ. La prudence abaisse la mortalité : −10 % donne 107 861 EUR, au-dessus du best estimate.</li>
+<li><strong>Une conclusion qui n’a pas lu la sortie.</strong> Une « marge prudentielle » de −96,4 % ne reflète aucune incertitude : elle est négative, et rapportée à une base qui n’a pas de sens. Le texte aurait pu être écrit sans exécuter le code.</li>
+</ol>
+</details>
+</section>
+<section class="level2" data-number="14.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="14.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Retrancher l’épargne acquise de la PM.</strong> La PM prospective vaut <span class="math inline">\(\mathrm{VAP}(\text{prestations futures}) - \mathrm{VAP}(\text{primes futures})\)</span>. L’épargne acquise, déjà au bilan, se compare à la PM ; la retrancher donne l’insuffisance au signe près, pas une provision.</li>
+<li><strong>Mettre la prudence dans le mauvais sens.</strong> Sur une rente, la prudence abaisse la mortalité ; sur un contrat en cas de décès, elle la relève. Une marge « +10 % sur les <span class="math inline">\(q_x\)</span> » appliquée à une rente fait baisser la provision.</li>
+<li><strong>Confondre « mortalité −10 % » et « un an d’espérance de vie de plus ».</strong> Ce ne sont pas les mêmes hypothèses : ici, −10 % sur les <span class="math inline">\(q_x\)</span> ajoute 0,86 an à 65 ans. Dire laquelle on applique, et traduire l’une dans l’autre.</li>
+<li><strong>Confondre best estimate et PM des comptes sociaux.</strong> Le best estimate Solvabilité II repose sur des hypothèses réalistes propres à l’organisme et sur la courbe sans risque de l’EIOPA ; la PM des normes françaises applique des conventions de prudence (TGH05/TGF05 pour les rentes, taux technique plafonné). Les chocs de la formule standard, dont la longévité à −20 % sur les taux de mortalité, s’appliquent au best estimate. <strong>Toujours préciser lequel on calcule.</strong></li>
+<li><strong>Courbe d’actualisation au-delà du dernier point liquide.</strong> La courbe sans risque de l’euro publiée par l’EIOPA s’appuie sur les données de marché jusqu’au dernier point liquide (LLP), 20 ans, puis est extrapolée par la méthode de Smith-Wilson vers le taux à terme ultime (UFR). Ici, 27,4 % de la VAP des prestations vient d’au-delà de 20 ans : ce n’est pas un détail. La courbe de cette fiche est simulée, à remplacer par la courbe publiée avant tout usage réel.</li>
+<li><strong>Oublier la convention de timing.</strong> Flux en début ou en fin d’année : sur une rente, la différence porte sur un arrérage entier. <strong>Toujours documenter</strong> la convention dans la note méthodologique.</li>
+<li><strong>Sortir de la table sans le voir.</strong> <code>get_indexer</code> renvoie −1 pour un âge ou une année absente, et l’indice −1 lit en silence la dernière case. D’où l’<code>assert</code> de l’étape 1, et un test pytest dédié (voir I3). Même vigilance pour un choc de mortalité négatif, qui rouvrirait la table à 120 ans si l’on ne remettait pas <span class="math inline">\(q_{120}\)</span> à 1.</li>
+</ul>
+</section>
+<section class="level2" data-number="14.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="14.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>V1, lissage d’une table de mortalité</strong> : pour la table à une date donnée, et sa fermeture aux grands âges.</li>
+<li><strong>V2, projection Lee-Carter</strong> : produit la table prospective lue ici, avec ses métadonnées et son empreinte.</li>
+<li><strong>S3, IFRS 17 et CSM</strong> : IFRS 17 ne prend pas la PM en entrée. Il repart des flux probabilisés et actualisés (les vecteurs de cette fiche), ajoute un ajustement pour risque, et en déduit la CSM.</li>
+<li><strong>I3, tests pytest</strong> : ce module mérite sa suite de tests (PM nulle si les flux sont nuls, PM qui baisse quand les taux montent et qui monte quand la mortalité baisse, table qui reste fermée sous choc).</li>
+</ul>
+</section>
+<section class="level2" data-number="14.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="14.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Stochastique sur la PM</strong> : reprendre les trajectoires de <span class="math inline">\(k_t\)</span> de V2 et recalculer la PM sur chacune. On obtient une distribution de l’engagement, dont on lit les quantiles.</li>
+<li><strong>Réversion, deux têtes</strong> : sur les rentes réversibles, le calcul suit deux vies et leur dépendance. Plus délicat ; <code>lifelib</code> en donne des exemples.</li>
+<li><strong>Best estimate complet</strong> : frais, options et garanties (rachat, taux minimum garanti), participation aux bénéfices pour l’épargne en euros. À traiter dans un modèle actif-passif dédié.</li>
+<li><strong>SCR vie</strong> : le choc de longévité n’est qu’un sous-module. Le module de souscription vie de la formule standard agrège mortalité, longévité, invalidité, rachat, frais, révision et catastrophe par sa matrice de corrélation ; S1 montre la mécanique d’agrégation côté non-vie.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/V2/index.html"><small>&larr; Précédent</small>V2. Projection longévité Lee-Carter</a><a class="next" href="../../bibliotheque/E1/index.html"><small>Suivant &rarr;</small>E1. Le modèle de Vasicek, pas à pas</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

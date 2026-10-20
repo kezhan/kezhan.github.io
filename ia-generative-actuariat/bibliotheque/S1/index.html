@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S1. Note méthodologique SCR non-vie · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">S1. Note méthodologique SCR non-vie</h1>
+      <p class="lede">Cette fiche illustre la démarche C sur une note méthodologique Solvabilité II. Ce que vous apprenez n’est pas le SCR, mais le schéma « structurer, suggérer, faire critiquer, l’actuaire garde la plume », applicable à tout livrable réglementaire (Solvabilité II, IFRS 17, notice produit, fiche d’impact).</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : C, produire un livrable réglementaire
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Communication et tableaux de bord » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="19.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="19.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Un organisme qui calcule son SCR (Solvency Capital Requirement) en formule standard documente ce calcul dans une note méthodologique. Pour le module de souscription non-vie, la note décrit les trois sous-modules prévus par l’article 114 du Règlement délégué 2015/35 : primes et réserves, catastrophe, cessation (article 118 ; le marché parle souvent de risque de rachat). Elle expose les hypothèses retenues, les paramètres choisis et les contrôles effectués. C’est un livrable qui engage l’organisme : il est relu et validé selon sa gouvernance, par exemple par la fonction gestion des risques et par le responsable de la fonction actuarielle.</p>
+<p>Le gain d’une assistance LLM est dans la <strong>structuration assistée</strong>, pas dans la rédaction automatique. L’actuaire garde la plume sur ce qui engage sa signature.</p>
+<p>Dans la formation, cette fiche porte le corrigé de la note méthodologique faite en direct dans l’atelier du deuxième jour au matin, avec la posture de cet atelier : l’assistant structure et suggère, l’actuaire décide et signe.</p>
+</section>
+<section class="level2" data-number="19.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="19.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le calcul du SCR de souscription non-vie est fait par ailleurs (en Python ou dans un autre outil). L’entrée de ce cas est ce calcul : code source, valeurs des paramètres, résultats par sous-module. Pour cette fiche on simule le calcul d’un assureur fictif, avec des simplifications volontaires que l’exercice de fin de fiche vous demande de relever.</p>
+<p>Les écarts types et les corrélations entre segments sont ceux du texte initial du Règlement délégué 2015/35 (JO L 12 du 17 janvier 2015, annexe II pour les écarts types, annexe IV pour les corrélations). Le texte a été modifié depuis, notamment par le Règlement délégué 2019/981 : pour une vraie note, on vérifie chaque valeur dans la version consolidée en vigueur.</p>
+<p>Le code ci-dessous calcule un écart type combiné par segment <span class="math inline">\(s\)</span>, l’agrège entre segments, puis agrège les sous-modules ; le facteur de diversification géographique est pris à 1 :</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sigma_s &amp;= \frac{\sqrt{\sigma_{\mathrm{prem},s}^2 V_{\mathrm{prem},s}^2 + \sigma_{\mathrm{prem},s}\, \sigma_{\mathrm{res},s}\, V_{\mathrm{prem},s} V_{\mathrm{res},s} + \sigma_{\mathrm{res},s}^2 V_{\mathrm{res},s}^2}}{V_s}, \qquad V_s = V_{\mathrm{prem},s} + V_{\mathrm{res},s}, \\
+\mathrm{SCR}_{\mathrm{pr}} &amp;= 3 \sqrt{\sum_{s} \sum_{t} \operatorname{corr}(s,t)\, \sigma_s V_s\, \sigma_t V_t}, \\
+\mathrm{SCR}_{\text{non-vie}} &amp;= \sqrt{\sum_{k} \sum_{l} \operatorname{Corr}_{\mathrm{NL}}(k,l)\, \mathrm{SCR}_k\, \mathrm{SCR}_l},
+\end{aligned}
+\]</span></p>
+<p>où <span class="math inline">\(V_{\mathrm{prem},s}\)</span> est la prime nette de l’année, <span class="math inline">\(V_{\mathrm{res},s}\)</span> la provision, et où <span class="math inline">\(k\)</span> et <span class="math inline">\(l\)</span> parcourent les trois sous-modules (primes et réserves, catastrophe, cessation).</p>
+<div class="cell" data-execution_count="1" id="f05f3124">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="co"># Calcul SCR de souscription non-vie simplifié pour un assureur fictif.</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="co"># Montants en euros.</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>hypotheses <span class="op">=</span> {</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>    <span class="st">"segments"</span>: [<span class="st">"Auto RC"</span>, <span class="st">"Auto dommages"</span>, <span class="st">"Incendie et dommages aux biens"</span>, <span class="st">"RC générale"</span>],</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    <span class="st">"segment_annexe_II"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>],</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    <span class="st">"primes_nettes"</span>: [<span class="fl">120e6</span>, <span class="fl">85e6</span>, <span class="fl">62e6</span>, <span class="fl">35e6</span>],     <span class="co"># V_prem : primes nettes de l'année</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    <span class="st">"provisions"</span>: [<span class="fl">310e6</span>, <span class="fl">95e6</span>, <span class="fl">78e6</span>, <span class="fl">145e6</span>],       <span class="co"># V_res, best estimate des sinistres nets</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    <span class="st">"sigma_primes"</span>: [<span class="fl">0.10</span>, <span class="fl">0.08</span>, <span class="fl">0.08</span>, <span class="fl">0.14</span>],       <span class="co"># annexe II, texte initial</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    <span class="st">"sigma_reserves"</span>: [<span class="fl">0.09</span>, <span class="fl">0.08</span>, <span class="fl">0.10</span>, <span class="fl">0.11</span>],     <span class="co"># annexe II, texte initial</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    <span class="co"># Corrélations entre segments 1, 2, 4 et 5 : annexe IV, texte initial</span></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    <span class="st">"corr_segments"</span>: [[<span class="fl">1.00</span>, <span class="fl">0.50</span>, <span class="fl">0.25</span>, <span class="fl">0.50</span>],</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>                      [<span class="fl">0.50</span>, <span class="fl">1.00</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>],</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>                      [<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">1.00</span>, <span class="fl">0.25</span>],</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>                      [<span class="fl">0.50</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">1.00</span>]],</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>    <span class="co"># Catastrophe : forfait en pourcentage des primes nettes</span></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>    <span class="st">"facteur_catastrophe"</span>: <span class="fl">0.07</span>,</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>    <span class="co"># Cessation (article 118) : perte de fonds propres de base si cessent 40 % des</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>    <span class="co"># contrats dont la cessation augmenterait les provisions techniques. Donnée fictive.</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    <span class="st">"perte_cessation_40pct"</span>: <span class="fl">4e6</span>,</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>}</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a><span class="co"># Corrélations entre sous-modules : article 114</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>CORR_NL <span class="op">=</span> np.array([[<span class="fl">1.00</span>, <span class="fl">0.25</span>, <span class="fl">0.00</span>],     <span class="co"># primes et réserves</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>                    [<span class="fl">0.25</span>, <span class="fl">1.00</span>, <span class="fl">0.00</span>],     <span class="co"># catastrophe</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>                    [<span class="fl">0.00</span>, <span class="fl">0.00</span>, <span class="fl">1.00</span>]])    <span class="co"># cessation</span></span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a></span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a><span class="kw">def</span> calcul_scr_souscription_non_vie(h: <span class="bu">dict</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>    primes <span class="op">=</span> np.asarray(h[<span class="st">"primes_nettes"</span>], dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>    provisions <span class="op">=</span> np.asarray(h[<span class="st">"provisions"</span>], dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>    sigma_p <span class="op">=</span> np.asarray(h[<span class="st">"sigma_primes"</span>])</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>    sigma_r <span class="op">=</span> np.asarray(h[<span class="st">"sigma_reserves"</span>])</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>    corr <span class="op">=</span> np.asarray(h[<span class="st">"corr_segments"</span>])</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a></span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>    <span class="co"># Volume par segment, facteur de diversification géographique DIV pris à 1</span></span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>    V <span class="op">=</span> primes <span class="op">+</span> provisions</span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a></span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>    <span class="co"># Écart type combiné primes et réserves par segment (article 117)</span></span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    sigma_seg <span class="op">=</span> np.sqrt(sigma_p<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> primes<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>                        <span class="op">+</span> sigma_p <span class="op">*</span> sigma_r <span class="op">*</span> primes <span class="op">*</span> provisions</span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>                        <span class="op">+</span> sigma_r<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> provisions<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> V</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a></span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>    <span class="co"># Agrégation entre segments (article 117)</span></span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>    x <span class="op">=</span> V <span class="op">*</span> sigma_seg</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a>    scr_primes_reserves <span class="op">=</span> <span class="fl">3.0</span> <span class="op">*</span> np.sqrt(x <span class="op">@</span> corr <span class="op">@</span> x)</span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a></span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a>    scr_catastrophe <span class="op">=</span> h[<span class="st">"facteur_catastrophe"</span>] <span class="op">*</span> primes.<span class="bu">sum</span>()</span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a>    scr_cessation <span class="op">=</span> h[<span class="st">"perte_cessation_40pct"</span>]</span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a></span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a>    sous_modules <span class="op">=</span> np.array([scr_primes_reserves, scr_catastrophe, scr_cessation])</span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a>    scr_souscription <span class="op">=</span> np.sqrt(sous_modules <span class="op">@</span> CORR_NL <span class="op">@</span> sous_modules)</span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a></span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb1-56"><a aria-hidden="true" href="#cb1-56" tabindex="-1"></a>        <span class="st">"scr_primes_reserves"</span>: scr_primes_reserves,</span>
+<span id="cb1-57"><a aria-hidden="true" href="#cb1-57" tabindex="-1"></a>        <span class="st">"scr_catastrophe"</span>: scr_catastrophe,</span>
+<span id="cb1-58"><a aria-hidden="true" href="#cb1-58" tabindex="-1"></a>        <span class="st">"scr_cessation"</span>: scr_cessation,</span>
+<span id="cb1-59"><a aria-hidden="true" href="#cb1-59" tabindex="-1"></a>        <span class="st">"scr_souscription_total"</span>: scr_souscription,</span>
+<span id="cb1-60"><a aria-hidden="true" href="#cb1-60" tabindex="-1"></a>        <span class="st">"sigma_par_segment"</span>: sigma_seg,</span>
+<span id="cb1-61"><a aria-hidden="true" href="#cb1-61" tabindex="-1"></a>        <span class="st">"V_total"</span>: V.<span class="bu">sum</span>(),</span>
+<span id="cb1-62"><a aria-hidden="true" href="#cb1-62" tabindex="-1"></a>    }</span>
+<span id="cb1-63"><a aria-hidden="true" href="#cb1-63" tabindex="-1"></a></span>
+<span id="cb1-64"><a aria-hidden="true" href="#cb1-64" tabindex="-1"></a>resultats <span class="op">=</span> calcul_scr_souscription_non_vie(hypotheses)</span>
+<span id="cb1-65"><a aria-hidden="true" href="#cb1-65" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"SCR primes et réserves : </span><span class="sc">{</span>resultats[<span class="st">'scr_primes_reserves'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-66"><a aria-hidden="true" href="#cb1-66" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"SCR catastrophe        : </span><span class="sc">{</span>resultats[<span class="st">'scr_catastrophe'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-67"><a aria-hidden="true" href="#cb1-67" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"SCR cessation          : </span><span class="sc">{</span>resultats[<span class="st">'scr_cessation'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-68"><a aria-hidden="true" href="#cb1-68" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"SCR souscription total : </span><span class="sc">{</span>resultats[<span class="st">'scr_souscription_total'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-69"><a aria-hidden="true" href="#cb1-69" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Volume total (primes + provisions) : </span><span class="sc">{</span>resultats[<span class="st">'V_total'</span>]<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-70"><a aria-hidden="true" href="#cb1-70" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ratio SCR / volume : </span><span class="sc">{</span><span class="dv">100</span><span class="op">*</span>resultats[<span class="st">'scr_souscription_total'</span>]<span class="op">/</span>resultats[<span class="st">'V_total'</span>]<span class="sc">:.2f}</span><span class="ss"> %"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SCR primes et réserves :   177,369,542 EUR
+SCR catastrophe        :    21,140,000 EUR
+SCR cessation          :     4,000,000 EUR
+SCR souscription total :   183,841,372 EUR
+
+Volume total (primes + provisions) : 930,000,000 EUR
+Ratio SCR / volume : 19.77 %</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="19.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="19.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention, en bottom-up
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>À donner à Claude Code dans cet ordre. Cas particulier : la production de prose engage la signature actuarielle, donc on demande à Claude de <strong>structurer et suggérer</strong>, jamais de <strong>rédiger seul</strong> les passages qui engagent.</p>
+<ol type="1">
+<li><p><strong>Lire le calcul.</strong> <em>“Voici le code Python du calcul SCR de souscription non-vie (variable <code>hypotheses</code> et fonction <code>calcul_scr_souscription_non_vie</code>). Liste-moi les hypothèses retenues, les paramètres et les résultats par sous-module.”</em></p></li>
+<li><p><strong>Proposer une structure.</strong> <em>“Propose-moi une structure de note méthodologique en 6 à 8 sections pour le module de souscription non-vie en formule standard. Pour chaque section, liste les points à couvrir, sans rédiger encore le contenu. Pour chaque article ou texte que tu cites, dis si tu es sûr du numéro.”</em></p></li>
+<li><p><strong>Critiquer la structure.</strong> <em>“Joue le rôle d’un contrôleur de l’ACPR qui lirait cette note et le code du calcul. Quelles simplifications du calcul la note doit-elle signaler ? Quelles sections manquent ? Quel ordre pourrait-il critiquer ? Quels points d’attention faut-il anticiper ?”</em></p></li>
+<li><p><strong>Rédiger une section technique.</strong> <em>“Pour la section ‘Hypothèses et paramètres’, propose-moi une formulation pour les deux premiers paragraphes (volume primes et réserves par segment, écarts types). Je relirai et adapterai.”</em></p></li>
+<li><p><strong>Relecture critique finale.</strong> <em>“Une fois la note rédigée, joue le rôle du responsable de la fonction actuarielle qui doit la valider. Liste les points où la justification manque, où une hypothèse est sous-entendue, où un chiffre est cité sans source. Sois sévère.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="19.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="19.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<p>Cette fiche montre les étapes 1, 2 et 5 (où Claude apporte le plus de valeur). L’étape 4 dépend de votre style rédactionnel et engage votre signature : elle est volontairement absente. L’étape 3, la critique, fait l’objet de l’exercice de fin de fiche.</p>
+<section class="level3" data-number="19.4.1" id="étape-1.-lire-le-calcul-et-extraire-les-hypothèses">
+<h3 class="anchored" data-anchor-id="étape-1.-lire-le-calcul-et-extraire-les-hypothèses" data-number="19.4.1"> Étape 1. Lire le calcul et extraire les hypothèses</h3>
+<div class="cell" data-execution_count="2" id="03d2a843">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Hypothèses du calcul SCR de souscription non-vie ===</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Périmètre :"</span>)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a><span class="cf">for</span> seg, num, prime, prov <span class="kw">in</span> <span class="bu">zip</span>(hypotheses[<span class="st">"segments"</span>], hypotheses[<span class="st">"segment_annexe_II"</span>],</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>                                 hypotheses[<span class="st">"primes_nettes"</span>], hypotheses[<span class="st">"provisions"</span>]):</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>num<span class="sc">:&gt;2}</span><span class="ss"> </span><span class="sc">{</span>seg<span class="sc">:32}</span><span class="ss"> primes nettes = </span><span class="sc">{</span>prime<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR | provisions = </span><span class="sc">{</span>prov<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Volume total V : </span><span class="sc">{</span>resultats[<span class="st">'V_total'</span>]<span class="sc">:,.0f}</span><span class="ss"> EUR</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paramètres :"</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  écarts types primes      : </span><span class="sc">{</span>hypotheses[<span class="st">'sigma_primes'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  écarts types réserves    : </span><span class="sc">{</span>hypotheses[<span class="st">'sigma_reserves'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  écart type combiné       : </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">round</span>(resultats[<span class="st">'sigma_par_segment'</span>], <span class="dv">4</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"  corrélation primes/rés.  : 0,50 (article 117)"</span>)</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"  corrélations segments    : annexe IV, par paire (0,25 ou 0,50 ici)"</span>)</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  facteur catastrophe      : </span><span class="sc">{</span>hypotheses[<span class="st">'facteur_catastrophe'</span>]<span class="sc">}</span><span class="ss"> des primes nettes"</span>)</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"  corrélations sous-modules: article 114 (0,25 primes-réserves / catastrophe, 0 pour la cessation)"</span>)</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Résultats par sous-module :"</span>)</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>somme_sous_modules <span class="op">=</span> (resultats[<span class="st">"scr_primes_reserves"</span>] <span class="op">+</span> resultats[<span class="st">"scr_catastrophe"</span>]</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>                      <span class="op">+</span> resultats[<span class="st">"scr_cessation"</span>])</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  primes et réserves       : </span><span class="sc">{</span>resultats[<span class="st">'scr_primes_reserves'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  catastrophe              : </span><span class="sc">{</span>resultats[<span class="st">'scr_catastrophe'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  cessation                : </span><span class="sc">{</span>resultats[<span class="st">'scr_cessation'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  somme des trois          : </span><span class="sc">{</span>somme_sous_modules<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  après agrégation         : </span><span class="sc">{</span>resultats[<span class="st">'scr_souscription_total'</span>]<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Hypothèses du calcul SCR de souscription non-vie ===
+
+Périmètre :
+   1 Auto RC                          primes nettes =   120,000,000 EUR | provisions =   310,000,000 EUR
+   2 Auto dommages                    primes nettes =    85,000,000 EUR | provisions =    95,000,000 EUR
+   4 Incendie et dommages aux biens   primes nettes =    62,000,000 EUR | provisions =    78,000,000 EUR
+   5 RC générale                      primes nettes =    35,000,000 EUR | provisions =   145,000,000 EUR
+
+Volume total V : 930,000,000 EUR
+
+Paramètres :
+  écarts types primes      : [0.1, 0.08, 0.08, 0.14]
+  écarts types réserves    : [0.09, 0.08, 0.1, 0.11]
+  écart type combiné       : [0.0825 0.0693 0.0796 0.1049]
+  corrélation primes/rés.  : 0,50 (article 117)
+  corrélations segments    : annexe IV, par paire (0,25 ou 0,50 ici)
+  facteur catastrophe      : 0.07 des primes nettes
+  corrélations sous-modules: article 114 (0,25 primes-réserves / catastrophe, 0 pour la cessation)
+
+Résultats par sous-module :
+  primes et réserves       :   177,369,542 EUR
+  catastrophe              :    21,140,000 EUR
+  cessation                :     4,000,000 EUR
+  somme des trois          :   202,509,542 EUR
+  après agrégation         :   183,841,372 EUR</code></pre>
+</div>
+</div>
+<p>La sortie donne un SCR de primes et réserves de 177,4 M EUR, un SCR catastrophe de 21,1 M EUR, un SCR cessation de 4,0 M EUR, et un SCR de souscription non-vie de 183,8 M EUR, soit 19,77 % du volume (sortie du premier bloc). La diversification entre sous-modules se lit directement : 183,8 M est inférieur à la somme des trois (202,5 M). Ces montants sont ceux que la note citera : elle les reprendra de cette sortie, pas d’une version antérieure. Ce qui, dans ces hypothèses, devra être justifié ou signalé comme simplification est l’objet de l’étape 3 et de l’exercice de fin de fiche.</p>
+</section>
+<section class="level3" data-number="19.4.2" id="étape-2.-proposer-une-structure-de-note">
+<h3 class="anchored" data-anchor-id="étape-2.-proposer-une-structure-de-note" data-number="19.4.2"> Étape 2. Proposer une structure de note</h3>
+<div class="cell" data-execution_count="3" id="d6f911f9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>structure_note <span class="op">=</span> [</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>    (<span class="st">"1. Objet et périmètre"</span>,</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>     <span class="st">"Identification de l'entité, date d'arrêté, périmètre de la note (SCR de souscription non-vie en formule standard), versions du code et des données."</span>),</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    (<span class="st">"2. Cadre réglementaire"</span>,</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>     <span class="st">"Articles applicables du Règlement délégué 2015/35 : article 114 (structure du module et agrégation), 115 à 117 (primes et réserves), 118 (cessation), 119 et suivants (catastrophe), annexes II à IV. Version consolidée utilisée. Chaque numéro est vérifié dans le texte avant d'être cité."</span>),</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>    (<span class="st">"3. Hypothèses et paramètres"</span>,</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>     <span class="st">"Segmentation, volumes de primes et de réserves, écarts types (standard ou USP), corrélations, diversification géographique, traitement de la réassurance."</span>),</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    (<span class="st">"4. Méthodologie de calcul"</span>,</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>     <span class="st">"Écart type combiné par segment, agrégation entre segments, sous-module catastrophe, sous-module cessation, agrégation finale."</span>),</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>    (<span class="st">"5. Résultats par sous-module"</span>,</span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>     <span class="st">"Tableau SCR par sous-module et par segment, ratio SCR / volume, comparaison N contre N-1, principaux moteurs d'évolution."</span>),</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>    (<span class="st">"6. Contrôles et validations"</span>,</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>     <span class="st">"Recalculs indépendants, comparaison avec l'outil interne, ordres de grandeur, contrôles de cohérence (signes, monotonies, cohérence entre segments)."</span>),</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>    (<span class="st">"7. Limites et points d'attention"</span>,</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>     <span class="st">"Simplifications retenues, sensibilités aux paramètres clés, points qui mériteraient une calibration USP, évolutions attendues pour l'exercice suivant."</span>),</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>    (<span class="st">"8. Annexes"</span>,</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>     <span class="st">"Détail technique du code, sources des données, tableau exhaustif des paramètres, validation par l'instance compétente."</span>),</span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>]</span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a><span class="cf">for</span> titre, contenu <span class="kw">in</span> structure_note:</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">## </span><span class="sc">{</span>titre<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"   </span><span class="sc">{</span>contenu<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+## 1. Objet et périmètre
+   Identification de l'entité, date d'arrêté, périmètre de la note (SCR de souscription non-vie en formule standard), versions du code et des données.
+
+## 2. Cadre réglementaire
+   Articles applicables du Règlement délégué 2015/35 : article 114 (structure du module et agrégation), 115 à 117 (primes et réserves), 118 (cessation), 119 et suivants (catastrophe), annexes II à IV. Version consolidée utilisée. Chaque numéro est vérifié dans le texte avant d'être cité.
+
+## 3. Hypothèses et paramètres
+   Segmentation, volumes de primes et de réserves, écarts types (standard ou USP), corrélations, diversification géographique, traitement de la réassurance.
+
+## 4. Méthodologie de calcul
+   Écart type combiné par segment, agrégation entre segments, sous-module catastrophe, sous-module cessation, agrégation finale.
+
+## 5. Résultats par sous-module
+   Tableau SCR par sous-module et par segment, ratio SCR / volume, comparaison N contre N-1, principaux moteurs d'évolution.
+
+## 6. Contrôles et validations
+   Recalculs indépendants, comparaison avec l'outil interne, ordres de grandeur, contrôles de cohérence (signes, monotonies, cohérence entre segments).
+
+## 7. Limites et points d'attention
+   Simplifications retenues, sensibilités aux paramètres clés, points qui mériteraient une calibration USP, évolutions attendues pour l'exercice suivant.
+
+## 8. Annexes
+   Détail technique du code, sources des données, tableau exhaustif des paramètres, validation par l'instance compétente.</code></pre>
+</div>
+</div>
+<p>Cette structure est une proposition de départ, pas un modèle réglementaire : aucun texte n’impose ce plan. Elle est à confronter aux attentes de votre organisme et à sa politique de documentation.</p>
+</section>
+<section class="level3" data-number="19.4.3" id="étape-5.-relecture-critique-finale">
+<h3 class="anchored" data-anchor-id="étape-5.-relecture-critique-finale" data-number="19.4.3"> Étape 5. Relecture critique finale</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Prompt de relecture à donner à Claude
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Une fois la note rédigée intégralement par l’actuaire, soumettre l’ensemble à Claude avec ce prompt :</p>
+<blockquote class="blockquote">
+<p><em>“Voici la note méthodologique complète. Joue le rôle du responsable de la fonction actuarielle qui doit la valider demain matin. Pour chaque section, dis-moi : (1) une hypothèse implicite qui mériterait d’être explicitée, (2) un chiffre cité sans source, (3) un cas où l’argumentation peut être attaquée en revue. Sois sévère, ne ménage pas l’auteur.”</em></p>
+</blockquote>
+<p>Vous obtenez une liste de critiques. Certaines sont justes, d’autres non : vous traitez chacune (en ajoutant la justification manquante) ou vous justifiez de la laisser. La trace de cet exercice de critique fait partie du dossier de validation.</p>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="19.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="19.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Une première version de cette fiche contenait ces deux lignes :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>primes <span class="op">=</span> np.array([<span class="dv">120_000_000</span>, <span class="dv">85_000_000</span>, <span class="dv">62_000_000</span>, <span class="dv">35_000_000</span>])</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>sigma_v <span class="op">=</span> np.sqrt(V <span class="op">@</span> corr <span class="op">*</span> sigma_combined <span class="op">@</span> (V <span class="op">*</span> sigma_combined))</span></code></pre></div></div>
+<p>La première, exécutée sur un poste Windows, a fait afficher « SCR Premium + Reserve : nan EUR ». La seconde, une fois la première corrigée, donnait un résultat plausible. Qu’est-ce qui ne va pas dans chacune ? Puis, en jouant le contrôleur de l’étape 3, listez les simplifications de la fiche qu’une note devrait signaler.</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li><strong>Le débordement.</strong> Des entiers Python passés à <code>np.array</code> deviennent des <code>int32</code> sous Windows avec numpy 1.x. <code>primes**2</code> dépasse alors <span class="math inline">\(2^{31}\)</span> et donne des valeurs fausses, parfois négatives, sans message d’erreur ; la racine d’un négatif produit <code>nan</code>. Correction : <code>dtype=float</code>.</li>
+<li><strong>L’agrégation.</strong> En Python, <code>@</code> et <code>*</code> ont la même priorité et s’évaluent de gauche à droite. La ligne calcule <code>((V @ corr) * sigma) @ (V * sigma)</code>, soit la somme des <span class="math inline">\(\operatorname{corr}(s,t)\, V_s V_t\, \sigma_t^2\)</span>, et non la somme des <span class="math inline">\(\operatorname{corr}(s,t)\, \sigma_s V_s\, \sigma_t V_t\)</span> de l’article 117. Correction : <code>x = V * sigma ; np.sqrt(x @ corr @ x)</code>.</li>
+<li><strong>Un écart faible ne prouve rien.</strong> Le bloc ci-dessous compare les écritures. Sur ce portefeuille, la formule fausse ne s’écarte que de moins de 1 % de la bonne : aucun contrôle d’ordre de grandeur ne l’aurait vue. Seule la relecture de la formule contre le texte l’attrape.</li>
+</ol>
+<div class="cell" data-execution_count="4" id="5792844f">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>V <span class="op">=</span> np.asarray(hypotheses[<span class="st">"primes_nettes"</span>]) <span class="op">+</span> np.asarray(hypotheses[<span class="st">"provisions"</span>])</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>sigma <span class="op">=</span> resultats[<span class="st">"sigma_par_segment"</span>]</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>x <span class="op">=</span> V <span class="op">*</span> sigma</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>corr_annexe <span class="op">=</span> np.asarray(hypotheses[<span class="st">"corr_segments"</span>])</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>corr_uniforme <span class="op">=</span> np.full((<span class="dv">4</span>, <span class="dv">4</span>), <span class="fl">0.5</span>) <span class="op">+</span> np.eye(<span class="dv">4</span>) <span class="op">*</span> <span class="fl">0.5</span></span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Carrés calculés en int32 :"</span>, np.array([<span class="dv">120_000_000</span>, <span class="dv">85_000_000</span>, <span class="dv">62_000_000</span>, <span class="dv">35_000_000</span>], dtype<span class="op">=</span>np.int32) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Carrés calculés en float :"</span>, np.array([<span class="fl">120e6</span>, <span class="fl">85e6</span>, <span class="fl">62e6</span>, <span class="fl">35e6</span>]) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Formule juste, corrélations de l'annexe IV    : </span><span class="sc">{</span><span class="dv">3</span><span class="op">*</span>np<span class="sc">.</span>sqrt(x <span class="op">@</span> corr_annexe <span class="op">@</span> x)<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Formule fausse, corrélations de l'annexe IV   : </span><span class="sc">{</span><span class="dv">3</span><span class="op">*</span>np<span class="sc">.</span>sqrt(V <span class="op">@</span> corr_annexe <span class="op">*</span> sigma <span class="op">@</span> (V <span class="op">*</span> sigma))<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Formule juste, matrice uniforme à 0,5         : </span><span class="sc">{</span><span class="dv">3</span><span class="op">*</span>np<span class="sc">.</span>sqrt(x <span class="op">@</span> corr_uniforme <span class="op">@</span> x)<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Formule fausse, matrice uniforme à 0,5        : </span><span class="sc">{</span><span class="dv">3</span><span class="op">*</span>np<span class="sc">.</span>sqrt(V <span class="op">@</span> corr_uniforme <span class="op">*</span> sigma <span class="op">@</span> (V <span class="op">*</span> sigma))<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Carrés calculés en int32 : [ 1153695744  1719701504   -24887296 -1982230528]
+Carrés calculés en float : [1.440e+16 7.225e+15 3.844e+15 1.225e+15]
+
+Formule juste, corrélations de l'annexe IV    :   177,369,542 EUR
+Formule fausse, corrélations de l'annexe IV   :   178,413,514 EUR
+Formule juste, matrice uniforme à 0,5         :   189,394,143 EUR
+Formule fausse, matrice uniforme à 0,5        :   190,728,483 EUR</code></pre>
+</div>
+</div>
+<p>La première version utilisait aussi une matrice uniforme à 0,5 entre tous les segments, présentée comme « formule standard ». Ce n’est pas le cas : l’annexe IV donne une valeur par paire. Sur ce portefeuille, la matrice uniforme augmente le SCR de primes et réserves d’environ 12 M EUR (189,4 M contre 177,4 M).</p>
+<p><strong>Les simplifications qu’une note devrait signaler</strong> (étape 3) :</p>
+<ul>
+<li>volume de primes réduit aux primes nettes de l’année, alors que la mesure de volume de l’article 116 compte aussi les primes futures des contrats existants et des contrats à venir ;</li>
+<li>pas de diversification géographique (DIV pris à 1) ;</li>
+<li>catastrophe en pourcentage des primes au lieu des scénarios des articles 119 et suivants ;</li>
+<li>perte en cas de cessation donnée sans son calcul (contrats retenus, modèle de provisions) ;</li>
+<li>réassurance seulement implicite dans les montants nets, et réassurance non proportionnelle non décrite (elle peut modifier l’écart type de primes, article 117) ;</li>
+<li>écarts types standard sans discussion des paramètres propres (USP), et repris du texte initial : à vérifier dans la version consolidée.</li>
+</ul>
+</details>
+</section>
+<section class="level2" data-number="19.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="19.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Demander à Claude d’écrire la note complète d’un coup.</strong> Vous obtenez un document plausible qui contient probablement des références inventées, des chiffres sans calcul, des justifications creuses. Personne ne peut signer ça. <strong>Toujours fragmenter</strong> : Claude propose la structure, puis des paragraphes section par section que vous validez ou réécrivez.</li>
+<li><strong>Références inventées ou mal attribuées.</strong> Le LLM peut citer un article du Code des assurances ou une recommandation de l’ACPR dont le numéro a l’air juste. Le numéro peut ne pas exister, ou exister avec un autre contenu (la fiche S4 fait trouver une référence inventée glissée parmi des références réelles). Chaque référence se vérifie dans le texte officiel (Légifrance, EUR-Lex, site de l’ACPR) avant d’entrer dans la note.</li>
+<li><strong>Biais de confirmation.</strong> Claude valide spontanément vos choix. Sans le prompt de critique sévère, vous passez à côté de points faibles que le contrôleur, lui, verra. La critique de l’étape 5 n’est pas optionnelle.</li>
+<li><strong>Oublier les limites.</strong> Une note sans section « Limites et points d’attention », ou avec une section complaisante, signale un travail incomplet.</li>
+<li><strong>Citer des chiffres sans recalcul.</strong> Si vous écrivez « Le SCR de souscription total s’élève à X EUR », X vient de la sortie du calcul sur les données à jour, jamais d’une version précédente de la note.</li>
+</ul>
+</section>
+<section class="level2" data-number="19.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="19.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>S2 ORSA, synthèse exécutive</strong> : produire la synthèse d’un rapport ORSA pour le conseil d’administration.</li>
+<li><strong>S3 IFRS 17, explication de la CSM</strong> : traduire la CSM IFRS 17 pour un public board, sans noyer dans la technique.</li>
+<li><strong>S4 Lecture critique d’un texte de l’ACPR</strong> : exercice inverse, synthétiser un texte publié pour en sortir les impacts.</li>
+<li><strong>C2 Rapport annuel d’un fonds vie</strong> : génération de sections récurrentes, cousin de cette note méthodologique.</li>
+</ul>
+</section>
+<section class="level2" data-number="19.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="19.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>L’annexe G de cette formation recense les références ACPR et EIOPA à connaître.</li>
+<li>Pour des paramètres propres à l’entreprise (USP) au lieu des écarts types standard, voir les articles du Règlement délégué qui les encadrent et les orientations de l’EIOPA sur les USP. Le LLM peut aider à lire les textes et à organiser le dossier, pas à calibrer (la calibration demande les données internes).</li>
+<li>La marge de risque Solvabilité II, calculée par coût du capital à partir des SCR projetés, a pour homologue IFRS 17 l’ajustement pour risque non financier : voir la fiche S3.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/E4/index.html"><small>&larr; Précédent</small>E4. Le générateur assemblé, et son test de martingale</a><a class="next" href="../../bibliotheque/S2/index.html"><small>Suivant &rarr;</small>S2. ORSA, synthèse exécutive</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

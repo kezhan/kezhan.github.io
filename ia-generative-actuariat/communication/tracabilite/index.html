@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracer : des jeux d'entrées et leurs résultats · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn active" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 3 · 3.1 Ranger et tracer les résultats</div>
+      <h1 style="max-width:28ch">Tracer : des jeux d'entrées et leurs résultats</h1>
+      <p class="lede">La traçabilité de tout se voit dans la plateforme. D'un point de vue données, ce n'est pas si compliqué : avoir en tête les entrées, et stocker les sorties en conséquence. Un jeu d'entrées donne des résultats. Le reste est une affaire de rangement, et c'est là que tout se perd.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#contre-exemple">Le contre-exemple : le nom du fichier porte les entrées</a><a href="#separer">Séparer les entrées et les sorties</a><a href="#une-ligne">Un jeu d'entrées par ligne, ses résultats par identifiant</a><a href="#exemples">Des exemples, du provisionnement à la vie</a><a href="#excel">La même chose dans Excel</a><a href="#questions">Questions</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « La traçabilité : des jeux d'entrées et leurs résultats », partie 03, juste après « Versionner
+     les résultats » (placé là le 20-10 avec la session qui tient le fil du support).
+     Le segment du formateur, formation du 20 octobre, et la liste d'exemples demandée ensuite par l'auteur
+     (transcription : _sources/transcriptions/2026-10-20_tracabilite_jeux_d_entrees_a_la_volee.md).
+     Les exemples : le classeur d'exemple (demos/classeur_couches.xlsx, onglets Jeux d'entrée, Résultats,
+     Synthèse, demos/_outils/classeur_couches_jeux.py) ; Vision, les calculs de l'ALM (scène tracabilite de
+     demos/_outils/captures_vision_actuariat.py) ; les adresses de Vision citées ont été ouvertes le 20-10. -->
+
+<h2 id="contre-exemple">Le contre-exemple : le nom du fichier porte les entrées</h2>
+<p class="prompt">tarif_auto_v3_final_VRAIMENT_final_inflation2_sans2020.xlsx</p>
+<p>En non-vie, on met des suffixes et des préfixes aux fichiers Excel pour dire « je teste telle chose ». Ce nom porte trois entrées : une version, un indice d'inflation, une année retirée. Six mois plus tard, personne ne sait ce que voulait dire « inflation2 », ni laquelle des versions finales a servi. Au bout d'un moment, tout le monde est perdu, même la personne qui a nommé le fichier.</p>
+<h2 id="separer">Séparer les entrées et les sorties</h2>
+<p>Structurer, c'est d'abord séparer les données d'entrée et les sorties. Dans les entrées d'une calibration, on précise chaque paramètre pris :</p>
+<ul class="clean">
+<li>la sinistralité : tous les sinistres, ou sans les graves, et à quelle date d'extraction ;</li>
+<li>l'indice d'inflation : il y en a plusieurs possibles, et sa projection a ses propres hypothèses ;</li>
+<li>une année qu'on retire parce qu'elle n'est pas représentative ;</li>
+<li>l'exposition, et tout ce que le métier sait devoir entrer dans le calcul.</li>
+</ul>
+<p>Versionner n'est pas simple, parce que c'est votre métier : il faut le connaître pour connaître toutes les entrées. Ce n'est pas un informaticien qui fera cette liste. Ensuite, on crée des tables dédiées, comme pour les versions de modèles du chapitre précédent, <a href="../../communication/resultats/index.html#versions-modeles">Versionner les résultats</a>. Le calcul lui-même et le stockage de ses résultats sont au chapitre <a href="../../exploration/stocker/index.html">Calculer dans le back, stocker les résultats</a>.</p>
+<h2 id="une-ligne">Un jeu d'entrées par ligne, ses résultats par identifiant</h2>
+<figure class="figure-frame">
+<svg aria-label="Une table des jeux d'entrées, une ligne par jeu ; le moteur prend chaque ligne ; une table des résultats où chaque valeur porte l'identifiant de son jeu ; le résultat principal revient en colonne sur la ligne du jeu." role="img" viewbox="0 0 880 210">
+<defs><marker id="tr-f" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"></path></marker></defs>
+<g font-family="Manrope, Segoe UI, sans-serif">
+<rect fill="#fff" height="150" rx="12" stroke="#dcd8d4" width="250" x="10" y="20"></rect>
+<rect fill="#13264A" height="34" rx="12" width="250" x="10" y="20"></rect>
+<text fill="#fff" font-size="14" font-weight="800" x="26" y="42">Jeux d'entrées</text>
+<g fill="#1f2733" font-size="12"><text x="26" y="78">id · nom · paramètre 1 · paramètre 2…</text>
+<text x="26" y="104">JE01 · Référence · …</text><text x="26" y="128">JE02 · Volatilité 1 % · …</text><text x="26" y="152">JE03 · Sans 2020 · …</text></g>
+<rect fill="#e8f3f2" height="64" rx="12" stroke="#cfe6e4" width="200" x="330" y="62"></rect>
+<text fill="#13264A" font-size="14" font-weight="800" text-anchor="middle" x="430" y="90">Le moteur</text>
+<text fill="#1f2733" font-size="12" text-anchor="middle" x="430" y="110">une ligne, ses résultats</text>
+<rect fill="#fff" height="150" rx="12" stroke="#dcd8d4" width="270" x="600" y="20"></rect>
+<rect fill="#13264A" height="34" rx="12" width="270" x="600" y="20"></rect>
+<text fill="#fff" font-size="14" font-weight="800" x="616" y="42">Résultats</text>
+<g fill="#1f2733" font-size="12"><text x="616" y="78">id du jeu · indicateur · segment · valeur</text>
+<text x="616" y="104">JE01 · prime pure · zone 1 · …</text><text x="616" y="128">JE01 · prime pure · zone 2 · …</text><text x="616" y="152">JE02 · prime pure · zone 1 · …</text></g>
+<g fill="none" marker-end="url(#tr-f)" stroke="#7D92AC" stroke-width="2"><path d="M262 94 H 326"></path><path d="M532 94 H 596"></path>
+<path d="M735 172 C 735 205, 135 205, 135 174" stroke="#BA1C3A" stroke-dasharray="6 5"></path></g>
+<text fill="#BA1C3A" font-size="11.5" font-weight="800" text-anchor="middle" x="435" y="200">le résultat principal revient en colonne, sur la ligne du jeu</text>
+</g>
+</svg>
+<figcaption>Une ligne par jeu d'entrées, chaque résultat stocké avec l'identifiant de son jeu : tout est tracé, rien n'est perdu.</figcaption>
+</figure>
+<ol class="steps">
+<li><strong>Toutes les entrées tiennent sur une ligne</strong><p>Si le programme est bien fait, un calcul se décrit par une ligne : un identifiant, un nom, et chaque paramètre en colonne.</p></li>
+<li><strong>Plusieurs jeux, chacun avec un nom</strong><p>On en crée une dizaine : la référence, puis chaque variante qu'on veut tester.</p></li>
+<li><strong>Tout s'enregistre</strong><p>Même un petit changement de volatilité fait une nouvelle ligne. On copie la ligne et on change la valeur ; on n'écrit jamais « idem ».</p></li>
+<li><strong>Le moteur prend chaque ligne</strong><p>Il lit la ligne, fait le calcul, et sort ses résultats.</p></li>
+<li><strong>Chaque résultat porte l'identifiant de son jeu</strong><p>Le résultat est stocké avec l'identifiant du jeu devant lui. Le résultat principal revient en colonne, sur la ligne du jeu.</p></li>
+</ol>
+<p>C'est merveilleux, non ? C'est un travail d'ingénieur, fait une fois. Ensuite, ajouter un, dix, cent scénarios revient à appuyer sur un bouton. Et grâce à l'IA, il suffit de le dire : « crée une table des jeux d'entrées, une ligne par jeu, chaque paramètre en colonne ; stocke chaque résultat avec l'identifiant du jeu ».</p>
+<h2 id="exemples">Des exemples, du provisionnement à la vie</h2>
+<p>La même forme dans chaque domaine : ce qui va sur la ligne du jeu, ce qui sort avec son identifiant, et où Vision le montre.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Domaine</th><th>Le jeu d'entrées : une ligne, ces colonnes</th><th>Les résultats, avec l'identifiant du jeu</th><th>Dans Vision</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">Provisionnement non-vie</td><td>branche, arrêté, triangle des payés ou des survenus, années retirées, liens exclus, moyenne simple ou pondérée, années retenues, facteur de queue, méthode, S/P a priori</td><td>IBNR par année de survenance, total, erreur de Mack</td><td><code>#/modeles/prov-rc-auto</code>, une version par arrêté ; les provisions par triangle dans <code>#/provisions</code></td></tr>
+<tr><td class="rowhead">Tarification GLM</td><td>période, variables, regroupements de modalités, exposition, lois, seuil des graves, indice d'inflation et sa projection</td><td>relativités, AIC, déviance, prime pure par segment</td><td><code>#/rc-avocats?ong=calibrations&amp;cpart=jeux</code>, une ligne par calibration</td></tr>
+<tr><td class="rowhead">Inflation des sinistres</td><td>indice, année de référence, projection</td><td>sinistres revalorisés, coût moyen, prime</td><td>pas d'écran à part ; l'indice est une entrée de la calibration</td></tr>
+<tr><td class="rowhead">Réassurance en excédent de sinistre</td><td>priorité, portée, reconstitutions, limite annuelle, jeu de scénarios, simulations, graine</td><td>prime pure par tranche, coût de réassurance, VaR de la rétention</td><td><code>#/modeles/cotation-moselle</code>, versions et tirages ; <code>#/modeles/reass-2027</code></td></tr>
+<tr><td class="rowhead">ALM</td><td>versions des modèles, jeu de scénarios figé, trajectoires, graine, horizon, stratégie</td><td>fonds propres moyens, VaR à 99,5 %, écart de duration, couverture</td><td><code>#/alm?ong=resultats&amp;part=calculs</code>, une ligne par calcul</td></tr>
+<tr><td class="rowhead">IFRS 17</td><td>flux, courbe, ajustement pour risque, unités de couverture, révision</td><td>CSM, perte, déroulé</td><td><code>#/ifrs17/temporaire-deces-2025</code></td></tr>
+<tr><td class="rowhead">Vie</td><td>table de mortalité, taux technique, chargements, loi de rachat</td><td>provision mathématique par contrat, total, écart à la version en usage</td><td><code>#/modeles/pm-vie</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>« Et si je retire 2020 ? » ne se répond plus en renommant un fichier : on duplique la ligne du jeu, on retire l'année, et le moteur sort les nouveaux résultats à côté des anciens. Les postes de Vision : l'actuaire provisionnement IARD pour les provisions, l'actuaire tarification IARD pour la RC avocats et la cotation, l'actuaire provisionnement vie pour l'ALM et la vie, le responsable solvabilité et reporting pour IFRS 17. Les données sont fictives.</p>
+<div class="demo-shots">
+<figure><a href="img/rc_avocats_02_jeux_entree.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="La RC avocats, Calibrations, Jeux d'entrée : une ligne par calibration, chaque entrée en colonne" height="835" src="img/rc_avocats_02_jeux_entree.png" width="1440"/></a><figcaption><b>1</b>La RC avocats : une ligne par calibration, son identifiant, d'où elle part, et chaque entrée en colonne.</figcaption></figure>
+<figure><a href="img/alm_27_calculs.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'ALM, Résultats, Calculs : une ligne par calcul, son jeu de scénarios, les versions non validées qu'il emploie, son usage, sa moyenne et sa VaR" height="619" src="img/alm_27_calculs.png" width="1440"/></a><figcaption><b>2</b>L'ALM : une ligne par calcul, son jeu de scénarios et ses versions, son usage, et ses résultats en colonne.</figcaption></figure>
+</div>
+<p>Dans Vision : <code>#/rc-avocats?ong=calibrations&amp;cpart=jeux</code> au poste d'actuaire tarification IARD, puis l'onglet Résultats à côté ; <code>#/alm?ong=resultats&amp;part=calculs</code> au poste d'actuaire provisionnement vie.</p>
+<h2 id="excel">La même chose dans Excel</h2>
+<p>Le <a download="" href="../../demos/classeur_couches.xlsx">classeur d'exemple</a> le fait sur sa prime chargée en euros. L'onglet Jeux d'entrée porte une ligne par jeu : un identifiant, un nom, le taux de chargement, le cours de chaque devise, et ce qui change. L'onglet Résultats porte une ligne par jeu et par contrat : l'identifiant du jeu, le contrat, le produit, l'indicateur, la valeur. L'onglet Synthèse croise les deux : une ligne par jeu, le total en colonne, et l'écart à la référence.</p>
+<div class="demo-shots">
+<figure><a href="img/classeur_couches_05_jeux.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'onglet Jeux d'entrée : une ligne par jeu, ses paramètres en colonnes" height="120" src="img/classeur_couches_05_jeux.png" width="1440"/></a><figcaption><b>1</b>Jeux d'entrée : une ligne par jeu, chaque paramètre en colonne.</figcaption></figure>
+<figure><a href="img/classeur_couches_07_synthese.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'onglet Synthèse : une ligne par jeu, la prime chargée totale et l'écart à la référence" height="192" src="img/classeur_couches_07_synthese.png" width="1440"/></a><figcaption><b>2</b>Synthèse : le résultat principal de chaque jeu, et l'écart à la référence.</figcaption></figure>
+</div>
+<p>Ajouter un jeu, c'est ajouter une ligne dans Jeux d'entrée : les résultats suivent, avec son identifiant.</p>
+<h2 id="questions">Questions</h2>
+<ol class="steps">
+<li><strong>Un collègue change la volatilité de 0,8 % à 0,9 % et écrase la ligne du jeu. Qu'est-ce qui est perdu ?</strong>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Le lien entre les anciens résultats et leurs entrées. Les résultats stockés avec l'identifiant du jeu disent maintenant 0,9 %, alors qu'ils ont été calculés avec 0,8 %. Un changement, même petit, fait une nouvelle ligne : on copie la ligne, on change la valeur, on donne un nom.</p>
+</details>
+</li>
+<li><strong>Pourquoi l'identifiant du jeu devant chaque résultat, plutôt qu'un fichier de résultats par jeu ?</strong>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Parce que les résultats de tous les jeux se comparent alors dans une seule table : un filtre, un tableau croisé, et l'écart entre deux jeux se lit tout de suite. Un fichier par jeu oblige à les ouvrir un par un, et c'est le nom du fichier qui reprend le rôle de l'identifiant, avec les mêmes dérives.</p>
+</details>
+</li>
+<li><strong>Qui peut faire la liste des entrées d'une calibration de tarif ?</strong>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>L'actuaire. Savoir qu'un indice d'inflation a une projection et ses hypothèses, qu'une année se retire, que le seuil des graves change la prime pure, c'est le métier. L'IA écrit les tables et le moteur dès que la liste est dite ; elle ne la devine pas.</p>
+</details>
+</li>
+</ol>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>Les entrées ne vivent pas dans le nom d'un fichier : elles vivent sur une ligne, avec un identifiant et un nom.</li>
+<li>Séparer les entrées et les sorties ; la liste des entrées, c'est le métier qui la fait.</li>
+<li>Un changement, même petit, fait une nouvelle ligne : on copie, on n'écrit pas « idem ».</li>
+<li>Chaque résultat porte l'identifiant de son jeu, et le résultat principal revient en colonne sur la ligne du jeu.</li>
+<li>Une fois ce travail fait, ajouter des scénarios revient à appuyer sur un bouton, et il suffit de le dire à l'IA.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../communication/hasard/index.html"><small>&larr; Précédent</small>Le hasard se pilote : graines et trajectoires</a><a class="next" href="../../communication/restituer/index.html"><small>Suivant &rarr;</small>Le message, la note, les graphiques</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

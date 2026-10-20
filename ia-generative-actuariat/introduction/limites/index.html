@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ce qu'il sait, ce qu'il invente · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn active" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 1 · 1.1 Comprendre le modèle</div>
+      <h1 style="max-width:28ch">Ce qu'il sait, ce qu'il invente</h1>
+      <p class="lede">Le moteur décrit, reste ce qu'il fait bien et ce qu'il fait mal. Il code bien, il ignore ce qui est arrivé après sa date de coupure, il invente quand il ne sait pas, il ne calcule pas, et il vous donne raison. Chaque limite a sa parade, et c'est elle qu'on retient.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#coder">Pourquoi il sait coder, et ce qu'il ne sait pas de vous</a><a href="#coupure">Ce qu'il ne sait pas encore : la date de coupure</a><a href="#invente">Ce qu'il invente, et dans quels cas</a><a href="#calcul">Il ne calcule pas : la règle d'or</a><a href="#suiveur">Il vous suit : le biais de confirmation</a><a href="#pieges">Cinq réponses piégées</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « Ce qu'il sait, ce qu'il invente ». Coupé le 20-10 de llm.part.html (ticket 047), dont il reprend
+     les sections sans rien changer au fond : ce qu'il sait coder, la date de coupure, ce qu'il invente, le calcul,
+     le biais de confirmation, les réponses piégées. -->
+
+<h2 id="coder">Pourquoi il sait coder, et ce qu'il ne sait pas de vous</h2>
+<p>Les corpus d'entraînement contiennent énormément de code : GitHub public, la documentation technique, les forums, des notebooks Kaggle, et du code actuariel avec eux. Les packages R <code>CASdatasets</code>, <code>ChainLadder</code>, <code>MortalityLaws</code>, les packages Python <code>lifelib</code>, <code>chainladder</code>, des démonstrations de GLM sur des portefeuilles auto.</p>
+<p>Conséquence directe : il écrit du Python ou du R actuariel idiomatique. Il connaît les quotients de mortalité <code>qx</code>, il sait monter un triangle de liquidation, il connaît l'offset <code>log(exposure)</code> d'un GLM Poisson de fréquence ; vérifiez qu'il l'a mis.</p>
+<p>Il ne sait rien, en revanche, de votre code interne, de votre nomenclature de portefeuille, de vos conventions de cabinet. Tout ce qui suit dans la formation, la mémoire projet, la documentation, l'ontologie du domaine, sert à combler exactement ce trou.</p>
+<h2 id="coupure">Ce qu'il ne sait pas encore : la date de coupure</h2>
+<p>Les poids sont fixés à une date : celle où l'on a arrêté les données d'entraînement, la date de coupure des connaissances. Après, par définition, le modèle ne sait pas, et il comble avec ce qu'il a appris du passé. C'est une des sources de ce qu'on appelle les hallucinations.</p>
+<p>La réponse n'est pas de réentraîner le modèle à chaque nouvelle donnée. C'est de lui donner des outils, comme on le ferait pour un collègue : la recherche sur Internet pour l'actualité, votre documentation pour ce qui vous est propre. Ce qui progresse d'un modèle à l'autre, c'est surtout sa capacité à raisonner sur ce qu'il trouve.</p>
+<p>Chercher dans une base de connaissances est un autre métier que celui du modèle. Une documentation d'un gigaoctet ne se donne pas au modèle : un algorithme de recherche y trouve les passages utiles, et seuls ces passages lui sont donnés avec la question. C'est de l'ingénierie, à construire, et ce n'est pas compliqué ; c'est ce que décrit le chapitre <a href="../../industrialisation/ia-dans-l-outil/index.html">L'IA dans l'outil</a>.</p>
+<h2 id="invente">Ce qu'il invente, et dans quels cas</h2>
+<p>Le modèle produit toujours quelque chose, même quand il n'a pas l'information, parce qu'il tire un token à chaque pas. Il n'a pas de bouton « je ne sais pas ». En contexte actuariel, l'invention prend des formes reconnaissables, et chacune a sa parade.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Ce qui sort</th><th>Un exemple</th><th>La parade</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">Une valeur numérique inventée</td><td>« le SCR de souscription représente 18,7 % du SCR global »</td><td>Aucun nombre ne vient de la prose du modèle. Il écrit le code, le code calcule.</td></tr>
+<tr><td class="rowhead">Une formule altérée</td><td>Fiable sur Black-Scholes ou Chain-Ladder, approximatif sur un cas particulier de CSM IFRS 17</td><td>Demander la source : d'où vient cette formule, quelle référence.</td></tr>
+<tr><td class="rowhead">Une norme imaginaire</td><td>Un article du Code des assurances qui n'existe pas, une position prêtée à l'ACPR</td><td>Vérifier chaque référence réglementaire à la source. Le corpus est vaste, l'actuaire y est exposé plus que d'autres.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="calcul">Il ne calcule pas : la règle d'or</h2>
+<p>Les modèles de langue sont mauvais en arithmétique exacte. Un calcul long passe mal, une décimale se perd, et rien ne signale l'erreur quand elle arrive. Ce n'est pas un défaut de jeunesse, c'est la construction : le modèle ne calcule pas, il prédit le morceau de texte le plus probable, et une suite de chiffres n'a pas de structure arithmétique dans son apprentissage.</p>
+<div class="callout warn">
+<span class="label">La règle d'or actuarielle</span>
+<p>Tous les chiffres d'un livrable sortent de code exécuté, jamais de la prose du modèle. Il aide à écrire le code, à lire les résultats, à formuler la note. Il ne fait pas le calcul.</p>
+</div>
+<p>La nuance est dans la demande. On ne tape pas « calcule la prime pure de ce portefeuille ». On tape « écris le code Python qui calcule la prime pure de ce portefeuille, exécute-le, et donne-moi le résultat avec les valeurs intermédiaires ». Le premier produit un nombre invérifiable, le second un calcul qu'on relit.</p>
+<h2 id="suiveur">Il vous suit : le biais de confirmation</h2>
+<p>Un modèle affiné sur des préférences humaines apprend à plaire. Il ne contredit pas spontanément. Soumettez-lui une analyse en disant « je pense que cette méthode est la bonne, qu'en penses-tu », et il abondera, en améliorant peut-être la formulation, rarement en contestant le fond.</p>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt qui débloque la critique</span>
+<p>« Voici mon raisonnement. Avant de l'accepter, joue le rôle d'un actuaire expérimenté qui me relirait. Cherche les failles, les hypothèses implicites, les cas où mon approche tombe en défaut. Sois sévère. »</p>
+<p>Les critiques qui sortent sont utiles. Libre à vous de les rejeter, elles auront au moins été formulées.</p>
+</div>
+<h2 id="pieges">Cinq réponses piégées</h2>
+<p>Chaque réponse ci-dessous est plausible et fausse. Cherchez le défaut avant d'ouvrir la réponse.</p>
+<ol class="steps">
+<li><strong>« Le SCR de souscription non-vie moyen se situe autour de 18,7 % du SCR total, soit environ 142 milliards d'euros agrégés sur le marché français. »</strong>
+<details class="answer"><summary>Voir le piège</summary>
+<p>Chiffre inventé. Les ordres de grandeur sont plausibles, la source n'existe pas.</p>
+</details>
+</li>
+<li><strong>« \(\text{Prime pure} = \mathbb{E}[N] \times \mathbb{E}[X] \times (1 + \varphi)\) », pour un GLM Tweedie.</strong>
+<details class="answer"><summary>Voir le piège</summary>
+<p>Formule altérée. La prime pure vaut \(\mathbb{E}[N] \times \mathbb{E}[X]\). Le paramètre de dispersion Tweedie ne s'y ajoute pas comme ça.</p>
+</details>
+</li>
+<li><strong>« Excellent choix ! Le GLM Gamma est parfaitement adapté pour modéliser les fréquences de sinistres en auto… »</strong>
+<details class="answer"><summary>Voir le piège</summary>
+<p>Biais de confirmation. Une fréquence est un compte : Poisson, pas Gamma, qui est continue. Le modèle aurait dû contester, il a plié.</p>
+</details>
+</li>
+<li><strong>« L'ACPR a publié en mars 2024 la recommandation 2024-R-03 qui détaille les attentes en matière de documentation des modèles… »</strong>
+<details class="answer"><summary>Voir le piège</summary>
+<p>Le numéro existe : c'est la recommandation 2024-R-03 du 21 novembre 2024, sur le recueil des informations relatives au client pour le devoir de conseil en assurance. La date et le sujet sont faux. C'est le piège le plus dangereux : un numéro réel rend crédible un contenu inventé. Le site de l'ACPR le montre en une minute.</p>
+</details>
+</li>
+<li><strong>Rente viagère de 10 000 € par an, tête de 65 ans, espérance de vie résiduelle de 22 ans, actualisation à 2 % : « la VAP est de 178 350 € ».</strong>
+<details class="answer"><summary>Voir le piège</summary>
+<p>Deux erreurs. Le calcul de tête : 22 annuités de 10 000 € à 2 % valent 176 580 € à terme échu, 180 112 € à terme à échoir. Et surtout la méthode : l'espérance de vie est prise comme une durée certaine. Une rente viagère \(a_{65}\) se calcule avec les probabilités de survie d'une table de rentiers (TGH05, TGF05), pas comme une rente certaine sur \(e_{65}\). La valeur actuelle étant concave en la durée, la rente viagère vaut en général moins que la rente certaine sur l'espérance de vie.</p>
+</details>
+</li>
+</ol>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>Il code bien parce qu'il a lu beaucoup de code, le vôtre excepté.</li>
+<li>Ce qui est arrivé après sa date de coupure, il ne le sait pas : on lui donne des outils, on ne le réentraîne pas.</li>
+<li>Un nombre qui sort de sa prose n'a pas de valeur. Un nombre qui sort du code qu'il a écrit, et que vous avez relu, en a une.</li>
+<li>Il ne vous contredira pas si vous ne le lui demandez pas.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../introduction/llm/index.html"><small>&larr; Précédent</small>Un modèle qui écrit le mot suivant</a><a class="next" href="../../introduction/niveaux/index.html"><small>Suivant &rarr;</small>Pas toujours besoin d'un modèle de langue</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

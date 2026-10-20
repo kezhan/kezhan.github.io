@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe C. CLAUDE.md type pour un cabinet d’actuariat · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe C. CLAUDE.md type pour un cabinet d’actuariat</h1>
+      <p class="lede">Modèle de <code>CLAUDE.md</code> à déposer à la racine d’un projet actuariel, à adapter aux conventions de votre cabinet, au domaine du projet (tarification, provisionnement, gestion actif-passif) et à vos outils. Claude Code lit ce fichier au début de chaque session. La documentation conseille de rester sous 200 lignes : plus le fichier est long, moins ses consignes sont suivies. La commande <code>/init</code> en produit une première version à partir du contenu du dossier, à relire et compléter.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#modèle-complet-à-copier">Modèle complet à copier</a><a href="#ce-quil-ne-faut-pas-mettre-dans-claude.md">Ce qu’il ne faut pas mettre dans CLAUDE.md</a><a href="#ce-que-léquipe-partage-ce-qui-reste-à-vous">Ce que l’équipe partage, ce qui reste à vous</a><a href="#quand-le-réviser">Quand le réviser</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<p>Un CLAUDE.md est fait de consignes, pas de verrous : Claude essaie de les suivre, rien ne l’y oblige. Ce qui doit arriver à coup sûr passe par un hook, et ce qui ne doit jamais arriver aux données passe par leur absence du dossier (<a href="../../annexes/D/index.html">annexe D</a>).</p>
+<section class="level2" data-number="32.1" id="modèle-complet-à-copier">
+<h2 class="anchored" data-anchor-id="modèle-complet-à-copier" data-number="32.1" id="modèle-complet-à-copier"> Modèle complet à copier</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu"># CLAUDE.md : projet [nom du projet]</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="fu">## Contexte du projet</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>Ce projet calcule [objet métier précis, par exemple « les provisions</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>techniques non-vie du portefeuille auto en France métropolitaine, chaque</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>trimestre »]. Destinataires : [direction technique, fonction actuarielle,</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>commissaires aux comptes, contrôleur]. Périmètre : [complet, ou partiel avec</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>la liste des segments].</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>Toute modification du code engage la signature de [fonction du signataire,</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>par exemple le responsable de la fonction actuarielle]. Les décisions de</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>méthode sont tracées dans <span class="in">`docs/decisions/`</span>. Ne jamais retirer une décision</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>sans le signaler.</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="fu">## Données</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a><span class="ss">- </span>Le dossier du projet ne contient que des données synthétiques ou</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>  pseudonymisées. Les extractions de production restent hors du dossier.</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="ss">- </span>Dans tes réponses, jamais de ligne individuelle de données : seulement des</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>  agrégats (effectifs, sommes, moyennes par segment).</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a><span class="ss">- </span>Dictionnaire des données : <span class="in">`docs/dictionnaire_donnees.md`</span>.</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a></span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a><span class="fu">## Vocabulaire métier</span></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="ss">- </span>**qx** : probabilité qu'une personne d'âge x exact décède avant x + 1.</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>  **μx** : force de mortalité (taux instantané). **lx**, **dx** : survivants</span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>  et décès de la table à l'âge x. Âges entiers de 0 à 120.</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a><span class="ss">- </span>**LoB** : ligne d'activité au sens de Solvabilité II. Codes 1 à 12 pour la</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>  non-vie, affaires directes et réassurance proportionnelle acceptée ; 13 à 16</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>  pour la réassurance non proportionnelle ; la vie a ses propres codes. Correspondance avec nos codes internes : <span class="in">`docs/lobs_definition.md`</span>.</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a><span class="ss">- </span>**PM** : provision mathématique, calcul par tête, méthode prospective.</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>  En euros, jamais en milliers d'euros sauf dans le reporting agrégé.</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a><span class="ss">- </span>**Ultime** : charge totale des sinistres à terminaison. **Réserve** :</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>  ultime moins payé. En euros.</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a><span class="ss">- </span>**Best estimate (BE)** : meilleure estimation au sens de Solvabilité II,</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>  sur des hypothèses réalistes propres à l'organisme. À distinguer des flux</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>  de trésorerie d'exécution d'IFRS 17, qui suivent d'autres règles (dont</span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>  l'ajustement pour risque non financier).</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a></span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a><span class="fu">## Conventions de nommage</span></span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a></span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a><span class="ss">- </span>DataFrames : suffixe <span class="in">`_df`</span> (<span class="in">`polices_df`</span>, <span class="in">`triangles_df`</span>, <span class="in">`mortalite_df`</span>).</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a><span class="ss">- </span>Colonnes : snake_case, une seule langue dans tout le projet (ici</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>  l'anglais : <span class="in">`policy_id`</span>, <span class="in">`claim_amount`</span>, <span class="in">`inception_date`</span>).</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a><span class="ss">- </span>Identifiants : préfixés par leur nature (<span class="in">`pol_`</span> police, <span class="in">`clm_`</span> sinistre,</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a>  <span class="in">`cnt_`</span> contrat).</span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a><span class="ss">- </span>Dates : <span class="in">`pd.Timestamp`</span> ou <span class="in">`datetime.date`</span>, jamais une chaîne. Format ISO</span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a>  <span class="in">`AAAA-MM-JJ`</span> à l'écriture.</span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a><span class="ss">- </span>Montants : <span class="in">`float`</span> en euros, jamais en centimes.</span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a></span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a><span class="fu">## Formules de référence</span></span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a></span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a>Ne jamais réécrire ces calculs sans validation du <span class="co">[</span><span class="ot">signataire</span><span class="co">]</span>.</span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a></span>
+<span id="cb1-56"><a aria-hidden="true" href="#cb1-56" tabindex="-1"></a><span class="ss">- </span>**Chain-Ladder déterministe** : <span class="in">`src/actuaire_kit/provision/chain_ladder.py`</span>.</span>
+<span id="cb1-57"><a aria-hidden="true" href="#cb1-57" tabindex="-1"></a>  Test de référence : triangle de Taylor-Ashe, réserve totale 18 680 856,</span>
+<span id="cb1-58"><a aria-hidden="true" href="#cb1-58" tabindex="-1"></a>  ultime total 53 038 946.</span>
+<span id="cb1-59"><a aria-hidden="true" href="#cb1-59" tabindex="-1"></a><span class="ss">- </span>**Mack** : <span class="in">`src/actuaire_kit/provision/mack.py`</span> (Mack 1993).</span>
+<span id="cb1-60"><a aria-hidden="true" href="#cb1-60" tabindex="-1"></a><span class="ss">- </span>**GLM Poisson de fréquence** : <span class="in">`statsmodels`</span>, cible = nombre de sinistres,</span>
+<span id="cb1-61"><a aria-hidden="true" href="#cb1-61" tabindex="-1"></a>  <span class="in">`offset=np.log(exposure)`</span>. Jamais <span class="in">`weights=exposure`</span> avec le nombre de</span>
+<span id="cb1-62"><a aria-hidden="true" href="#cb1-62" tabindex="-1"></a>  sinistres pour cible.</span>
+<span id="cb1-63"><a aria-hidden="true" href="#cb1-63" tabindex="-1"></a><span class="ss">- </span>**VAP d'une rente viagère** : <span class="in">`src/actuaire_kit/vie/vap_rente.py`</span>.</span>
+<span id="cb1-64"><a aria-hidden="true" href="#cb1-64" tabindex="-1"></a>  Discrétisation annuelle, paiements en début d'année (convention du</span>
+<span id="cb1-65"><a aria-hidden="true" href="#cb1-65" tabindex="-1"></a>  cabinet).</span>
+<span id="cb1-66"><a aria-hidden="true" href="#cb1-66" tabindex="-1"></a></span>
+<span id="cb1-67"><a aria-hidden="true" href="#cb1-67" tabindex="-1"></a><span class="fu">## Documents de référence</span></span>
+<span id="cb1-68"><a aria-hidden="true" href="#cb1-68" tabindex="-1"></a></span>
+<span id="cb1-69"><a aria-hidden="true" href="#cb1-69" tabindex="-1"></a>Lire le document concerné avant de coder. Ce sont des documents longs : ils</span>
+<span id="cb1-70"><a aria-hidden="true" href="#cb1-70" tabindex="-1"></a>s'ouvrent quand la tâche le demande, ils ne sont pas importés.</span>
+<span id="cb1-71"><a aria-hidden="true" href="#cb1-71" tabindex="-1"></a></span>
+<span id="cb1-72"><a aria-hidden="true" href="#cb1-72" tabindex="-1"></a><span class="ss">- </span><span class="in">`docs/methodo_pricing.md`</span> : méthode de tarification auto, à jour 2026.</span>
+<span id="cb1-73"><a aria-hidden="true" href="#cb1-73" tabindex="-1"></a><span class="ss">- </span><span class="in">`docs/specs/solvabilite2_pilier1.pdf`</span> : à lire avant tout calcul de SCR.</span>
+<span id="cb1-74"><a aria-hidden="true" href="#cb1-74" tabindex="-1"></a><span class="ss">- </span><span class="in">`docs/lobs_definition.md`</span> : lignes d'activité et codes internes.</span>
+<span id="cb1-75"><a aria-hidden="true" href="#cb1-75" tabindex="-1"></a></span>
+<span id="cb1-76"><a aria-hidden="true" href="#cb1-76" tabindex="-1"></a>Conventions Git du cabinet (une page, chargée à chaque session) :</span>
+<span id="cb1-77"><a aria-hidden="true" href="#cb1-77" tabindex="-1"></a>@docs/conventions_git.md</span>
+<span id="cb1-78"><a aria-hidden="true" href="#cb1-78" tabindex="-1"></a></span>
+<span id="cb1-79"><a aria-hidden="true" href="#cb1-79" tabindex="-1"></a><span class="fu">## Environnement technique</span></span>
+<span id="cb1-80"><a aria-hidden="true" href="#cb1-80" tabindex="-1"></a></span>
+<span id="cb1-81"><a aria-hidden="true" href="#cb1-81" tabindex="-1"></a><span class="ss">- </span>Python 3.11 ou plus récent, dépendances déclarées dans <span class="in">`pyproject.toml`</span>.</span>
+<span id="cb1-82"><a aria-hidden="true" href="#cb1-82" tabindex="-1"></a><span class="ss">- </span>Bibliothèques : pandas, numpy, scipy, statsmodels, matplotlib, pyarrow.</span>
+<span id="cb1-83"><a aria-hidden="true" href="#cb1-83" tabindex="-1"></a><span class="ss">- </span>Persistance : parquet pour les artefacts intermédiaires (le CSV perd les</span>
+<span id="cb1-84"><a aria-hidden="true" href="#cb1-84" tabindex="-1"></a>  types).</span>
+<span id="cb1-85"><a aria-hidden="true" href="#cb1-85" tabindex="-1"></a><span class="ss">- </span>Tests : pytest, dans <span class="in">`tests/`</span>.</span>
+<span id="cb1-86"><a aria-hidden="true" href="#cb1-86" tabindex="-1"></a></span>
+<span id="cb1-87"><a aria-hidden="true" href="#cb1-87" tabindex="-1"></a><span class="fu">## À ne jamais faire</span></span>
+<span id="cb1-88"><a aria-hidden="true" href="#cb1-88" tabindex="-1"></a></span>
+<span id="cb1-89"><a aria-hidden="true" href="#cb1-89" tabindex="-1"></a><span class="ss">- </span>Une boucle <span class="in">`for`</span> Python sur les polices ou les sinistres : vectoriser.</span>
+<span id="cb1-90"><a aria-hidden="true" href="#cb1-90" tabindex="-1"></a><span class="ss">- </span>Un <span class="in">`df.fillna(0)`</span> sans décision colonne par colonne, écrite avec son motif.</span>
+<span id="cb1-91"><a aria-hidden="true" href="#cb1-91" tabindex="-1"></a><span class="ss">- </span>Un tirage aléatoire sans graine : <span class="in">`rng = np.random.default_rng(seed=42)`</span></span>
+<span id="cb1-92"><a aria-hidden="true" href="#cb1-92" tabindex="-1"></a>  ou une autre graine documentée, un générateur par composant.</span>
+<span id="cb1-93"><a aria-hidden="true" href="#cb1-93" tabindex="-1"></a><span class="ss">- </span>Un chemin absolu en dur : <span class="in">`pathlib.Path`</span>, relatif à la racine du projet.</span>
+<span id="cb1-94"><a aria-hidden="true" href="#cb1-94" tabindex="-1"></a><span class="ss">- </span>Ouvrir un fichier hors du dossier du projet.</span>
+<span id="cb1-95"><a aria-hidden="true" href="#cb1-95" tabindex="-1"></a></span>
+<span id="cb1-96"><a aria-hidden="true" href="#cb1-96" tabindex="-1"></a><span class="fu">## Commandes utiles</span></span>
+<span id="cb1-97"><a aria-hidden="true" href="#cb1-97" tabindex="-1"></a></span>
+<span id="cb1-98"><a aria-hidden="true" href="#cb1-98" tabindex="-1"></a><span class="ss">- </span><span class="in">`python -m actuaire_kit.provisions`</span> : pipeline complet des provisions.</span>
+<span id="cb1-99"><a aria-hidden="true" href="#cb1-99" tabindex="-1"></a><span class="ss">- </span><span class="in">`python -m actuaire_kit.scr`</span> : SCR de souscription non-vie.</span>
+<span id="cb1-100"><a aria-hidden="true" href="#cb1-100" tabindex="-1"></a><span class="ss">- </span><span class="in">`python -m pytest`</span> : tous les tests.</span>
+<span id="cb1-101"><a aria-hidden="true" href="#cb1-101" tabindex="-1"></a><span class="ss">- </span><span class="in">`python -m pytest tests/test_chain_ladder.py -v`</span> : les tests d'un module.</span>
+<span id="cb1-102"><a aria-hidden="true" href="#cb1-102" tabindex="-1"></a><span class="ss">- </span><span class="in">`python scripts/controle_donnees.py`</span> : contrôle qualité des données amont.</span>
+<span id="cb1-103"><a aria-hidden="true" href="#cb1-103" tabindex="-1"></a></span>
+<span id="cb1-104"><a aria-hidden="true" href="#cb1-104" tabindex="-1"></a><span class="fu">## Façon de travailler</span></span>
+<span id="cb1-105"><a aria-hidden="true" href="#cb1-105" tabindex="-1"></a></span>
+<span id="cb1-106"><a aria-hidden="true" href="#cb1-106" tabindex="-1"></a><span class="ss">- </span>Avant de coder, lire les documents de référence concernés.</span>
+<span id="cb1-107"><a aria-hidden="true" href="#cb1-107" tabindex="-1"></a><span class="ss">- </span>Pour toute modification non triviale, proposer un plan en quelques points</span>
+<span id="cb1-108"><a aria-hidden="true" href="#cb1-108" tabindex="-1"></a>  et attendre ma validation.</span>
+<span id="cb1-109"><a aria-hidden="true" href="#cb1-109" tabindex="-1"></a><span class="ss">- </span>À chaque étape validée, proposer un commit dont le message dit</span>
+<span id="cb1-110"><a aria-hidden="true" href="#cb1-110" tabindex="-1"></a>  l'intention de la modification, pas son contenu technique.</span>
+<span id="cb1-111"><a aria-hidden="true" href="#cb1-111" tabindex="-1"></a><span class="ss">- </span>Tout chiffre cité vient d'un code exécuté dans la session, jamais d'une</span>
+<span id="cb1-112"><a aria-hidden="true" href="#cb1-112" tabindex="-1"></a>  phrase écrite plus tôt.</span>
+<span id="cb1-113"><a aria-hidden="true" href="#cb1-113" tabindex="-1"></a><span class="ss">- </span>Avant chaque choix de méthode, faire la critique : « joue le rôle d'un</span>
+<span id="cb1-114"><a aria-hidden="true" href="#cb1-114" tabindex="-1"></a>  actuaire senior en revue, sois sévère ».</span></code></pre></div></div>
+<p>Quelques choix du modèle méritent une explication.</p>
+<ul>
+<li><strong>La section Données est une consigne, pas une protection.</strong> Elle dit à Claude ce qu’il doit faire ; elle n’empêche rien. Une règle <code>deny</code> sur un dossier n’empêche pas davantage un script Python autorisé de l’ouvrir. Les permissions évitent les accidents, elles ne protègent pas des données : les données sensibles restent hors du dossier, et on travaille en synthétique ou en pseudonymisé.</li>
+<li><strong>Les documents longs sont cités sans <code>@</code>.</strong> Un import <code>@</code> charge le fichier entier à chaque session, qu’il serve ou non. On le réserve aux fichiers courts dont chaque session a besoin, comme les conventions Git ci-dessus.</li>
+<li><strong>Les commandes passent par <code>python -m</code>.</strong> Elles marchent sous Windows comme ailleurs, là où un <code>make</code> n’est pas installé par défaut.</li>
+</ul>
+</section>
+<section class="level2" data-number="32.2" id="ce-quil-ne-faut-pas-mettre-dans-claude.md">
+<h2 class="anchored" data-anchor-id="ce-quil-ne-faut-pas-mettre-dans-claude.md" data-number="32.2" id="ce-quil-ne-faut-pas-mettre-dans-claude.md"> Ce qu’il ne faut pas mettre dans CLAUDE.md</h2>
+<ul>
+<li><strong>Le code.</strong> Le <code>CLAUDE.md</code> décrit les conventions et pointe vers les fichiers ; il ne reproduit pas le code.</li>
+<li><strong>Les hypothèses détaillées d’un calcul.</strong> Elles vivent dans la note méthodologique ou dans les paramètres versionnés. Le <code>CLAUDE.md</code> dit où les trouver.</li>
+<li><strong>Des données ou des informations confidentielles.</strong> Le fichier est envoyé au fournisseur avec chaque session, et un relecteur externe doit pouvoir le lire : ni noms d’assurés, ni chiffres consolidés sensibles.</li>
+<li><strong>L’historique du projet.</strong> Il vit dans <code>git log</code> et dans <code>docs/decisions/</code>.</li>
+</ul>
+</section>
+<section class="level2" data-number="32.3" id="ce-que-léquipe-partage-ce-qui-reste-à-vous">
+<h2 class="anchored" data-anchor-id="ce-que-léquipe-partage-ce-qui-reste-à-vous" data-number="32.3" id="ce-que-léquipe-partage-ce-qui-reste-à-vous"> Ce que l’équipe partage, ce qui reste à vous</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fichier</th>
+<th>Qui l’écrit</th>
+<th>Partagé</th>
+<th>Quand il est chargé</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>./CLAUDE.md</code> ou <code>./.claude/CLAUDE.md</code></td>
+<td>L’équipe</td>
+<td>Oui, versionné</td>
+<td>À chaque session</td>
+</tr>
+<tr class="even">
+<td><code>./.claude/rules/*.md</code></td>
+<td>L’équipe</td>
+<td>Oui, versionné</td>
+<td>À chaque session, ou seulement pour les fichiers que vise leur en-tête <code>paths:</code></td>
+</tr>
+<tr class="odd">
+<td>Un <code>CLAUDE.md</code> dans un sous-dossier</td>
+<td>L’équipe</td>
+<td>Oui, versionné</td>
+<td>Quand Claude travaille dans ce sous-dossier</td>
+</tr>
+<tr class="even">
+<td><code>./CLAUDE.local.md</code></td>
+<td>Vous</td>
+<td>Non, à ajouter au <code>.gitignore</code></td>
+<td>À chaque session</td>
+</tr>
+<tr class="odd">
+<td><code>~/.claude/CLAUDE.md</code></td>
+<td>Vous</td>
+<td>Non</td>
+<td>À chaque session, dans tous vos projets</td>
+</tr>
+<tr class="even">
+<td>CLAUDE.md d’organisation (<code>C:\Program Files\ClaudeCode\CLAUDE.md</code> sous Windows)</td>
+<td>La DSI</td>
+<td>Sur tous les postes</td>
+<td>À chaque session</td>
+</tr>
+<tr class="odd">
+<td>Auto memory (<code>~/.claude/projects/&lt;projet&gt;/memory/MEMORY.md</code>)</td>
+<td>Claude</td>
+<td>Non, stockée sur votre machine</td>
+<td>Les 200 premières lignes, ou 25 Ko</td>
+</tr>
+</tbody>
+</table>
+<p>Vos préférences personnelles (par exemple « je préfère un tableau à un graphique ») vont dans <code>./CLAUDE.local.md</code>, à la racine du projet, et pas dans le fichier de l’équipe. Pour partager une connaissance avec les collègues, on la versionne : CLAUDE.md, règles de <code>.claude/rules/</code>, skills de <code>.claude/skills/</code>. Un dossier <code>.claude/memory/</code> n’est pas un mécanisme de Claude Code, et rien ne le charge. Le chapitre « Piloter l’IA » (partie 1) présente la mémoire projet en situation.</p>
+</section>
+<section class="level2" data-number="32.4" id="quand-le-réviser">
+<h2 class="anchored" data-anchor-id="quand-le-réviser" data-number="32.4" id="quand-le-réviser"> Quand le réviser</h2>
+<p>Le <code>CLAUDE.md</code> évolue avec le projet. Il se met à jour, et se commite, dans ces moments-là :</p>
+<ol type="1">
+<li><strong>Une convention d’équipe change.</strong> Par exemple, « désormais tous les triangles sont en euros, plus en milliers d’euros ». Sans mise à jour, collègues et Claude continuent sur l’ancienne convention.</li>
+<li><strong>Un document de référence arrive.</strong> Une spécification, une note méthodologique, un jeu de données de référence : on ajoute son chemin, sans <code>@</code> s’il est long.</li>
+<li><strong>Claude refait une erreur déjà corrigée.</strong> Une boucle <code>for</code> sur les polices, une graine oubliée : la consigne va dans « À ne jamais faire », et l’erreur ne revient plus d’une session à l’autre.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : relisez ce CLAUDE.md
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un collègue vous soumet ces lignes, extraites de son <code>CLAUDE.md</code>. Qu’est-ce qui ne va pas ?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="ss">- </span>qx : taux de mortalité instantané à l'âge x.</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="ss">- </span>Avant tout calcul, consulter @docs/specs/directive_solvabilite2_complete.pdf</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="ss">- </span>Le dossier data/assures/ est interdit en lecture dans .claude/settings.json :</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>  les données nominatives y sont protégées.</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a><span class="ss">- </span>Mes préférences personnelles sont dans .claude/CLAUDE.local.md.</span></code></pre></div></div>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li><span class="math inline">\(q_x\)</span> est une probabilité, celle de décéder entre <span class="math inline">\(x\)</span> et <span class="math inline">\(x + 1\)</span>. Le taux instantané est la force de mortalité <span class="math inline">\(\mu_x\)</span>.</li>
+<li>L’import <code>@</code> charge le PDF entier à chaque session, quelle que soit la tâche. Citer le chemin sans <code>@</code>, avec la consigne de le lire avant un calcul de SCR.</li>
+<li>La règle <code>deny</code> n’empêche pas un script Python autorisé d’ouvrir le dossier, et ce que Claude affiche du fichier part chez le fournisseur. Les données nominatives sortent du dossier de travail ; le projet tourne sur des données synthétiques ou pseudonymisées.</li>
+<li>L’emplacement documenté est <code>./CLAUDE.local.md</code>, à la racine du projet, ajouté au <code>.gitignore</code>.</li>
+</ol>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="32.5" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="32.5" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>La page officielle sur la mémoire : code.claude.com/docs/en/memory (CLAUDE.md, imports, <code>.claude/rules/</code>, auto memory).</li>
+<li>Un guide communautaire pour choisir entre CLAUDE.md, skills et sous-agents quand le besoin grandit : alexop.dev/posts/claude-code-customization-guide-claudemd-skills-subagents/.</li>
+<li>L’<a href="../../annexes/D/index.html">annexe D</a> pour les permissions et les hooks, complémentaires du <code>CLAUDE.md</code>.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/B/index.html"><small>&larr; Précédent</small>Annexe B. Bibliothèque de prompts d’intention</a><a class="next" href="../../annexes/D/index.html"><small>Suivant &rarr;</small>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

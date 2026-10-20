@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E2. Vasicek, CIR et Hull-White comparés · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">E2. Vasicek, CIR et Hull-White comparés</h1>
+      <p class="lede">Ce que vous apprenez ici n’est pas la théorie des modèles de taux. C’est la façon de choisir entre plusieurs modèles sans se perdre : les mettre côte à côte sur les mêmes paramètres, dans une illustration qui fait voir leurs différences, puis chiffrer ces différences. Le choix devient une conséquence de ce qu’on demande au modèle.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#lillustration-demandée-à-lia">L’illustration, demandée à l’IA</a><a href="#ce-que-disent-les-modèles">Ce que disent les modèles</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#dans-vision">Dans Vision</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle (comparer avant de choisir)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="16.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="16.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Pour une étude ALM, un calcul de meilleure estimation ou un modèle interne, il faut choisir un modèle de taux court. Les trois candidats classiques à un facteur partagent la même idée, un retour vers un niveau, et diffèrent sur trois points qui comptent en pratique : redonnent-ils la courbe des taux du marché à la date de calcul, laissent-ils le taux devenir négatif, et leur volatilité dépend-elle du niveau des taux.</p>
+<ol type="1">
+<li><strong>Vasicek (1977)</strong> : un niveau de long terme <span class="math inline">\(b\)</span>, des chocs de taille constante. Sa propre courbe, des taux négatifs possibles.</li>
+<li><strong>Cox, Ingersoll et Ross (1985)</strong> : les chocs sont proportionnels à <span class="math inline">\(\sqrt{r}\)</span>. Le taux reste positif ; si <span class="math inline">\(2ab \geq \sigma^2\)</span> (la condition de Feller), il ne touche même jamais zéro.</li>
+<li><strong>Hull et White (1990)</strong> : Vasicek dont le niveau dépend du temps, <span class="math inline">\(\theta(t)\)</span>, choisi pour redonner exactement la courbe du marché à la date de départ.</li>
+</ol>
+</section>
+<section class="level2" data-number="16.2" id="lillustration-demandée-à-lia">
+<h2 class="anchored" data-anchor-id="lillustration-demandée-à-lia" data-number="16.2" id="lillustration-demandée-à-lia"> L’illustration, demandée à l’IA</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Le prompt de l’illustration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>« Fais-moi une page HTML autonome qui compare Vasicek, CIR et Hull-White à un facteur, avec la même vitesse de retour et la même volatilité (pour CIR, σ / √b, pour avoir la même volatilité au niveau b). Je choisis la courbe du marché parmi quatre formes (plate, pentue, inversée, en bosse). Montre la courbe des taux de chaque modèle à la date de départ contre celle du marché ; la moyenne et la bande à 95 % du taux court sur 30 ans pour chacun ; et leurs lois à un horizon que je choisis. En chiffres : la part de taux négatifs de chacun, la condition de Feller, l’écart de Vasicek au marché à 10 ans. »</em></p>
+</div>
+</div>
+<div class="demo-embed">
+<div class="demo-head"><b>Trois modèles de taux, à comparer</b><span>Changez la courbe du marché, puis la volatilité</span></div>
+<iframe loading="lazy" src="img/taux_c09cb3db.html" style="height:950px" title="Comparaison de Vasicek, CIR et Hull-White"></iframe>
+<p class="print-note">L'illustration interactive est sur le site du support, bibliothèque, fiche E2.</p>
+</div>
+<p>Ce qui saute aux yeux :</p>
+<ol type="1">
+<li><strong>Hull-White reste collé à la courbe du marché</strong>, quelle que soit sa forme : c’est sa raison d’être. Vasicek et CIR ont la leur, qui ne colle que si le marché a justement la forme qu’ils savent produire.</li>
+<li><strong>Sur la courbe en bosse</strong>, aucun modèle à niveau constant ne la reproduit : il faudrait un <span class="math inline">\(\theta(t)\)</span>, c’est-à-dire Hull-White.</li>
+<li><strong>La loi de CIR est asymétrique et bornée par zéro</strong> ; celles de Vasicek et de Hull-White sont normales, de même largeur, décalées l’une de l’autre.</li>
+</ol>
+</section>
+<section class="level2" data-number="16.3" id="ce-que-disent-les-modèles">
+<h2 class="anchored" data-anchor-id="ce-que-disent-les-modèles" data-number="16.3" id="ce-que-disent-les-modèles"> Ce que disent les modèles</h2>
+<ol type="1">
+<li><p><strong>Vasicek</strong> :</p>
+<p><span class="math display">\[
+\mathrm{d}r_t = a\,(b - r_t)\,\mathrm{d}t + \sigma\,\mathrm{d}W_t.
+\]</span></p>
+<p>Loi normale, courbe des taux fermée, taux long <span class="math inline">\(b - \frac{\sigma^2}{2a^2}\)</span>.</p></li>
+<li><p><strong>CIR</strong> :</p>
+<p><span class="math display">\[
+\mathrm{d}r_t = a\,(b - r_t)\,\mathrm{d}t + \sigma\sqrt{r_t}\,\mathrm{d}W_t.
+\]</span></p>
+<p>Moyenne identique à Vasicek ; variance <span class="math inline">\(r_0\,\frac{\sigma^2}{a}\left(e^{-at} - e^{-2at}\right) + b\,\frac{\sigma^2}{2a}\left(1 - e^{-at}\right)^2\)</span>. Prix zéro-coupon fermé lui aussi, avec <span class="math inline">\(\gamma = \sqrt{a^2 + 2\sigma^2}\)</span>.</p></li>
+<li><p><strong>Hull-White</strong> :</p>
+<p><span class="math display">\[
+\mathrm{d}r_t = \left(\theta(t) - a\,r_t\right)\mathrm{d}t + \sigma\,\mathrm{d}W_t.
+\]</span></p>
+<p>La loi reste normale, de même variance que Vasicek ; sa moyenne suit le taux à terme du marché <span class="math inline">\(f(0, t)\)</span>, plus un terme de convexité <span class="math inline">\(\frac{\sigma^2}{2a^2}\left(1 - e^{-at}\right)^2\)</span>. Par construction, le prix zéro-coupon à la date de départ est celui du marché.</p></li>
+</ol>
+</section>
+<section class="level2" data-number="16.4" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="16.4" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 3 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Poser la courbe du marché.</strong> <em>« Écris une courbe de Nelson-Siegel pentue : niveau 3,2 %, pente −1,7 %, λ = 2 ans. Donne son taux court, ses taux zéro-coupon à 1, 2, 5, 10, 20 et 30 ans, et son taux à terme instantané. »</em></p></li>
+<li><p><strong>Mettre les trois modèles côte à côte.</strong> <em>« Avec a = 0,25 et σ = 0,8 %, calcule la courbe des taux de Vasicek et de CIR (b au niveau de long terme du marché, σ_CIR = σ / √b) et compare-les au marché. Pour Hull-White, montre que la courbe est celle du marché par construction. Puis, à 10 ans : la part de taux négatifs de chacun, par la formule pour Vasicek et Hull-White, par simulation pour CIR. »</em></p></li>
+<li><p><strong>Choisir.</strong> <em>« Pour une étude ALM d’un fonds en euros dont les flux s’actualisent à la courbe EIOPA, lequel de ces trois modèles prendrais-tu, et qu’est-ce qu’il ne saura pas faire ? »</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="16.5" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="16.5" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="16.5.1" id="étape-1.-la-courbe-du-marché-et-les-courbes-des-trois-modèles">
+<h3 class="anchored" data-anchor-id="étape-1.-la-courbe-du-marché-et-les-courbes-des-trois-modèles" data-number="16.5.1"> Étape 1. La courbe du marché, et les courbes des trois modèles</h3>
+<div class="cell" data-execution_count="1" id="1ab28896">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> norm</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>b0, b1, b2, lam <span class="op">=</span> <span class="fl">0.032</span>, <span class="op">-</span><span class="fl">0.017</span>, <span class="fl">0.0</span>, <span class="fl">2.0</span>      <span class="co"># Nelson-Siegel, courbe pentue</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>a, sigma <span class="op">=</span> <span class="fl">0.25</span>, <span class="fl">0.008</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="kw">def</span> ns(tau):</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    x <span class="op">=</span> np.maximum(tau, <span class="fl">1e-9</span>) <span class="op">/</span> lam</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    g <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>x)) <span class="op">/</span> x</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    <span class="cf">return</span> b0 <span class="op">+</span> b1 <span class="op">*</span> g <span class="op">+</span> b2 <span class="op">*</span> (g <span class="op">-</span> np.exp(<span class="op">-</span>x))</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="kw">def</span> fwd(tau):</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    x <span class="op">=</span> tau <span class="op">/</span> lam</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    <span class="cf">return</span> b0 <span class="op">+</span> b1 <span class="op">*</span> np.exp(<span class="op">-</span>x) <span class="op">+</span> b2 <span class="op">*</span> x <span class="op">*</span> np.exp(<span class="op">-</span>x)</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>r0, b <span class="op">=</span> b0 <span class="op">+</span> b1, b0</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>s_cir <span class="op">=</span> sigma <span class="op">/</span> np.sqrt(b)</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="kw">def</span> vasicek(tau):</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    B <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>a <span class="op">*</span> tau)) <span class="op">/</span> a</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>((b <span class="op">-</span> sigma<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> a<span class="op">**</span><span class="dv">2</span>)) <span class="op">*</span> (B <span class="op">-</span> tau) <span class="op">-</span> sigma<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> B<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="dv">4</span> <span class="op">*</span> a) <span class="op">-</span> B <span class="op">*</span> r0) <span class="op">/</span> tau</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a><span class="kw">def</span> cir(tau):</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>    g <span class="op">=</span> np.sqrt(a<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> s_cir<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>    ex <span class="op">=</span> np.exp(g <span class="op">*</span> tau) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>    den <span class="op">=</span> (g <span class="op">+</span> a) <span class="op">*</span> ex <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> g</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>    lnA <span class="op">=</span> (<span class="dv">2</span> <span class="op">*</span> a <span class="op">*</span> b <span class="op">/</span> s_cir<span class="op">**</span><span class="dv">2</span>) <span class="op">*</span> np.log(<span class="dv">2</span> <span class="op">*</span> g <span class="op">*</span> np.exp((a <span class="op">+</span> g) <span class="op">*</span> tau <span class="op">/</span> <span class="dv">2</span>) <span class="op">/</span> den)</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>    <span class="cf">return</span> (<span class="op">-</span>lnA <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> ex <span class="op">/</span> den <span class="op">*</span> r0) <span class="op">/</span> tau</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>mats <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>])</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>    <span class="st">"maturité (ans)"</span>: mats,</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>    <span class="st">"marché"</span>: [<span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:.2%}</span><span class="ss">"</span> <span class="cf">for</span> x <span class="kw">in</span> ns(mats)],</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>    <span class="st">"Hull-White"</span>: [<span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:.2%}</span><span class="ss">"</span> <span class="cf">for</span> x <span class="kw">in</span> ns(mats)],</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>    <span class="st">"Vasicek"</span>: [<span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:.2%}</span><span class="ss">"</span> <span class="cf">for</span> x <span class="kw">in</span> vasicek(mats)],</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>    <span class="st">"écart Vasicek (pb)"</span>: np.<span class="bu">round</span>((vasicek(mats) <span class="op">-</span> ns(mats)) <span class="op">*</span> <span class="fl">1e4</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>    <span class="st">"CIR"</span>: [<span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:.2%}</span><span class="ss">"</span> <span class="cf">for</span> x <span class="kw">in</span> cir(mats)],</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>})</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">maturité (ans)</th>
+<th data-quarto-table-cell-role="th">marché</th>
+<th data-quarto-table-cell-role="th">Hull-White</th>
+<th data-quarto-table-cell-role="th">Vasicek</th>
+<th data-quarto-table-cell-role="th">écart Vasicek (pb)</th>
+<th data-quarto-table-cell-role="th">CIR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1</td>
+<td>1.86%</td>
+<td>1.86%</td>
+<td>1.69%</td>
+<td>-17</td>
+<td>1.70%</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>2</td>
+<td>2.13%</td>
+<td>2.13%</td>
+<td>1.86%</td>
+<td>-27</td>
+<td>1.86%</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>5</td>
+<td>2.58%</td>
+<td>2.58%</td>
+<td>2.22%</td>
+<td>-36</td>
+<td>2.22%</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>10</td>
+<td>2.86%</td>
+<td>2.86%</td>
+<td>2.55%</td>
+<td>-31</td>
+<td>2.56%</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>20</td>
+<td>3.03%</td>
+<td>3.03%</td>
+<td>2.83%</td>
+<td>-20</td>
+<td>2.83%</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>30</td>
+<td>3.09%</td>
+<td>3.09%</td>
+<td>2.93%</td>
+<td>-15</td>
+<td>2.94%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>La colonne Hull-White recopie le marché : c’est ce que <span class="math inline">\(\theta(t)\)</span> garantit, et c’est pourquoi une étude ALM qui doit partir du bilan du jour le prend. Vasicek s’écarte de quelques dizaines de points de base au milieu de la courbe.</p>
+</section>
+<section class="level3" data-number="16.5.2" id="étape-2.-les-taux-négatifs-à-10-ans-et-la-condition-de-feller">
+<h3 class="anchored" data-anchor-id="étape-2.-les-taux-négatifs-à-10-ans-et-la-condition-de-feller" data-number="16.5.2"> Étape 2. Les taux négatifs à 10 ans, et la condition de Feller</h3>
+<div class="cell" data-execution_count="2" id="2e1353db">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>t <span class="op">=</span> <span class="fl">10.0</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>sd <span class="op">=</span> sigma <span class="op">*</span> np.sqrt((<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span><span class="dv">2</span> <span class="op">*</span> a <span class="op">*</span> t)) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> a))</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>m_vas <span class="op">=</span> r0 <span class="op">*</span> np.exp(<span class="op">-</span>a <span class="op">*</span> t) <span class="op">+</span> b <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>a <span class="op">*</span> t))</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>m_hw <span class="op">=</span> fwd(t) <span class="op">+</span> sigma<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> a<span class="op">**</span><span class="dv">2</span>) <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>a <span class="op">*</span> t))<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>n, pas <span class="op">=</span> <span class="dv">20_000</span>, <span class="dv">1</span> <span class="op">/</span> <span class="dv">48</span></span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>x <span class="op">=</span> np.full(n, r0)</span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">int</span>(<span class="bu">round</span>(t <span class="op">/</span> pas))):                 <span class="co"># Euler à troncature complète</span></span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>    xp <span class="op">=</span> np.maximum(x, <span class="dv">0</span>)</span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>    x <span class="op">=</span> x <span class="op">+</span> a <span class="op">*</span> (b <span class="op">-</span> xp) <span class="op">*</span> pas <span class="op">+</span> s_cir <span class="op">*</span> np.sqrt(xp <span class="op">*</span> pas) <span class="op">*</span> rng.standard_normal(n)</span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a>    <span class="st">"modèle"</span>: [<span class="st">"Vasicek"</span>, <span class="st">"Hull-White"</span>, <span class="st">"CIR"</span>],</span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a>    <span class="st">"moyenne à 10 ans"</span>: [<span class="ss">f"</span><span class="sc">{</span>m_vas<span class="sc">:.2%}</span><span class="ss">"</span>, <span class="ss">f"</span><span class="sc">{</span>m_hw<span class="sc">:.2%}</span><span class="ss">"</span>, <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>maximum(x, <span class="dv">0</span>)<span class="sc">.</span>mean()<span class="sc">:.2%}</span><span class="ss">"</span>],</span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>    <span class="st">"taux négatifs ou nuls à 10 ans"</span>: [<span class="ss">f"</span><span class="sc">{</span>norm<span class="sc">.</span>cdf(<span class="op">-</span>m_vas <span class="op">/</span> sd)<span class="sc">:.2%}</span><span class="ss">"</span>, <span class="ss">f"</span><span class="sc">{</span>norm<span class="sc">.</span>cdf(<span class="op">-</span>m_hw <span class="op">/</span> sd)<span class="sc">:.2%}</span><span class="ss">"</span>, <span class="ss">f"</span><span class="sc">{</span>(x <span class="op">&lt;=</span> <span class="dv">0</span>)<span class="sc">.</span>mean()<span class="sc">:.2%}</span><span class="ss">"</span>],</span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>    <span class="st">"condition de Feller 2ab ≥ σ²"</span>: [<span class="st">""</span>, <span class="st">""</span>, <span class="ss">f"</span><span class="sc">{</span><span class="dv">2</span> <span class="op">*</span> a <span class="op">*</span> b<span class="sc">:.5f}</span><span class="ss"> ≥ </span><span class="sc">{</span>s_cir<span class="op">**</span><span class="dv">2</span><span class="sc">:.5f}</span><span class="ss"> : </span><span class="sc">{</span><span class="st">'remplie'</span> <span class="cf">if</span> <span class="dv">2</span> <span class="op">*</span> a <span class="op">*</span> b <span class="op">&gt;=</span> s_cir<span class="op">**</span><span class="dv">2</span> <span class="cf">else</span> <span class="st">'non remplie'</span><span class="sc">}</span><span class="ss">"</span>],</span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>})</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">modèle</th>
+<th data-quarto-table-cell-role="th">moyenne à 10 ans</th>
+<th data-quarto-table-cell-role="th">taux négatifs ou nuls à 10 ans</th>
+<th data-quarto-table-cell-role="th">condition de Feller 2ab ≥ σ²</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Vasicek</td>
+<td>3.06%</td>
+<td>0.33%</td>
+<td></td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Hull-White</td>
+<td>3.23%</td>
+<td>0.21%</td>
+<td></td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>CIR</td>
+<td>3.05%</td>
+<td>0.00%</td>
+<td>0.01600 ≥ 0.00200 : remplie</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section class="level3" data-number="16.5.3" id="étape-3.-les-trois-courbes-sur-un-graphique">
+<h3 class="anchored" data-anchor-id="étape-3.-les-trois-courbes-sur-un-graphique" data-number="16.5.3"> Étape 3. Les trois courbes, sur un graphique</h3>
+<div class="cell" data-execution_count="3" id="cell-fig-taux-e2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>tau <span class="op">=</span> np.linspace(<span class="fl">0.25</span>, <span class="dv">30</span>, <span class="dv">120</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.6</span>))</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>plt.plot(np.r_[<span class="dv">0</span>, tau], np.r_[r0, ns(tau)] <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"#BA1C3A"</span>, lw<span class="op">=</span><span class="dv">5</span>, alpha<span class="op">=</span><span class="fl">0.4</span>, label<span class="op">=</span><span class="st">"Hull-White"</span>)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>plt.plot(np.r_[<span class="dv">0</span>, tau], np.r_[r0, ns(tau)] <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"#1f2733"</span>, lw<span class="op">=</span><span class="fl">1.4</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="st">"marché"</span>)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>plt.plot(np.r_[<span class="dv">0</span>, tau], np.r_[r0, vasicek(tau)] <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"#13264A"</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"Vasicek"</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>plt.plot(np.r_[<span class="dv">0</span>, tau], np.r_[r0, cir(tau)] <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"#1F6F6B"</span>, lw<span class="op">=</span><span class="dv">2</span>, ls<span class="op">=</span>(<span class="dv">0</span>, (<span class="dv">6</span>, <span class="dv">3</span>)), label<span class="op">=</span><span class="st">"CIR"</span>)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>plt.xlabel(<span class="st">"maturité (années)"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"taux zéro-coupon (%)"</span>)<span class="op">;</span> plt.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-taux-e2">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-taux-e2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="336" src="img/fig-taux-e2-output-1.png" width="855"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-taux-e2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 16.1: La courbe pentue du marché, que Hull-White redonne, et les courbes de Vasicek et de CIR, qui ont chacune la leur.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="16.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="16.6" id="pièges-typiques"> Pièges typiques</h2>
+<ol type="1">
+<li><strong>Comparer CIR et Vasicek avec le même <span class="math inline">\(\sigma\)</span>.</strong> Dans CIR, <span class="math inline">\(\sigma\)</span> multiplie <span class="math inline">\(\sqrt{r}\)</span> : à <span class="math inline">\(b = 3\,\%\)</span>, <span class="math inline">\(\sqrt{b}\)</span> vaut environ 0,17, et le même <span class="math inline">\(\sigma\)</span> donne une volatilité six fois plus faible. On compare à volatilité égale au niveau <span class="math inline">\(b\)</span>, <span class="math inline">\(\sigma_{\text{CIR}} = \sigma / \sqrt{b}\)</span>.</li>
+<li><strong>Croire que Hull-White prévoit les taux.</strong> Il reproduit les prix d’aujourd’hui ; sa moyenne suit les taux à terme, qui ne sont pas une prévision.</li>
+<li><strong>Oublier la convexité.</strong> La moyenne de Hull-White n’est pas le taux à terme, il faut ajouter <span class="math inline">\(\frac{\sigma^2}{2a^2}\left(1 - e^{-at}\right)^2\)</span>.</li>
+<li><strong>Choisir CIR « parce que les taux ne peuvent pas être négatifs ».</strong> Ils l’ont été pendant des années en euro. Un modèle qui les interdit sous-estime alors certains risques du passif.</li>
+</ol>
+</section>
+<section class="level2" data-number="16.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="16.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ol type="1">
+<li><strong>E1 Le modèle de Vasicek, pas à pas</strong> : le même modèle, seul, avec sa courbe et sa loi.</li>
+<li><strong>E4 Le générateur assemblé</strong> : le test de martingale, qui vérifie que les prix des obligations simulés sont justes.</li>
+<li>Hull-White à deux facteurs, ou le modèle G2++, quand il faut aussi faire bouger la pente de la courbe.</li>
+</ol>
+</section>
+<section class="level2" data-number="16.8" id="dans-vision">
+<h2 class="anchored" data-anchor-id="dans-vision" data-number="16.8" id="dans-vision"> Dans Vision</h2>
+<p>L’étude ALM de Vision propose les deux versions du modèle de taux court : Hull-White, calé sur la courbe du 31/12/2025, qui redonne donc le bilan de départ, et Vasicek, qui a sa propre courbe et fait apparaître l’écart. Onglet Modèles, puis Scénarios, en local sur <code>http://127.0.0.1:8013/vision360/index.html?profil=actuaire_vie#/alm</code>.</p>
+</section>
+<section class="level2" data-number="16.9" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="16.9" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ol type="1">
+<li>Cox, J., Ingersoll, J. et Ross, S. (1985), A theory of the term structure of interest rates, <em>Econometrica</em>, 53(2), 385-407.</li>
+<li>Hull, J. et White, A. (1990), Pricing interest-rate-derivative securities, <em>Review of Financial Studies</em>, 3(4), 573-592.</li>
+<li>Brigo, D. et Mercurio, F. (2006), <em>Interest Rate Models, Theory and Practice</em>, Springer, chapitres 3 et 4.</li>
+<li>Lord, R., Koekkoek, R. et van Dijk, D. (2010), A comparison of biased simulation schemes for stochastic volatility models, <em>Quantitative Finance</em>, 10(2), pour le schéma d’Euler à troncature complète.</li>
+</ol>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/E1/index.html"><small>&larr; Précédent</small>E1. Le modèle de Vasicek, pas à pas</a><a class="next" href="../../bibliotheque/E3/index.html"><small>Suivant &rarr;</small>E3. Actions : brownien géométrique ou sauts</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

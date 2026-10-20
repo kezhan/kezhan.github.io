@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C1. Dashboard sinistralité auto avec Lovable · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">C1. Dashboard sinistralité auto avec Lovable</h1>
+      <p class="lede">Cette fiche illustre la démarche D sur Lovable, avec sa version locale par Claude Code. Ce que vous apprenez n’est pas la sinistralité, mais comment décrire la spec d’un dashboard en langage naturel, comment préparer une donnée synthétique ou agrégée avant de la confier à un service tiers, et comment valider les chiffres affichés contre la référence Python.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#pièges-typiques">Pièges typiques</a><a href="#exercice-trouvez-les-erreurs">Exercice : trouvez les erreurs</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : D, construire un dashboard ou un rapport
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Communication et tableaux de bord » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="23.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="23.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le pilotage actuariel demande des <strong>tableaux de bord vivants</strong> : KPI globaux, drill-down par segment, alertes sur les segments qui dérivent, partagés avec les équipes commerciales et la direction. Streamlit ou Dash les construisent en Python ; encore faut-il écrire ce Python, et soigner la mise en page.</p>
+<p><strong>Lovable</strong> (lancé fin 2024, issu du projet GPT Engineer) génère des applications web (React, Tailwind) à partir de descriptions en langage naturel. L’actuaire décrit le dashboard en français, Lovable écrit l’application, l’héberge et la publie à une adresse web. C’est rapide pour une maquette ou une démonstration. C’est aussi un service externe : les données qu’on lui donne partent chez lui, et les calculs qu’il affiche sont écrits par lui.</p>
+<p>La même spec, donnée à Claude Code, produit une version locale (une page HTML autonome ou une application Streamlit) dont les calculs restent en Python sur votre poste. La fiche montre les deux.</p>
+<p>Ce cas illustre <strong>l’organisation des données</strong> (export propre, dictionnaire des colonnes, agrégats plutôt que lignes), <strong>l’interface de présentation</strong> (KPI, drill-down, alertes), <strong>la gouvernance</strong> (hébergement, entraînement des modèles, données synthétiques en formation), et <strong>le pilotage IA</strong> (5 prompts d’intention, itération visuelle, vérification des chiffres).</p>
+</section>
+<section class="level2" data-number="23.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="23.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On simule un portefeuille auto de 30 000 polices sur un exercice. L’exposition (la part de l’année pendant laquelle la police a couru) va de 0,1 à 1 : une police présente trois mois n’a acquis qu’un quart de sa prime annuelle. Le profil de risque suit la réalité du marché dans ses grandes lignes : fréquence en U selon l’âge, jeunes conducteurs les plus risqués, fréquence croissante avec le coefficient bonus-malus. Le tarif simulé suit l’âge et le bonus-malus mais ignore la région : c’est lui qui fera apparaître des écarts de S/P par région.</p>
+<div class="cell" data-execution_count="1" id="0defd20a">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">30_000</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>REGIONS <span class="op">=</span> [<span class="st">"Île-de-France"</span>, <span class="st">"Auvergne-Rhône-Alpes"</span>, <span class="st">"Nouvelle-Aquitaine"</span>,</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>           <span class="st">"Occitanie"</span>, <span class="st">"Hauts-de-France"</span>, <span class="st">"Provence-Alpes-Côte d'Azur"</span>]</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>CLASSES_BM <span class="op">=</span> np.array([<span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">120</span>, <span class="dv">150</span>, <span class="dv">200</span>, <span class="dv">300</span>])  <span class="co"># CRM x 100</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>age <span class="op">=</span> rng.integers(<span class="dv">18</span>, <span class="dv">86</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>bonus_malus <span class="op">=</span> rng.choice(CLASSES_BM, size<span class="op">=</span>N,</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>                         p<span class="op">=</span>[<span class="fl">0.30</span>, <span class="fl">0.15</span>, <span class="fl">0.12</span>, <span class="fl">0.10</span>, <span class="fl">0.08</span>, <span class="fl">0.10</span>, <span class="fl">0.07</span>, <span class="fl">0.04</span>, <span class="fl">0.03</span>, <span class="fl">0.01</span>])</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="co"># Un conducteur ne descend sous 100 qu'avec les années : 0,95 par an sans sinistre</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>bm_minimum <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> <span class="fl">0.95</span> <span class="op">**</span> (age <span class="op">-</span> <span class="dv">18</span>)</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>bonus_malus <span class="op">=</span> np.maximum(bonus_malus, CLASSES_BM[np.searchsorted(CLASSES_BM, bm_minimum)])</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>region <span class="op">=</span> rng.choice(REGIONS, size<span class="op">=</span>N, p<span class="op">=</span>[<span class="fl">0.25</span>, <span class="fl">0.18</span>, <span class="fl">0.12</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>])</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>exposition <span class="op">=</span> rng.uniform(<span class="fl">0.1</span>, <span class="fl">1.0</span>, size<span class="op">=</span>N).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="co"># Risque simulé : en U sur l'âge, croissant avec le bonus-malus, niveau propre à chaque région</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>effet_age <span class="op">=</span> <span class="fl">0.9</span> <span class="op">*</span> np.exp(<span class="op">-</span>(age <span class="op">-</span> <span class="dv">18</span>) <span class="op">/</span> <span class="dv">7</span>) <span class="op">+</span> <span class="fl">0.02</span> <span class="op">*</span> np.clip(age <span class="op">-</span> <span class="dv">70</span>, <span class="dv">0</span>, <span class="va">None</span>)</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>niveau_region <span class="op">=</span> pd.Series([<span class="fl">1.25</span>, <span class="fl">0.95</span>, <span class="fl">0.95</span>, <span class="fl">1.00</span>, <span class="fl">1.10</span>, <span class="fl">1.10</span>], index<span class="op">=</span>REGIONS)</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>lam <span class="op">=</span> <span class="fl">0.055</span> <span class="op">*</span> np.exp(effet_age) <span class="op">*</span> (bonus_malus <span class="op">/</span> <span class="dv">100</span>) <span class="op">**</span> <span class="fl">0.8</span> <span class="op">*</span> niveau_region[region].to_numpy()</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>nb_sinistres <span class="op">=</span> rng.poisson(lam <span class="op">*</span> exposition)</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="co"># Un coût tiré pour chaque sinistre, puis sommé par police</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>couts <span class="op">=</span> rng.lognormal(<span class="fl">7.6</span>, <span class="fl">1.0</span>, size<span class="op">=</span>nb_sinistres.<span class="bu">sum</span>())</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>cout_sinistres <span class="op">=</span> np.bincount(np.repeat(np.arange(N), nb_sinistres), weights<span class="op">=</span>couts, minlength<span class="op">=</span>N)</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a></span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a><span class="co"># Tarif : suit l'âge et le bonus-malus, ignore la région</span></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>prime_pure_tarif <span class="op">=</span> <span class="fl">0.055</span> <span class="op">*</span> np.exp(effet_age) <span class="op">*</span> (bonus_malus <span class="op">/</span> <span class="dv">100</span>) <span class="op">**</span> <span class="fl">0.8</span> <span class="op">*</span> np.exp(<span class="fl">7.6</span> <span class="op">+</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>prime_annuelle <span class="op">=</span> np.clip((<span class="fl">1.05</span> <span class="op">*</span> prime_pure_tarif <span class="op">+</span> <span class="dv">90</span>) <span class="op">*</span> rng.lognormal(<span class="dv">0</span>, <span class="fl">0.1</span>, size<span class="op">=</span>N),</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>                         <span class="dv">150</span>, <span class="dv">3000</span>).<span class="bu">round</span>(<span class="dv">0</span>)</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a></span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>polices <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>    <span class="st">"police_id"</span>: [<span class="ss">f"POL_</span><span class="sc">{</span>i<span class="sc">:06d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(N)],</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>    <span class="st">"age"</span>: age,</span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>    <span class="st">"bonus_malus"</span>: bonus_malus,</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>    <span class="st">"region"</span>: region,</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    <span class="st">"exposition"</span>: exposition,</span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>    <span class="st">"prime_annuelle"</span>: prime_annuelle,</span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>    <span class="st">"prime_acquise"</span>: (prime_annuelle <span class="op">*</span> exposition).<span class="bu">round</span>(<span class="dv">2</span>),</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>    <span class="st">"nb_sinistres"</span>: nb_sinistres,</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>    <span class="st">"cout_sinistres"</span>: cout_sinistres.<span class="bu">round</span>(<span class="dv">0</span>),</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>})</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a></span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a>primes_acquises <span class="op">=</span> polices[<span class="st">"prime_acquise"</span>].<span class="bu">sum</span>()</span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a>charge <span class="op">=</span> polices[<span class="st">"cout_sinistres"</span>].<span class="bu">sum</span>()</span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices : </span><span class="sc">{</span><span class="bu">len</span>(polices)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exposition : </span><span class="sc">{</span>polices[<span class="st">'exposition'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss"> années-police"</span>)</span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Primes acquises : </span><span class="sc">{</span>primes_acquises<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Charge sinistres : </span><span class="sc">{</span>charge<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Fréquence : </span><span class="sc">{</span>polices[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> polices[<span class="st">'exposition'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"S/P (charge / primes acquises) : </span><span class="sc">{</span>charge <span class="op">/</span> primes_acquises<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Polices : 30,000
+Exposition : 16,541 années-police
+Primes acquises : 4,707,594 EUR
+Charge sinistres : 3,172,358 EUR
+Fréquence : 5.74%
+S/P (charge / primes acquises) : 67.4%</code></pre>
+</div>
+</div>
+<p>Le S/P se calcule sur les <strong>primes acquises</strong> (prime annuelle × exposition) : c’est la prime qui correspond à la période où les sinistres ont pu survenir. Le fichier porte donc une colonne <code>prime_acquise</code> toute faite, pour qu’aucune application n’ait à la recalculer.</p>
+<div class="cell" data-execution_count="2" id="5bbf966b">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="co"># Export ligne à ligne : acceptable ici parce que les données sont synthétiques</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>EXPORT_DIR <span class="op">=</span> Path(<span class="st">"_resources"</span>)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>EXPORT_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>chemin <span class="op">=</span> EXPORT_DIR <span class="op">/</span> <span class="st">"polices_synthetiques.csv"</span></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>polices.to_csv(chemin, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Export : </span><span class="sc">{</span>chemin<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Taille : </span><span class="sc">{</span>chemin<span class="sc">.</span>stat()<span class="sc">.</span>st_size <span class="op">/</span> <span class="dv">1024</span><span class="sc">:.0f}</span><span class="ss"> KB"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Export : _resources\polices_synthetiques.csv
+Taille : 1784 KB</code></pre>
+</div>
+</div>
+<p>Le fichier ne contient ni date d’effet ni date de survenance : il décrit un exercice entier. Aucun graphique mensuel ne peut en sortir sans que l’outil invente la série.</p>
+</section>
+<section class="level2" data-number="23.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="23.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention vers Lovable (ou vers Claude Code)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ouvrir Lovable (<code>lovable.dev</code>), créer un nouveau projet, et donner les prompts ci-dessous dans l’ordre. Les mêmes prompts, donnés à Claude Code dans le dossier du projet, produisent la version locale (étape 3).</p>
+<ol type="1">
+<li><p><strong>Spécifier le dashboard.</strong> <em>“Je veux un dashboard de pilotage de sinistralité pour un portefeuille d’assurance auto, sur un exercice. Trois pages : (1) KPI globaux et profils par âge, bonus-malus et région, (2) drill-down par région et par coefficient bonus-malus, (3) alertes sur les segments dont le S/P dépasse le seuil. Style sobre, palette bleu, ambre, émeraude. Source : un fichier CSV de polices dont voici le dictionnaire : exposition en années (0 à 1), prime_acquise = prime_annuelle × exposition, cout_sinistres en euros. Règles de calcul : S/P = somme de cout_sinistres / somme de prime_acquise ; fréquence = somme de nb_sinistres / somme d’exposition. Ne divise jamais par prime_annuelle. Le fichier n’a pas de date : aucun graphique temporel.”</em></p></li>
+<li><p><strong>Page 1 KPI.</strong> <em>“Sur la page 1 : 4 cartes KPI en haut (nombre de polices, primes acquises, S/P, fréquence). Sous chaque carte, la formule utilisée en petit. En dessous, un diagramme en barres de la fréquence et du S/P par tranche d’âge (18-24, 25-34, 35-49, 50-64, 65-74, 75 et plus). Sur la droite, le classement des régions par S/P.”</em></p></li>
+<li><p><strong>Page 2 drill-down.</strong> <em>“Sur la page 2 : un sélecteur multi-régions et multi-coefficients bonus-malus en haut. En dessous, deux tableaux croisés région × bonus-malus : (a) le S/P, (b) l’exposition en années-police. Couleur graduée du vert au rouge selon le S/P ; les cases de moins de 100 années-police en gris, sans couleur, avec la mention ‘volume insuffisant’.”</em></p></li>
+<li><p><strong>Page 3 alertes.</strong> <em>“Sur la page 3 : une carte par segment (région, tranche d’âge ou coefficient bonus-malus) dont le S/P dépasse 75 % avec au moins 500 années-police. Chaque carte : le segment, son S/P, le seuil, l’exposition, et un niveau de gravité (vigilance au-dessus de 75 %, critique au-dessus de 90 %). Exemple de titre : ‘S/P de la région X : Y % pour un seuil de 75 %’.”</em></p></li>
+<li><p><strong>Itération visuelle.</strong> <em>“Augmente la taille des KPI principaux, passe la palette des graphiques en bleu nuit, et ajoute un bouton d’export PDF en haut à droite.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="23.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="23.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="23.4.1" id="étape-1.-préparer-les-données-et-les-chiffres-de-référence">
+<h3 class="anchored" data-anchor-id="étape-1.-préparer-les-données-et-les-chiffres-de-référence" data-number="23.4.1"> Étape 1. Préparer les données et les chiffres de référence</h3>
+<p>Lovable comme Claude Code lisent du CSV ou du JSON. On veut un export <strong>propre</strong> :</p>
+<ul>
+<li>Pas de données nominatives. Ici tout est synthétique ; sur de vraies données, remplacer le numéro de contrat par <code>POL_xxx</code> est une <strong>pseudonymisation</strong>, pas une anonymisation : les données restent personnelles au sens du RGPD, car l’âge, la région, le bonus-malus et les sinistres suffisent parfois à retrouver quelqu’un.</li>
+<li>Pas de NaN (on remplit avec 0 ou une valeur sentinelle documentée).</li>
+<li>Des noms de colonnes sans accent ni espace, et un dictionnaire des colonnes (unité, sens) donné dans le premier prompt.</li>
+<li>Les grandeurs déjà calculées quand une erreur est probable (ici <code>prime_acquise</code>).</li>
+</ul>
+<div class="cell" data-execution_count="3" id="89000664">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="co"># Contrôles sur le fichier exporté, relu tel qu'il sera transmis</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>export <span class="op">=</span> pd.read_csv(chemin)</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>dictionnaire <span class="op">=</span> [<span class="st">"police_id"</span>, <span class="st">"age"</span>, <span class="st">"bonus_malus"</span>, <span class="st">"region"</span>, <span class="st">"exposition"</span>,</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>                <span class="st">"prime_annuelle"</span>, <span class="st">"prime_acquise"</span>, <span class="st">"nb_sinistres"</span>, <span class="st">"cout_sinistres"</span>]</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>hors_dictionnaire <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> export.columns <span class="cf">if</span> c <span class="kw">not</span> <span class="kw">in</span> dictionnaire]</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>id_conformes <span class="op">=</span> export[<span class="st">"police_id"</span>].<span class="bu">str</span>.fullmatch(<span class="vs">r"POL_</span><span class="dv">\d</span><span class="op">{6}</span><span class="vs">"</span>).<span class="bu">all</span>()</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Colonnes hors du dictionnaire : </span><span class="sc">{</span>hors_dictionnaire <span class="kw">or</span> <span class="st">'aucune'</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"police_id tous au format POL_ suivi de 6 chiffres : </span><span class="sc">{</span>id_conformes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"NaN : </span><span class="sc">{</span>export<span class="sc">.</span>isnull()<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"prime_acquise = prime_annuelle x exposition (à 1 centime près) : "</span></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>((export[<span class="st">'prime_annuelle'</span>] <span class="op">*</span> export[<span class="st">'exposition'</span>] <span class="op">-</span> export[<span class="st">'prime_acquise'</span>]).<span class="bu">abs</span>() <span class="op">&lt;=</span> <span class="fl">0.01</span>)<span class="sc">.</span><span class="bu">all</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a><span class="co"># Chiffres de référence pour valider ensuite ceux du dashboard</span></span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>reference <span class="op">=</span> pd.Series({</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>    <span class="st">"Nombre de polices"</span>: <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(polices)<span class="sc">:,}</span><span class="ss">"</span>,</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>    <span class="st">"Exposition (années-police)"</span>: <span class="ss">f"</span><span class="sc">{</span>polices[<span class="st">'exposition'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss">"</span>,</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>    <span class="st">"Primes acquises (EUR)"</span>: <span class="ss">f"</span><span class="sc">{</span>primes_acquises<span class="sc">:,.0f}</span><span class="ss">"</span>,</span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>    <span class="st">"Charge sinistres (EUR)"</span>: <span class="ss">f"</span><span class="sc">{</span>charge<span class="sc">:,.0f}</span><span class="ss">"</span>,</span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>    <span class="st">"Nombre de sinistres"</span>: <span class="ss">f"</span><span class="sc">{</span>polices[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss">"</span>,</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    <span class="st">"Fréquence"</span>: <span class="ss">f"</span><span class="sc">{</span>polices[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> polices[<span class="st">'exposition'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2%}</span><span class="ss">"</span>,</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>    <span class="st">"S/P"</span>: <span class="ss">f"</span><span class="sc">{</span>charge <span class="op">/</span> primes_acquises<span class="sc">:.1%}</span><span class="ss">"</span>,</span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>})</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"KPI de référence à retrouver dans le dashboard :"</span>)</span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a><span class="bu">print</span>(reference.to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Colonnes hors du dictionnaire : aucune
+police_id tous au format POL_ suivi de 6 chiffres : True
+NaN : 0
+prime_acquise = prime_annuelle x exposition (à 1 centime près) : True
+
+KPI de référence à retrouver dans le dashboard :
+Nombre de polices                30,000
+Exposition (années-police)       16,541
+Primes acquises (EUR)         4,707,594
+Charge sinistres (EUR)        3,172,358
+Nombre de sinistres                 949
+Fréquence                         5.74%
+S/P                               67.4%</code></pre>
+</div>
+</div>
+<p>L’actuaire <strong>vérifie</strong> que les KPI affichés par le dashboard correspondent à ces chiffres, au moins sur les cartes de la page 1 et sur une case du tableau croisé. C’est le contrôle minimum avant de partager l’adresse.</p>
+</section>
+<section class="level3" data-number="23.4.2" id="étape-2.-anatomie-dun-dashboard-actuariel-kpi-drill-down-alertes">
+<h3 class="anchored" data-anchor-id="étape-2.-anatomie-dun-dashboard-actuariel-kpi-drill-down-alertes" data-number="23.4.2"> Étape 2. Anatomie d’un dashboard actuariel : KPI, drill-down, alertes</h3>
+<p>Trois types de vues, une par page.</p>
+<p><strong>KPI globaux (page d’accueil).</strong></p>
+<ul>
+<li>Cartes avec chiffre clé en gros, libellé court, et écart à N-1 ou à la cible.</li>
+<li>Une poignée de KPI sur la page d’accueil (trois à six).</li>
+<li>Couleur conditionnelle (vert si OK, ambre si vigilance, rouge si alerte).</li>
+</ul>
+<p><strong>Drill-down (page de pilotage).</strong></p>
+<ul>
+<li>Sélecteurs multi-valeurs (régions, segments).</li>
+<li>Tableau croisé avec coloration conditionnelle, et l’exposition à côté du S/P : un S/P sur 30 années-police ne dit presque rien.</li>
+<li>Possibilité d’exporter le résultat filtré en CSV ou en PDF.</li>
+</ul>
+<p><strong>Alertes (page de surveillance).</strong></p>
+<ul>
+<li>Liste des segments à examiner.</li>
+<li>Chaque alerte : segment, S/P, seuil, volume, lien vers le drill-down concerné.</li>
+<li>Un volume minimal, sinon les alertes sont du bruit.</li>
+</ul>
+<p>Les chiffres de ces trois pages, on les calcule d’abord en Python : ce sont eux que le dashboard devra afficher.</p>
+<div class="cell" data-execution_count="4" id="5e8eebf1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="kw">def</span> profil(df, par):</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    g <span class="op">=</span> df.groupby(par, observed<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>        polices<span class="op">=</span>(<span class="st">"police_id"</span>, <span class="st">"size"</span>),</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>        exposition<span class="op">=</span>(<span class="st">"exposition"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>        primes_acquises<span class="op">=</span>(<span class="st">"prime_acquise"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>        charge<span class="op">=</span>(<span class="st">"cout_sinistres"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>        sinistres<span class="op">=</span>(<span class="st">"nb_sinistres"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>    )</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>    g[<span class="st">"frequence"</span>] <span class="op">=</span> g[<span class="st">"sinistres"</span>] <span class="op">/</span> g[<span class="st">"exposition"</span>]</span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>    g[<span class="st">"sp"</span>] <span class="op">=</span> g[<span class="st">"charge"</span>] <span class="op">/</span> g[<span class="st">"primes_acquises"</span>]</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>    <span class="cf">return</span> g</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a></span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>polices[<span class="st">"tranche_age"</span>] <span class="op">=</span> pd.cut(polices[<span class="st">"age"</span>], [<span class="dv">17</span>, <span class="dv">24</span>, <span class="dv">34</span>, <span class="dv">49</span>, <span class="dv">64</span>, <span class="dv">74</span>, <span class="dv">120</span>],</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>                                labels<span class="op">=</span>[<span class="st">"18-24"</span>, <span class="st">"25-34"</span>, <span class="st">"35-49"</span>, <span class="st">"50-64"</span>, <span class="st">"65-74"</span>, <span class="st">"75+"</span>])</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>par_region <span class="op">=</span> profil(polices, <span class="st">"region"</span>).sort_values(<span class="st">"sp"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>par_age <span class="op">=</span> profil(polices, <span class="st">"tranche_age"</span>)</span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>par_bm <span class="op">=</span> profil(polices, <span class="st">"bonus_malus"</span>)</span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a></span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>colonnes <span class="op">=</span> [<span class="st">"exposition"</span>, <span class="st">"sinistres"</span>, <span class="st">"frequence"</span>, <span class="st">"sp"</span>]</span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Par région :"</span>)</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a><span class="bu">print</span>(par_region[colonnes].<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Par tranche d'âge :"</span>)</span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a><span class="bu">print</span>(par_age[colonnes].<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Par coefficient bonus-malus :"</span>)</span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a><span class="bu">print</span>(par_bm[colonnes].<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Par région :
+                            exposition  sinistres  frequence     sp
+region                                                             
+Hauts-de-France               2472.500        143      0.058  0.864
+Île-de-France                 4114.409        282      0.069  0.847
+Provence-Alpes-Côte d'Azur    2470.356        138      0.056  0.638
+Auvergne-Rhône-Alpes          2961.551        149      0.050  0.557
+Occitanie                     2513.392        132      0.053  0.520
+Nouvelle-Aquitaine            2008.734        105      0.052  0.495
+
+Par tranche d'âge :
+             exposition  sinistres  frequence     sp
+tranche_age                                         
+18-24          1627.958        140      0.086  0.653
+25-34          2512.979        142      0.057  0.624
+35-49          3660.134        193      0.053  0.703
+50-64          3627.105        185      0.051  0.663
+65-74          2447.420        111      0.045  0.710
+75+            2665.346        178      0.067  0.692
+
+Par coefficient bonus-malus :
+             exposition  sinistres  frequence     sp
+bonus_malus                                         
+50             3958.511        144      0.036  0.557
+60             2372.202         91      0.038  0.635
+70             2121.034        109      0.051  0.623
+80             1757.313         96      0.055  0.545
+90             1593.879         93      0.058  0.719
+100            2245.699        187      0.083  0.828
+120            1147.002         81      0.071  0.605
+150             674.607         67      0.099  0.777
+200             497.609         45      0.090  0.790
+300             173.086         36      0.208  0.967</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="5" id="cell-fig-c1-profil-age">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>axes[<span class="dv">0</span>].bar(par_age.index.astype(<span class="bu">str</span>), par_age[<span class="st">"frequence"</span>] <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>)</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Fréquence (sinistres par année-police, %)"</span>)</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>axes[<span class="dv">1</span>].bar(par_age.index.astype(<span class="bu">str</span>), par_age[<span class="st">"sp"</span>] <span class="op">*</span> <span class="dv">100</span>, color<span class="op">=</span><span class="st">"#b45309"</span>)</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>axes[<span class="dv">1</span>].axhline(<span class="dv">75</span>, color<span class="op">=</span><span class="st">"#dc2626"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="st">"Seuil 75 %"</span>)</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"S/P sur primes acquises (%)"</span>)</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>axes[<span class="dv">1</span>].legend(loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes:</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Tranche d'âge"</span>)</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>    ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">"y"</span>)</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-c1-profil-age">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-c1-profil-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="375" src="img/fig-c1-profil-age-output-1_4cac21e8.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-c1-profil-age-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 23.1: Fréquence et S/P par tranche d’âge, calculés en Python : les chiffres que la page 1 doit afficher
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La fréquence des 18-24 ans est la plus haute des tranches d’âge (8,6 %), elle baisse jusqu’à 65-74 ans (4,5 %) et remonte après 75 ans (6,7 %). Le S/P, lui, reste entre 62 % et 71 % d’une tranche à l’autre : le tarif tient déjà compte de l’âge.</p>
+<div class="cell" data-execution_count="6" id="1731ba37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="co"># Alertes : S/P au-dessus du seuil, avec un volume minimal</span></span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>SEUIL_SP, SEUIL_CRITIQUE, EXPOSITION_MIN <span class="op">=</span> <span class="fl">0.75</span>, <span class="fl">0.90</span>, <span class="dv">500</span></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>segments <span class="op">=</span> pd.concat([</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>    par_region.assign(dimension<span class="op">=</span><span class="st">"région"</span>),</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>    par_age.assign(dimension<span class="op">=</span><span class="st">"tranche d'âge"</span>),</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>    par_bm.assign(dimension<span class="op">=</span><span class="st">"bonus-malus"</span>),</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>])</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>segments.index <span class="op">=</span> segments.index.astype(<span class="bu">str</span>)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>alertes <span class="op">=</span> segments[(segments[<span class="st">"sp"</span>] <span class="op">&gt;</span> SEUIL_SP) <span class="op">&amp;</span> (segments[<span class="st">"exposition"</span>] <span class="op">&gt;=</span> EXPOSITION_MIN)].copy()</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>alertes[<span class="st">"gravite"</span>] <span class="op">=</span> np.where(alertes[<span class="st">"sp"</span>] <span class="op">&gt;</span> SEUIL_CRITIQUE, <span class="st">"critique"</span>, <span class="st">"vigilance"</span>)</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Alertes : </span><span class="sc">{</span><span class="bu">len</span>(alertes)<span class="sc">}</span><span class="ss"> segment(s) avec S/P &gt; </span><span class="sc">{</span>SEUIL_SP<span class="sc">:.0%}</span><span class="ss"> "</span></span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>      <span class="ss">f"et au moins </span><span class="sc">{</span>EXPOSITION_MIN<span class="sc">}</span><span class="ss"> années-police"</span>)</span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a><span class="cf">for</span> nom, a <span class="kw">in</span> alertes.sort_values(<span class="st">"sp"</span>, ascending<span class="op">=</span><span class="va">False</span>).iterrows():</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  [</span><span class="sc">{</span>a[<span class="st">'gravite'</span>]<span class="sc">}</span><span class="ss">] </span><span class="sc">{</span>a[<span class="st">'dimension'</span>]<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>nom<span class="sc">}</span><span class="ss"> : S/P </span><span class="sc">{</span>a[<span class="st">'sp'</span>]<span class="sc">:.1%}</span><span class="ss">, "</span></span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a>          <span class="ss">f"exposition </span><span class="sc">{</span>a[<span class="st">'exposition'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb10-18"><a aria-hidden="true" href="#cb10-18" tabindex="-1"></a></span>
+<span id="cb10-19"><a aria-hidden="true" href="#cb10-19" tabindex="-1"></a>ecartes <span class="op">=</span> segments[(segments[<span class="st">"sp"</span>] <span class="op">&gt;</span> SEUIL_SP) <span class="op">&amp;</span> (segments[<span class="st">"exposition"</span>] <span class="op">&lt;</span> EXPOSITION_MIN)]</span>
+<span id="cb10-20"><a aria-hidden="true" href="#cb10-20" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Au-dessus du seuil mais sous le volume minimal : </span><span class="sc">{</span><span class="bu">len</span>(ecartes)<span class="sc">}</span><span class="ss"> segment(s)"</span>)</span>
+<span id="cb10-21"><a aria-hidden="true" href="#cb10-21" tabindex="-1"></a><span class="cf">for</span> nom, a <span class="kw">in</span> ecartes.iterrows():</span>
+<span id="cb10-22"><a aria-hidden="true" href="#cb10-22" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>a[<span class="st">'dimension'</span>]<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>nom<span class="sc">}</span><span class="ss"> : S/P </span><span class="sc">{</span>a[<span class="st">'sp'</span>]<span class="sc">:.1%}</span><span class="ss">, exposition </span><span class="sc">{</span>a[<span class="st">'exposition'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Alertes : 4 segment(s) avec S/P &gt; 75% et au moins 500 années-police
+  [vigilance] région Hauts-de-France : S/P 86.4%, exposition 2,472
+  [vigilance] région Île-de-France : S/P 84.7%, exposition 4,114
+  [vigilance] bonus-malus 100 : S/P 82.8%, exposition 2,246
+  [vigilance] bonus-malus 150 : S/P 77.7%, exposition 675
+
+Au-dessus du seuil mais sous le volume minimal : 2 segment(s)
+  bonus-malus 200 : S/P 79.0%, exposition 498
+  bonus-malus 300 : S/P 96.7%, exposition 173</code></pre>
+</div>
+</div>
+<p>Quatre segments passent en vigilance : les Hauts-de-France (86,4 %) et l’Île-de-France (84,7 %), que le tarif ne distingue pas des autres régions, et les coefficients 100 et 150. Aucun n’atteint le niveau critique. Les coefficients 200 et 300 dépassent aussi le seuil, mais sous le volume minimal : le 200 est écarté pour deux années-police (498 contre 500), ce qui rappelle qu’un seuil de volume est une convention à écrire et à assumer.</p>
+<p>Une lecture de plus, que le dashboard n’affichera pas tout seul : dans la simulation, Hauts-de-France et Provence-Alpes-Côte d’Azur ont le même niveau de risque, et leurs S/P sortent à 86 % et 64 %. Avec environ 140 sinistres chacune (143 et 138) et des coûts très dispersés, le hasard pèse lourd sur un S/P annuel. Une alerte ouvre une analyse, elle ne la conclut pas.</p>
+<div class="cell" data-execution_count="7" id="54060839">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="co"># Une table d'agrégats par vue de la spec : ce qu'on confie à un service tiers quand les données sont réelles</span></span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>vues <span class="op">=</span> {</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>    <span class="st">"region"</span>: [<span class="st">"region"</span>],</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>    <span class="st">"tranche_age"</span>: [<span class="st">"tranche_age"</span>],</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a>    <span class="st">"bonus_malus"</span>: [<span class="st">"bonus_malus"</span>],</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>    <span class="st">"region_x_bonus_malus"</span>: [<span class="st">"region"</span>, <span class="st">"bonus_malus"</span>],</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>}</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>agregats <span class="op">=</span> {}</span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a><span class="cf">for</span> nom, par <span class="kw">in</span> vues.items():</span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a>    t <span class="op">=</span> profil(polices, par).reset_index()</span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>    agregats[nom] <span class="op">=</span> t[par <span class="op">+</span> [<span class="st">"polices"</span>, <span class="st">"exposition"</span>, <span class="st">"primes_acquises"</span>,</span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a>                             <span class="st">"charge"</span>, <span class="st">"sinistres"</span>, <span class="st">"frequence"</span>, <span class="st">"sp"</span>]].<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>nom<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span><span class="bu">len</span>(t)<span class="sc">}</span><span class="ss"> lignes"</span>)</span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Au total </span><span class="sc">{</span><span class="bu">sum</span>(<span class="bu">len</span>(t) <span class="cf">for</span> t <span class="kw">in</span> agregats.values())<span class="sc">}</span><span class="ss"> lignes au lieu de </span><span class="sc">{</span><span class="bu">len</span>(polices)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a><span class="bu">print</span>(agregats[<span class="st">"region_x_bonus_malus"</span>].head(<span class="dv">6</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a>faible <span class="op">=</span> agregats[<span class="st">"region_x_bonus_malus"</span>][<span class="st">"exposition"</span>] <span class="op">&lt;</span> <span class="dv">100</span></span>
+<span id="cb12-18"><a aria-hidden="true" href="#cb12-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Cases région x bonus-malus sous 100 années-police : </span><span class="sc">{</span>faible<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> sur </span><span class="sc">{</span><span class="bu">len</span>(faible)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>region : 6 lignes
+tranche_age : 6 lignes
+bonus_malus : 10 lignes
+region_x_bonus_malus : 60 lignes
+Au total 82 lignes au lieu de 30,000
+
+              region  bonus_malus  polices  exposition  primes_acquises   charge  sinistres  frequence     sp
+Auvergne-Rhône-Alpes           50     1276     717.096        149188.30  83851.0         24     0.0335 0.5620
+Auvergne-Rhône-Alpes           60      761     410.224         93678.00  42953.0         15     0.0366 0.4585
+Auvergne-Rhône-Alpes           70      722     396.482        100033.41  56840.0         22     0.0555 0.5682
+Auvergne-Rhône-Alpes           80      603     335.669         92110.83  48516.0         16     0.0477 0.5267
+Auvergne-Rhône-Alpes           90      501     269.661         83081.54  50246.0         14     0.0519 0.6048
+Auvergne-Rhône-Alpes          100      716     380.372        135813.12 113848.0         29     0.0762 0.8383
+
+Cases région x bonus-malus sous 100 années-police : 13 sur 60</code></pre>
+</div>
+</div>
+<p>En formation, le fichier ligne à ligne est synthétique et on peut le donner tel quel. Sur des données réelles, on donne une table d’agrégats par vue de la spec (région, tranche d’âge, bonus-malus, région × bonus-malus) : le calcul du S/P est fait en Python, contrôlé une fois, et l’application n’a plus qu’à afficher. Une limite : les agrégats figent les découpages. Une vue qui n’a pas sa table ne peut pas être construite (sans la table par tranche d’âge, ni le graphique de la page 1 ni les alertes par âge de la page 3), et le drill-down ne descend pas sous le croisement le plus fin fourni.</p>
+</section>
+<section class="level3" data-number="23.4.3" id="étape-3.-lovable-une-page-générée-par-claude-code-streamlit-ou-dash">
+<h3 class="anchored" data-anchor-id="étape-3.-lovable-une-page-générée-par-claude-code-streamlit-ou-dash" data-number="23.4.3"> Étape 3. Lovable, une page générée par Claude Code, Streamlit ou Dash</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspect</th>
+<th>Lovable</th>
+<th>Page HTML ou Streamlit par Claude Code</th>
+<th>Dash</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ce que vous écrivez</td>
+<td>Des prompts en français</td>
+<td>Les mêmes prompts, à Claude Code</td>
+<td>Du Python (Claude Code peut l’écrire)</td>
+</tr>
+<tr class="even">
+<td>Où tourne le calcul</td>
+<td>En JavaScript, dans l’application écrite par Lovable</td>
+<td>En Python sur votre poste (ou en JavaScript dans la page, si vous le demandez)</td>
+<td>En Python</td>
+</tr>
+<tr class="odd">
+<td>Où vivent les données</td>
+<td>Chez Lovable (Lovable Cloud : UE, US ou Asie-Pacifique selon la région choisie)</td>
+<td>Sur votre poste ; ce que Claude lit ou affiche part chez le fournisseur du modèle</td>
+<td>Sur votre poste ou un serveur interne</td>
+</tr>
+<tr class="even">
+<td>Partage</td>
+<td>Une adresse web publiée par Lovable</td>
+<td>Le fichier HTML, ou un Streamlit sur un serveur interne</td>
+<td>Un serveur interne</td>
+</tr>
+<tr class="odd">
+<td>Coût</td>
+<td>Abonnement (tarifs sur <code>lovable.dev/pricing</code>)</td>
+<td>Rien de plus que Claude Code ; Streamlit est libre</td>
+<td>Libre ; la plateforme Dash Enterprise (déploiement, authentification) est payante</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommandation</strong> : Lovable pour une maquette ou une démonstration sur données synthétiques. Pour des données réelles, deux voies. La version locale : Claude Code la construit sur le fichier synthétique, puis vous la lancez vous-même sur les données réelles, rangées hors du dossier de travail ; et Claude Code sous une offre entreprise (Team, Enterprise, API avec contrat), la seule qui fasse du fournisseur un sous-traitant au sens du RGPD, pas une offre Pro ou Max. Ou Lovable, seulement sur des agrégats, sur une offre Business ou Enterprise (en Free ou Pro, l’entraînement sur vos prompts et données est actif tant qu’il n’est pas désactivé), et avec un contrat de traitement des données signé par votre organisation et validé par votre DPO.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Plan B : les mêmes prompts à Claude Code
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si Lovable est interdit chez vous, change ses conditions ou disparaît, la spec ne se perd pas. Donnez à Claude Code, dans le dossier du projet, le prompt 1 suivi de cette consigne :</p>
+<p><em>“Écris un script Python <code>construire_dashboard.py</code> qui lit <code>_resources/polices_synthetiques.csv</code>, calcule les agrégats avec pandas selon les règles de calcul ci-dessus, et écrit une page <code>dashboard.html</code> autonome, graphiques inclus, qui s’ouvre sans connexion. N’affiche pas le contenu du fichier dans la conversation.”</em></p>
+<p>Variante : <em>“… une application Streamlit <code>app.py</code> que je lance avec <code>streamlit run app.py</code>.”</em> Puis les prompts 2 à 5, un par un. Streamlit ne fait pas partie de l’installation de la formation : Claude Code vous proposera <code>pip install streamlit</code>, à accepter une fois.</p>
+<p>Les calculs restent en Python, et leurs chiffres se comparent directement à ceux de l’étape 1. Rappel : ce que Claude lit ou affiche part chez le fournisseur du modèle. La consigne de ne pas afficher le fichier limite ce qui sort, elle ne garantit rien, et les permissions de Claude Code non plus : elles évitent les accidents, elles ne protègent pas des données (un script Python autorisé lit le fichier qu’une règle interdisait à Claude d’ouvrir). Donc, sur des données réelles, Claude ne voit que des agrégats ou des données pseudonymisées, et tout le reste est rangé hors du dossier de travail. Il faut en plus, même pour des données pseudonymisées, une offre entreprise (Team, Enterprise ou API avec contrat), la seule qui fasse du fournisseur un sous-traitant au sens du RGPD ; pas une offre Pro ou Max.</p>
+</div>
+</div>
+</section>
+<section class="level3" data-number="23.4.4" id="étape-4.-workflow-de-construction-en-pratique">
+<h3 class="anchored" data-anchor-id="étape-4.-workflow-de-construction-en-pratique" data-number="23.4.4"> Étape 4. Workflow de construction (en pratique)</h3>
+<p>L’itération se fait en cycles courts, avec Lovable comme avec Claude Code.</p>
+<ol type="1">
+<li><strong>Premier prompt</strong> : la vue d’ensemble et les règles de calcul. L’outil génère un squelette.</li>
+<li><strong>Connecter les données.</strong> Avec Lovable, deux gestes différents. Un CSV <strong>joint au chat</strong> devient une entrée du modèle : il part chez Lovable et chez les fournisseurs d’IA qu’il utilise, et Lovable peut en recopier des lignes dans le code de l’application. Un CSV <strong>chargé dans l’application</strong> vit là où l’application le range : dans le navigateur de celui qui le charge, si la page lit un fichier local, ou dans la base Lovable Cloud, si vous l’y importez. Vérifier ensuite que les colonnes sont reconnues avec le bon sens (exposition, prime acquise).</li>
+<li><strong>Itérations visuelles</strong> : <em>“agrandis le titre”, “passe le bleu en bleu nuit”, “supprime la carte en haut à droite”</em>.</li>
+<li><strong>Itérations fonctionnelles</strong> : <em>“ajoute un filtre par tranche d’âge”, “exporte en CSV”</em>.</li>
+<li><strong>Validation par l’actuaire</strong> : ouvrir le dashboard et <strong>comparer les chiffres</strong> à la référence de l’étape 1, puis une case du tableau croisé et une alerte à l’étape 2.</li>
+<li><strong>Partage</strong> : vérifier qui peut ouvrir l’adresse publiée avant de la diffuser.</li>
+</ol>
+</section>
+<section class="level3" data-number="23.4.5" id="étape-5.-limites-à-connaître-avant-de-mettre-en-production">
+<h3 class="anchored" data-anchor-id="étape-5.-limites-à-connaître-avant-de-mettre-en-production" data-number="23.4.5"> Étape 5. Limites à connaître avant de mettre en production</h3>
+<ul>
+<li><strong>Où vont les données.</strong> Selon la page sécurité de Lovable (<code>lovable.dev/security</code>, consultée le 29 septembre 2026) : Lovable Cloud héberge les données dans la région choisie, UE, US ou Asie-Pacifique ; les prompts, le code et les données des offres Business et Enterprise ne servent pas à entraîner les modèles ; les abonnés Free et Pro peuvent désactiver l’entraînement dans les réglages de leur compte, ce qui veut dire qu’il est actif tant qu’ils ne l’ont pas fait. Lovable propose un contrat de traitement des données (DPA). Sans ce contrat signé par votre organisation, et sans une offre Business ou Enterprise, aucune donnée réelle.</li>
+<li><strong>Le calcul est écrit par Lovable.</strong> L’application agrège les données en JavaScript : chaque S/P affiché est un calcul que Lovable a écrit et que vous n’avez pas relu. Pour un calcul actuariel (Chain-Ladder, GLM, projections), faire le calcul en Python, exporter les résultats, et laisser l’application afficher, soit par un fichier d’agrégats, soit par une API que vous exposez (FastAPI par exemple).</li>
+<li><strong>Versionnement.</strong> Lovable garde un historique des versions et peut synchroniser le code avec un dépôt GitHub. Pour un projet qui dure, versionner ce code comme le reste (annexe E).</li>
+<li><strong>Coût récurrent.</strong> L’abonnement court tant que l’application doit rester en ligne. Pour un dashboard gardé plusieurs années, comparer avec une version locale.</li>
+<li><strong>Évolution rapide de l’outil.</strong> Offres, hébergement et conditions changent vite. Relire la page sécurité et les conditions avant chaque nouveau projet, pas seulement la première fois.</li>
+</ul>
+</section>
+</section>
+<section class="level2" data-number="23.5" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="23.5" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Données réelles jointes au chat par inadvertance.</strong> Un fichier joint au chat part chez le fournisseur dès l’envoi. <strong>Préparer l’export synthétique ou agrégé avant d’ouvrir Lovable</strong>, et garder les fichiers réels hors du dossier de travail.</li>
+<li><strong>Prendre un identifiant <code>POL_xxx</code> pour une anonymisation.</strong> Sur de vraies données, c’est une pseudonymisation : le RGPD s’applique toujours.</li>
+<li><strong>Laisser l’outil deviner les règles de calcul.</strong> Sans dictionnaire des colonnes ni formule, une application peut sommer des taux ou faire la moyenne de ratios au lieu de rapporter une somme à une somme. Les règles de calcul vont dans le premier prompt, et les chiffres affichés se comparent à la référence Python.</li>
+<li><strong>Des alertes sans volume minimal.</strong> Un S/P de 95 % sur quelques dizaines d’années-police est du bruit. Afficher l’exposition à côté de chaque S/P.</li>
+<li><strong>Trop d’éléments sur une page.</strong> Un dashboard avec 25 KPI sur la page d’accueil est illisible. Une poignée de KPI principaux, le reste va en drill-down ou en alertes.</li>
+</ul>
+</section>
+<section class="level2" data-number="23.6" id="exercice-trouvez-les-erreurs">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-les-erreurs" data-number="23.6" id="exercice-trouvez-les-erreurs"> Exercice : trouvez les erreurs</h2>
+<p>Un collègue a construit le dashboard avec une version antérieure des prompts. Sa page 1 affiche un S/P global de 37,1 %, un classement où aucune région ne dépasse 48 %, donc aucune alerte, et une belle courbe du S/P mensuel sur les douze derniers mois. Sans ouvrir son code, à partir de ces seuls symptômes et de la référence de l’étape 1 : qu’est-ce qui ne va pas ? Pour le S/P, allez plus loin qu’un « c’est faux » : le rapport entre son 37,1 % et le S/P de référence correspond à une grandeur du portefeuille. Laquelle, et qu’en déduisez-vous sur son calcul ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Deux erreurs, et la seconde est plus grave que la première.</p>
+<ol type="1">
+<li><strong>Le S/P est rapporté aux primes annuelles.</strong> Les expositions vont de 0,1 à 1 : une police présente trois mois a acquis un quart de sa prime. Diviser la charge par la prime annuelle sous-estime le S/P et fait disparaître les alertes. Le rapport des deux S/P le dit sans ouvrir le code : la charge est la même des deux côtés, donc ce rapport vaut la somme des primes acquises divisée par la somme des primes annuelles, l’exposition moyenne pondérée par la prime.</li>
+</ol>
+<div class="cell" data-execution_count="8" id="dbba45ef">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>primes_annuelles <span class="op">=</span> polices[<span class="st">"prime_annuelle"</span>].<span class="bu">sum</span>()</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Global : </span><span class="sc">{</span>charge <span class="op">/</span> primes_annuelles<span class="sc">:.1%}</span><span class="ss"> sur primes annuelles, "</span></span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>charge <span class="op">/</span> primes_acquises<span class="sc">:.1%}</span><span class="ss"> sur primes acquises"</span>)</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rapport des deux S/P                    : </span><span class="sc">{</span>(charge <span class="op">/</span> primes_annuelles) <span class="op">/</span> (charge <span class="op">/</span> primes_acquises)<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Primes acquises / primes annuelles      : </span><span class="sc">{</span>primes_acquises <span class="op">/</span> primes_annuelles<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exposition moyenne (non pondérée)       : </span><span class="sc">{</span>polices[<span class="st">'exposition'</span>]<span class="sc">.</span>mean()<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a>sp_annuel <span class="op">=</span> polices.groupby(<span class="st">"region"</span>)[<span class="st">"cout_sinistres"</span>].<span class="bu">sum</span>() <span class="op">/</span> polices.groupby(<span class="st">"region"</span>)[<span class="st">"prime_annuelle"</span>].<span class="bu">sum</span>()</span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a>comparaison <span class="op">=</span> pd.DataFrame({<span class="st">"S/P sur primes annuelles (faux)"</span>: sp_annuel,</span>
+<span id="cb14-10"><a aria-hidden="true" href="#cb14-10" tabindex="-1"></a>                            <span class="st">"S/P sur primes acquises"</span>: par_region[<span class="st">"sp"</span>]}).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb14-11"><a aria-hidden="true" href="#cb14-11" tabindex="-1"></a><span class="bu">print</span>(comparaison.sort_values(<span class="st">"S/P sur primes acquises"</span>, ascending<span class="op">=</span><span class="va">False</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Global : 37.1% sur primes annuelles, 67.4% sur primes acquises
+Rapport des deux S/P                    : 0.551
+Primes acquises / primes annuelles      : 0.551
+Exposition moyenne (non pondérée)       : 0.551
+
+                            S/P sur primes annuelles (faux)  S/P sur primes acquises
+region                                                                              
+Hauts-de-France                                       0.475                    0.864
+Île-de-France                                         0.469                    0.847
+Provence-Alpes-Côte d'Azur                            0.353                    0.638
+Auvergne-Rhône-Alpes                                  0.304                    0.557
+Occitanie                                             0.286                    0.520
+Nouvelle-Aquitaine                                    0.272                    0.495</code></pre>
+</div>
+</div>
+<p>Les trois lignes donnent 0,551 : le S/P affiché est le vrai S/P multiplié par l’exposition moyenne, une police ayant couru un peu plus d’une demi-année. Le rapport est presque le même dans chaque région (47,5 % contre 86,4 % pour les Hauts-de-France, 27,2 % contre 49,5 % pour la Nouvelle-Aquitaine), parce que l’exposition y est tirée de la même façon. Un facteur à peu près constant entre deux calculs du même ratio désigne presque toujours un dénominateur différent, ici une exposition oubliée.</p>
+<ol start="2" type="1">
+<li><strong>La courbe mensuelle est inventée.</strong> Le fichier n’a ni date d’effet ni date de survenance. Une courbe par mois ne peut venir que d’une série fabriquée par l’outil (répartition uniforme, données d’exemple, ou pire, valeurs plausibles). Pour une trajectoire mensuelle, il faut une date de survenance par sinistre et l’exposition mois par mois, et le calcul se fait en Python avant d’être affiché.</li>
+</ol>
+<p>La leçon est la même pour les deux : les règles de calcul et le périmètre des données s’écrivent dans le prompt, et un chiffre affiché se compare à la référence avant d’être cru.</p>
+</details>
+</section>
+<section class="level2" data-number="23.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="23.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>P1 Analyse univariée portefeuille auto</strong> : l’analyse de fond d’un portefeuille auto, avant le dashboard.</li>
+<li><strong>C2 Rapport annuel d’un fonds vie</strong> : version document (plutôt qu’interactive) sur un autre domaine.</li>
+<li><strong>C3 Présentation board en cinq slides</strong> : version slide d’un message.</li>
+<li><strong>L’atelier de la demi-journée « Communication et tableaux de bord »</strong> : la même démarche en direct, un tableau de bord réconcilié avec le calcul qui l’alimente.</li>
+</ul>
+</section>
+<section class="level2" data-number="23.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="23.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>API FastAPI et Lovable.</strong> Un service Python expose les KPI calculés, Lovable les appelle et les affiche. Le calcul actuariel reste sous votre contrôle, l’application ne fait qu’afficher.</li>
+<li><strong>Streamlit sur un serveur interne</strong> quand les données doivent rester dans l’entreprise. Le dashboard reste en Python, le déploiement passe par la DSI.</li>
+<li><strong>Dashboard en mode “rapport”</strong> : pour les livrables périodiques (mensuel, trimestriel), une page Quarto qui se régénère à partir des données fraîches. Voir C2 pour le pattern.</li>
+<li><strong>Trajectoire mensuelle</strong> : ajouter au jeu simulé une date de survenance par sinistre et des dates d’effet et de fin par police, calculer en Python l’exposition et les primes acquises mois par mois, puis donner cette table au dashboard.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/S4/index.html"><small>&larr; Précédent</small>S4. Lecture critique d’un texte de l’ACPR</a><a class="next" href="../../bibliotheque/C2/index.html"><small>Suivant &rarr;</small>C2. Rapport annuel d’un fonds vie</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe K. Ordres de grandeur de marché : les tranches hautes · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe K. Ordres de grandeur de marché : les tranches hautes</h1>
+      <p class="lede">Question posée pendant la préparation de ce support : pour une tranche très haute, 100 millions XS 50 millions par exemple, est-ce que le modèle sait donner des intervalles de taux, par secteur ? Il sait. Il répond vite, avec des chiffres, et sans hésiter. Cette annexe garde sa réponse, parce qu’elle est utile, et son mode d’emploi, parce qu’elle est dangereuse telle quelle.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#ce-que-cette-annexe-fait-ici">Ce que cette annexe fait ici</a><a href="#la-première-partie-de-la-réponse-est-un-refus">La première partie de la réponse est un refus</a><a href="#le-taux-sur-ligne-et-son-inverse">Le taux sur ligne, et son inverse</a><a href="#lindice-de-queue-branche-par-branche">L’indice de queue, branche par branche</a><a href="#la-règle-déchelle">La règle d’échelle</a><a href="#les-deux-exemples-chiffrés">Les deux exemples, chiffrés</a><a href="#en-assurance-directe">En assurance directe</a><a href="#le-contrôle-qui-vaut-vraiment-le-détour">Le contrôle qui vaut vraiment le détour</a><a href="#les-prompts-qui-donnent-ça">Les prompts qui donnent ça</a><a href="#ce-quil-faut-retenir-contre-soi">Ce qu’il faut retenir contre soi</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<section class="level2" data-number="40.1" id="ce-que-cette-annexe-fait-ici">
+<h2 class="anchored" data-anchor-id="ce-que-cette-annexe-fait-ici" data-number="40.1" id="ce-que-cette-annexe-fait-ici"> Ce que cette annexe fait ici</h2>
+<p>Un modèle de langue a lu la littérature actuarielle, les rapports de courtiers, les papiers ASTIN. Il en garde une mémoire du marché : des fourchettes, des règles de pouce, des ordres de grandeur. C’est une vraie connaissance, et c’est le seul endroit du support où on s’en sert comme telle plutôt que comme capacité de travail.</p>
+<p>Elle vaut pour deux choses :</p>
+<ol type="1">
+<li>un point de départ quand on n’a aucune idée de l’ordre de grandeur attendu ;</li>
+<li>un contrôle de cohérence sur son propre calibrage, et c’est de loin le meilleur usage.</li>
+</ol>
+<p>Elle ne vaut jamais comme prix, ni comme source citable dans une note. Le modèle ne connaît pas votre portefeuille, il ne cite pas ses sources, et il ne sait pas où vous en êtes dans le cycle.</p>
+</section>
+<section class="level2" data-number="40.2" id="la-première-partie-de-la-réponse-est-un-refus">
+<h2 class="anchored" data-anchor-id="la-première-partie-de-la-réponse-est-un-refus" data-number="40.2" id="la-première-partie-de-la-réponse-est-un-refus"> La première partie de la réponse est un refus</h2>
+<p><strong>Il n’existe pas de table de taux par secteur qui tienne toute seule.</strong> Ce qui fixe le prix d’une tranche haute, c’est la position de l’attachement sur la courbe de sévérité de ce risque-là, pas la branche. La branche n’entre que par un nombre, l’indice de queue, et c’est le seul endroit où une fourchette sectorielle a un sens.</p>
+<p>Un modèle qui sort directement un tableau de taux par secteur, sans cette réserve, est en train de faire plaisir.</p>
+</section>
+<section class="level2" data-number="40.3" id="le-taux-sur-ligne-et-son-inverse">
+<h2 class="anchored" data-anchor-id="le-taux-sur-ligne-et-son-inverse" data-number="40.3" id="le-taux-sur-ligne-et-son-inverse"> Le taux sur ligne, et son inverse</h2>
+<p>Le marché cote ces tranches en taux sur ligne (la prime divisée par la portée) et en délai de reconstitution, son inverse.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Position de la tranche</th>
+<th>Taux sur ligne</th>
+<th>Reconstitution</th>
+<th>Multiple du coût technique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>De travail, plusieurs sinistres par an</td>
+<td>30 à 80 %</td>
+<td>1 à 3 ans</td>
+<td>1,05 à 1,3</td>
+</tr>
+<tr class="even">
+<td>Excédent bas, un sinistre tous les 3 à 5 ans</td>
+<td>15 à 30 %</td>
+<td>3 à 7 ans</td>
+<td>1,3 à 1,8</td>
+</tr>
+<tr class="odd">
+<td>Excédent moyen, un tous les 10 à 20 ans</td>
+<td>5 à 15 %</td>
+<td>7 à 20 ans</td>
+<td>1,5 à 2,5</td>
+</tr>
+<tr class="even">
+<td>Excédent haut, un tous les 30 à 70 ans</td>
+<td>1,5 à 5 %</td>
+<td>20 à 70 ans</td>
+<td>3 à 6</td>
+</tr>
+<tr class="odd">
+<td>Sommet, tranche lointaine</td>
+<td>0,5 à 2,5 %</td>
+<td>au plancher</td>
+<td>5 à 15, ou le coût technique ne sert plus</td>
+</tr>
+</tbody>
+</table>
+<p>La dernière ligne est la réponse honnête pour 100 millions XS 50 millions. À cette hauteur, le coût technique tombe souvent vers 0,1 % de taux sur ligne, et le marché facture quand même 1 à 2,5 %. On n’achète plus une espérance de sinistre, on loue du capital.</p>
+<p>La contrainte qui mord s’appelle le <strong>taux sur ligne plancher</strong> : de l’ordre de 0,75 à 1,5 % dans le marché mou de 2017 à 2021, et 2 à 4 % sur les sommets catastrophe après le retournement de 2023. En responsabilité civile, les planchers tournent autour de 1 à 2,5 %. Ce sont les chiffres les plus sensibles au cycle de toute cette annexe, donc les premiers à vérifier ailleurs.</p>
+</section>
+<section class="level2" data-number="40.4" id="lindice-de-queue-branche-par-branche">
+<h2 class="anchored" data-anchor-id="lindice-de-queue-branche-par-branche" data-number="40.4" id="lindice-de-queue-branche-par-branche"> L’indice de queue, branche par branche</h2>
+<p>C’est la partie réellement sectorielle. Pour la sévérité au delà d’un seuil élevé, disons 1 M€, les ajustements de Pareto ou de loi de Pareto généralisée publiés tombent dans ces fourchettes.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Branche</th>
+<th>Indice <span class="math inline">\(\alpha\)</span></th>
+<th>Ce qui le déplace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RC automobile corporelle</td>
+<td>1,8 à 2,3</td>
+<td>garantie illimitée en France, l’indexation des rentes alourdit la queue réelle</td>
+</tr>
+<tr class="even">
+<td>RC entreprise, exposition européenne</td>
+<td>1,8 à 2,3</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>RC entreprise avec exposition américaine</td>
+<td>1,3 à 1,7</td>
+<td>le premier facteur, loin devant la branche elle-même</td>
+</tr>
+<tr class="even">
+<td>RC produits, retrait et rappel</td>
+<td>1,3 à 1,8</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Pharmacie, sciences du vivant</td>
+<td>1,2 à 1,6</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>RC médicale</td>
+<td>1,4 à 1,8</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Mandataires sociaux, lignes financières</td>
+<td>1,4 à 1,8</td>
+<td>corrélées : l’indépendance entre tranches tombe</td>
+</tr>
+<tr class="even">
+<td>Dommages aux biens par risque</td>
+<td>1,8 à 2,5</td>
+<td>butée nette au sinistre maximum possible, contrairement à la RC</td>
+</tr>
+<tr class="odd">
+<td>Construction, décennale</td>
+<td>1,6 à 2,0</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Cyber</td>
+<td>1,2 à 1,6</td>
+<td>instable, piloté par l’accumulation</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="level2" data-number="40.5" id="la-règle-déchelle">
+<h2 class="anchored" data-anchor-id="la-règle-déchelle" data-number="40.5" id="la-règle-déchelle"> La règle d’échelle</h2>
+<p>Avec une queue de Pareto d’indice <span class="math inline">\(\alpha\)</span>, le coût d’une tranche illimitée au dessus d’un attachement <span class="math inline">\(A\)</span> varie comme <span class="math inline">\(A^{1-\alpha}\)</span>. Donc <strong>doubler l’attachement multiplie le coût par <span class="math inline">\(2^{1-\alpha}\)</span></strong>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Indice <span class="math inline">\(\alpha\)</span></th>
+<th>Facteur quand l’attachement double</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1,5</td>
+<td>0,71</td>
+</tr>
+<tr class="even">
+<td>2,0</td>
+<td>0,50</td>
+</tr>
+<tr class="odd">
+<td>2,5</td>
+<td>0,35</td>
+</tr>
+</tbody>
+</table>
+<p>Passer d’un attachement de 10 millions à un attachement de 50 millions coûte donc un facteur 5 à 12 sur le coût, pas un facteur 100. C’est contre-intuitif, et c’est la raison pour laquelle les tranches hautes paraissent toujours chères à qui raisonne en proportion.</p>
+</section>
+<section class="level2" data-number="40.6" id="les-deux-exemples-chiffrés">
+<h2 class="anchored" data-anchor-id="les-deux-exemples-chiffrés" data-number="40.6" id="les-deux-exemples-chiffrés"> Les deux exemples, chiffrés</h2>
+<p>Pour un grand compte français en responsabilité civile, exposition européenne.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Tranche</th>
+<th>Taux sur ligne</th>
+<th>Avec exposition américaine</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>10 millions XS 10 millions</td>
+<td>3 à 8 %</td>
+<td>8 à 15 %</td>
+</tr>
+<tr class="even">
+<td>100 millions XS 50 millions</td>
+<td>0,5 à 1,5 %</td>
+<td>1,5 à 3 %</td>
+</tr>
+</tbody>
+</table>
+<p>Divisez la taille de l’assuré par deux et les deux lignes bougent d’un facteur 3 à 5. Cette dispersion est plus large que tout l’effet de branche du tableau précédent, et c’est exactement pourquoi un intervalle de taux par secteur, donné seul, induit en erreur.</p>
+</section>
+<section class="level2" data-number="40.7" id="en-assurance-directe">
+<h2 class="anchored" data-anchor-id="en-assurance-directe" data-number="40.7" id="en-assurance-directe"> En assurance directe</h2>
+<p>Deux règles de marché qu’on rencontre dans une tour de garanties. Utiles toutes les deux, pièges toutes les deux si on les prolonge.</p>
+<p><strong>Le facteur de descente.</strong> Une tranche en excédent coûte 40 à 70 % de la tranche de même portée juste en dessous, en bas de la tour, et cette proportion remonte vers 80 à 95 % en haut. Ce n’est pas une règle empirique mystérieuse : quand l’attachement devient grand devant la portée, le coût vaut à peu près <span class="math inline">\(A^{-\alpha}\)</span>, multiplié par la portée, et deux tranches voisines finissent par se ressembler.</p>
+<p><strong>Les facteurs de limites croissantes, ou règle de Riebesell.</strong> La prime varie comme <span class="math inline">\(L^{z}\)</span>, où <span class="math inline">\(L\)</span> est la limite, avec <span class="math inline">\(z\)</span> autour de 0,2 à 0,3, soit 15 à 23 % de prime en plus quand on double la limite. Ne la prolongez pas jusqu’à 100 millions XS 50 millions. Mack et Fackler (<em>Exposure-rating in liability reinsurance</em>, ASTIN Bulletin, 2003) ont montré que la règle de Riebesell équivaut à une Pareto d’indice <span class="math inline">\(\alpha = 1 - \log_2(1 + \delta)\)</span>, donc inférieur à 1, donc d’espérance infinie. C’est un outil à portée bornée, raisonnable jusqu’à 10 ou 20 millions, et qui surévalue les tranches lointaines. Ce biais pousse dans le même sens que le taux sur ligne plancher, ce qui explique en partie pourquoi le marché s’en accommode.</p>
+</section>
+<section class="level2" data-number="40.8" id="le-contrôle-qui-vaut-vraiment-le-détour">
+<h2 class="anchored" data-anchor-id="le-contrôle-qui-vaut-vraiment-le-détour" data-number="40.8" id="le-contrôle-qui-vaut-vraiment-le-détour"> Le contrôle qui vaut vraiment le détour</h2>
+<p>C’est le seul usage de cette annexe qui soit défendable en revue, et il ne demande au modèle aucune mémoire du marché.</p>
+<p>Prenez la loi de sévérité que vous avez calibrée. Calculez le coût de l’excédent illimité au dessus de l’attachement <span class="math inline">\(A\)</span>, puis au dessus de <span class="math inline">\(2A\)</span>. Le rapport donne un indice de queue implicite (pour une tranche à limite finie, ce n’est qu’une approximation, d’autant meilleure que la limite est haute) :</p>
+<p><span class="math display">\[
+\alpha_{\text{implicite}} = 1 - \log_2\!\left(\frac{\text{coût à } 2A}{\text{coût à } A}\right)
+\]</span></p>
+<p>Comparez-le au tableau des branches. Si votre modèle dit que doubler l’attachement de 50 à 100 millions divise le coût par dix, votre <span class="math inline">\(\alpha\)</span> implicite vaut environ 4,3, et aucun portefeuille de responsabilité civile ne soutient une queue aussi légère.</p>
+<p>C’est le symptôme classique d’une <strong>lognormale ajustée sur toute la plage</strong> : elle colle bien au corps de la distribution, et elle devient beaucoup trop légère au delà du plus gros sinistre observé. La réponse n’est pas de retoucher le paramètre, c’est de changer d’outil, avec une loi de Pareto généralisée ajustée sur les seuls dépassements d’un seuil.</p>
+</section>
+<section class="level2" data-number="40.9" id="les-prompts-qui-donnent-ça">
+<h2 class="anchored" data-anchor-id="les-prompts-qui-donnent-ça" data-number="40.9" id="les-prompts-qui-donnent-ça"> Les prompts qui donnent ça</h2>
+<p>Trois demandes, dans cet ordre, et c’est la troisième qui compte.</p>
+<blockquote class="blockquote">
+<p>Je tarifie une tranche 100 millions XS 50 millions en responsabilité civile grand compte, exposition européenne. Donne-moi des ordres de grandeur de marché : taux sur ligne, délai de reconstitution, multiple du coût technique. Dis explicitement ce que tu ne peux pas savoir sans mon portefeuille.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Quels indices de queue de Pareto la littérature retient-elle pour cette branche au dessus de 1 M€ ? Donne une fourchette et dis d’où elle vient. Si tu n’es pas sûr d’une référence, dis-le plutôt que de l’inventer.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Voici le coût de ma tranche calculé par mon modèle à 25, 50 et 100 millions d’attachement. Quel indice de queue mon modèle implique-t-il ? Est-il plausible pour cette branche ?</p>
+</blockquote>
+<p>Les deux premières demandent au modèle de se souvenir, et c’est là qu’il se trompe. La troisième lui demande de raisonner sur vos chiffres, et c’est là qu’il est bon.</p>
+</section>
+<section class="level2" data-number="40.10" id="ce-quil-faut-retenir-contre-soi">
+<h2 class="anchored" data-anchor-id="ce-quil-faut-retenir-contre-soi" data-number="40.10" id="ce-quil-faut-retenir-contre-soi"> Ce qu’il faut retenir contre soi</h2>
+<ol type="1">
+<li><strong>Aucun de ces chiffres n’est sourcé.</strong> Le modèle restitue une moyenne de ce qu’il a lu, sans savoir dire d’où elle vient. Demandez-lui les références, vérifiez-les, et attendez-vous à ce qu’une partie soit approximative, voire inventée.</li>
+<li><strong>Le cycle déplace les planchers d’un facteur 2 à 3</strong>, et le modèle ne sait pas en quelle année vous êtes. Les fourchettes de taux vieillissent beaucoup plus vite que les indices de queue.</li>
+<li><strong>Une note signée ne cite pas un modèle de langue.</strong> Elle cite une étude de marché, un rapport de courtier, un article. Le modèle aide à savoir quoi chercher ; il ne remplace pas la recherche, et la signature reste la vôtre.</li>
+</ol>
+<p>Voir <a href="../../annexes/F/index.html">l’annexe F</a> pour les autres façons de se faire avoir, et le chapitre « Un modèle qui écrit le mot suivant » (partie 1) sur ce que vaut un nombre sorti d’une prose.</p>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/J/index.html"><small>&larr; Précédent</small>Annexe J. Formulaire pré-formation</a><a class="empty"></a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

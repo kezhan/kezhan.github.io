@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe E. Conventions Git légères pour une équipe actuarielle · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe E. Conventions Git légères pour une équipe actuarielle</h1>
+      <p class="lede">Git a été pensé pour des équipes de développement logiciel nombreuses. Pour une équipe actuarielle de quelques personnes, la plupart de leurs conventions sont surdimensionnées. Cette annexe propose un déroulé léger mais discipliné, calibré pour un cabinet, qui assure la traçabilité, le partage et le retour en arrière sans rituel inutile.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-déroulé-recommandé-en-cinq-règles">Le déroulé recommandé en cinq règles</a><a href="#les-commandes-à-connaître">Les commandes à connaître</a><a href="#le-pattern-claude-commite-le">Le pattern « Claude, commite-le »</a><a href="#format-des-messages-de-commit">Format des messages de commit</a><a href="#branches-et-relecture">Branches et relecture</a><a href="#étiquettes-par-version-réglementaire">Étiquettes par version réglementaire</a><a href="#le-fichier-.gitignore-actuariel">Le fichier .gitignore actuariel</a><a href="#revenir-en-arrière">Revenir en arrière</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<p>Ce qu’il faut garder en tête avant tout le reste :</p>
+<ul>
+<li><strong>Un fichier non commité reste sur le disque</strong>, mais il n’a pas de point de retour : la prochaine modification l’écrase sans recours.</li>
+<li><strong>Un commit non poussé n’existe que sur votre poste</strong> : invisible pour les collègues, perdu avec le poste.</li>
+<li><strong>Un tag ne fige que ce qui est versionné</strong> : ni les données exclues par le <code>.gitignore</code>, ni l’environnement (versions de Python et des bibliothèques). Et <code>git push</code> n’envoie pas les tags.</li>
+</ul>
+<section class="level2" data-number="34.1" id="le-déroulé-recommandé-en-cinq-règles">
+<h2 class="anchored" data-anchor-id="le-déroulé-recommandé-en-cinq-règles" data-number="34.1" id="le-déroulé-recommandé-en-cinq-règles"> Le déroulé recommandé en cinq règles</h2>
+<p><strong>Règle 1. Une branche par projet, pas par fonctionnalité.</strong> Le Git Flow classique (branches de fonctionnalité, <code>develop</code>, <code>release</code>, <code>master</code>) est trop lourd pour une équipe actuarielle. Pour la plupart des projets d’un cabinet, la seule branche <code>main</code> suffit. Pour un chantier long (la refonte d’un module de provisionnement), une branche <code>refonte-provisionnement</code> en parallèle, fusionnée régulièrement dans <code>main</code>.</p>
+<p><strong>Règle 2. Un commit à chaque étape validée.</strong> Une étape validée, c’est une modification qui marche. Le calcul des facteurs de développement tourne et ses tests passent : commit. Le bootstrap tourne : commit. Pas dix changements dans un commit, pas un commit pour ouvrir une parenthèse et un autre pour la fermer.</p>
+<p><strong>Règle 3. Des messages qui disent l’intention.</strong> <em>« Ajoute le bootstrap ODP des réserves »</em> est un bon message. <em>« Modif chain_ladder.py + nouveau fichier bootstrap.py + tests »</em> est un mauvais message : il dit ce qui a bougé, pas pourquoi.</p>
+<p><strong>Règle 4. Pousser chaque jour.</strong> À la fin de chaque journée de travail : <code>git push</code>. Ce qui n’est pas poussé n’existe que sur votre poste.</p>
+<p><strong>Règle 5. Un tag par livraison réglementaire, après relecture.</strong> Quand une version part au contrôleur ou au comité, un second actuaire la relit, puis on l’étiquette et on pousse l’étiquette :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">git</span> tag <span class="at">-a</span> v2026-q1-scr <span class="at">-m</span> <span class="st">"SCR Solvabilité II, T1 2026, remis le 2026-04-15"</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="fu">git</span> push origin v2026-q1-scr</span></code></pre></div></div>
+</section>
+<section class="level2" data-number="34.2" id="les-commandes-à-connaître">
+<h2 class="anchored" data-anchor-id="les-commandes-à-connaître" data-number="34.2" id="les-commandes-à-connaître"> Les commandes à connaître</h2>
+<p>Pour travailler seul :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Commande</th>
+<th>À quoi elle sert</th>
+<th>Quand l’utiliser</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>git status</code></td>
+<td>Qu’est-ce qui a changé ?</td>
+<td>Avant chaque commit, et dès qu’on s’y perd</td>
+</tr>
+<tr class="even">
+<td><code>git diff</code></td>
+<td>Le détail exact des changements</td>
+<td>Avant un <code>git add</code>, pour voir ce qu’on va figer</td>
+</tr>
+<tr class="odd">
+<td><code>git add &lt;fichier&gt;</code></td>
+<td>Choisir ce qu’on fige</td>
+<td>Une fois le diff relu</td>
+</tr>
+<tr class="even">
+<td><code>git commit -m "..."</code></td>
+<td>Figer cette version</td>
+<td>Après chaque étape validée</td>
+</tr>
+<tr class="odd">
+<td><code>git log --oneline</code></td>
+<td>L’historique, une ligne par commit</td>
+<td>Pour retrouver une version passée</td>
+</tr>
+</tbody>
+</table>
+<p>Pour travailler à plusieurs, s’y ajoutent :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%"/>
+<col style="width: 50%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Commande</th>
+<th>À quoi elle sert</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>git pull</code></td>
+<td>Récupérer le travail des collègues</td>
+</tr>
+<tr class="even">
+<td><code>git push</code></td>
+<td>Envoyer ses commits sur le serveur partagé</td>
+</tr>
+<tr class="odd">
+<td><code>git push origin &lt;tag&gt;</code></td>
+<td>Envoyer une étiquette, que <code>git push</code> seul n’envoie pas</td>
+</tr>
+<tr class="even">
+<td><code>git switch &lt;branche&gt;</code></td>
+<td>Passer sur une autre branche</td>
+</tr>
+</tbody>
+</table>
+<p>Les commandes plus avancées (<code>rebase</code>, <code>cherry-pick</code>, <code>bisect</code>) servent rarement dans un projet actuariel. Le jour où l’une d’elles est utile, Claude sait la proposer et vous l’expliquer avant de la lancer.</p>
+</section>
+<section class="level2" data-number="34.3" id="le-pattern-claude-commite-le">
+<h2 class="anchored" data-anchor-id="le-pattern-claude-commite-le" data-number="34.3" id="le-pattern-claude-commite-le"> Le pattern « Claude, commite-le »</h2>
+<p>Avec Claude Code, le commit fait partie du dialogue. À chaque étape validée :</p>
+<blockquote class="blockquote">
+<p><em>“Cette version me convient, commite-la avec un message qui décrit l’intention.”</em></p>
+</blockquote>
+<p>Claude lance <code>git add</code> puis <code>git commit</code> et montre le résultat. Vous relisez le message proposé et le corrigez s’il est trop technique. Le modèle de réglages de l’<a href="../../annexes/D/index.html">annexe D</a> autorise <code>git add</code> et <code>git commit</code> sans demander, et fait toujours demander avant un <code>git push</code> : le commit devient un réflexe, l’envoi reste une décision.</p>
+</section>
+<section class="level2" data-number="34.4" id="format-des-messages-de-commit">
+<h2 class="anchored" data-anchor-id="format-des-messages-de-commit" data-number="34.4" id="format-des-messages-de-commit"> Format des messages de commit</h2>
+<p>Le plus souvent, un titre et deux ou trois lignes suffisent.</p>
+<pre><code>Ajoute le bootstrap ODP des réserves
+
+Distribution de la réserve totale par 10 000 simulations, graine 42.
+Réserves simulées sauvegardées en parquet pour la piste d'audit.</code></pre>
+<p>Première ligne : <strong>l’intention</strong> de la modification, à la voix active, sans point final, en une soixantaine de caractères au plus. Une ligne vide. Puis quelques lignes de contexte : <strong>pourquoi</strong>, et ce qui mérite d’être noté.</p>
+<p>Pour une modification triviale (une coquille, une mise à jour de dépendance), une seule ligne suffit.</p>
+<pre><code>Corrige l'inversion d'indices dans facteurs_developpement</code></pre>
+<p><strong>À proscrire</strong> :</p>
+<ul>
+<li><em>« fix »</em>, <em>« update »</em>, <em>« wip »</em> sans contexte : illisible six mois plus tard.</li>
+<li><em>« Add 47 lines to chain_ladder.py »</em> : dit le quoi technique, pas le pourquoi métier.</li>
+<li><em>« voir Jira ACT-1245 »</em> seul : la trace ne tient que tant que l’outil de tickets existe et reste accessible.</li>
+</ul>
+</section>
+<section class="level2" data-number="34.5" id="branches-et-relecture">
+<h2 class="anchored" data-anchor-id="branches-et-relecture" data-number="34.5" id="branches-et-relecture"> Branches et relecture</h2>
+<p>Pour un projet courant, <strong>une seule branche <code>main</code></strong>. On se relit en regardant les commits du collègue (<code>git log -p</code>, ou l’historique dans VS Code).</p>
+<p>Pour un calcul réglementaire, le <strong>principe des quatre yeux</strong> : un second actuaire relit avant la livraison. Deux façons légères de le tenir :</p>
+<ul>
+<li>une demande de fusion (pull request) sur le serveur Git, que le relecteur approuve avant que la modification entre dans <code>main</code> ;</li>
+<li>la relecture du diff entre la dernière version livrée et la nouvelle, avant de poser l’étiquette : <code>git diff v2025-q4-scr..HEAD</code>.</li>
+</ul>
+<p>Pour un chantier long, une branche dédiée :</p>
+<pre><code>main (ligne de référence, étiquetée à chaque livraison)
+ \
+  refonte-provisionnement (en parallèle, quelques semaines)
+     \
+      [fusion régulière dans main, après relecture]</code></pre>
+<p>Pour un projet partagé entre plusieurs équipes, le pattern classique : <code>main</code> et une branche par demande de fusion, fusionnée après relecture. On sort alors du cadre de cette annexe.</p>
+</section>
+<section class="level2" data-number="34.6" id="étiquettes-par-version-réglementaire">
+<h2 class="anchored" data-anchor-id="étiquettes-par-version-réglementaire" data-number="34.6" id="étiquettes-par-version-réglementaire"> Étiquettes par version réglementaire</h2>
+<p>Pour les calculs réglementaires (SCR, provisions IFRS 17, ORSA), une étiquette à chaque livraison officielle. Format conseillé : <code>v&lt;année&gt;-&lt;période&gt;-&lt;calcul&gt;</code>.</p>
+<pre><code>v2026-q1-scr           SCR Solvabilité II, premier trimestre 2026
+v2026-h1-ifrs17        Provisions IFRS 17, premier semestre 2026
+v2026-orsa             ORSA annuel
+v2026-q1-pricing-auto  Tarif auto, premier trimestre 2026</code></pre>
+<p><strong>Ce que l’étiquette fige, et ce qu’elle ne fige pas.</strong> Elle désigne un commit : le code, les paramètres et la documentation versionnés tels qu’ils étaient à la livraison. Elle ne fige pas les données d’entrée, exclues par le <code>.gitignore</code>, ni l’environnement : une autre version de Python ou de NumPy peut changer un résultat, et NumPy ne garantit pas que le flux d’un <code>Generator</code> reste identique d’une version à l’autre. Pour qu’un tiers puisse refaire le calcul trois ans plus tard, il faut donc aussi :</p>
+<ol type="1">
+<li><strong>Archiver les données d’entrée</strong> hors de Git, sur le stockage du cabinet, et noter dans un fichier versionné leur emplacement et leur empreinte (un hachage SHA-256, qui prouve que le fichier n’a pas changé).</li>
+<li><strong>Figer l’environnement</strong> : la liste exacte des versions (<code>pip freeze &gt; requirements.lock</code>, ou le fichier de verrouillage de votre gestionnaire de paquets), commitée avec le code.</li>
+<li><strong>Pousser l’étiquette</strong> : <code>git push origin v2026-q1-scr</code>, ou <code>git push --follow-tags</code>, qui envoie avec les commits les étiquettes annotées qui les accompagnent.</li>
+</ol>
+</section>
+<section class="level2" data-number="34.7" id="le-fichier-.gitignore-actuariel">
+<h2 class="anchored" data-anchor-id="le-fichier-.gitignore-actuariel" data-number="34.7" id="le-fichier-.gitignore-actuariel"> Le fichier .gitignore actuariel</h2>
+<p>Modèle à copier dans tout nouveau projet.</p>
+<pre><code># Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.venv/
+*.egg-info/
+
+# Carnets
+.ipynb_checkpoints/
+
+# Données d'entrée : archivées hors de Git, empreinte notée dans un fichier versionné
+donnees/brutes/
+*.secret
+.env
+
+# Artefacts volumineux (stockage du cabinet)
+sorties/simulations/*.parquet
+sorties/exports/*.xlsx
+*.bak
+
+# Réglages personnels de Claude Code
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/settings.json
+.idea/</code></pre>
+<p>À adapter à votre arborescence. Le principe : ce qui est généré (caches, artefacts lourds) ou personnel (réglages locaux, secrets) reste hors du dépôt. Les données nominatives, elles, n’ont rien à faire dans le dossier de travail, <code>.gitignore</code> ou pas : Claude lit ce qui s’y trouve, et ce qu’il lit part chez le fournisseur.</p>
+</section>
+<section class="level2" data-number="34.8" id="revenir-en-arrière">
+<h2 class="anchored" data-anchor-id="revenir-en-arrière" data-number="34.8" id="revenir-en-arrière"> Revenir en arrière</h2>
+<p><strong>« J’ai fait une modification qui casse tout. »</strong> Si elle n’est pas commitée, <code>git restore &lt;fichier&gt;</code> remet la dernière version commitée ; c’est irréversible, les changements non commités de ce fichier sont perdus. Si la modification vient de Claude, <code>/rewind</code> (ou Échap deux fois) revient à l’état d’avant un prompt, pour ce que Claude a modifié avec ses outils de fichiers ; ce qu’une commande a modifié n’est pas suivi. Si c’est déjà commité : <code>git log --oneline</code> pour trouver le commit d’avant, puis <code>git restore --source &lt;hash&gt; &lt;fichier&gt;</code>.</p>
+<p><strong>« J’ai un conflit après un <code>git pull</code>. »</strong> Un collègue et vous avez modifié les mêmes lignes. <code>git status</code> liste les fichiers en conflit. Dans chacun, repérer les marqueurs <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, garder la bonne version, retirer les marqueurs, puis <code>git add &lt;fichier&gt;</code> et <code>git commit</code>. En cas de doute : <em>« explique-moi ce conflit et propose une résolution, sans rien modifier »</em>.</p>
+<p><strong>« J’ai perdu un fichier. »</strong> S’il a été commité un jour, <code>git log --oneline -- &lt;fichier&gt;</code> trouve les commits qui l’ont touché, et <code>git restore --source &lt;hash&gt; &lt;fichier&gt;</code> le rétablit depuis l’un d’eux.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : le calcul qui ne se reproduit pas
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On vous demande de refaire le SCR livré sous l’étiquette <code>v2026-q1-scr</code>. Sur votre poste, <code>git switch --detach v2026-q1-scr</code> répond que l’étiquette n’existe pas. Une collègue la retrouve sur son poste ; vous relancez le calcul : le chiffre ne retombe pas exactement sur celui qui a été livré. Qu’est-ce qui a pu se passer, et que fallait-il faire au moment de la livraison ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li><strong>L’étiquette n’a jamais été poussée.</strong> <code>git push</code> n’envoie pas les tags : elle n’existait que sur le poste de qui l’a posée. Il fallait <code>git push origin v2026-q1-scr</code>.</li>
+<li><strong>Les données ont changé.</strong> Exclues par le <code>.gitignore</code>, elles ont été réextraites depuis. Il fallait les archiver et noter leur empreinte dans un fichier versionné.</li>
+<li><strong>L’environnement a changé.</strong> D’autres versions de Python, de NumPy ou de statsmodels donnent d’autres résultats, et le flux d’un générateur aléatoire peut varier entre versions de NumPy. Il fallait commiter la liste exacte des versions.</li>
+</ol>
+<p>Enfin, la relecture par un second actuaire avant le tag aurait été l’occasion de vérifier ces trois points.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="34.9" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="34.9" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>Le chapitre « Versionner les résultats » (partie 3), dont la section « Git, juste ce qu’il faut » présente Git dans le travail avec Claude Code.</li>
+<li>L’<a href="../../annexes/D/index.html">annexe D</a> pour les commandes Git que le modèle de réglages autorise, fait demander ou refuse : ce sont les recommandations de cette formation, pas des réglages par défaut de Claude Code.</li>
+<li>Pour les équipes qui passent par des demandes de fusion relues : le développement sur tronc commun (trunk-based development), qui garde la légèreté de cette annexe.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/D/index.html"><small>&larr; Précédent</small>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a class="next" href="../../annexes/F/index.html"><small>Suivant &rarr;</small>Annexe F. Liste des pièges fréquents</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

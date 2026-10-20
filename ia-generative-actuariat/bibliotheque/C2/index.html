@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C2. Rapport annuel d’un fonds vie · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">C2. Rapport annuel d’un fonds vie</h1>
+      <p class="lede">Cette fiche illustre la démarche D sur un rapport annuel Quarto. Ce que vous apprenez n’est pas la gestion de fonds vie, mais le pattern « source unique de chiffres, template paramétrable, régénération annuelle », applicable à tout livrable périodique, et la relecture des commentaires proposés par Claude contre les sorties.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#pièges-typiques">Pièges typiques</a><a href="#exercice-trouvez-les-erreurs">Exercice : trouvez les erreurs</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : D, construire un dashboard ou un rapport (long format)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Communication et tableaux de bord » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="24.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="24.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le rapport annuel d’un fonds vie épargne présente la composition du portefeuille, la performance, la sinistralité, les marges et les perspectives. Il est largement répétitif d’une année sur l’autre : structure identique, sources de données stables, gabarits de graphiques constants. Seuls les chiffres changent.</p>
+<p>Pour l’actuaire qui le produit chaque année, l’enjeu est de <strong>rendre la production reproductible</strong>. La cible : un document Quarto qui se régénère à partir des données de l’arrêté, avec une intervention humaine sur les parties qualitatives (commentaires, perspectives) et une signature actuarielle qui valide l’ensemble. Le point faible du dispositif, ce sont les commentaires : Claude les rédige vite, et un commentaire peut citer des chiffres qui ne sont pas ceux du tableau juste au-dessus.</p>
+<p>Ce cas illustre <strong>l’organisation des données</strong> (sources tracées, séparation données / template), <strong>l’optimisation du code</strong> (template Quarto et cellules paramétrées), <strong>l’interface de présentation</strong> (sections normalisées, graphiques cohérents), <strong>la gouvernance</strong> (versionnement Git par arrêté, traçabilité des chiffres), et <strong>le pilotage IA</strong> (5 prompts pour la structure, les graphiques et les commentaires).</p>
+</section>
+<section class="level2" data-number="24.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="24.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On simule les données d’un fonds vie épargne en euros à l’arrêté du 31/12/2025 : composition d’actifs, performance, sinistralité, indicateurs. Toutes les valeurs sont fictives.</p>
+<p>La première cellule porte l’étiquette <code>parameters</code> : avec le moteur Jupyter, c’est là que Quarto injecte les paramètres passés en ligne de commande (voir « Pour aller plus loin »).</p>
+<div class="cell" data-execution_count="1" data-tags='["parameters"]' id="f53d6edb">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a>EXERCICE <span class="op">=</span> <span class="dv">2025</span></span></code></pre></div></div>
+</div>
+<div class="cell" data-execution_count="2" id="d89e7eb3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>ARRETE <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>EXERCICE<span class="sc">}</span><span class="ss">-12-31"</span></span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>DATE_ARRETE <span class="op">=</span> <span class="ss">f"31/12/</span><span class="sc">{</span>EXERCICE<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a><span class="kw">def</span> fr(x, d<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>    <span class="co">"""Nombre au format français, pour les textes du rapport."""</span></span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:.</span>{d}f<span class="sc">}</span><span class="ss">"</span>.replace(<span class="st">"."</span>, <span class="st">","</span>).replace(<span class="st">"-"</span>, <span class="st">"−"</span>)</span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a><span class="co"># 1. Composition d'actifs (en transparence)</span></span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a>composition_actifs <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a>    <span class="st">"classe"</span>: [<span class="st">"Obligations souveraines"</span>, <span class="st">"Obligations corporate IG"</span>,</span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>               <span class="st">"Obligations corporate HY"</span>, <span class="st">"Actions zone euro"</span>,</span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>               <span class="st">"Actions internationales"</span>, <span class="st">"Immobilier"</span>, <span class="st">"Monétaire"</span>, <span class="st">"Autres"</span>],</span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>    <span class="st">"famille"</span>: [<span class="st">"Obligations"</span>, <span class="st">"Obligations"</span>, <span class="st">"Obligations"</span>, <span class="st">"Actions"</span>,</span>
+<span id="cb2-19"><a aria-hidden="true" href="#cb2-19" tabindex="-1"></a>                <span class="st">"Actions"</span>, <span class="st">"Immobilier"</span>, <span class="st">"Monétaire"</span>, <span class="st">"Autres"</span>],</span>
+<span id="cb2-20"><a aria-hidden="true" href="#cb2-20" tabindex="-1"></a>    <span class="st">"encours_meur"</span>: [<span class="dv">3450</span>, <span class="dv">1820</span>, <span class="dv">240</span>, <span class="dv">680</span>, <span class="dv">420</span>, <span class="dv">510</span>, <span class="dv">180</span>, <span class="dv">95</span>],</span>
+<span id="cb2-21"><a aria-hidden="true" href="#cb2-21" tabindex="-1"></a>})</span>
+<span id="cb2-22"><a aria-hidden="true" href="#cb2-22" tabindex="-1"></a>composition_actifs[<span class="st">"part_pct"</span>] <span class="op">=</span> (composition_actifs[<span class="st">"encours_meur"</span>] <span class="op">/</span></span>
+<span id="cb2-23"><a aria-hidden="true" href="#cb2-23" tabindex="-1"></a>                                   composition_actifs[<span class="st">"encours_meur"</span>].<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb2-24"><a aria-hidden="true" href="#cb2-24" tabindex="-1"></a></span>
+<span id="cb2-25"><a aria-hidden="true" href="#cb2-25" tabindex="-1"></a><span class="co"># 2. Performance sur 5 ans</span></span>
+<span id="cb2-26"><a aria-hidden="true" href="#cb2-26" tabindex="-1"></a>performance <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb2-27"><a aria-hidden="true" href="#cb2-27" tabindex="-1"></a>    <span class="st">"annee"</span>: [<span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>, <span class="dv">2024</span>, <span class="dv">2025</span>],</span>
+<span id="cb2-28"><a aria-hidden="true" href="#cb2-28" tabindex="-1"></a>    <span class="st">"taux_servi_pct"</span>: [<span class="fl">1.20</span>, <span class="fl">1.50</span>, <span class="fl">2.00</span>, <span class="fl">2.25</span>, <span class="fl">2.40</span>],            <span class="co"># net de frais de gestion</span></span>
+<span id="cb2-29"><a aria-hidden="true" href="#cb2-29" tabindex="-1"></a>    <span class="st">"tmg_pct"</span>: [<span class="fl">0.50</span>, <span class="fl">0.50</span>, <span class="fl">0.50</span>, <span class="fl">0.50</span>, <span class="fl">0.50</span>],                   <span class="co"># taux minimum garanti</span></span>
+<span id="cb2-30"><a aria-hidden="true" href="#cb2-30" tabindex="-1"></a>    <span class="st">"rendement_comptable_pct"</span>: [<span class="fl">2.40</span>, <span class="fl">2.35</span>, <span class="fl">2.55</span>, <span class="fl">2.85</span>, <span class="fl">3.05</span>],   <span class="co"># produits financiers / encours</span></span>
+<span id="cb2-31"><a aria-hidden="true" href="#cb2-31" tabindex="-1"></a>    <span class="st">"rendement_marche_pct"</span>: [<span class="fl">3.10</span>, <span class="op">-</span><span class="fl">2.40</span>, <span class="fl">4.20</span>, <span class="fl">5.10</span>, <span class="fl">4.80</span>],     <span class="co"># variation de valeur de marché incluse</span></span>
+<span id="cb2-32"><a aria-hidden="true" href="#cb2-32" tabindex="-1"></a>})</span>
+<span id="cb2-33"><a aria-hidden="true" href="#cb2-33" tabindex="-1"></a>performance[<span class="st">"participation_au_dela_tmg_pts"</span>] <span class="op">=</span> performance[<span class="st">"taux_servi_pct"</span>] <span class="op">-</span> performance[<span class="st">"tmg_pct"</span>]</span>
+<span id="cb2-34"><a aria-hidden="true" href="#cb2-34" tabindex="-1"></a>performance[<span class="st">"marge_financiere_pts"</span>] <span class="op">=</span> performance[<span class="st">"rendement_comptable_pct"</span>] <span class="op">-</span> performance[<span class="st">"taux_servi_pct"</span>]</span>
+<span id="cb2-35"><a aria-hidden="true" href="#cb2-35" tabindex="-1"></a></span>
+<span id="cb2-36"><a aria-hidden="true" href="#cb2-36" tabindex="-1"></a><span class="co"># 3. Indicateurs techniques</span></span>
+<span id="cb2-37"><a aria-hidden="true" href="#cb2-37" tabindex="-1"></a>indicateurs <span class="op">=</span> {</span>
+<span id="cb2-38"><a aria-hidden="true" href="#cb2-38" tabindex="-1"></a>    <span class="st">"encours_total_meur"</span>: composition_actifs[<span class="st">"encours_meur"</span>].<span class="bu">sum</span>(),</span>
+<span id="cb2-39"><a aria-hidden="true" href="#cb2-39" tabindex="-1"></a>    <span class="st">"nombre_contrats"</span>: <span class="dv">124_500</span>,</span>
+<span id="cb2-40"><a aria-hidden="true" href="#cb2-40" tabindex="-1"></a>    <span class="st">"primes_collectees_meur"</span>: <span class="dv">380</span>,</span>
+<span id="cb2-41"><a aria-hidden="true" href="#cb2-41" tabindex="-1"></a>    <span class="st">"prestations_servies_meur"</span>: <span class="dv">290</span>,</span>
+<span id="cb2-42"><a aria-hidden="true" href="#cb2-42" tabindex="-1"></a>    <span class="st">"ratio_couverture_scr_organisme_pct"</span>: <span class="dv">184</span>,   <span class="co"># repris du SFCR de l'organisme</span></span>
+<span id="cb2-43"><a aria-hidden="true" href="#cb2-43" tabindex="-1"></a>    <span class="st">"duration_passif_annees"</span>: <span class="fl">12.3</span>,</span>
+<span id="cb2-44"><a aria-hidden="true" href="#cb2-44" tabindex="-1"></a>    <span class="st">"duration_actif_annees"</span>: <span class="fl">7.8</span>,</span>
+<span id="cb2-45"><a aria-hidden="true" href="#cb2-45" tabindex="-1"></a>}</span>
+<span id="cb2-46"><a aria-hidden="true" href="#cb2-46" tabindex="-1"></a></span>
+<span id="cb2-47"><a aria-hidden="true" href="#cb2-47" tabindex="-1"></a><span class="co"># 4. Mortalité observée contre table de référence</span></span>
+<span id="cb2-48"><a aria-hidden="true" href="#cb2-48" tabindex="-1"></a>mortalite_observee <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb2-49"><a aria-hidden="true" href="#cb2-49" tabindex="-1"></a>    <span class="st">"tranche_age"</span>: [<span class="st">"50-59"</span>, <span class="st">"60-69"</span>, <span class="st">"70-79"</span>, <span class="st">"80-89"</span>, <span class="st">"90+"</span>],</span>
+<span id="cb2-50"><a aria-hidden="true" href="#cb2-50" tabindex="-1"></a>    <span class="st">"n_assures"</span>: [<span class="dv">28_400</span>, <span class="dv">32_100</span>, <span class="dv">21_500</span>, <span class="dv">8_900</span>, <span class="dv">1_200</span>],</span>
+<span id="cb2-51"><a aria-hidden="true" href="#cb2-51" tabindex="-1"></a>    <span class="st">"deces_observes"</span>: [<span class="dv">142</span>, <span class="dv">257</span>, <span class="dv">451</span>, <span class="dv">481</span>, <span class="dv">113</span>],</span>
+<span id="cb2-52"><a aria-hidden="true" href="#cb2-52" tabindex="-1"></a>    <span class="st">"deces_attendus_table"</span>: [<span class="dv">136</span>, <span class="dv">248</span>, <span class="dv">438</span>, <span class="dv">467</span>, <span class="dv">109</span>],</span>
+<span id="cb2-53"><a aria-hidden="true" href="#cb2-53" tabindex="-1"></a>})</span>
+<span id="cb2-54"><a aria-hidden="true" href="#cb2-54" tabindex="-1"></a></span>
+<span id="cb2-55"><a aria-hidden="true" href="#cb2-55" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Arrêté : </span><span class="sc">{</span>ARRETE<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-56"><a aria-hidden="true" href="#cb2-56" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Encours total du fonds : </span><span class="sc">{</span>indicateurs[<span class="st">'encours_total_meur'</span>]<span class="sc">:,}</span><span class="ss"> M EUR"</span>)</span>
+<span id="cb2-57"><a aria-hidden="true" href="#cb2-57" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Nombre de contrats : </span><span class="sc">{</span>indicateurs[<span class="st">'nombre_contrats'</span>]<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb2-58"><a aria-hidden="true" href="#cb2-58" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Taux servi </span><span class="sc">{</span>EXERCICE<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>performance<span class="sc">.</span>loc[performance[<span class="st">'annee'</span>] <span class="op">==</span> EXERCICE, <span class="st">'taux_servi_pct'</span>]<span class="sc">.</span>values[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss"> %"</span>)</span>
+<span id="cb2-59"><a aria-hidden="true" href="#cb2-59" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ratio de couverture du SCR (organisme) : </span><span class="sc">{</span>indicateurs[<span class="st">'ratio_couverture_scr_organisme_pct'</span>]<span class="sc">}</span><span class="ss"> %"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Arrêté : 2025-12-31
+Encours total du fonds : 7,395 M EUR
+Nombre de contrats : 124,500
+Taux servi 2025 : 2.40 %
+Ratio de couverture du SCR (organisme) : 184 %</code></pre>
+</div>
+</div>
+<p>Le ratio de couverture du SCR se calcule pour l’organisme, pas pour un fonds : le rapport reprend celui du SFCR (rapport sur la solvabilité et la situation financière) publié par l’assureur. Le rapport annuel du fonds n’est pas non plus un dépôt réglementaire : l’ACPR reçoit le RSR et les états quantitatifs, pas ce document.</p>
+</section>
+<section class="level2" data-number="24.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="24.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Structurer le rapport.</strong> <em>“Propose-moi une structure de rapport annuel en 8 sections pour un fonds vie épargne en euros. Pour chaque section : ce qu’elle couvre, audience cible, longueur indicative. Audience : assurés et réseau de distribution, direction pour validation.”</em></p></li>
+<li><p><strong>Composition d’actifs.</strong> <em>“À partir de <code>composition_actifs</code>, sors-moi : (1) un tableau formaté pour le rapport, (2) un graphique en barres horizontales. Puis un commentaire court (trois phrases au plus), dont chaque chiffre est calculé en Python à partir du tableau et injecté dans le texte, jamais tapé à la main. Compare la duration de l’actif à celle du passif (dans <code>indicateurs</code>).”</em></p></li>
+<li><p><strong>Performance comparée.</strong> <em>“À partir de <code>performance</code>, trace l’évolution sur 5 ans du taux servi, du TMG et des rendements. Commente la participation distribuée au-delà de la garantie (taux servi − TMG) et la marge financière de l’assureur (rendement comptable − taux servi). Ne compare pas le taux servi au rendement en valeur de marché.”</em></p></li>
+<li><p><strong>Mortalité observée contre table.</strong> <em>“À partir de <code>mortalite_observee</code>, calcule pour chaque tranche et pour l’ensemble le rapport observé / attendu, le z de Poisson (O − E) / √E et un intervalle de confiance à 95 %. Conclus tranche par tranche et sur l’ensemble à partir de ces tests, pas d’un seuil sur l’écart relatif.”</em></p></li>
+<li><p><strong>Section qualitative (perspectives).</strong> <em>“Rédige la section ‘Perspectives 2026’ en 3 paragraphes courts. Audience : assuré non-spécialiste. Couvre : (a) cadre macro-financier attendu, (b) impact sur la gestion d’actifs, (c) engagement sur le taux servi. Laisse-moi compléter avec mes informations confidentielles.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="24.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="24.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="24.4.1" id="étape-1.-structure-type-dun-rapport-annuel-fonds-vie">
+<h3 class="anchored" data-anchor-id="étape-1.-structure-type-dun-rapport-annuel-fonds-vie" data-number="24.4.1"> Étape 1. Structure type d’un rapport annuel fonds vie</h3>
+<div class="cell" data-execution_count="3" id="c247b115">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>structure <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"1. Synthèse"</span>, <span class="st">"audience"</span>: <span class="st">"Toutes"</span>, <span class="st">"pages_cible"</span>: <span class="st">"1-2"</span>,</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Chiffres clés, taux servi, position de solvabilité de l'organisme, message de la direction."</span>},</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"2. Présentation du fonds"</span>, <span class="st">"audience"</span>: <span class="st">"Assurés"</span>, <span class="st">"pages_cible"</span>: <span class="st">"2-3"</span>,</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Objet du fonds, profil de risque, garanties offertes."</span>},</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"3. Composition d'actifs"</span>, <span class="st">"audience"</span>: <span class="st">"Assurés, direction"</span>, <span class="st">"pages_cible"</span>: <span class="st">"3-4"</span>,</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Répartition par classe en transparence, duration de l'actif et du passif."</span>},</span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"4. Performance et gestion d'actifs"</span>, <span class="st">"audience"</span>: <span class="st">"Assurés"</span>, <span class="st">"pages_cible"</span>: <span class="st">"3-4"</span>,</span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Taux servi, rendement comptable, rendement en valeur de marché."</span>},</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"5. Sinistralité et mortalité"</span>, <span class="st">"audience"</span>: <span class="st">"Direction, assurés"</span>, <span class="st">"pages_cible"</span>: <span class="st">"2-3"</span>,</span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Décès observés contre table de référence, prestations servies."</span>},</span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"6. Marges techniques et financières"</span>, <span class="st">"audience"</span>: <span class="st">"Direction"</span>, <span class="st">"pages_cible"</span>: <span class="st">"2-3"</span>,</span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Marge financière, participation aux bénéfices, dotations et reprises de PPB."</span>},</span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"7. Position de solvabilité"</span>, <span class="st">"audience"</span>: <span class="st">"Tous publics"</span>, <span class="st">"pages_cible"</span>: <span class="st">"1-2"</span>,</span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Ratios de couverture du SCR et du MCR de l'organisme, repris du SFCR."</span>},</span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    {<span class="st">"section"</span>: <span class="st">"8. Perspectives 2026"</span>, <span class="st">"audience"</span>: <span class="st">"Assurés"</span>, <span class="st">"pages_cible"</span>: <span class="st">"1-2"</span>,</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>     <span class="st">"contenu"</span>: <span class="st">"Engagement sur le taux servi, allocation cible, points de vigilance."</span>},</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>])</span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Structure type du rapport annuel fonds vie :"</span>)</span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a><span class="bu">print</span>(structure.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Structure type du rapport annuel fonds vie :
+                            section           audience pages_cible                                                                                     contenu
+                        1. Synthèse             Toutes         1-2 Chiffres clés, taux servi, position de solvabilité de l'organisme, message de la direction.
+           2. Présentation du fonds            Assurés         2-3                                       Objet du fonds, profil de risque, garanties offertes.
+            3. Composition d'actifs Assurés, direction         3-4                   Répartition par classe en transparence, duration de l'actif et du passif.
+ 4. Performance et gestion d'actifs            Assurés         3-4                             Taux servi, rendement comptable, rendement en valeur de marché.
+       5. Sinistralité et mortalité Direction, assurés         2-3                              Décès observés contre table de référence, prestations servies.
+6. Marges techniques et financières          Direction         2-3                Marge financière, participation aux bénéfices, dotations et reprises de PPB.
+         7. Position de solvabilité       Tous publics         1-2                       Ratios de couverture du SCR et du MCR de l'organisme, repris du SFCR.
+               8. Perspectives 2026            Assurés         1-2                        Engagement sur le taux servi, allocation cible, points de vigilance.</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="24.4.2" id="étape-2.-composition-dactifs-tableau-graphique-commentaire">
+<h3 class="anchored" data-anchor-id="étape-2.-composition-dactifs-tableau-graphique-commentaire" data-number="24.4.2"> Étape 2. Composition d’actifs : tableau, graphique, commentaire</h3>
+<div class="cell" data-execution_count="4" id="cell-fig-composition-actifs">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">"#1d4ed8"</span>, <span class="st">"#3b82f6"</span>, <span class="st">"#60a5fa"</span>, <span class="st">"#b45309"</span>, <span class="st">"#d97706"</span>, <span class="st">"#047857"</span>, <span class="st">"#6b7280"</span>, <span class="st">"#9ca3af"</span>]</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>y_pos <span class="op">=</span> <span class="bu">range</span>(<span class="bu">len</span>(composition_actifs))</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>ax.barh(y_pos, composition_actifs[<span class="st">"encours_meur"</span>], color<span class="op">=</span>colors)</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a><span class="cf">for</span> i, (encours, pct) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(composition_actifs[<span class="st">"encours_meur"</span>],</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>                                        composition_actifs[<span class="st">"part_pct"</span>])):</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>    ax.text(encours <span class="op">+</span> <span class="dv">30</span>, i, <span class="ss">f" </span><span class="sc">{</span>fr(pct)<span class="sc">}</span><span class="ss"> %"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>ax.set_yticks(y_pos)</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>ax.set_yticklabels(composition_actifs[<span class="st">"classe"</span>])</span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Encours (M EUR)"</span>)</span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a>ax.set_title(<span class="ss">f"Composition d'actifs au </span><span class="sc">{</span>DATE_ARRETE<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">"x"</span>)</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a>ax.invert_yaxis()</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-composition-actifs">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-composition-actifs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-composition-actifs-output-1_3b2a134c.png" width="854"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-composition-actifs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 24.1: Composition d’actifs du fonds vie à l’arrêté, par classe
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="5" id="7ee85ec2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Tableau formaté pour le rapport :"</span>)</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>display_df <span class="op">=</span> composition_actifs.copy()</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>display_df[<span class="st">"encours"</span>] <span class="op">=</span> display_df[<span class="st">"encours_meur"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:,}</span><span class="ss"> M EUR"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>display_df[<span class="st">"part"</span>] <span class="op">=</span> display_df[<span class="st">"part_pct"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="ss">f"</span><span class="sc">{</span>fr(x)<span class="sc">}</span><span class="ss"> %"</span>)</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a><span class="bu">print</span>(display_df[[<span class="st">"classe"</span>, <span class="st">"encours"</span>, <span class="st">"part"</span>]].to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tableau formaté pour le rapport :
+                  classe     encours   part
+ Obligations souveraines 3 450 M EUR 46,6 %
+Obligations corporate IG 1 820 M EUR 24,6 %
+Obligations corporate HY   240 M EUR  3,2 %
+       Actions zone euro   680 M EUR  9,2 %
+ Actions internationales   420 M EUR  5,7 %
+              Immobilier   510 M EUR  6,9 %
+               Monétaire   180 M EUR  2,4 %
+                  Autres    95 M EUR  1,3 %</code></pre>
+</div>
+</div>
+<p>Le commentaire ne recopie aucun chiffre à la main : il est écrit comme un texte à trous, et les trous sont remplis par le calcul. L’année prochaine, le texte se met à jour avec les données.</p>
+<div class="cell" data-execution_count="6" id="3d2636fe">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>parts <span class="op">=</span> composition_actifs.groupby(<span class="st">"famille"</span>)[<span class="st">"part_pct"</span>].<span class="bu">sum</span>()</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>part_hy <span class="op">=</span> composition_actifs.loc[composition_actifs[<span class="st">"classe"</span>] <span class="op">==</span> <span class="st">"Obligations corporate HY"</span>, <span class="st">"part_pct"</span>].<span class="bu">sum</span>()</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>d_actif <span class="op">=</span> indicateurs[<span class="st">"duration_actif_annees"</span>]</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>d_passif <span class="op">=</span> indicateurs[<span class="st">"duration_passif_annees"</span>]</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>commentaire_actifs <span class="op">=</span> (</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>    <span class="ss">f"Au </span><span class="sc">{</span>DATE_ARRETE<span class="sc">}</span><span class="ss">, le fonds est majoritairement obligataire (</span><span class="sc">{</span>fr(parts[<span class="st">'Obligations'</span>])<span class="sc">}</span><span class="ss"> % de l'encours, "</span></span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>    <span class="ss">f"dont </span><span class="sc">{</span>fr(part_hy)<span class="sc">}</span><span class="ss"> % en haut rendement). Les actions représentent </span><span class="sc">{</span>fr(parts[<span class="st">'Actions'</span>])<span class="sc">}</span><span class="ss"> % "</span></span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>    <span class="ss">f"et l'immobilier </span><span class="sc">{</span>fr(parts[<span class="st">'Immobilier'</span>])<span class="sc">}</span><span class="ss"> %. La duration de l'actif (</span><span class="sc">{</span>fr(d_actif)<span class="sc">}</span><span class="ss"> ans) est "</span></span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>    <span class="ss">f"inférieure de </span><span class="sc">{</span>fr(d_passif <span class="op">-</span> d_actif)<span class="sc">}</span><span class="ss"> ans à celle du passif (</span><span class="sc">{</span>fr(d_passif)<span class="sc">}</span><span class="ss"> ans) : une baisse "</span></span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>    <span class="ss">f"des taux augmenterait la valeur du passif plus que celle de l'actif, et obligerait à réinvestir "</span></span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>    <span class="ss">f"à des taux plus bas. [Stratégie de réduction de l'écart : à compléter par la gestion d'actifs.]"</span></span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a>)</span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="bu">print</span>(commentaire_actifs)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Au 31/12/2025, le fonds est majoritairement obligataire (74,5 % de l'encours, dont 3,2 % en haut rendement). Les actions représentent 14,9 % et l'immobilier 6,9 %. La duration de l'actif (7,8 ans) est inférieure de 4,5 ans à celle du passif (12,3 ans) : une baisse des taux augmenterait la valeur du passif plus que celle de l'actif, et obligerait à réinvestir à des taux plus bas. [Stratégie de réduction de l'écart : à compléter par la gestion d'actifs.]</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="24.4.3" id="étape-3.-performance-comparée">
+<h3 class="anchored" data-anchor-id="étape-3.-performance-comparée" data-number="24.4.3"> Étape 3. Performance comparée</h3>
+<div class="cell" data-execution_count="7" id="cell-fig-performance">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>ax.plot(performance[<span class="st">"annee"</span>], performance[<span class="st">"taux_servi_pct"</span>], <span class="st">"o-"</span>,</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linewidth<span class="op">=</span><span class="fl">2.5</span>, markersize<span class="op">=</span><span class="dv">10</span>, label<span class="op">=</span><span class="st">"Taux servi"</span>)</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>ax.plot(performance[<span class="st">"annee"</span>], performance[<span class="st">"rendement_comptable_pct"</span>], <span class="st">"s-"</span>,</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"#047857"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">8</span>, label<span class="op">=</span><span class="st">"Rendement comptable"</span>)</span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>ax.plot(performance[<span class="st">"annee"</span>], performance[<span class="st">"rendement_marche_pct"</span>], <span class="st">"^:"</span>,</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"#6b7280"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, markersize<span class="op">=</span><span class="dv">8</span>, label<span class="op">=</span><span class="st">"Rendement en valeur de marché"</span>)</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>ax.plot(performance[<span class="st">"annee"</span>], performance[<span class="st">"tmg_pct"</span>], <span class="st">"d--"</span>,</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>        color<span class="op">=</span><span class="st">"#b45309"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, markersize<span class="op">=</span><span class="dv">8</span>, label<span class="op">=</span><span class="st">"TMG (garantie)"</span>)</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Année"</span>)</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Taux (% annuel)"</span>)</span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>ax.set_title(<span class="st">"Performance financière 2021-2025"</span>)</span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a>ax.set_xticks(performance[<span class="st">"annee"</span>])</span>
+<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-18"><a aria-hidden="true" href="#cb11-18" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-performance">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-performance-output-1_f3b6e61e.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 24.2: Taux servi, TMG, rendement comptable et rendement en valeur de marché sur 5 ans
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="8" id="af6ff8fd">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="bu">print</span>(performance[[<span class="st">"annee"</span>, <span class="st">"taux_servi_pct"</span>, <span class="st">"tmg_pct"</span>, <span class="st">"participation_au_dela_tmg_pts"</span>,</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>                   <span class="st">"rendement_comptable_pct"</span>, <span class="st">"marge_financiere_pts"</span>,</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>                   <span class="st">"rendement_marche_pct"</span>]].<span class="bu">round</span>(<span class="dv">2</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a>p_debut, p_fin <span class="op">=</span> performance.iloc[<span class="dv">0</span>], performance.iloc[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>p_2022 <span class="op">=</span> performance.set_index(<span class="st">"annee"</span>).loc[<span class="dv">2022</span>]</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>commentaire_perf <span class="op">=</span> (</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>    <span class="ss">f"Le taux servi est passé de </span><span class="sc">{</span>fr(p_debut[<span class="st">'taux_servi_pct'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> % en </span><span class="sc">{</span>p_debut[<span class="st">'annee'</span>]<span class="sc">:.0f}</span><span class="ss"> à "</span></span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>fr(p_fin[<span class="st">'taux_servi_pct'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> % en </span><span class="sc">{</span>p_fin[<span class="st">'annee'</span>]<span class="sc">:.0f}</span><span class="ss">. Au-delà du taux minimum garanti de "</span></span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>fr(p_fin[<span class="st">'tmg_pct'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> %, le fonds a distribué </span><span class="sc">{</span>fr(p_fin[<span class="st">'participation_au_dela_tmg_pts'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> point "</span></span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>    <span class="ss">f"de participation en </span><span class="sc">{</span>p_fin[<span class="st">'annee'</span>]<span class="sc">:.0f}</span><span class="ss">. La marge financière de l'assureur (rendement comptable "</span></span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a>    <span class="ss">f"moins taux servi net, chargements de gestion sur encours compris, avant une éventuelle dotation "</span></span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a>    <span class="ss">f"à la PPB, absente de la source) est passée de </span><span class="sc">{</span>fr(p_debut[<span class="st">'marge_financiere_pts'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> à "</span></span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>fr(p_fin[<span class="st">'marge_financiere_pts'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> point. En 2022, le rendement en valeur de marché a été négatif "</span></span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a>    <span class="ss">f"(</span><span class="sc">{</span>fr(p_2022[<span class="st">'rendement_marche_pct'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> %) avec la remontée des taux ; le rendement comptable, "</span></span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a>    <span class="ss">f"sur lequel repose le taux servi, est resté à </span><span class="sc">{</span>fr(p_2022[<span class="st">'rendement_comptable_pct'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> %."</span></span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a>)</span>
+<span id="cb12-18"><a aria-hidden="true" href="#cb12-18" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb12-19"><a aria-hidden="true" href="#cb12-19" tabindex="-1"></a><span class="bu">print</span>(commentaire_perf)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> annee  taux_servi_pct  tmg_pct  participation_au_dela_tmg_pts  rendement_comptable_pct  marge_financiere_pts  rendement_marche_pct
+  2021            1.20      0.5                           0.70                     2.40                  1.20                   3.1
+  2022            1.50      0.5                           1.00                     2.35                  0.85                  -2.4
+  2023            2.00      0.5                           1.50                     2.55                  0.55                   4.2
+  2024            2.25      0.5                           1.75                     2.85                  0.60                   5.1
+  2025            2.40      0.5                           1.90                     3.05                  0.65                   4.8
+
+Le taux servi est passé de 1,20 % en 2021 à 2,40 % en 2025. Au-delà du taux minimum garanti de 0,50 %, le fonds a distribué 1,90 point de participation en 2025. La marge financière de l'assureur (rendement comptable moins taux servi net, chargements de gestion sur encours compris, avant une éventuelle dotation à la PPB, absente de la source) est passée de 1,20 à 0,65 point. En 2022, le rendement en valeur de marché a été négatif (−2,40 %) avec la remontée des taux ; le rendement comptable, sur lequel repose le taux servi, est resté à 2,35 %.</code></pre>
+</div>
+</div>
+<p>Le taux servi se compare au rendement comptable : les obligations y figurent au coût amorti, et la baisse de leur valeur de marché en 2022 n’entre pas dans les produits financiers de l’année. Le lissage d’une année sur l’autre passe par la provision pour participation aux bénéfices (PPB) : la participation attribuée peut y être mise en réserve, puis reprise pour soutenir le taux servi d’une année plus difficile. Ce tableau ne donne pas les dotations et reprises de PPB : le commentaire n’en parle donc pas. S’il fallait écrire que la PPB a soutenu le taux servi 2022, il faudrait d’abord ajouter ces montants à la source.</p>
+</section>
+<section class="level3" data-number="24.4.4" id="étape-4.-mortalité-observée-contre-table">
+<h3 class="anchored" data-anchor-id="étape-4.-mortalité-observée-contre-table" data-number="24.4.4"> Étape 4. Mortalité observée contre table</h3>
+<p>L’écart relatif <span class="math inline">\((\text{observé} - \text{attendu}) / \text{attendu}\)</span> ne dit rien seul : 4 % d’écart sur 100 décès attendus et sur 10 000 n’ont pas le même poids. On teste donc chaque tranche. Sous l’hypothèse que la table est juste, le nombre de décès observés suit à peu près une loi de Poisson de moyenne <span class="math inline">\(E\)</span> : on calcule <span class="math inline">\(z = (O - E) / \sqrt{E}\)</span> et un intervalle de confiance exact à 95 % du rapport <span class="math inline">\(O / E\)</span>.</p>
+<div class="cell" data-execution_count="9" id="bce6d108">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a><span class="kw">def</span> test_mortalite(df):</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>    o, e <span class="op">=</span> df[<span class="st">"deces_observes"</span>], df[<span class="st">"deces_attendus_table"</span>]</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>    out <span class="op">=</span> df[[<span class="st">"tranche_age"</span>, <span class="st">"deces_observes"</span>, <span class="st">"deces_attendus_table"</span>]].copy()</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>    out[<span class="st">"o_sur_e"</span>] <span class="op">=</span> o <span class="op">/</span> e</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a>    out[<span class="st">"z"</span>] <span class="op">=</span> (o <span class="op">-</span> e) <span class="op">/</span> np.sqrt(e)</span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a>    out[<span class="st">"ic95_bas"</span>] <span class="op">=</span> stats.chi2.ppf(<span class="fl">0.025</span>, <span class="dv">2</span> <span class="op">*</span> o) <span class="op">/</span> <span class="dv">2</span> <span class="op">/</span> e</span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a>    out[<span class="st">"ic95_haut"</span>] <span class="op">=</span> stats.chi2.ppf(<span class="fl">0.975</span>, <span class="dv">2</span> <span class="op">*</span> o <span class="op">+</span> <span class="dv">2</span>) <span class="op">/</span> <span class="dv">2</span> <span class="op">/</span> e</span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a>    out[<span class="st">"significatif"</span>] <span class="op">=</span> out[<span class="st">"z"</span>].<span class="bu">abs</span>() <span class="op">&gt;</span> <span class="fl">1.96</span></span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a>    <span class="cf">return</span> out</span>
+<span id="cb14-10"><a aria-hidden="true" href="#cb14-10" tabindex="-1"></a></span>
+<span id="cb14-11"><a aria-hidden="true" href="#cb14-11" tabindex="-1"></a>total <span class="op">=</span> pd.DataFrame({<span class="st">"tranche_age"</span>: [<span class="st">"Ensemble"</span>],</span>
+<span id="cb14-12"><a aria-hidden="true" href="#cb14-12" tabindex="-1"></a>                      <span class="st">"deces_observes"</span>: [mortalite_observee[<span class="st">"deces_observes"</span>].<span class="bu">sum</span>()],</span>
+<span id="cb14-13"><a aria-hidden="true" href="#cb14-13" tabindex="-1"></a>                      <span class="st">"deces_attendus_table"</span>: [mortalite_observee[<span class="st">"deces_attendus_table"</span>].<span class="bu">sum</span>()]})</span>
+<span id="cb14-14"><a aria-hidden="true" href="#cb14-14" tabindex="-1"></a>tests <span class="op">=</span> test_mortalite(pd.concat([mortalite_observee, total], ignore_index<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb14-15"><a aria-hidden="true" href="#cb14-15" tabindex="-1"></a><span class="bu">print</span>(tests.<span class="bu">round</span>(<span class="dv">3</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tranche_age  deces_observes  deces_attendus_table  o_sur_e     z  ic95_bas  ic95_haut  significatif
+      50-59             142                   136    1.044 0.514     0.879      1.231         False
+      60-69             257                   248    1.036 0.572     0.913      1.171         False
+      70-79             451                   438    1.030 0.621     0.937      1.129         False
+      80-89             481                   467    1.030 0.648     0.940      1.126         False
+        90+             113                   109    1.037 0.383     0.854      1.246         False
+   Ensemble            1444                  1398    1.033 1.230     0.980      1.088         False</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="10" id="cell-fig-mortalite-ecart">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(tests))</span>
+<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a>ax.errorbar(x, tests[<span class="st">"o_sur_e"</span>],</span>
+<span id="cb16-4"><a aria-hidden="true" href="#cb16-4" tabindex="-1"></a>            yerr<span class="op">=</span>[tests[<span class="st">"o_sur_e"</span>] <span class="op">-</span> tests[<span class="st">"ic95_bas"</span>], tests[<span class="st">"ic95_haut"</span>] <span class="op">-</span> tests[<span class="st">"o_sur_e"</span>]],</span>
+<span id="cb16-5"><a aria-hidden="true" href="#cb16-5" tabindex="-1"></a>            fmt<span class="op">=</span><span class="st">"o"</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, capsize<span class="op">=</span><span class="dv">6</span>, markersize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb16-6"><a aria-hidden="true" href="#cb16-6" tabindex="-1"></a>ax.axhline(<span class="dv">1</span>, color<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="st">"Table (O / E = 1)"</span>)</span>
+<span id="cb16-7"><a aria-hidden="true" href="#cb16-7" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb16-8"><a aria-hidden="true" href="#cb16-8" tabindex="-1"></a>ax.set_xticklabels(tests[<span class="st">"tranche_age"</span>])</span>
+<span id="cb16-9"><a aria-hidden="true" href="#cb16-9" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Tranche d'âge"</span>)</span>
+<span id="cb16-10"><a aria-hidden="true" href="#cb16-10" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Décès observés / attendus"</span>)</span>
+<span id="cb16-11"><a aria-hidden="true" href="#cb16-11" tabindex="-1"></a>ax.set_title(<span class="st">"Mortalité observée contre table, IC 95 %"</span>)</span>
+<span id="cb16-12"><a aria-hidden="true" href="#cb16-12" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"upper center"</span>)</span>
+<span id="cb16-13"><a aria-hidden="true" href="#cb16-13" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">"y"</span>)</span>
+<span id="cb16-14"><a aria-hidden="true" href="#cb16-14" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb16-15"><a aria-hidden="true" href="#cb16-15" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-mortalite-ecart">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mortalite-ecart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="423" src="img/fig-mortalite-ecart-output-1_4c419df5.png" width="754"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mortalite-ecart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 24.3: Rapport décès observés / attendus par tranche d’âge, avec intervalle de confiance exact à 95 %
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Commentaire associé</strong>, chiffres injectés par le code comme à l’étape 2 ; les phrases de conclusion dépendent elles aussi du résultat des tests :</p>
+<div class="cell" data-execution_count="11" id="e2f458c3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>tr <span class="op">=</span> tests[tests[<span class="st">"tranche_age"</span>] <span class="op">!=</span> <span class="st">"Ensemble"</span>]</span>
+<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a>ens <span class="op">=</span> tests[tests[<span class="st">"tranche_age"</span>] <span class="op">==</span> <span class="st">"Ensemble"</span>].iloc[<span class="dv">0</span>]</span>
+<span id="cb17-3"><a aria-hidden="true" href="#cb17-3" tabindex="-1"></a>n_tr <span class="op">=</span> <span class="bu">len</span>(tr)</span>
+<span id="cb17-4"><a aria-hidden="true" href="#cb17-4" tabindex="-1"></a>signif <span class="op">=</span> tr.loc[tr[<span class="st">"significatif"</span>], <span class="st">"tranche_age"</span>].tolist()</span>
+<span id="cb17-5"><a aria-hidden="true" href="#cb17-5" tabindex="-1"></a>ic_contiennent_1 <span class="op">=</span> ((tests[<span class="st">"ic95_bas"</span>] <span class="op">&lt;</span> <span class="dv">1</span>) <span class="op">&amp;</span> (tests[<span class="st">"ic95_haut"</span>] <span class="op">&gt;</span> <span class="dv">1</span>)).<span class="bu">all</span>()</span>
+<span id="cb17-6"><a aria-hidden="true" href="#cb17-6" tabindex="-1"></a>toutes_au_dessus <span class="op">=</span> (tr[<span class="st">"o_sur_e"</span>] <span class="op">&gt;</span> <span class="dv">1</span>).<span class="bu">all</span>()</span>
+<span id="cb17-7"><a aria-hidden="true" href="#cb17-7" tabindex="-1"></a></span>
+<span id="cb17-8"><a aria-hidden="true" href="#cb17-8" tabindex="-1"></a><span class="kw">def</span> entier(n):</span>
+<span id="cb17-9"><a aria-hidden="true" href="#cb17-9" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="bu">int</span>(n)<span class="sc">:,}</span><span class="ss">"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>)</span>
+<span id="cb17-10"><a aria-hidden="true" href="#cb17-10" tabindex="-1"></a></span>
+<span id="cb17-11"><a aria-hidden="true" href="#cb17-11" tabindex="-1"></a><span class="cf">if</span> toutes_au_dessus:</span>
+<span id="cb17-12"><a aria-hidden="true" href="#cb17-12" tabindex="-1"></a>    phrase_1 <span class="op">=</span> (<span class="ss">f"En </span><span class="sc">{</span>EXERCICE<span class="sc">}</span><span class="ss">, les décès observés dépassent les décès attendus dans chacune des "</span></span>
+<span id="cb17-13"><a aria-hidden="true" href="#cb17-13" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>n_tr<span class="sc">}</span><span class="ss"> tranches d'âge (rapport observé / attendu de </span><span class="sc">{</span>fr(tr[<span class="st">'o_sur_e'</span>].<span class="bu">min</span>(), <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> "</span></span>
+<span id="cb17-14"><a aria-hidden="true" href="#cb17-14" tabindex="-1"></a>                <span class="ss">f"à </span><span class="sc">{</span>fr(tr[<span class="st">'o_sur_e'</span>].<span class="bu">max</span>(), <span class="dv">2</span>)<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb17-15"><a aria-hidden="true" href="#cb17-15" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb17-16"><a aria-hidden="true" href="#cb17-16" tabindex="-1"></a>    phrase_1 <span class="op">=</span> (<span class="ss">f"En </span><span class="sc">{</span>EXERCICE<span class="sc">}</span><span class="ss">, le rapport décès observés / attendus va de "</span></span>
+<span id="cb17-17"><a aria-hidden="true" href="#cb17-17" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>fr(tr[<span class="st">'o_sur_e'</span>].<span class="bu">min</span>(), <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>fr(tr[<span class="st">'o_sur_e'</span>].<span class="bu">max</span>(), <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> selon les tranches d'âge"</span>)</span>
+<span id="cb17-18"><a aria-hidden="true" href="#cb17-18" tabindex="-1"></a>phrase_1 <span class="op">+=</span> (<span class="ss">f", soit </span><span class="sc">{</span>entier(ens[<span class="st">'deces_observes'</span>])<span class="sc">}</span><span class="ss"> décès pour </span><span class="sc">{</span>entier(ens[<span class="st">'deces_attendus_table'</span>])<span class="sc">}</span><span class="ss"> "</span></span>
+<span id="cb17-19"><a aria-hidden="true" href="#cb17-19" tabindex="-1"></a>             <span class="ss">f"attendus sur l'ensemble (</span><span class="sc">{</span>fr(ens[<span class="st">'o_sur_e'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss">)."</span>)</span>
+<span id="cb17-20"><a aria-hidden="true" href="#cb17-20" tabindex="-1"></a></span>
+<span id="cb17-21"><a aria-hidden="true" href="#cb17-21" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> signif <span class="kw">and</span> <span class="kw">not</span> ens[<span class="st">"significatif"</span>]:</span>
+<span id="cb17-22"><a aria-hidden="true" href="#cb17-22" tabindex="-1"></a>    phrase_2 <span class="op">=</span> (<span class="ss">f"Aucun de ces écarts n'est statistiquement significatif : le z de Poisson reste compris "</span></span>
+<span id="cb17-23"><a aria-hidden="true" href="#cb17-23" tabindex="-1"></a>                <span class="ss">f"entre </span><span class="sc">{</span>fr(tr[<span class="st">'z'</span>].<span class="bu">min</span>(), <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> et </span><span class="sc">{</span>fr(tr[<span class="st">'z'</span>].<span class="bu">max</span>(), <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> par tranche, "</span></span>
+<span id="cb17-24"><a aria-hidden="true" href="#cb17-24" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>fr(ens[<span class="st">'z'</span>], <span class="dv">1</span>)<span class="sc">}</span><span class="ss"> sur l'ensemble"</span></span>
+<span id="cb17-25"><a aria-hidden="true" href="#cb17-25" tabindex="-1"></a>                <span class="op">+</span> (<span class="st">", et tous les intervalles de confiance à 95 </span><span class="sc">% c</span><span class="st">ontiennent 1."</span> <span class="cf">if</span> ic_contiennent_1 <span class="cf">else</span> <span class="st">"."</span>))</span>
+<span id="cb17-26"><a aria-hidden="true" href="#cb17-26" tabindex="-1"></a>    phrase_3 <span class="op">=</span> <span class="st">"La table de référence n'appelle pas d'ajustement"</span></span>
+<span id="cb17-27"><a aria-hidden="true" href="#cb17-27" tabindex="-1"></a>    phrase_3 <span class="op">+=</span> (<span class="ss">f" ; le fait que les </span><span class="sc">{</span>n_tr<span class="sc">}</span><span class="ss"> tranches soient toutes au-dessus de 1 justifie de suivre "</span></span>
+<span id="cb17-28"><a aria-hidden="true" href="#cb17-28" tabindex="-1"></a>                 <span class="ss">f"ce rapport sur les prochains exercices."</span> <span class="cf">if</span> toutes_au_dessus <span class="cf">else</span> <span class="st">"."</span>)</span>
+<span id="cb17-29"><a aria-hidden="true" href="#cb17-29" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb17-30"><a aria-hidden="true" href="#cb17-30" tabindex="-1"></a>    phrase_2 <span class="op">=</span> (<span class="ss">f"Écart significatif au seuil de 5 % (|z| &gt; 1,96) : "</span></span>
+<span id="cb17-31"><a aria-hidden="true" href="#cb17-31" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(signif <span class="op">+</span> ([<span class="st">'ensemble'</span>] <span class="cf">if</span> ens[<span class="st">'significatif'</span>] <span class="cf">else</span> []))<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb17-32"><a aria-hidden="true" href="#cb17-32" tabindex="-1"></a>    phrase_3 <span class="op">=</span> <span class="st">"[Ajustement de la table à instruire par l'actuaire.]"</span></span>
+<span id="cb17-33"><a aria-hidden="true" href="#cb17-33" tabindex="-1"></a></span>
+<span id="cb17-34"><a aria-hidden="true" href="#cb17-34" tabindex="-1"></a>commentaire_mortalite <span class="op">=</span> <span class="st">" "</span>.join([phrase_1, phrase_2, phrase_3])</span>
+<span id="cb17-35"><a aria-hidden="true" href="#cb17-35" tabindex="-1"></a><span class="bu">print</span>(commentaire_mortalite)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>En 2025, les décès observés dépassent les décès attendus dans chacune des 5 tranches d'âge (rapport observé / attendu de 1,03 à 1,04), soit 1 444 décès pour 1 398 attendus sur l'ensemble (1,03). Aucun de ces écarts n'est statistiquement significatif : le z de Poisson reste compris entre 0,38 et 0,65 par tranche, 1,2 sur l'ensemble, et tous les intervalles de confiance à 95 % contiennent 1. La table de référence n'appelle pas d'ajustement ; le fait que les 5 tranches soient toutes au-dessus de 1 justifie de suivre ce rapport sur les prochains exercices.</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="24.4.5" id="étape-5.-section-qualitative-pattern-de-rédaction-assistée">
+<h3 class="anchored" data-anchor-id="étape-5.-section-qualitative-pattern-de-rédaction-assistée" data-number="24.4.5"> Étape 5. Section qualitative : pattern de rédaction assistée</h3>
+<p>Pattern de prompt pour la rédaction des sections qualitatives (perspectives, message de la direction, contexte macro) :</p>
+<blockquote class="blockquote">
+<p><em>“Pour la section ‘Perspectives 2026’ du rapport annuel, propose-moi 3 paragraphes courts. Paragraphe 1 : contexte macro-financier attendu pour 2026 (1 à 2 phrases). Paragraphe 2 : impact sur la gestion d’actifs du fonds (politique de duration, allocation cible). Paragraphe 3 : engagement de l’assureur sur le taux servi. Ton : sobre, factuel, accessible à un assuré non-spécialiste. Pas de jargon technique. Laisse les chiffres prospectifs entre crochets, je les compléterai.”</em></p>
+</blockquote>
+<p>L’actuaire <strong>relit chaque paragraphe</strong> et :</p>
+<ul>
+<li>Remplace les chiffres entre crochets par les valeurs internes, validées.</li>
+<li>Vérifie l’absence d’engagement contractuel involontaire (“nous garantissons” devient “nous visons”).</li>
+<li>Adapte le ton au style éditorial de la maison.</li>
+</ul>
+</section>
+</section>
+<section class="level2" data-number="24.5" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="24.5" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Un commentaire dont les chiffres ne sont pas ceux du tableau.</strong> Claude rédige un commentaire fluide et plausible ; les pourcentages peuvent venir d’un regroupement différent, d’une version antérieure ou de nulle part. <strong>Injecter les chiffres par le code</strong> (étape 2), et relire chaque chiffre restant contre la sortie.</li>
+<li><strong>Régénérer le rapport sans tracer la source.</strong> Si vous régénérez le rapport en 2027 avec les données 2025 et que la source a évolué entre-temps (correction comptable, ré-arrêté), vous obtenez un rapport différent de celui publié en 2025. <strong>Figer la donnée source</strong> par un hash (parquet et meta.json, comme dans R1) et tagger le dépôt Git à l’arrêté. Un tag ne fige pas les données exclues par le <code>.gitignore</code> : c’est le hash qui les identifie.</li>
+<li><strong>Mélanger calcul et rédaction.</strong> Le rapport mélange chiffres (recalculés automatiquement) et prose (qui demande la signature actuarielle). <strong>Séparer les deux</strong> : un fichier <code>data_arrete_2025.parquet</code> pour les chiffres, un fichier <code>rapport_annuel_2025.qmd</code> pour la prose qui les utilise.</li>
+<li><strong>Hallucinations dans les sections qualitatives.</strong> Si vous demandez à Claude de rédiger “comme un dirigeant”, il peut inventer des promesses, des chiffres prospectifs, des engagements. <strong>Relire et corriger</strong> chaque paragraphe.</li>
+<li><strong>Graphiques non conformes à la charte.</strong> Le rapport est public, donc lu et jugé. <strong>Définir une palette</strong> au début et la maintenir.</li>
+<li><strong>Oublier la traçabilité des chiffres.</strong> Pour un rapport publié, tout chiffre cité doit remonter à sa source (extraction SQL, fichier d’export, signature). Un fichier <code>audit_trail.json</code> qui liste pour chaque chiffre sa source et son hash est une bonne pratique.</li>
+</ul>
+</section>
+<section class="level2" data-number="24.6" id="exercice-trouvez-les-erreurs">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-les-erreurs" data-number="24.6" id="exercice-trouvez-les-erreurs"> Exercice : trouvez les erreurs</h2>
+<p>Voici des commentaires rédigés par Claude pour les étapes 2 à 4, présentés comme « validés par l’actuaire ». Relisez-les contre les sorties de la fiche.</p>
+<blockquote class="blockquote">
+<p><em>Composition : “Au 31/12/2025, le fonds est majoritairement obligataire (88 % entre souverains et corporate), ce qui correspond à la duration du passif de 12.3 ans et à la stratégie ALM du fonds. La poche actions reste mesurée à 16 % de l’encours et joue le rôle de moteur de rendement. La part HY est volontairement limitée à 4 % pour préserver la résistance aux stress de crédit.”</em></p>
+<p><em>Performance : “Le taux servi a progressé de 1.20 % en 2021 à 2.40 % en 2025. L’écart au TMG (0.50 %) traduit la marge de gestion. L’année 2022 illustre la résilience du fonds : malgré un rendement d’actifs négatif (-2.4 %, krach obligataire), le taux servi a été préservé grâce à la réserve de provision pour participation aux excédents.”</em></p>
+<p><em>Mortalité : “Sur les cinq tranches d’âge analysées, aucun écart relatif ne dépasse 5 %, le seuil de signification retenu. La mortalité observée 2025 reste cohérente avec la table. La légère surmortalité observée sur les tranches 60-69 et 80-89 fera l’objet d’un suivi en 2026.”</em></p>
+</blockquote>
+<p>Combien d’erreurs trouvez-vous, et lesquelles auraient pu passer dans un rapport publié ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Les chiffres de référence, recalculés depuis la source :</p>
+<div class="cell" data-execution_count="12" id="b754ca44">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a aria-hidden="true" href="#cb19-1" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Obligations : </span><span class="sc">{</span>parts[<span class="st">'Obligations'</span>]<span class="sc">:.1f}</span><span class="ss"> %  (commentaire : 88 %)"</span>)</span>
+<span id="cb19-2"><a aria-hidden="true" href="#cb19-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Actions : </span><span class="sc">{</span>parts[<span class="st">'Actions'</span>]<span class="sc">:.1f}</span><span class="ss"> %  (commentaire : 16 %)"</span>)</span>
+<span id="cb19-3"><a aria-hidden="true" href="#cb19-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Haut rendement : </span><span class="sc">{</span>part_hy<span class="sc">:.1f}</span><span class="ss"> %  (commentaire : 4 %)"</span>)</span>
+<span id="cb19-4"><a aria-hidden="true" href="#cb19-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Duration actif / passif : </span><span class="sc">{</span>d_actif<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>d_passif<span class="sc">}</span><span class="ss"> ans, écart </span><span class="sc">{</span>d_passif <span class="op">-</span> d_actif<span class="sc">:.1f}</span><span class="ss"> ans"</span>)</span>
+<span id="cb19-5"><a aria-hidden="true" href="#cb19-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Taux servi - TMG </span><span class="sc">{</span>EXERCICE<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>p_fin[<span class="st">'participation_au_dela_tmg_pts'</span>]<span class="sc">:.2f}</span><span class="ss"> point  (participation)"</span>)</span>
+<span id="cb19-6"><a aria-hidden="true" href="#cb19-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rendement comptable - taux servi </span><span class="sc">{</span>EXERCICE<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>p_fin[<span class="st">'marge_financiere_pts'</span>]<span class="sc">:.2f}</span><span class="ss"> point  (marge)"</span>)</span>
+<span id="cb19-7"><a aria-hidden="true" href="#cb19-7" tabindex="-1"></a><span class="bu">print</span>(tests[[<span class="st">"tranche_age"</span>, <span class="st">"o_sur_e"</span>, <span class="st">"z"</span>]].<span class="bu">round</span>(<span class="dv">3</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Obligations : 74.5 %  (commentaire : 88 %)
+Actions : 14.9 %  (commentaire : 16 %)
+Haut rendement : 3.2 %  (commentaire : 4 %)
+Duration actif / passif : 7.8 / 12.3 ans, écart 4.5 ans
+Taux servi - TMG 2025 : 1.90 point  (participation)
+Rendement comptable - taux servi 2025 : 0.65 point  (marge)
+tranche_age  o_sur_e     z
+      50-59    1.044 0.514
+      60-69    1.036 0.572
+      70-79    1.030 0.621
+      80-89    1.030 0.648
+        90+    1.037 0.383
+   Ensemble    1.033 1.230</code></pre>
+</div>
+</div>
+<p><strong>Composition.</strong></p>
+<ol type="1">
+<li>Les trois pourcentages sont faux : les obligations font 74,5 % de l’encours, pas 88 % ; les actions 14,9 %, pas 16 % ; le haut rendement 3,2 %, pas 4 %. Aucun regroupement cohérent ne donne 88 % : les obligations font 74,5 %, et 76,9 % avec le monétaire.</li>
+<li>« Ce qui correspond à la duration du passif de 12,3 ans » : la duration de l’actif est de 7,8 ans, 4,5 ans de moins que le passif. Le commentaire présente comme un adossement ce qui est un écart à signaler.</li>
+<li>« Volontairement », « stratégie ALM » : des intentions que la source ne contient pas.</li>
+</ol>
+<p><strong>Performance.</strong></p>
+<ol start="4" type="1">
+<li>Taux servi − TMG n’est pas la marge de l’assureur : c’est la participation distribuée aux assurés au-delà de la garantie (1,90 point en 2025). La marge financière se lit entre le rendement comptable et le taux servi net (0,65 point en 2025, chargements de gestion sur encours compris, avant une éventuelle dotation à la PPB, absente de la source).</li>
+<li>Le −2,4 % de 2022 est un rendement en valeur de marché ; le taux servi repose sur le rendement comptable (2,35 % en 2022). Les comparer n’a pas de sens.</li>
+<li>« Préservé grâce à la provision » : aucune reprise de PPB ne figure dans la source. L’affirmation est peut-être vraie, elle n’est pas démontrée.</li>
+</ol>
+<p><strong>Mortalité.</strong></p>
+<ol start="7" type="1">
+<li>Un seuil de 5 % sur l’écart relatif n’est pas un test de signification. Le <span class="math inline">\(z\)</span> de Poisson reste entre 0,38 et 0,65 par tranche : la conclusion « pas d’écart significatif » tient, mais pour une autre raison que celle donnée.</li>
+<li>« Surmortalité sur 60-69 et 80-89 » : les cinq tranches sont en légère surmortalité, et la plus forte en relatif est 50-59 (<span class="math inline">\(O / E = 1{,}044\)</span>).</li>
+</ol>
+<p>Les plus dangereuses sont celles qui ont l’air justes : un pourcentage proche de la vérité (16 % pour 14,9 %), un vocabulaire actuariel correct sur une grandeur qui n’est pas la bonne (« marge »), une conclusion juste appuyée sur un faux test. Le commentaire se relit chiffre par chiffre contre la sortie, et « validé par l’actuaire » ne s’écrit qu’après cette relecture.</p>
+</details>
+</section>
+<section class="level2" data-number="24.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="24.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>C1 Dashboard sinistralité auto avec Lovable</strong> : version interactive plutôt que document.</li>
+<li><strong>C3 Présentation board en cinq slides</strong> : la version slide pour le board.</li>
+<li><strong>S2 ORSA, synthèse exécutive</strong> : pendant communication réglementaire.</li>
+<li><strong>V3 PM épargne sur table prospective</strong> : le calcul actuariel sur les contrats d’épargne.</li>
+</ul>
+</section>
+<section class="level2" data-number="24.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="24.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Un seul <code>.qmd</code>, plusieurs formats</strong> : Quarto produit le HTML (pour le site) et le PDF (pour l’impression) à partir du même fichier.</li>
+<li><strong>Paramétrer le rapport par année.</strong> Avec le moteur Jupyter, Quarto lit les paramètres dans une cellule marquée <code>#| tags: [parameters]</code> (la première cellule de cette fiche), pas dans l’en-tête YAML. <code>quarto render rapport_annuel.qmd -P EXERCICE:2026</code> insère après cette cellule une cellule qui redéfinit <code>EXERCICE = 2026</code> avant l’exécution. Sur cette fiche, dont les données sont écrites dans le code et s’arrêtent à 2025, le rendu s’arrête sur une erreur au premier accès à l’année 2026 (la ligne qui affiche le taux servi de l’exercice). Pour que le rapport se régénère, les données doivent être lues depuis la source de l’arrêté (par exemple <code>data_arrete_{EXERCICE}.parquet</code>).</li>
+<li><strong>Pipeline d’intégration continue</strong> : pour un rapport mensuel ou trimestriel, un job (GitHub Actions ou l’outil de l’entreprise) peut régénérer le PDF à chaque clôture. Voir l’annexe E pour Git.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/C1/index.html"><small>&larr; Précédent</small>C1. Dashboard sinistralité auto avec Lovable</a><a class="next" href="../../bibliotheque/C3/index.html"><small>Suivant &rarr;</small>C3. Présentation board en cinq slides</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

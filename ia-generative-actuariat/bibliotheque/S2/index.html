@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S2. ORSA, synthèse exécutive · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">S2. ORSA, synthèse exécutive</h1>
+      <p class="lede">Cette fiche illustre les démarches C (livrable réglementaire) et D (rapport). Ce que vous apprenez n’est pas l’ORSA, mais comment trier des dizaines d’indicateurs pour n’en garder que cinq, comment structurer en pyramide inversée, et comment demander la critique « administrateur novice » avant la séance.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : C, produire un livrable réglementaire, et D, construire un dashboard ou un rapport
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Communication et tableaux de bord » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="20.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="20.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le rapport ORSA (Own Risk and Solvency Assessment, évaluation interne des risques et de la solvabilité) d’un assureur fait souvent plusieurs dizaines de pages. L’article 45 de la directive Solvabilité II (2009/138/CE) lui assigne trois objets : le besoin global de solvabilité, compte tenu du profil de risque propre, des limites de tolérance au risque et de la stratégie ; le respect permanent des exigences de capital et de provisions techniques ; la mesure dans laquelle le profil de risque s’écarte des hypothèses qui sous-tendent le calcul du SCR.</p>
+<p>L’organe d’administration (en France, le conseil d’administration ou le conseil de surveillance) approuve le rapport et doit s’impliquer dans l’évaluation. La <strong>synthèse exécutive de 2 à 3 pages</strong> ne remplace pas cette implication, elle la rend possible : elle donne en tête les chiffres clés, les risques majeurs et les décisions à prendre, et renvoie au rapport pour le détail.</p>
+<p>Le LLM <strong>structure et propose</strong> ; l’actuaire <strong>garde la plume</strong> sur les passages qui engagent la responsabilité technique.</p>
+<p>Ce cas illustre <strong>l’organisation des données</strong> (chiffres clés extraits dans un dict structuré), <strong>l’interface de présentation</strong> (pyramide inversée, tableaux normalisés), <strong>la gouvernance</strong> (critique systématique avant validation), et <strong>le pilotage IA</strong> (5 prompts pour structurer, rédiger par sections, critiquer).</p>
+</section>
+<section class="level2" data-number="20.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="20.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On part des chiffres clés d’un rapport ORSA fictif, déjà extraits dans un dictionnaire. Les ratios ne sont pas saisis : ils sont calculés à partir des montants, pour qu’un chiffre de la synthèse ne puisse pas contredire un autre.</p>
+<p>Un vrai rapport ORSA n’est pas public. Tout ce que Claude lit ou affiche part chez le fournisseur, et les permissions de Claude Code n’y changent rien : un tel document ne se confie qu’à une offre entreprise (Team, Enterprise ou API sous contrat), et seulement si la politique de l’organisme l’autorise. Pour s’exercer, on travaille sur des chiffres fictifs, comme ici.</p>
+<div class="cell" data-execution_count="1" id="0d384beb">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="co"># Structure type d'un rapport ORSA fictif, avec les chiffres clés extraits</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>ORSA_INDICATEURS <span class="op">=</span> {</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>    <span class="st">"entite"</span>: <span class="st">"Compagnie d'assurance fictive SA"</span>,</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    <span class="st">"exercice"</span>: <span class="dv">2025</span>,</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>    <span class="st">"date_arrete"</span>: <span class="st">"2025-12-31"</span>,</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    <span class="st">"solvabilite_actuelle"</span>: {</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>        <span class="st">"fonds_propres_eligibles_scr"</span>: <span class="dv">850_000_000</span>,   <span class="co"># EUR</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>        <span class="st">"fonds_propres_eligibles_mcr"</span>: <span class="dv">820_000_000</span>,   <span class="co"># le MCR admet moins de fonds propres (tiers 2 limité, tiers 3 exclu)</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>        <span class="st">"scr"</span>: <span class="dv">480_000_000</span>,</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>        <span class="st">"mcr"</span>: <span class="dv">192_000_000</span>,</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    },</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    <span class="st">"scr_decomposition"</span>: {</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>        <span class="st">"scr_souscription_non_vie"</span>: <span class="dv">215_000_000</span>,</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>        <span class="st">"scr_souscription_vie"</span>: <span class="dv">95_000_000</span>,</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>        <span class="st">"scr_marche"</span>: <span class="dv">280_000_000</span>,</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>        <span class="st">"scr_contrepartie"</span>: <span class="dv">35_000_000</span>,</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>        <span class="st">"scr_operationnel"</span>: <span class="dv">25_000_000</span>,</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>        <span class="st">"ajustement_diversification"</span>: <span class="op">-</span><span class="dv">170_000_000</span>,</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>    },</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>    <span class="co"># Besoin global de solvabilité et écart à la formule standard (article 45 de la directive)</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>    <span class="st">"besoin_global_solvabilite"</span>: <span class="dv">530_000_000</span>,</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>    <span class="st">"ecart_profil_formule_standard"</span>: <span class="st">"Formule standard jugée adaptée, sauf pour le risque "</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>                                     <span class="st">"catastrophe : exposition tempête concentrée sur la façade atlantique."</span>,</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a></span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>    <span class="st">"appetence_ratio_scr"</span>: <span class="fl">1.60</span>,</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>    <span class="co"># Ratio de couverture SCR projeté (scénario central du plan)</span></span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>    <span class="st">"projection_ratio_scr"</span>: {<span class="dv">2026</span>: <span class="fl">1.74</span>, <span class="dv">2027</span>: <span class="fl">1.70</span>, <span class="dv">2028</span>: <span class="fl">1.67</span>, <span class="dv">2029</span>: <span class="fl">1.65</span>, <span class="dv">2030</span>: <span class="fl">1.63</span>},</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a></span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>    <span class="co"># Ratio de couverture SCR après chaque stress, à la date d'arrêté</span></span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>    <span class="st">"stress_tests"</span>: {</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>        <span class="st">"baisse_taux_50bp"</span>: <span class="fl">1.55</span>,</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>        <span class="st">"krach_actions_30pct"</span>: <span class="fl">1.48</span>,</span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>        <span class="st">"catastrophe_naturelle_majeure"</span>: <span class="fl">1.42</span>,</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>        <span class="st">"augmentation_inflation_2pct"</span>: <span class="fl">1.51</span>,</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    },</span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a></span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>    <span class="st">"risques_majeurs_identifies"</span>: [</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>        (<span class="st">"Volatilité des marchés financiers et exposition actions"</span>, <span class="st">"Élevé"</span>, <span class="st">"Réduire l'exposition actions de 18 % à 15 %"</span>),</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>        (<span class="st">"Inflation persistante sur les coûts de réparation auto"</span>, <span class="st">"Moyen"</span>, <span class="st">"Hausse tarifaire ciblée 2026 de 6 </span><span class="sc">% s</span><span class="st">ur l'auto"</span>),</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>        (<span class="st">"Catastrophe naturelle (tempête, inondation)"</span>, <span class="st">"Élevé"</span>, <span class="st">"Renforcement de la réassurance non-vie en 2026"</span>),</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a>        (<span class="st">"Dépendance et longévité"</span>, <span class="st">"Moyen"</span>, <span class="st">"Stress test annuel sur les rentes en cours"</span>),</span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a>    ],</span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a></span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a>    <span class="st">"decisions_management"</span>: [</span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a>        <span class="st">"Validation de l'appétence au risque révisée : ratio cible &gt;= 160 %."</span>,</span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a>        <span class="st">"Modification de l'allocation d'actifs : -3 points d'actions, +3 points d'obligations IG."</span>,</span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a>        <span class="st">"Renforcement des traités de réassurance non-vie pour 2026."</span>,</span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a>        <span class="st">"Revue trimestrielle du ratio plutôt que semestrielle."</span>,</span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a>    ],</span>
+<span id="cb1-56"><a aria-hidden="true" href="#cb1-56" tabindex="-1"></a>}</span>
+<span id="cb1-57"><a aria-hidden="true" href="#cb1-57" tabindex="-1"></a></span>
+<span id="cb1-58"><a aria-hidden="true" href="#cb1-58" tabindex="-1"></a>sa <span class="op">=</span> ORSA_INDICATEURS[<span class="st">"solvabilite_actuelle"</span>]</span>
+<span id="cb1-59"><a aria-hidden="true" href="#cb1-59" tabindex="-1"></a>sa[<span class="st">"ratio_couverture_scr"</span>] <span class="op">=</span> sa[<span class="st">"fonds_propres_eligibles_scr"</span>] <span class="op">/</span> sa[<span class="st">"scr"</span>]</span>
+<span id="cb1-60"><a aria-hidden="true" href="#cb1-60" tabindex="-1"></a>sa[<span class="st">"ratio_couverture_mcr"</span>] <span class="op">=</span> sa[<span class="st">"fonds_propres_eligibles_mcr"</span>] <span class="op">/</span> sa[<span class="st">"mcr"</span>]</span>
+<span id="cb1-61"><a aria-hidden="true" href="#cb1-61" tabindex="-1"></a></span>
+<span id="cb1-62"><a aria-hidden="true" href="#cb1-62" tabindex="-1"></a><span class="co"># Organisation des données : un DataFrame pour le SCR décomposé</span></span>
+<span id="cb1-63"><a aria-hidden="true" href="#cb1-63" tabindex="-1"></a>scr_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb1-64"><a aria-hidden="true" href="#cb1-64" tabindex="-1"></a>    <span class="bu">list</span>(ORSA_INDICATEURS[<span class="st">"scr_decomposition"</span>].items()),</span>
+<span id="cb1-65"><a aria-hidden="true" href="#cb1-65" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">"composante"</span>, <span class="st">"valeur_eur"</span>]</span>
+<span id="cb1-66"><a aria-hidden="true" href="#cb1-66" tabindex="-1"></a>)</span>
+<span id="cb1-67"><a aria-hidden="true" href="#cb1-67" tabindex="-1"></a>scr_df[<span class="st">"valeur_meur"</span>] <span class="op">=</span> (scr_df[<span class="st">"valeur_eur"</span>] <span class="op">/</span> <span class="dv">1_000_000</span>).<span class="bu">round</span>(<span class="dv">0</span>)</span>
+<span id="cb1-68"><a aria-hidden="true" href="#cb1-68" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Entité : </span><span class="sc">{</span>ORSA_INDICATEURS[<span class="st">'entite'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-69"><a aria-hidden="true" href="#cb1-69" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exercice : </span><span class="sc">{</span>ORSA_INDICATEURS[<span class="st">'exercice'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-70"><a aria-hidden="true" href="#cb1-70" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">SCR décomposé :"</span>)</span>
+<span id="cb1-71"><a aria-hidden="true" href="#cb1-71" tabindex="-1"></a><span class="bu">print</span>(scr_df.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb1-72"><a aria-hidden="true" href="#cb1-72" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Somme des composantes : </span><span class="sc">{</span>scr_df[<span class="st">'valeur_eur'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> EUR ; SCR déclaré : </span><span class="sc">{</span>sa[<span class="st">'scr'</span>]<span class="sc">:,}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-73"><a aria-hidden="true" href="#cb1-73" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ratio de couverture SCR : </span><span class="sc">{</span>sa[<span class="st">'ratio_couverture_scr'</span>]<span class="sc">:.0%}</span><span class="ss">"</span>)</span>
+<span id="cb1-74"><a aria-hidden="true" href="#cb1-74" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ratio de couverture MCR : </span><span class="sc">{</span>sa[<span class="st">'ratio_couverture_mcr'</span>]<span class="sc">:.0%}</span><span class="ss">"</span>)</span>
+<span id="cb1-75"><a aria-hidden="true" href="#cb1-75" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Besoin global de solvabilité : </span><span class="sc">{</span>ORSA_INDICATEURS[<span class="st">'besoin_global_solvabilite'</span>]<span class="sc">:,}</span><span class="ss"> EUR "</span></span>
+<span id="cb1-76"><a aria-hidden="true" href="#cb1-76" tabindex="-1"></a>      <span class="ss">f"(couvert à </span><span class="sc">{</span>sa[<span class="st">'fonds_propres_eligibles_scr'</span>]<span class="op">/</span>ORSA_INDICATEURS[<span class="st">'besoin_global_solvabilite'</span>]<span class="sc">:.0%}</span><span class="ss">)"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Entité : Compagnie d'assurance fictive SA
+Exercice : 2025
+
+SCR décomposé :
+                composante  valeur_eur  valeur_meur
+  scr_souscription_non_vie   215000000        215.0
+      scr_souscription_vie    95000000         95.0
+                scr_marche   280000000        280.0
+          scr_contrepartie    35000000         35.0
+          scr_operationnel    25000000         25.0
+ajustement_diversification  -170000000       -170.0
+
+Somme des composantes : 480,000,000 EUR ; SCR déclaré : 480,000,000 EUR
+Ratio de couverture SCR : 177%
+Ratio de couverture MCR : 427%
+Besoin global de solvabilité : 530,000,000 EUR (couvert à 160%)</code></pre>
+</div>
+</div>
+<p>La somme des composantes (480 M EUR) retombe sur le SCR déclaré. Le ratio SCR vaut 177 %, le ratio MCR 427 %. Le besoin global de solvabilité, évalué par l’organisme avec sa propre vision des risques, dépasse le SCR de 50 M EUR : c’est précisément le type d’écart que l’ORSA doit expliquer.</p>
+</section>
+<section class="level2" data-number="20.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="20.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Identifier les chiffres clés.</strong> <em>“Voici les indicateurs extraits du rapport ORSA (variable <code>ORSA_INDICATEURS</code>). Pour une synthèse destinée au conseil d’administration, quels sont les 5 chiffres à mettre en page 1 ? Justifie chaque choix.”</em></p></li>
+<li><p><strong>Proposer une structure.</strong> <em>“Propose-moi une structure de synthèse exécutive en 4 à 6 sections pour 2 pages maximum. Pyramide inversée : conclusion en premier. Liste les points à couvrir par section, sans rédiger encore.”</em></p></li>
+<li><p><strong>Visualiser la solvabilité.</strong> <em>“Sors-moi 2 graphiques pour la synthèse : (a) ratio de couverture SCR projeté sur 5 ans, (b) résultats des stress tests contre le scénario central. Format propre pour le conseil, titre = conclusion, calculée à partir des données.”</em></p></li>
+<li><p><strong>Rédiger une section.</strong> <em>“Pour la section ‘Risques majeurs et décisions’, propose-moi une formulation pour les deux premiers paragraphes. Je relirai. Pas de jargon technique inutile, audience = administrateurs non actuaires. Chaque chiffre cité doit venir de <code>ORSA_INDICATEURS</code>.”</em></p></li>
+<li><p><strong>Critique finale.</strong> <em>“Voici la synthèse complète rédigée. Joue le rôle d’un administrateur sans expertise actuarielle qui la découvre. Liste : (1) ce qui n’est pas clair, (2) les chiffres cités sans contexte, (3) les implications qu’on a oublié d’expliciter, (4) les questions qu’un administrateur poserait.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="20.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="20.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="20.4.1" id="étape-1.-identifier-les-5-chiffres-clés">
+<h3 class="anchored" data-anchor-id="étape-1.-identifier-les-5-chiffres-clés" data-number="20.4.1"> Étape 1. Identifier les 5 chiffres clés</h3>
+<p>Pour une synthèse exécutive, l’enjeu est de <strong>trier franchement</strong> parmi les dizaines d’indicateurs disponibles.</p>
+<div class="cell" data-execution_count="2" id="8bd2b57b">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>annee_fin <span class="op">=</span> <span class="bu">max</span>(ORSA_INDICATEURS[<span class="st">"projection_ratio_scr"</span>])</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>chiffres_cles <span class="op">=</span> [</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    (<span class="st">"Ratio de couverture SCR actuel"</span>,</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>sa[<span class="st">'ratio_couverture_scr'</span>]<span class="sc">:.0%}</span><span class="ss">"</span>,</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>     <span class="st">"Indicateur de solvabilité réglementaire le plus immédiat."</span>),</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    (<span class="ss">f"Ratio de couverture SCR projeté </span><span class="sc">{</span>annee_fin<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>ORSA_INDICATEURS[<span class="st">'projection_ratio_scr'</span>][annee_fin]<span class="sc">:.0%}</span><span class="ss">"</span>,</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>     <span class="st">"Trajectoire de solvabilité, à lire contre l'appétence (160 %)."</span>),</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>    (<span class="st">"Ratio dans le pire stress test"</span>,</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span><span class="bu">min</span>(ORSA_INDICATEURS[<span class="st">'stress_tests'</span>].values())<span class="sc">:.0%}</span><span class="ss">"</span>,</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>     <span class="st">"Mesure de résistance aux scénarios défavorables."</span>),</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>    (<span class="st">"SCR marché (composante dominante)"</span>,</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>ORSA_INDICATEURS[<span class="st">'scr_decomposition'</span>][<span class="st">'scr_marche'</span>]<span class="op">/</span><span class="dv">1_000_000</span><span class="sc">:.0f}</span><span class="ss"> M EUR"</span>,</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>     <span class="st">"Identifie le risque principal à piloter."</span>),</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>    (<span class="st">"Besoin global de solvabilité"</span>,</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>ORSA_INDICATEURS[<span class="st">'besoin_global_solvabilite'</span>]<span class="op">/</span><span class="dv">1_000_000</span><span class="sc">:.0f}</span><span class="ss"> M EUR"</span>,</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>     <span class="st">"Vision propre de l'organisme, à comparer au SCR réglementaire."</span>),</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>]</span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Cinq chiffres clés pour la page 1 :"</span>)</span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a><span class="cf">for</span> nom, valeur, justif <span class="kw">in</span> chiffres_cles:</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  • </span><span class="sc">{</span>nom<span class="sc">:&lt;42}</span><span class="ss"> : </span><span class="sc">{</span>valeur<span class="sc">:&gt;10}</span><span class="ss">  (</span><span class="sc">{</span>justif<span class="sc">}</span><span class="ss">)"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cinq chiffres clés pour la page 1 :
+  • Ratio de couverture SCR actuel             :       177%  (Indicateur de solvabilité réglementaire le plus immédiat.)
+  • Ratio de couverture SCR projeté 2030       :       163%  (Trajectoire de solvabilité, à lire contre l'appétence (160 %).)
+  • Ratio dans le pire stress test             :       142%  (Mesure de résistance aux scénarios défavorables.)
+  • SCR marché (composante dominante)          :  280 M EUR  (Identifie le risque principal à piloter.)
+  • Besoin global de solvabilité               :  530 M EUR  (Vision propre de l'organisme, à comparer au SCR réglementaire.)</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="20.4.2" id="étape-2.-structure-type-pour-le-conseil-dadministration">
+<h3 class="anchored" data-anchor-id="étape-2.-structure-type-pour-le-conseil-dadministration" data-number="20.4.2"> Étape 2. Structure type pour le conseil d’administration</h3>
+<div class="cell" data-execution_count="3" id="96aa2b43">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>proj <span class="op">=</span> ORSA_INDICATEURS[<span class="st">"projection_ratio_scr"</span>]</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>n_risques <span class="op">=</span> <span class="bu">len</span>(ORSA_INDICATEURS[<span class="st">"risques_majeurs_identifies"</span>])</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>structure_synthese <span class="op">=</span> [</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    (<span class="st">"1. Conclusion (1 paragraphe + chiffres clés)"</span>,</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>     <span class="ss">f"Position de solvabilité globale. Phrase d'ouverture : « Au 31/12/</span><span class="sc">{</span>ORSA_INDICATEURS[<span class="st">'exercice'</span>]<span class="sc">}</span><span class="ss">, "</span></span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>     <span class="ss">f"la compagnie présente un ratio de couverture SCR de </span><span class="sc">{</span>sa[<span class="st">'ratio_couverture_scr'</span>]<span class="sc">:.0%}</span><span class="ss">, projeté à "</span></span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>proj[annee_fin]<span class="sc">:.0%}</span><span class="ss"> en </span><span class="sc">{</span>annee_fin<span class="sc">}</span><span class="ss">, à </span><span class="sc">{</span><span class="dv">100</span><span class="op">*</span>(proj[annee_fin] <span class="op">-</span> ORSA_INDICATEURS[<span class="st">'appetence_ratio_scr'</span>])<span class="sc">:.0f}</span><span class="ss"> points "</span></span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>     <span class="ss">f"de l'appétence. Les </span><span class="sc">{</span>n_risques<span class="sc">}</span><span class="ss"> risques majeurs identifiés appellent des décisions de management. »"</span>),</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    (<span class="st">"2. Solvabilité actuelle et projetée"</span>,</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>     <span class="st">"Ratio SCR aujourd'hui. Décomposition macro du SCR (marché, souscription, autres). Trajectoire 5 ans "</span></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>     <span class="st">"avec graphique. Comparaison à l'appétence au risque (160 %)."</span>),</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>    (<span class="st">"3. Besoin global de solvabilité et adéquation de la formule standard"</span>,</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>     <span class="st">"Montant du besoin global, écart avec le SCR et son explication. Écart entre le profil de risque "</span></span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>     <span class="st">"et les hypothèses de la formule standard (ici le risque catastrophe)."</span>),</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>    (<span class="st">"4. Résistance aux stress tests"</span>,</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>     <span class="st">"Liste des stress appliqués. Pour chacun : ratio après stress, perte en points, scénario sous-jacent. "</span></span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>     <span class="st">"Scénario le plus pénalisant."</span>),</span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>    (<span class="st">"5. Risques majeurs et décisions de management"</span>,</span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>     <span class="st">"Risques majeurs identifiés. Pour chacun : niveau d'exposition, impact potentiel, décision proposée."</span>),</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    (<span class="st">"6. Points d'attention pour l'année à venir"</span>,</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>     <span class="st">"Évolutions réglementaires anticipées, projets stratégiques de l'année, indicateurs à surveiller. Concis."</span>),</span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>]</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a><span class="cf">for</span> titre, contenu <span class="kw">in</span> structure_synthese:</span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span>titre<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  → </span><span class="sc">{</span>contenu<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+1. Conclusion (1 paragraphe + chiffres clés)
+  → Position de solvabilité globale. Phrase d'ouverture : « Au 31/12/2025, la compagnie présente un ratio de couverture SCR de 177%, projeté à 163% en 2030, à 3 points de l'appétence. Les 4 risques majeurs identifiés appellent des décisions de management. »
+
+2. Solvabilité actuelle et projetée
+  → Ratio SCR aujourd'hui. Décomposition macro du SCR (marché, souscription, autres). Trajectoire 5 ans avec graphique. Comparaison à l'appétence au risque (160 %).
+
+3. Besoin global de solvabilité et adéquation de la formule standard
+  → Montant du besoin global, écart avec le SCR et son explication. Écart entre le profil de risque et les hypothèses de la formule standard (ici le risque catastrophe).
+
+4. Résistance aux stress tests
+  → Liste des stress appliqués. Pour chacun : ratio après stress, perte en points, scénario sous-jacent. Scénario le plus pénalisant.
+
+5. Risques majeurs et décisions de management
+  → Risques majeurs identifiés. Pour chacun : niveau d'exposition, impact potentiel, décision proposée.
+
+6. Points d'attention pour l'année à venir
+  → Évolutions réglementaires anticipées, projets stratégiques de l'année, indicateurs à surveiller. Concis.</code></pre>
+</div>
+</div>
+<p><strong>Page 1</strong> : sections 1 à 3 (conclusion, solvabilité, besoin global). <strong>Page 2</strong> : sections 4 à 6. La phrase d’ouverture est construite à partir des données : le nombre de risques, les ratios et l’écart à l’appétence ne sont pas retapés.</p>
+</section>
+<section class="level3" data-number="20.4.3" id="étape-3.-visualiser-la-solvabilité">
+<h3 class="anchored" data-anchor-id="étape-3.-visualiser-la-solvabilité" data-number="20.4.3"> Étape 3. Visualiser la solvabilité</h3>
+<div class="cell" data-execution_count="4" id="0ef2053f">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>appetence <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> ORSA_INDICATEURS[<span class="st">"appetence_ratio_scr"</span>]</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>central <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> sa[<span class="st">"ratio_couverture_scr"</span>]</span></code></pre></div></div>
+</div>
+<div class="cell" data-execution_count="5" id="cell-fig-orsa-projection">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>annees <span class="op">=</span> [ORSA_INDICATEURS[<span class="st">"exercice"</span>]] <span class="op">+</span> <span class="bu">list</span>(proj)</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>ratios <span class="op">=</span> [central] <span class="op">+</span> [<span class="dv">100</span> <span class="op">*</span> r <span class="cf">for</span> r <span class="kw">in</span> proj.values()]</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>marge_fin <span class="op">=</span> ratios[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span> appetence</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>ax.plot(annees, ratios, <span class="st">"o-"</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linewidth<span class="op">=</span><span class="fl">2.5</span>, markersize<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Ratio (réel puis projeté)"</span>)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a>ax.axhline(appetence, color<span class="op">=</span><span class="st">"#b45309"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Appétence (</span><span class="sc">{</span>appetence<span class="sc">:.0f}</span><span class="ss"> %)"</span>)</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a>ax.axhline(<span class="dv">100</span>, color<span class="op">=</span><span class="st">"#dc2626"</span>, linestyle<span class="op">=</span><span class="st">":"</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>           label<span class="op">=</span><span class="st">"Exigence réglementaire SCR (100 %)"</span>)</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>ax.fill_between(annees, <span class="dv">100</span>, appetence, color<span class="op">=</span><span class="st">"#fef3c7"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>                label<span class="op">=</span><span class="st">"Zone d'alerte"</span>)</span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Année"</span>)</span>
+<span id="cb8-15"><a aria-hidden="true" href="#cb8-15" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Ratio de couverture SCR (%)"</span>)</span>
+<span id="cb8-16"><a aria-hidden="true" href="#cb8-16" tabindex="-1"></a>ax.set_title(<span class="ss">f"Le ratio baisse de </span><span class="sc">{</span>central<span class="sc">:.0f}</span><span class="ss"> % à </span><span class="sc">{</span>ratios[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.0f}</span><span class="ss"> % : "</span></span>
+<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a>             <span class="ss">f"</span><span class="sc">{</span>marge_fin<span class="sc">:.0f}</span><span class="ss"> points seulement au-dessus de l'appétence en </span><span class="sc">{</span>annees[<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-18"><a aria-hidden="true" href="#cb8-18" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"lower left"</span>)</span>
+<span id="cb8-19"><a aria-hidden="true" href="#cb8-19" tabindex="-1"></a>ax.set_xticks(annees)</span>
+<span id="cb8-20"><a aria-hidden="true" href="#cb8-20" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb8-21"><a aria-hidden="true" href="#cb8-21" tabindex="-1"></a>ax.set_ylim(<span class="dv">80</span>, <span class="dv">200</span>)</span>
+<span id="cb8-22"><a aria-hidden="true" href="#cb8-22" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-23"><a aria-hidden="true" href="#cb8-23" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-orsa-projection">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-orsa-projection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-orsa-projection-output-1_5ec83054.png" width="854"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-orsa-projection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 20.1: Trajectoire projetée du ratio de couverture SCR, contre l’appétence au risque
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La trajectoire descend chaque année et finit à 3 points de l’appétence. Le titre le dit : une « marge confortable » serait un contresens pour le conseil.</p>
+<div class="cell" data-execution_count="6" id="cell-fig-orsa-stress">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>stress <span class="op">=</span> pd.Series(ORSA_INDICATEURS[<span class="st">"stress_tests"</span>]).sort_values()</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>labels_courts <span class="op">=</span> {</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>    <span class="st">"catastrophe_naturelle_majeure"</span>: <span class="st">"Catastrophe naturelle"</span>,</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>    <span class="st">"krach_actions_30pct"</span>: <span class="st">"Krach actions -30 %"</span>,</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>    <span class="st">"augmentation_inflation_2pct"</span>: <span class="st">"Inflation +2 pp"</span>,</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>    <span class="st">"baisse_taux_50bp"</span>: <span class="st">"Baisse taux -50 bp"</span>,</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>}</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>impacts <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>    <span class="st">"ratio après stress"</span>: (<span class="dv">100</span> <span class="op">*</span> stress).<span class="bu">round</span>(<span class="dv">0</span>),</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>    <span class="st">"perte en points"</span>: (<span class="dv">100</span> <span class="op">*</span> (stress <span class="op">-</span> sa[<span class="st">"ratio_couverture_scr"</span>])).<span class="bu">round</span>(<span class="dv">0</span>),</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>})</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>impacts.index <span class="op">=</span> [labels_courts[k] <span class="cf">for</span> k <span class="kw">in</span> stress.index]</span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ratio central : </span><span class="sc">{</span>central<span class="sc">:.0f}</span><span class="ss"> %"</span>)</span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="bu">print</span>(impacts.to_string())</span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a></span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>n_sous_appetence <span class="op">=</span> <span class="bu">int</span>((<span class="dv">100</span> <span class="op">*</span> stress <span class="op">&lt;</span> appetence).<span class="bu">sum</span>())</span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a>y_pos <span class="op">=</span> <span class="bu">range</span>(<span class="bu">len</span>(stress))</span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a><span class="co"># Rouge sous 100 %, ambre sous l'appétence, vert au-dessus</span></span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">"#dc2626"</span> <span class="cf">if</span> <span class="dv">100</span> <span class="op">*</span> r <span class="op">&lt;</span> <span class="dv">100</span> <span class="cf">else</span> <span class="st">"#b45309"</span> <span class="cf">if</span> <span class="dv">100</span> <span class="op">*</span> r <span class="op">&lt;</span> appetence <span class="cf">else</span> <span class="st">"#047857"</span></span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a>          <span class="cf">for</span> r <span class="kw">in</span> stress.values]</span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a>ax.barh(y_pos, [r<span class="op">*</span><span class="dv">100</span> <span class="cf">for</span> r <span class="kw">in</span> stress.values], color<span class="op">=</span>colors)</span>
+<span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a>ax.set_yticks(y_pos)</span>
+<span id="cb9-24"><a aria-hidden="true" href="#cb9-24" tabindex="-1"></a>ax.set_yticklabels(impacts.index)</span>
+<span id="cb9-25"><a aria-hidden="true" href="#cb9-25" tabindex="-1"></a>ax.axvline(central, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linestyle<span class="op">=</span><span class="st">"-"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f"Central (</span><span class="sc">{</span>central<span class="sc">:.0f}</span><span class="ss"> %)"</span>)</span>
+<span id="cb9-26"><a aria-hidden="true" href="#cb9-26" tabindex="-1"></a>ax.axvline(appetence, color<span class="op">=</span><span class="st">"#b45309"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, label<span class="op">=</span><span class="ss">f"Appétence (</span><span class="sc">{</span>appetence<span class="sc">:.0f}</span><span class="ss"> %)"</span>)</span>
+<span id="cb9-27"><a aria-hidden="true" href="#cb9-27" tabindex="-1"></a>ax.axvline(<span class="dv">100</span>, color<span class="op">=</span><span class="st">"#dc2626"</span>, linestyle<span class="op">=</span><span class="st">":"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, label<span class="op">=</span><span class="st">"Exigence SCR (100 %)"</span>)</span>
+<span id="cb9-28"><a aria-hidden="true" href="#cb9-28" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, central <span class="op">+</span> <span class="dv">15</span>)</span>
+<span id="cb9-29"><a aria-hidden="true" href="#cb9-29" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Ratio de couverture SCR après stress (%)"</span>)</span>
+<span id="cb9-30"><a aria-hidden="true" href="#cb9-30" tabindex="-1"></a>ax.set_title(<span class="ss">f"</span><span class="sc">{</span>n_sous_appetence<span class="sc">}</span><span class="ss"> stress sur </span><span class="sc">{</span><span class="bu">len</span>(stress)<span class="sc">}</span><span class="ss"> passent sous l'appétence, aucun sous 100 %"</span>)</span>
+<span id="cb9-31"><a aria-hidden="true" href="#cb9-31" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"upper left"</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.01</span>, <span class="dv">1</span>))</span>
+<span id="cb9-32"><a aria-hidden="true" href="#cb9-32" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>, axis<span class="op">=</span><span class="st">"x"</span>)</span>
+<span id="cb9-33"><a aria-hidden="true" href="#cb9-33" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-34"><a aria-hidden="true" href="#cb9-34" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ratio central : 177 %
+                       ratio après stress  perte en points
+Catastrophe naturelle               142.0            -35.0
+Krach actions -30 %                 148.0            -29.0
+Inflation +2 pp                     151.0            -26.0
+Baisse taux -50 bp                  155.0            -22.0</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-orsa-stress">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-orsa-stress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="375" src="img/fig-orsa-stress-output-2_9195bdae.png" width="850"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-orsa-stress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 20.2: Ratio de couverture SCR après chaque stress, contre le ratio central ; le plus pénalisant en bas
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Les quatre stress font perdre entre 22 et 35 points par rapport au ratio central de 177 % (trait bleu) : le plus pénalisant est la catastrophe naturelle (142 %), puis le krach actions (148 %). Tous restent au-dessus de 100 %, tous passent sous l’appétence.</p>
+</section>
+<section class="level3" data-number="20.4.4" id="étape-4.-rédiger-une-section-type-audience-conseil">
+<h3 class="anchored" data-anchor-id="étape-4.-rédiger-une-section-type-audience-conseil" data-number="20.4.4"> Étape 4. Rédiger une section type (audience conseil)</h3>
+<p>Pour la section « Risques majeurs et décisions », prompt à donner à Claude :</p>
+<blockquote class="blockquote">
+<p><em>“Je veux rédiger la section ‘Risques majeurs et décisions’ de la synthèse pour le conseil. Voici les risques identifiés (<code>ORSA_INDICATEURS['risques_majeurs_identifies']</code>) et l’impact des stress (tableau <code>impacts</code>). Propose-moi : (1) un paragraphe d’introduction qui présente le cadre (3-4 lignes max), (2) pour chaque risque, une formulation en 2 phrases : phrase 1 = risque + niveau d’exposition + impact chiffré repris du tableau, phrase 2 = décision recommandée. Audience : administrateurs non actuaires. Pas de jargon.”</em></p>
+</blockquote>
+<p>Résultat attendu, une fois relu :</p>
+<blockquote class="blockquote">
+<p><em>“Quatre risques majeurs ressortent de l’évaluation 2025. Pour chacun, le management propose une action concrète à valider par le conseil.</em></p>
+<p><em>Catastrophe naturelle, tempête ou inondation (niveau élevé). Une catastrophe naturelle majeure ferait passer le ratio de couverture de 177 % à 142 %, soit 35 points de moins : c’est le stress le plus pénalisant, et il place le ratio sous l’appétence de 160 %. Décision proposée : renforcer la réassurance non-vie en 2026.</em></p>
+<p><em>Inflation persistante sur les coûts de réparation auto (niveau moyen). […]“</em></p>
+</blockquote>
+<p>L’actuaire <strong>relit et vérifie</strong> chaque paragraphe, chiffre par chiffre, contre le tableau. La plume reste actuarielle, le LLM accélère le premier jet.</p>
+</section>
+<section class="level3" data-number="20.4.5" id="étape-5.-critique-finale">
+<h3 class="anchored" data-anchor-id="étape-5.-critique-finale" data-number="20.4.5"> Étape 5. Critique finale</h3>
+<p>À demander avant de soumettre la synthèse au conseil :</p>
+<blockquote class="blockquote">
+<p><em>“Voici la synthèse exécutive finalisée (2 pages). Joue le rôle d’un administrateur sans expertise actuarielle, qui découvre le document 30 minutes avant la séance. Liste : (1) les passages où le vocabulaire bloque la compréhension, (2) les chiffres cités sans point de comparaison (N-1, cible, marché), (3) les implications opérationnelles ou financières qu’on a oublié d’expliciter, (4) les questions concrètes qu’un administrateur poserait en lecture.”</em></p>
+</blockquote>
+<p>Les corriger avant la séance évite les flottements.</p>
+</section>
+</section>
+<section class="level2" data-number="20.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="20.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Une première version de cette fiche proposait, comme « résultat attendu » de l’étape 4, ce paragraphe :</p>
+<blockquote class="blockquote">
+<p><em>“Volatilité des marchés financiers et exposition actions (niveau élevé). Une baisse marquée des marchés actions pourrait peser de 9 points sur le ratio de couverture SCR. Décision proposée : réduire l’exposition actions de 18 % à 15 % au premier semestre 2026.”</em></p>
+</blockquote>
+<p>Le paragraphe se lit bien et sa décision vient du dictionnaire. Qu’est-ce qui ne va pas, et comment le repérer sans relire tout le rapport ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p><strong>Le chiffre est faux.</strong> Le stress « krach actions -30 % » fait passer le ratio de 177 % à 148 % : une perte de 29 points, pas de 9. Le chiffre de 9 ne correspond à aucune donnée du dictionnaire ; c’est une hallucination de chiffre, plausible et précise, donc dangereuse. Elle minimise le risque d’un facteur trois et cache ce qui compte pour le conseil : après ce stress, le ratio passe sous l’appétence de 160 %.</p>
+<p><strong>Comment le repérer</strong> : tout chiffre de la synthèse doit se retrouver dans une sortie de code, ici le tableau <code>impacts</code> de l’étape 3. Le prompt corrigé de l’étape 4 donne ce tableau à Claude et exige que chaque chiffre en vienne ; la relecture pointe ensuite chaque chiffre contre le tableau.</p>
+<p><strong>Deuxième défaut, plus discret</strong> : « une baisse marquée » est flou. Le scénario testé est une baisse de 30 % ; le conseil doit savoir ce qui a été testé pour juger si c’est assez sévère.</p>
+<p><strong>Troisième défaut</strong> : le calendrier « au premier semestre 2026 » n’est dans aucune donnée. La décision du dictionnaire ne porte pas de date ; un détail précis et non sourcé s’y est ajouté, et le conseil le prendrait pour un engagement du management.</p>
+</details>
+</section>
+<section class="level2" data-number="20.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="20.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Trop de chiffres.</strong> Une synthèse de 2 pages avec 40 chiffres devient un mur illisible. <strong>Sélectionner 5 à 10 chiffres</strong> sur la page 1, le reste va en annexe.</li>
+<li><strong>Jargon actuariel non explicité.</strong> Les administrateurs comprennent-ils « ratio de couverture SCR » ? Pas toujours. Vérifier en relecture qu’un administrateur novice peut suivre. Au besoin, un glossaire en annexe.</li>
+<li><strong>Demander la rédaction complète à Claude.</strong> Vous obtenez 2 pages plausibles que vous n’avez pas vraiment écrites, avec des chiffres inventés ou des nuances perdues (l’exercice ci-dessus en montre un). <strong>Toujours fragmenter</strong> : Claude structure et propose ; l’actuaire écrit les passages qui engagent.</li>
+<li><strong>Un titre rassurant que les données contredisent.</strong> « Marge confortable » sur une trajectoire qui finit à 3 points de l’appétence est un message faux. Le titre se calcule à partir des données, puis se relit.</li>
+<li><strong>Oublier les actions concrètes.</strong> Une synthèse ORSA sans décisions de management proposées n’aide pas le conseil. <strong>Toujours inclure</strong> une section « décisions à valider » avec un calendrier.</li>
+<li><strong>Ne pas faire critiquer la synthèse.</strong> Ce qu’on écrit nous semble clair ; c’est rarement le cas pour un lecteur extérieur. La critique « administrateur novice » fait partie du processus, pas du confort.</li>
+</ul>
+</section>
+<section class="level2" data-number="20.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="20.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>S1 Note méthodologique SCR non-vie</strong> : la note technique sous-jacente. Le rapport ORSA s’appuie sur plusieurs notes de ce type.</li>
+<li><strong>S3 IFRS 17 et CSM</strong> : pour les contrats vie et la communication au conseil sur IFRS 17.</li>
+<li><strong>C2 Rapport annuel d’un fonds vie</strong> : pendant pour un public d’assurés.</li>
+<li><strong>C3 Présentation board en cinq slides</strong> : version slides d’une restitution au conseil, à présenter en séance.</li>
+</ul>
+</section>
+<section class="level2" data-number="20.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="20.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Versionnement de la synthèse</strong> : chaque révision avant la séance est tracée (tag Git sur la version approuvée).</li>
+<li><strong>Tableau de bord ORSA</strong> : en plus de la synthèse annuelle, un tableau de bord qui suit les indicateurs clés entre deux exercices. Voir la fiche C1 et l’atelier du deuxième jour au matin.</li>
+<li><strong>Cohérence entre rapports</strong> : la synthèse ORSA, les états quantitatifs (QRT) et le rapport SFCR doivent citer les mêmes chiffres. <strong>Une seule source de vérité</strong> (par exemple un fichier parquet centralisé) qui alimente tous les livrables : c’est la règle de l’atelier du deuxième jour au matin, aucun chiffre ressaisi à la main.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/S1/index.html"><small>&larr; Précédent</small>S1. Note méthodologique SCR non-vie</a><a class="next" href="../../bibliotheque/S3/index.html"><small>Suivant &rarr;</small>S3. IFRS 17, explication de la CSM</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monte-Carlo : un générateur n'est jamais aléatoire · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn active" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 2 · 2.3 Projeter et simuler</div>
+      <h1 style="max-width:28ch">Monte-Carlo : un générateur n'est jamais aléatoire</h1>
+      <p class="lede">Une série pseudo aléatoire n'est jamais aléatoire : c'est une suite fixe, qui finit par se répéter. Un actuaire qui passe d'un million à dix millions de simulations parce que son calcul ne converge pas n'a rien gagné si le cycle du générateur fait un million : il relit dix fois le même cycle. On le rencontre dans des logiciels de simulation, et quelques tests suffisent pour s'en rendre compte.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#cycle">Une suite fixe, et qui se répète</a><a href="#vitesse">1/√N : ce que coûte la précision</a><a href="#quasi">Tirer mieux : Halton et Sobol'</a><a href="#tests">Des tests pour s'en rendre compte</a><a href="#retenir">Ce qu'il faut garder</a><a href="#sources">Sources</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « Monte-Carlo : un générateur n'est jamais aléatoire ».
+     Le cadrage du formateur, formation du 19 octobre : « les séries aléatoires
+     ne sont jamais aléatoires, elles sont cycliques ; un actuaire qui passe de 1
+     à 10 millions de simulations parce que ça ne converge pas n'a pas compris :
+     si le cycle du générateur est d'un million, ça ne fait que répéter ;
+     montrer Sobol et Halton qui convergent plus vite ; faire des tutos et des
+     tests pour que l'actuaire s'en rende compte ». Il l'a constaté dans des
+     logiciels de simulation.
+     Ce qui est déjà dans le support et ne se répète pas ici : garder les
+     simulations, la graine, les conditions de Sobol et Halton, le critère
+     d'arrêt (communication/resultats, section monte-carlo).
+     Les écrans : Vision, rubrique ALM (#/alm), onglet Convergence.
+     Captures : demos/_outils/captures_vision_actuariat.py, scène alm_convergence. -->
+
+<h2 id="cycle">Une suite fixe, et qui se répète</h2>
+<p>Même graine, mêmes tirages : c'est ce qui rend un calcul reproductible, et le chapitre <a href="../../communication/hasard/index.html#hasard">Versionner les résultats</a> en fait une règle. Mais c'est aussi la preuve que rien n'y est aléatoire. Un générateur congruentiel calcule chaque tirage à partir du précédent, \(x_{n+1} = (a\,x_n + c) \bmod m\) : il ne peut prendre que \(m\) valeurs, donc il repart sur le même cycle au plus tard après \(m\) tirages. Passé ce point, des tirages de plus ne disent rien de neuf, et l'erreur cesse de baisser.</p>
+<p>L'onglet Convergence de l'ALM le montre sur une cible dont on connaît la valeur exacte, donc l'erreur vraie. Un générateur court, de période 4 096, contre un générateur à longue période. Chaque tirage prend deux nombres uniformes : au-delà de 2 048 tirages, la suite courte se répète. Son erreur reste bloquée à 0,01793 de 4 096 à 262 144 tirages, alors que celle de l'autre générateur continue de baisser.</p>
+<h2 id="vitesse">1/√N : ce que coûte la précision</h2>
+<p>Même avec un bon générateur, l'erreur d'une moyenne de Monte-Carlo baisse comme \(1/\sqrt{N}\). Dix fois plus de simulations ne la divisent que par \(\sqrt{10}\), soit 3,16 environ ; la diviser par dix demande cent fois plus de simulations. Dans Vision, l'erreur quadratique moyenne sur dix graines passe de 0,0958 à 100 tirages à 0,0032 à 100 000 tirages, et la courbe suit la droite \(1/\sqrt{N}\).</p>
+<div class="demo-shots">
+<figure><a href="img/alm_11_conv_generateur_e7b15304.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="Le générateur court contre un générateur à longue période : l'erreur se bloque après la période" height="1298" src="img/alm_11_conv_generateur_e7b15304.png" width="1440"/></a><figcaption><b>1</b>Générateur : après la période, la suite courte « répète » et son erreur ne bouge plus.</figcaption></figure>
+<figure><a href="img/alm_12_conv_vitesse_77ec6d47.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'erreur quadratique moyenne selon le nombre de tirages, contre la droite 1/√N" height="987" src="img/alm_12_conv_vitesse_77ec6d47.png" width="1440"/></a><figcaption><b>2</b>Vitesse : l'erreur mesurée sur dix graines suit la droite \(1/\sqrt{N}\).</figcaption></figure>
+</div>
+<p>Dans Vision : <code>#/alm?ong=convergence</code>, puis Générateur et Vitesse. La puissance de 2 du module et la graine se changent dans la case : un module plus petit raccourcit la période, et l'erreur se bloque plus tôt.</p>
+<h2 id="quasi">Tirer mieux : Halton et Sobol'</h2>
+<p>Les suites de Halton et de Sobol' remplacent le hasard par des points construits pour remplir l'intervalle de façon régulière. Sur une cible lisse, leur erreur baisse presque comme \(1/N\), bien plus vite que \(1/\sqrt{N}\). Dans Vision, à 65 536 tirages, l'erreur passe de 0,00585 en pseudo aléatoire à 0,00002 avec Sobol'. Sur mille points du carré, le pseudo aléatoire laisse 36 cases vides sur une grille de 20 × 20 ; Sobol' n'en laisse aucune. Les conditions de ce gain, la dimension, la régularité, l'intervalle de confiance, sont au chapitre <a href="../../communication/hasard/index.html#monte-carlo">Versionner les résultats</a>.</p>
+<div class="demo-shots">
+<figure><a href="img/alm_13_conv_quasi_9c7c13d3.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="Pseudo aléatoire, antithétique, Halton et Sobol' : l'erreur selon le nombre de tirages, en échelle logarithmique" height="1322" src="img/alm_13_conv_quasi_9c7c13d3.png" width="1440"/></a><figcaption><b>1</b>Quasi-Monte-Carlo : Halton et Sobol' suivent presque \(1/N\), le pseudo aléatoire \(1/\sqrt{N}\).</figcaption></figure>
+<figure><a href="img/alm_14_conv_nuage_83c45838.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="Mille points pseudo aléatoires dans le carré unité, et le décompte des cases vides" height="971" src="img/alm_14_conv_nuage_83c45838.png" width="1440"/></a><figcaption><b>2</b>Nuage : des trous et des amas en pseudo aléatoire ; les puces passent à Halton et à Sobol'.</figcaption></figure>
+</div>
+<p>Dans Vision : <code>#/alm?ong=convergence</code>, puis Quasi-Monte-Carlo et Nuage.</p>
+<h2 id="tests">Des tests pour s'en rendre compte</h2>
+<p>Ces propriétés ne se croient pas sur parole, elles se testent, et chaque test tient en quelques lignes que l'IA écrit très bien.</p>
+<ol class="steps">
+<li><strong>La période du générateur</strong><p>La documentation de l'outil la donne. On la compare au nombre de tirages du calcul : les simulations multipliées par les tirages de chaque simulation.</p></li>
+<li><strong>Une cible dont on connaît la valeur</strong><p>Faire tourner le même code sur un cas dont le résultat exact est connu, pour lire l'erreur vraie, et pas seulement l'écart entre deux lancements.</p></li>
+<li><strong>Doubler, puis décupler</strong><p>Mesurée sur plusieurs graines, si l'erreur ne baisse pas d'environ \(\sqrt{2}\), puis de \(\sqrt{10}\), quelque chose cloche : une période trop courte, un tirage réutilisé, un bug.</p></li>
+<li><strong>Changer la graine</strong><p>Si le résultat bouge plus que l'erreur annoncée, l'erreur est sous-estimée.</p></li>
+</ol>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg> À votre avis</span>
+<p>Votre outil a un générateur de période un million. Chaque simulation tire un nombre par année sur dix ans. Le calcul ne converge pas à 100 000 simulations, et un collègue propose de passer à 1 million. Qu'en pensez-vous ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>À 100 000 simulations de dix tirages, on consomme déjà le million de tirages du cycle. Au-delà, on relit le même cycle : 1 million de simulations, c'est dix fois les mêmes trajectoires, et l'erreur ne bouge plus. Il faut un générateur de bien plus longue période, puis, si la cible est lisse, une suite de Sobol' pour converger plus vite.</p>
+</details>
+</div>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg> À votre avis</span>
+<p>Avec un bon générateur, combien de simulations faut-il pour diviser l'erreur par dix ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Cent fois plus, puisque l'erreur baisse comme \(1/\sqrt{N}\). Avec une suite de Sobol' sur une cible lisse, l'erreur baisse presque comme \(1/N\) : environ dix fois plus suffisent.</p>
+</details>
+</div>
+<p>Le test de martingale d'un générateur de scénarios en est l'application directe : la fiche <a href="../../bibliotheque/E4/index.html">E4 de la bibliothèque</a> le montre, intervalle à 95 % compris, avec l'erreur qu'il attrape.</p>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>Une suite pseudo aléatoire est fixe et cyclique : au-delà de sa période, plus de simulations ne disent rien de neuf.</li>
+<li>L'erreur baisse comme \(1/\sqrt{N}\) : la précision coûte cher, de plus en plus cher.</li>
+<li>Halton et Sobol' convergent plus vite sur une cible lisse.</li>
+<li>Ces propriétés se testent : la période, une cible connue, doubler, changer la graine.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul class="clean">
+<li>Marsaglia, G. (1968), Random numbers fall mainly in the planes, <em>PNAS</em> 61(1), 25-28 ; L'Ecuyer, P. (1999), Tables of linear congruential generators of different sizes and good lattice structure, <em>Mathematics of Computation</em> 68(225), 249-260.</li>
+<li>Glasserman, P. (2003), <em>Monte Carlo Methods in Financial Engineering</em>, Springer : la vitesse de convergence, la réduction de variance, le quasi-Monte-Carlo.</li>
+<li>Halton, J. H. (1960), On the efficiency of certain quasi-random sequences of points in evaluating multi-dimensional integrals, <em>Numerische Mathematik</em> 2, 84-90.</li>
+<li>Sobol', I. M. (1967), On the distribution of points in a cube and the approximate evaluation of integrals, <em>USSR Computational Mathematics and Mathematical Physics</em> 7(4), 86-112 ; Joe, S. et Kuo, F. Y. (2008), Constructing Sobol sequences with better two-dimensional projections, <em>SIAM Journal on Scientific Computing</em> 30(5), 2635-2654.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../exploration/projeter/index.html"><small>&larr; Précédent</small>Projeter : modèles versionnés, scénarios, distribution</a><a class="next" href="../../exploration/a-la-volee/index.html"><small>Suivant &rarr;</small>Calculer à la volée ou préparer à l'avance</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

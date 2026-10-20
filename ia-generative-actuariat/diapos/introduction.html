@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 · Introduction aux LLM · diapositives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/diapos.css">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<meta name="theme-color" content="#0d1830">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<div class="jauge"></div>
+<div class="pupitre">
+  <div class="cadre">
+    <div class="scene" data-suivant="exploration.html" data-precedent="">
+<section class="diapo titre sombre" data-ou="Introduction aux LLM" data-ancre="introduction"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="eyebrow eyebrow-light">Partie 1 · Jour 1, matin</div><h1>Introduction aux LLM</h1><p class="lede">Ce qu'est un modèle de langue, ce qu'il sait faire, ce qu'il invente, quand on n'en a pas besoin, et comment le diriger plutôt que se faire aider.</p><div class="ouverture-grille"><div class="page-head-prog"><span class="label">Le programme</span><ul><li>Fonctionnement des LLM et principes généraux</li><li>Génération assistée de code, de modélisation et d'interprétation</li><li>Cadrage des demandes, contrôle qualité, validation systématique</li><li>Biais, limites et précautions</li></ul></div><div class="page-head-prog"><span class="label">La demi-journée</span><ol class="plan-demi"><li><b class="n">1.1</b>Comprendre le modèle<ul><li>Un modèle qui écrit le mot suivant</li><li>Ce qu'il sait, ce qu'il invente</li></ul></li><li><b class="n">1.2</b>S'en servir<ul><li>Pas toujours besoin d'un modèle de langue</li><li>Le brancher sans lui ouvrir les données</li><li>Piloter l'IA</li></ul></li><li><b class="n">1.3</b>Atelier : un premier échange cadré</li></ol></div></div></div></div></section>
+<section class="diapo titre" data-ou="1.1 Comprendre le modèle" data-ancre="introduction-llm-groupe"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1 Comprendre le modèle</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class="actif"><b>1.1</b> Comprendre le modèle</span><span class=""><b>1.2</b> S'en servir</span><span class=""><b>1.3</b> Atelier</span></div><div class="eyebrow">Partie 1 · Introduction aux LLM</div><h1><span class="n">1.1</span> Comprendre le modèle</h1><ol class="plan-chap"><li><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</li><li><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</li></ol></div></div></section>
+<section class="diapo titre" data-ou="1.1.1 Un modèle qui écrit le mot suivant" data-ancre="introduction-llm"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.1 Un modèle qui écrit le mot suivant</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class="actif"><b>1.1</b> Comprendre le modèle</span><span class=""><b>1.2</b> S'en servir</span><span class=""><b>1.3</b> Atelier</span></div><h1><span class="n">1.1.1</span> Un modèle qui écrit le mot suivant</h1><p>Un modèle de langue n'est ni une intelligence omnisciente ni un perroquet. C'est un modèle statistique entraîné à prédire le mot suivant. Pour un actuaire qui a ajusté des GLM, le mécanisme est plus familier qu'il n'y paraît, et c'est en le voyant pour ce qu'il est qu'on sait où lui faire confiance.</p><ul class="plan-chap puces"><li>Le moteur : prédire le mot suivant</li><li>Concrètement : un fichier de poids</li><li>Ce qui entre, ce qui sort : du texte, et des images</li><li>Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire</li><li>Ce qu'il faut garder</li></ul></div></div></section>
+<section class="diapo" data-ou="Le moteur : prédire le mot suivant" data-ancre="moteur"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.1 Un modèle qui écrit le mot suivant</span><span class="sep">›</span><span class="sous">Le moteur : prédire le mot suivant</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Le moteur : prédire le mot suivant</h2>
+<p>À l'entraînement, on montre au modèle des milliards de phrases tronquées, et il ajuste ses paramètres pour mieux deviner la suite. À l'utilisation, vous donnez une amorce, votre prompt, et il écrit la continuation la plus probable, un morceau de mot après l'autre. Trois mécanismes suffisent à comprendre ce qui se passe.</p>
+<div class="feat">
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div><div><strong>La tokenisation découpe le texte</strong>
+    <p>Pas en mots, en morceaux de quelques caractères. « calcul de provisions » fait trois mots et quelques tokens, et le compte exact dépend du tokeniseur. C'est la même monnaie élémentaire pour du français, du code et des chiffres.</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div><div><strong>L'attention relie chaque mot aux précédents</strong>
+    <p>Au moment d'écrire le mot suivant, le modèle pondère l'influence de tout ce qui précède. C'est ce qui tient la cohérence sur un long texte.</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg></div><div><strong>La complétion tire un mot, puis recommence</strong>
+    <p>À chaque pas, une distribution de probabilités sur tout le vocabulaire, et un tirage. Avec une part d'aléatoire réglable, la même question donne deux réponses légèrement différentes.</p></div></div>
+</div>
+<div class="callout assurance">
+  <span class="label">L'analogie qui aide</span>
+  <p>Un GLM Poisson prédit un nombre de sinistres en pondérant des covariables. Un modèle de langue prédit le prochain token en pondérant tous les tokens précédents. Les ordres de grandeur n'ont rien à voir, quelques dizaines de paramètres contre des milliards. La nature de l'objet, si.</p>
+</div></div></div></section>
+<section class="diapo" data-ou="Concrètement : un fichier de poids" data-ancre="poids"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.1 Un modèle qui écrit le mot suivant</span><span class="sep">›</span><span class="sous">Concrètement : un fichier de poids</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Concrètement : un fichier de poids</h2>
+<p>Un modèle de langue, c'est un fichier de poids, et un petit programme qui s'en sert. Le fichier est gros : d'environ un gigaoctet pour un petit modèle ouvert à plus d'un téraoctet pour les plus grands. Le programme est petit : quelques centaines de lignes de C suffisent à faire tourner un modèle ouvert.</p>
+<p>Dans les poids, il y a entre autres un dictionnaire : à chaque token, un vecteur de quelques milliers de nombres, toujours le même. Puis les paramètres de toutes les couches qui relient ces vecteurs entre eux. Une fois l'entraînement fini, tout cela est fixé, comme les coefficients d'un GLM ou les paramètres d'un modèle d'ALM calibré. Le modèle ne change pas quand on s'en sert.</p>
+<p>L'aléatoire de la réponse est un choix, pas une nature. On tire volontairement le token suivant avec un peu de hasard, pour des réponses moins figées ; en prenant toujours le plus probable, la même question donne la même réponse.</p></div></div></section>
+<section class="diapo" data-ou="Ce qui entre, ce qui sort : du texte, et des images" data-ancre="entrees-sorties"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.1 Un modèle qui écrit le mot suivant</span><span class="sep">›</span><span class="sous">Ce qui entre, ce qui sort : du texte, et des images</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qui entre, ce qui sort : du texte, et des images</h2>
+<p>Un modèle de langue fait une chose : du texte entre, du texte sort. Les modèles récents lisent aussi les images : une image entre, du texte sort. Produire une image est une autre capacité, et elle n'est pas toujours donnée. Les modèles Claude, pensés d'abord pour les développeurs, lisent les images et n'en produisent pas ; la génération d'images suit une tout autre logique, et c'est OpenAI qui y a le plus avancé.</p>
+<p>Lire une image sert plus qu'on ne croit. Un tableau photographié ou capturé se lit et s'analyse. Et surtout, en création logicielle, la capture d'écran du logiciel en cours : un assistant qui écrit du HTML ne sait pas entièrement ce que la page donne à l'écran. Comme un humain, il a besoin de voir. On lui fait faire une capture, il la regarde, repère ce qui déborde ou se chevauche, et corrige ; les assistants de développement le font maintenant d'eux-mêmes, très régulièrement.</p>
+<div class="try">
+  <span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt qui fait voir</span>
+  <p>« Fais une capture de la page à 1280 et à 760 px de large, regarde-la, et corrige ce qui déborde, se chevauche ou se lit mal. Recommence jusqu'à ce que rien ne cloche, et montre-moi la dernière capture. »</p>
+</div>
+<p>Tout le reste, lancer un calcul, interroger une base, écrire un fichier, ce ne sont pas des capacités du modèle : ce sont des outils qu'on lui donne, au chapitre <a href="../industrialisation/formes-appel/index.html">Les formes d'appel</a>. Il ne sait pas manipuler un PDF ; il sait écrire et lancer le code Python qui le fait.</p></div></div></section>
+<section class="diapo" data-ou="Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire" data-ancre="contexte"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.1 Un modèle qui écrit le mot suivant</span><span class="sep">›</span><span class="sous">Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire</h2>
+<p>Le modèle ne se souvient de rien d'un appel à l'autre : ses poids ne changent pas. Tout ce qu'il « sait » d'un échange, c'est ce qu'on lui redonne à chaque appel, dans la limite de ce qu'il peut lire d'un coup, sa fenêtre de contexte. Ce qu'on lui redonne a plusieurs parties.</p>
+<div class="feat">
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></div><div><strong>Le prompt système</strong><p>Écrit par celui qui construit l'outil, placé avant tout le reste, invisible pour l'utilisateur : le rôle, les consignes, le ton, ce que l'outil fait et ce qu'il décline, le format des réponses. C'est là que s'écrivent les intentions et le « small talk » du chatbot de commande.</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg></div><div><strong>Le prompt de l'utilisateur</strong><p>La question du moment. Lue avec le prompt système, elle est mieux comprise : « le S/P de l'auto » ne demande pas la même chose à l'outil du contrôle de gestion et à celui de l'actuaire.</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div><div><strong>La conversation</strong><p>Les échanges précédents, redonnés à chaque tour. Plus elle s'allonge, plus elle prend de place dans la fenêtre.</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><div><strong>La mémoire</strong><p>Ce qu'on veut garder au-delà d'une conversation, et que l'outil va chercher avant que le modèle réponde.</p></div></div>
+</div>
+<p>La mémoire se range de plusieurs façons :</p></div></div></section>
+<section class="diapo" data-ou="Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire" data-ancre="contexte"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.1 Un modèle qui écrit le mot suivant</span><span class="sep">›</span><span class="sous">Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire <span class="suite">suite</span></h2>
+<ol class="steps">
+  <li><strong>Un fichier lu au démarrage</strong><p>Les règles qui valent toujours : la mémoire projet d'un assistant, au chapitre <a href="../introduction/piloter/index.html#memoire">Piloter l'IA</a>, ou un fichier de préférences.</p></li>
+  <li><strong>Un résumé de la conversation</strong><p>Écrit par le modèle quand l'échange devient long, et redonné à la place des échanges anciens.</p></li>
+  <li><strong>Une base de souvenirs</strong><p>On y cherche ceux qui ressemblent à la question, comme dans une documentation, et seuls ceux qui servent sont redonnés.</p></li>
+</ol>
+<p>Dans tous les cas, c'est l'outil qui décide de ce qui est gardé et de ce qui est redonné, pas le modèle : une mémoire se relit et se corrige comme un fichier.</p>
+<p>Un piège vient de là. Tout ce qui entre est lu de la même façon : le modèle ne sait pas distinguer une consigne du prompt système d'une phrase glissée dans la question ou dans un document qu'on lui fait lire. Une phrase qui dit « oublie tes consignes » a donc une chance d'être suivie. C'est l'injection de prompt, et ses parades sont au chapitre <a href="../industrialisation/cadrer/index.html#injection">Cadrer et tracer</a>.</p></div></div></section>
+<section class="diapo" data-ou="Ce qu'il faut garder" data-ancre="retenir"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.1 Un modèle qui écrit le mot suivant</span><span class="sep">›</span><span class="sous">Ce qu'il faut garder</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'il faut garder</h2>
+<ul class="clean">
+  <li>Le modèle écrit la suite la plus probable. Il ne consulte pas une base de faits, il ne vérifie rien.</li>
+  <li>C'est un fichier de poids figés : il ne change pas quand on s'en sert, et l'aléatoire de ses réponses est un choix.</li>
+  <li>Il ne se souvient de rien d'un appel à l'autre : ce qu'il sait d'un échange, c'est ce qu'on lui redonne, prompt système, conversation, mémoire.</li>
+  <li>Tout ce qu'il lit peut passer pour une consigne : c'est l'injection de prompt.</li>
+</ul></div></div></section>
+<section class="diapo titre" data-ou="1.1.2 Ce qu'il sait, ce qu'il invente" data-ancre="introduction-limites"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class="actif"><b>1.1</b> Comprendre le modèle</span><span class=""><b>1.2</b> S'en servir</span><span class=""><b>1.3</b> Atelier</span></div><h1><span class="n">1.1.2</span> Ce qu'il sait, ce qu'il invente</h1><p>Le moteur décrit, reste ce qu'il fait bien et ce qu'il fait mal. Il code bien, il ignore ce qui est arrivé après sa date de coupure, il invente quand il ne sait pas, il ne calcule pas, et il vous donne raison. Chaque limite a sa parade, et c'est elle qu'on retient.</p><ul class="plan-chap puces"><li>Pourquoi il sait coder, et ce qu'il ne sait pas de vous</li><li>Ce qu'il ne sait pas encore : la date de coupure</li><li>Ce qu'il invente, et dans quels cas</li><li>Il ne calcule pas : la règle d'or</li><li>Il vous suit : le biais de confirmation</li><li>Cinq réponses piégées</li><li>Ce qu'il faut garder</li></ul></div></div></section>
+<section class="diapo" data-ou="Pourquoi il sait coder, et ce qu'il ne sait pas de vous" data-ancre="coder"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Pourquoi il sait coder, et ce qu'il ne sait pas de vous</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Pourquoi il sait coder, et ce qu'il ne sait pas de vous</h2>
+<p>Les corpus d'entraînement contiennent énormément de code : GitHub public, la documentation technique, les forums, des notebooks Kaggle, et du code actuariel avec eux. Les packages R <code>CASdatasets</code>, <code>ChainLadder</code>, <code>MortalityLaws</code>, les packages Python <code>lifelib</code>, <code>chainladder</code>, des démonstrations de GLM sur des portefeuilles auto.</p>
+<p>Conséquence directe : il écrit du Python ou du R actuariel idiomatique. Il connaît les quotients de mortalité <code>qx</code>, il sait monter un triangle de liquidation, il connaît l'offset <code>log(exposure)</code> d'un GLM Poisson de fréquence ; vérifiez qu'il l'a mis.</p>
+<p>Il ne sait rien, en revanche, de votre code interne, de votre nomenclature de portefeuille, de vos conventions de cabinet. Tout ce qui suit dans la formation, la mémoire projet, la documentation, l'ontologie du domaine, sert à combler exactement ce trou.</p></div></div></section>
+<section class="diapo" data-ou="Ce qu'il ne sait pas encore : la date de coupure" data-ancre="coupure"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Ce qu'il ne sait pas encore : la date de coupure</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'il ne sait pas encore : la date de coupure</h2>
+<p>Les poids sont fixés à une date : celle où l'on a arrêté les données d'entraînement, la date de coupure des connaissances. Après, par définition, le modèle ne sait pas, et il comble avec ce qu'il a appris du passé. C'est une des sources de ce qu'on appelle les hallucinations.</p>
+<p>La réponse n'est pas de réentraîner le modèle à chaque nouvelle donnée. C'est de lui donner des outils, comme on le ferait pour un collègue : la recherche sur Internet pour l'actualité, votre documentation pour ce qui vous est propre. Ce qui progresse d'un modèle à l'autre, c'est surtout sa capacité à raisonner sur ce qu'il trouve.</p>
+<p>Chercher dans une base de connaissances est un autre métier que celui du modèle. Une documentation d'un gigaoctet ne se donne pas au modèle : un algorithme de recherche y trouve les passages utiles, et seuls ces passages lui sont donnés avec la question. C'est de l'ingénierie, à construire, et ce n'est pas compliqué ; c'est ce que décrit le chapitre <a href="../industrialisation/ia-dans-l-outil/index.html">L'IA dans l'outil</a>.</p></div></div></section>
+<section class="diapo" data-ou="Ce qu'il invente, et dans quels cas" data-ancre="invente"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Ce qu'il invente, et dans quels cas</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'il invente, et dans quels cas</h2>
+<p>Le modèle produit toujours quelque chose, même quand il n'a pas l'information, parce qu'il tire un token à chaque pas. Il n'a pas de bouton « je ne sais pas ». En contexte actuariel, l'invention prend des formes reconnaissables, et chacune a sa parade.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Ce qui sort</th><th>Un exemple</th><th>La parade</th></tr></thead>
+  <tbody>
+    <tr><td class="rowhead">Une valeur numérique inventée</td><td>« le SCR de souscription représente 18,7 % du SCR global »</td><td>Aucun nombre ne vient de la prose du modèle. Il écrit le code, le code calcule.</td></tr>
+    <tr><td class="rowhead">Une formule altérée</td><td>Fiable sur Black-Scholes ou Chain-Ladder, approximatif sur un cas particulier de CSM IFRS 17</td><td>Demander la source : d'où vient cette formule, quelle référence.</td></tr>
+    <tr><td class="rowhead">Une norme imaginaire</td><td>Un article du Code des assurances qui n'existe pas, une position prêtée à l'ACPR</td><td>Vérifier chaque référence réglementaire à la source. Le corpus est vaste, l'actuaire y est exposé plus que d'autres.</td></tr>
+  </tbody>
+</table>
+</div></div></div></section>
+<section class="diapo" data-ou="Il ne calcule pas : la règle d'or" data-ancre="calcul"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Il ne calcule pas : la règle d'or</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Il ne calcule pas : la règle d'or</h2>
+<p>Les modèles de langue sont mauvais en arithmétique exacte. Un calcul long passe mal, une décimale se perd, et rien ne signale l'erreur quand elle arrive. Ce n'est pas un défaut de jeunesse, c'est la construction : le modèle ne calcule pas, il prédit le morceau de texte le plus probable, et une suite de chiffres n'a pas de structure arithmétique dans son apprentissage.</p>
+<div class="callout warn">
+  <span class="label">La règle d'or actuarielle</span>
+  <p>Tous les chiffres d'un livrable sortent de code exécuté, jamais de la prose du modèle. Il aide à écrire le code, à lire les résultats, à formuler la note. Il ne fait pas le calcul.</p>
+</div>
+<p>La nuance est dans la demande. On ne tape pas « calcule la prime pure de ce portefeuille ». On tape « écris le code Python qui calcule la prime pure de ce portefeuille, exécute-le, et donne-moi le résultat avec les valeurs intermédiaires ». Le premier produit un nombre invérifiable, le second un calcul qu'on relit.</p></div></div></section>
+<section class="diapo" data-ou="Il vous suit : le biais de confirmation" data-ancre="suiveur"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Il vous suit : le biais de confirmation</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Il vous suit : le biais de confirmation</h2>
+<p>Un modèle affiné sur des préférences humaines apprend à plaire. Il ne contredit pas spontanément. Soumettez-lui une analyse en disant « je pense que cette méthode est la bonne, qu'en penses-tu », et il abondera, en améliorant peut-être la formulation, rarement en contestant le fond.</p>
+<div class="try">
+  <span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt qui débloque la critique</span>
+  <p>« Voici mon raisonnement. Avant de l'accepter, joue le rôle d'un actuaire expérimenté qui me relirait. Cherche les failles, les hypothèses implicites, les cas où mon approche tombe en défaut. Sois sévère. »</p>
+  <p>Les critiques qui sortent sont utiles. Libre à vous de les rejeter, elles auront au moins été formulées.</p>
+</div></div></div></section>
+<section class="diapo" data-ou="Cinq réponses piégées" data-ancre="pieges"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Cinq réponses piégées</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Cinq réponses piégées</h2>
+<p>Chaque réponse ci-dessous est plausible et fausse. Cherchez le défaut avant d'ouvrir la réponse.</p></div></div></section>
+<section class="diapo" data-ou="Cinq réponses piégées" data-ancre="pieges"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Cinq réponses piégées</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Cinq réponses piégées <span class="suite">suite</span></h2>
+<ol class="steps">
+  <li><strong>« Le SCR de souscription non-vie moyen se situe autour de 18,7 % du SCR total, soit environ 142 milliards d'euros agrégés sur le marché français. »</strong>
+    <details class="answer"><summary>Voir le piège</summary>
+      <p>Chiffre inventé. Les ordres de grandeur sont plausibles, la source n'existe pas.</p>
+    </details>
+  </li>
+  <li><strong>« \(\text{Prime pure} = \mathbb{E}[N] \times \mathbb{E}[X] \times (1 + \varphi)\) », pour un GLM Tweedie.</strong>
+    <details class="answer"><summary>Voir le piège</summary>
+      <p>Formule altérée. La prime pure vaut \(\mathbb{E}[N] \times \mathbb{E}[X]\). Le paramètre de dispersion Tweedie ne s'y ajoute pas comme ça.</p>
+    </details>
+  </li>
+  <li><strong>« Excellent choix ! Le GLM Gamma est parfaitement adapté pour modéliser les fréquences de sinistres en auto… »</strong>
+    <details class="answer"><summary>Voir le piège</summary>
+      <p>Biais de confirmation. Une fréquence est un compte : Poisson, pas Gamma, qui est continue. Le modèle aurait dû contester, il a plié.</p>
+    </details>
+  </li>
+  <li><strong>« L'ACPR a publié en mars 2024 la recommandation 2024-R-03 qui détaille les attentes en matière de documentation des modèles… »</strong>
+    <details class="answer"><summary>Voir le piège</summary>
+      <p>Le numéro existe : c'est la recommandation 2024-R-03 du 21 novembre 2024, sur le recueil des informations relatives au client pour le devoir de conseil en assurance. La date et le sujet sont faux. C'est le piège le plus dangereux : un numéro réel rend crédible un contenu inventé. Le site de l'ACPR le montre en une minute.</p>
+    </details>
+  </li>
+  <li><strong>Rente viagère de 10 000 € par an, tête de 65 ans, espérance de vie résiduelle de 22 ans, actualisation à 2 % : « la VAP est de 178 350 € ».</strong>
+    <details class="answer"><summary>Voir le piège</summary>
+      <p>Deux erreurs. Le calcul de tête : 22 annuités de 10 000 € à 2 % valent 176 580 € à terme échu, 180 112 € à terme à échoir. Et surtout la méthode : l'espérance de vie est prise comme une durée certaine. Une rente viagère \(a_{65}\) se calcule avec les probabilités de survie d'une table de rentiers (TGH05, TGF05), pas comme une rente certaine sur \(e_{65}\). La valeur actuelle étant concave en la durée, la rente viagère vaut en général moins que la rente certaine sur l'espérance de vie.</p>
+    </details>
+  </li>
+</ol></div></div></section>
+<section class="diapo" data-ou="Ce qu'il faut garder" data-ancre="retenir"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.1.2 Ce qu'il sait</span><span class="sep">›</span><span class="sous">Ce qu'il faut garder</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'il faut garder</h2>
+<ul class="clean">
+  <li>Il code bien parce qu'il a lu beaucoup de code, le vôtre excepté.</li>
+  <li>Ce qui est arrivé après sa date de coupure, il ne le sait pas : on lui donne des outils, on ne le réentraîne pas.</li>
+  <li>Un nombre qui sort de sa prose n'a pas de valeur. Un nombre qui sort du code qu'il a écrit, et que vous avez relu, en a une.</li>
+  <li>Il ne vous contredira pas si vous ne le lui demandez pas.</li>
+</ul></div></div></section>
+<section class="diapo titre" data-ou="1.2 S'en servir" data-ancre="introduction-niveaux-groupe"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2 S'en servir</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class=""><b>1.1</b> Comprendre le modèle</span><span class="actif"><b>1.2</b> S'en servir</span><span class=""><b>1.3</b> Atelier</span></div><div class="eyebrow">Partie 1 · Introduction aux LLM</div><h1><span class="n">1.2</span> S'en servir</h1><ol class="plan-chap"><li><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</li><li><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</li><li><b class="n">1.2.3</b>Piloter l'IA</li></ol></div></div></section>
+<section class="diapo titre" data-ou="1.2.1 Pas toujours besoin d'un modèle de langue" data-ancre="introduction-niveaux"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class=""><b>1.1</b> Comprendre le modèle</span><span class="actif"><b>1.2</b> S'en servir</span><span class=""><b>1.3</b> Atelier</span></div><h1><span class="n">1.2.1</span> Pas toujours besoin d'un modèle de langue</h1><p>Une erreur fréquente, quand on commence, c'est de tout faire avec un chatbot. Ça marche pour une question ponctuelle, ça coince dès qu'il y a du code, ça devient absurde dès qu'il s'agit d'un traitement récurrent du cabinet. Avant de choisir l'outil, il faut savoir quel genre de problème on a devant soi, et si un modèle de langue y a sa place.</p><ul class="plan-chap puces"><li>Avant le modèle de langue, l'escalier</li><li>Les trois niveaux d'usage</li><li>Créer l'outil, puis s'en servir</li><li>Le machine learning classique, la discipline voisine</li><li>Choisir, en trois questions</li><li>Ce qu'il faut garder</li></ul></div></div></section>
+<section class="diapo" data-ou="Avant le modèle de langue, l'escalier" data-ancre="escaliers"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Avant le modèle de langue, l'escalier</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Avant le modèle de langue, l'escalier</h2>
+<p>Une tâche se traite au niveau le plus bas qui marche. Le niveau le plus bas est plus rapide, moins cher, reproductible, et il s'explique à un contrôleur. On ne monte d'un cran que lorsque le cran précédent échoue sur des cas réels, pas sur une impression.</p>
+<p>Sur des <strong>données chiffrées</strong>, l'escalier est celui que vous connaissez déjà.</p>
+<ol class="steps">
+  <li><strong>Une règle écrite à la main</strong><p>Un seuil, un barème, une table. Si la règle tient en dix lignes et qu'elle est juste, elle gagne toujours.</p></li>
+  <li><strong>Un modèle statistique</strong><p>GLM, GAM, modèle de survie. Interprétable, défendable devant l'ACPR, c'est le cœur du métier.</p></li>
+  <li><strong>Un modèle d'apprentissage</strong><p>Gradient boosting, forêt aléatoire. On y va quand le gain de performance paie le coût d'explication.</p></li>
+</ol>
+<p>Sur du <strong>texte</strong>, comptes rendus d'expertise, courriers, circulaires, l'escalier est différent.</p></div></div></section>
+<section class="diapo" data-ou="Avant le modèle de langue, l'escalier" data-ancre="escaliers"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Avant le modèle de langue, l'escalier</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Avant le modèle de langue, l'escalier <span class="suite">suite</span></h2>
+<ol class="steps crimson">
+  <li><strong>Le motif exact</strong><p>Une expression régulière, un dictionnaire métier. Un numéro de contrat, un code postal, une liste de garanties se repèrent comme ça, sans erreur.</p></li>
+  <li><strong>Le motif approché</strong><p>Les fautes de frappe et les variantes de nom, par distance entre chaînes. Ça rattrape « Gros Malhon » quand on cherche « Grosmalon ».</p></li>
+  <li><strong>Le classifieur appris</strong><p>On cesse d'écrire les règles, la machine les apprend sur des exemples étiquetés. C'est le passage obligé quand les cas se comptent par centaines.</p></li>
+  <li><strong>Les vecteurs de sens</strong><p>Chaque mot, chaque phrase reçoit des nombres, et deux formulations différentes se retrouvent proches. On cherche alors sans partager un seul mot commun.</p></li>
+  <li><strong>Le modèle de langue</strong><p>Pour ce qui demande de rédiger, de résumer, de reformuler, de relier des morceaux épars. C'est le dernier cran, pas le premier.</p></li>
+</ol></div></div></section>
+<section class="diapo" data-ou="Avant le modèle de langue, l'escalier" data-ancre="escaliers"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Avant le modèle de langue, l'escalier</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Avant le modèle de langue, l'escalier <span class="suite">suite</span></h2>
+<div class="callout">
+  <span class="label">La phrase à garder</span>
+  <p>Ce qui rend le plus de service, dans un cabinet, n'est pas génératif. Un GLM bien posé, une table de mortalité à jour, un contrôle de cohérence automatique rendent plus de service qu'un assistant bavard. Le modèle de langue n'est pas le modèle : il aide à construire le modèle.</p>
+</div></div></div></section>
+<section class="diapo" data-ou="Les trois niveaux d'usage" data-ancre="niveaux"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Les trois niveaux d'usage</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Les trois niveaux d'usage</h2>
+<p>Une fois établi que l'IA générative a sa place, reste à savoir sous quelle forme. Trois niveaux, du plus simple au plus engageant. Ils cohabitent : on reste au niveau 1 pour une note, on passe au niveau 2 pour un calcul de provisions, on confie au niveau 3 un traitement nocturne.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Niveau</th><th>Ce que c'est</th><th>Quand c'est le bon choix</th><th>Ce que ça coûte</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="rowhead">1 · Assistant</td>
+      <td>Un chatbot dans un navigateur. Vous demandez, il répond, vous copiez.</td>
+      <td>Question conceptuelle, relecture d'une prose, bout de code court et isolé.</td>
+      <td>Rien à installer. Vous êtes le messager entre le chat et votre poste.</td>
+    </tr>
+    <tr>
+      <td class="rowhead">2 · Agent</td>
+      <td>L'IA accède à vos fichiers avec votre permission, exécute, lit l'erreur, corrige.</td>
+      <td>Dès qu'il y a une boucle écrire, exécuter, corriger : calculs, notebooks, dashboards.</td>
+      <td>Des permissions à cadrer, une mémoire projet à écrire, des commits fréquents.</td>
+    </tr>
+    <tr>
+      <td class="rowhead">3 · Outil métier</td>
+      <td>L'IA devient un composant invisible dans un outil que vous construisez.</td>
+      <td>Besoin récurrent, qui doit tourner sans personne devant, et qui sert plusieurs collègues.</td>
+      <td>De l'ingénierie, de la gouvernance, un suivi des coûts. On ne s'y lance pas seul.</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div></section>
+<section class="diapo" data-ou="Les trois niveaux d'usage" data-ancre="niveaux"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Les trois niveaux d'usage</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Les trois niveaux d'usage <span class="suite">suite</span></h2>
+<h3>Le niveau 1 et ses frictions</h3>
+<p>Elles sont structurelles, et elles expliquent le passage au niveau 2. L'IA ne voit pas votre projet : à chaque conversation, vous redonnez le contexte. Elle ne sait pas si son code marche tant que vous ne le lui dites pas : elle propose, vous testez, vous remontez l'erreur. Et sur une longue session, le début de la conversation sort de sa mémoire, vos premières décisions avec.</p></div></div></section>
+<section class="diapo" data-ou="Les trois niveaux d'usage" data-ancre="niveaux"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Les trois niveaux d'usage</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Les trois niveaux d'usage <span class="suite">suite</span></h2>
+<h3>Le niveau 2 et son saut</h3>
+<p>Sur une session de travail, un agent boucle des dizaines de fois sur des corrections. Au niveau 1, ce serait insupportable ; au niveau 2, c'est invisible. Vous gardez la main par les permissions, qui disent ce qui passe sans demander et ce qui est refusé, et en relisant ce qui a changé.</p></div></div></section>
+<section class="diapo" data-ou="Les trois niveaux d'usage" data-ancre="niveaux"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Les trois niveaux d'usage</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Les trois niveaux d'usage <span class="suite">suite</span></h2>
+<h3>Le niveau 3, à quoi ça ressemble</h3>
+<p>Des exemples d'usages de niveau 3 : un traitement nocturne qui relit les sinistres clos de la journée et remonte les anomalies à valider le lendemain ; la génération en lot de notices personnalisées, relues par lot ; la synthèse en trois paragraphes d'un dossier de risque industriel de deux cents pages, le souscripteur gardant la décision ; la fiche d'impact d'une circulaire fraîchement publiée, relue par l'actuaire avant diffusion.</p></div></div></section>
+<section class="diapo" data-ou="Créer l'outil, puis s'en servir" data-ancre="creer-l-outil"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Créer l'outil, puis s'en servir</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Créer l'outil, puis s'en servir</h2>
+<p>Il n'y a pas beaucoup de façons de travailler avec l'IA. Il y en a deux.</p>
+<div class="grid grid-2">
+  <div class="card">
+    <h4>Lui faire créer l'outil</h4>
+    <p>Réfléchir avec elle d'abord, puis lui faire écrire le calcul, l'écran, le contrôle. L'outil reste : on le relance, on y branche les données suivantes, et l'on ne rappelle l'IA que pour le faire évoluer.</p>
+  </div>
+  <div class="card accent">
+    <h4>Mettre l'IA dans l'outil</h4>
+    <p>Quand l'outil a besoin d'elle au quotidien : une aide pour rédiger, un assistant qui retrouve une information et l'explique. Le squelette de l'outil ne change pas. C'est le chapitre <a href="../industrialisation/ia-dans-l-outil/index.html">L'IA dans l'outil</a>.</p>
+  </div>
+</div>
+<p>Refaire avec l'IA, à chaque fois, ce qui est déjà fait n'a pas de sens. C'est moins stable, la réponse change d'une fois sur l'autre ; ça coûte à chaque appel ; et vous ne maîtrisez plus rien. Si l'IA fait tout, vous ne faites plus rien. Si elle vous aide à créer l'outil, vous le connaissez, et c'est lui qui traite le quotidien. Vision, l'outil des démonstrations, est fait ainsi : une fois l'écran créé, on branche les données, et personne ne redemande à l'IA de le refaire.</p>
+<p>L'exemple qui parle le plus est une colonne d'adresses à nettoyer, au chapitre <a href="../exploration/donnees/index.html#colonne-texte">Structurer les données</a> : ligne à ligne, l'IA s'épuise ; sur la colonne entière, elle propose une méthode, et ne raisonne que sur les cas difficiles.</p></div></div></section>
+<section class="diapo" data-ou="Le machine learning classique, la discipline voisine" data-ancre="ml-classique"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Le machine learning classique, la discipline voisine</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Le machine learning classique, la discipline voisine</h2>
+<p>Ce n'est pas un niveau d'usage de l'IA générative, c'est le métier que vous faites déjà : GLM, GAM, forêts, gradient boosting, modèles de survie. Deux raisons de le garder dans le cadre.</p>
+<div class="grid grid-2">
+  <div class="card">
+    <h4>Pour comprendre ce qu'il y a sous le capot</h4>
+    <p>Un modèle de langue est ajusté par descente de gradient sur une fonction de perte, comme un GLM par maximum de vraisemblance. Qui a fait du GLM a la base mathématique pour comprendre le mécanisme, sans entrer dans les transformers. L'IA générative cesse d'être une boîte noire magique.</p>
+  </div>
+  <div class="card">
+    <h4>Pour comparer sur un cas réel</h4>
+    <p>Le cas P5 de la bibliothèque met un GLM et un gradient boosting côte à côte sur la fréquence auto. Sur ce portefeuille, le boosting ne bat pas le GLM, mais il fait voir une interaction (jeunes conducteurs, véhicules puissants) qui, ajoutée au GLM, donne le meilleur des modèles essayés.</p>
+  </div>
+</div></div></div></section>
+<section class="diapo" data-ou="Choisir, en trois questions" data-ancre="choisir"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Choisir, en trois questions</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Choisir, en trois questions</h2>
+<ol class="steps">
+  <li><strong>Le cran du dessous suffirait-il ?</strong><p>Une règle, une jointure, un GLM. Si oui, c'est la bonne réponse, et elle s'explique.</p></li>
+  <li><strong>Y a-t-il une boucle écrire, exécuter, corriger ?</strong><p>Si oui, le niveau 2. Si c'est une question sans code, le niveau 1 suffit.</p></li>
+  <li><strong>Est-ce que ça doit tourner sans personne devant, pour plusieurs personnes ?</strong><p>Si oui, c'est le niveau 3, et ce n'est plus un sujet d'outil mais de projet.</p></li>
+</ol>
+<div class="try">
+  <span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> À faire ce soir</span>
+  <p>Listez cinq tâches récurrentes de votre quotidien et notez en face de chacune le niveau visé.</p>
+  <details class="answer"><summary>Une réponse type</summary>
+    <p>Trois ou quatre tâches de niveau 2 qu'on peut démarrer dès lundi, et une de niveau 3 qui mérite une discussion avec la direction avant d'y toucher.</p>
+  </details>
+</div></div></div></section>
+<section class="diapo" data-ou="Ce qu'il faut garder" data-ancre="retenir"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.1 Pas toujours besoin d'un modèle de langue</span><span class="sep">›</span><span class="sous">Ce qu'il faut garder</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'il faut garder</h2>
+<ul class="clean">
+  <li>On traite une tâche au niveau le plus bas qui marche, et on monte d'un cran sur un échec constaté, pas sur une impression.</li>
+  <li>Le modèle de langue n'est pas le modèle actuariel : il aide à le construire, à l'expliquer, à le documenter.</li>
+  <li>Le niveau se choisit par la question « y a-t-il une boucle à fermer », et le niveau 3 est un projet, pas un outil.</li>
+</ul></div></div></section>
+<section class="diapo titre" data-ou="1.2.2 Le brancher sans lui ouvrir les données" data-ancre="introduction-brancher"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.2 Le brancher sans lui ouvrir les données</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class=""><b>1.1</b> Comprendre le modèle</span><span class="actif"><b>1.2</b> S'en servir</span><span class=""><b>1.3</b> Atelier</span></div><h1><span class="n">1.2.2</span> Le brancher sans lui ouvrir les données</h1><p>Brancher un modèle de langue dans un outil ne veut pas dire lui ouvrir la base, ni le laisser parler de tout. Ce qu'il voit et ce qu'il fait se décident par la façon de construire.</p><ul class="plan-chap puces"><li>La question en français, la requête en SQL : il ne voit pas les données</li><li>Un modèle capable, donc un modèle à restreindre</li><li>Ce qu'il faut garder</li></ul></div></div></section>
+<section class="diapo" data-ou="La question en français, la requête en SQL : il ne voit pas les données" data-ancre="sql-sans-donnees"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.2 Le brancher sans lui ouvrir les données</span><span class="sep">›</span><span class="sous">La question en français, la requête en SQL : il ne voit pas les données</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">La question en français, la requête en SQL : il ne voit pas les données</h2>
+<p>Prenez la question : « le montant de sinistres par année des trois notaires les plus sinistrés sur les dix dernières années ». Sans IA, il faut savoir écrire la requête. Avec, le modèle reçoit la question et la documentation de la base, avec le dictionnaire des variables (sans le nom des colonnes, il ne peut rien faire), et il écrit la requête SQL. C'est tout.</p>
+<ol class="steps">
+  <li><strong>La question et le dictionnaire</strong><p>Ce que le modèle reçoit : une phrase et la description des tables. Pas une ligne de données.</p></li>
+  <li><strong>La requête</strong><p>Ce qu'il rend : du texte, une requête, qu'on récupère.</p></li>
+  <li><strong>L'exécution</strong><p>L'outil lance la requête sur la base, avec un compte en lecture seule, et affiche le résultat.</p></li>
+  <li><strong>Le résultat, au modèle ou pas</strong><p>Pour un résumé ou une analyse, on peut lui redonner quelques lignes de résultat. C'est une décision, la vôtre, pas un passage obligé.</p></li>
+</ol>
+<p>Dans ce circuit maîtrisé, le modèle n'a à aucun moment accès aux données de l'entreprise. La crainte d'une IA qui se promène dans la base et raconte tout à qui demande vient d'outils mal faits, pas du principe : comprendre comment le modèle fonctionne, c'est ce qui permet de le brancher sans ouvrir la base. Les garde-fous de l'agent SQL sont au chapitre <a href="../industrialisation/formes-appel/index.html#sql">Les formes d'appel</a>, et la définition qui ne se devine pas au chapitre <a href="../communication/ontologie/index.html#self-bi">Nommer les objets du métier</a>.</p></div></div></section>
+<section class="diapo" data-ou="Un modèle capable, donc un modèle à restreindre" data-ancre="restreindre"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.2 Le brancher sans lui ouvrir les données</span><span class="sep">›</span><span class="sous">Un modèle capable, donc un modèle à restreindre</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Un modèle capable, donc un modèle à restreindre</h2>
+<p>Pourquoi ne pas mettre un petit modèle dans un chatbot de commande ? Parce que comprendre une phrase de tous les jours demande de la capacité : « un menu, avec ça en plus, ça en moins, ah non, je change d'avis, et mon numéro c'est le 03, pardon, le 2 devient un 3 ». Un modèle assez capable pour suivre ça sait aussi écrire du code, raconter une recette, tenir une conversation sur n'importe quoi. C'est aux développeurs de restreindre ce qu'il fait, et la bonne façon n'est pas un refus sec.</p>
+<ol class="steps">
+  <li><strong>Les intentions, écrites une par une</strong><p>Ce pour quoi le chatbot apporte une vraie réponse : commander, modifier la commande, suivre une livraison. Chacune définie exactement, avec ce qu'il a le droit de faire.</p></li>
+  <li><strong>Tout le reste, du <em>small talk</em></strong><p>« Il fait beau aujourd'hui, comment tu vas ? » ne reçoit pas « je ne réponds pas », qui ressemble à une panne. Il reçoit une réponse aimable, qui montre que le chatbot a compris, puis il ramène à ce pour quoi il est là : « Oui, belle journée ! Je vais très bien, merci. On passe commande ? »</p></li>
+  <li><strong>Ni code, ni recette, ni conseil</strong><p>Une demande hors du cadre, écrire un programme, donner une recette, est déclinée avec la même amabilité, et ramenée au cadre.</p></li>
+</ol>
+<p>C'est <a href="../industrialisation/cadrer/index.html#harnais">le harnais</a> : ce que le chatbot peut faire est décidé par écrit, et il reste agréable en dehors.</p></div></div></section>
+<section class="diapo" data-ou="Ce qu'il faut garder" data-ancre="retenir"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.2 Le brancher sans lui ouvrir les données</span><span class="sep">›</span><span class="sous">Ce qu'il faut garder</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'il faut garder</h2>
+<ul class="clean">
+  <li>Le modèle écrit la requête ; l'outil l'exécute ; le résultat ne lui revient que si vous le décidez.</li>
+  <li>Un modèle assez capable pour comprendre une phrase de tous les jours sait aussi tout le reste : ses intentions s'écrivent, le reste reçoit un « small talk » aimable ramené au cadre.</li>
+</ul></div></div></section>
+<section class="diapo titre" data-ou="1.2.3 Piloter l'IA" data-ancre="introduction-piloter"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class=""><b>1.1</b> Comprendre le modèle</span><span class="actif"><b>1.2</b> S'en servir</span><span class=""><b>1.3</b> Atelier</span></div><h1><span class="n">1.2.3</span> Piloter l'IA</h1><p>Avec un assistant rapide, la tentation est de tout déléguer et de tout accepter. C'est le plus sûr moyen de produire un résultat que personne ne pourra défendre. Ce chapitre pose les gestes qui gardent l'actuaire aux commandes : dire l'intention plutôt que le code, avancer par petits pas, écrire une fois pour toutes ce que l'IA doit savoir du cabinet.</p><ul class="plan-chap puces"><li>Dire le quoi, pas le comment</li><li>Avancer par petits pas</li><li>La posture : diriger, pas se faire aider</li><li>La mémoire projet</li><li>Quand une mémoire ne suffit plus</li><li>Demander la critique, à chaque décision qui compte</li><li>Ce qu'il faut garder</li></ul></div></div></section>
+<section class="diapo" data-ou="Dire le quoi, pas le comment" data-ancre="intention"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">Dire le quoi, pas le comment</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Dire le quoi, pas le comment</h2>
+<p>L'erreur de départ est de prescrire l'implémentation. L'assistant exécute fidèlement la prescription, et vous obtenez exactement le code que vous avez demandé, c'est-à-dire moins bon que celui qu'il aurait écrit seul.</p>
+<div class="ba">
+  <div class="before">
+    <div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> On prescrit le comment</div>
+    <div class="ba-body">
+      <p class="prompt">Écris une boucle qui parcourt le tableau des polices et calcule la moyenne pondérée par l'exposition.</p>
+      <p>Vous récupérez une boucle là où une opération vectorielle suffisait, sans contrôle, sans ventilation, et sans la question qui aurait été utile.</p>
+    </div>
+  </div>
+  <div class="after">
+    <div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg> On décrit le quoi</div>
+    <div class="ba-body">
+      <p class="prompt">Pour ce portefeuille, je veux la prime moyenne pondérée par l'exposition, ventilée par segment de risque.</p>
+      <p>Il reconnaît une moyenne pondérée, l'écrit vectorisée, ajoute la ventilation, vérifie que les poids ne sont pas nuls dans un segment, et demande si vous voulez aussi la dispersion.</p>
+    </div>
+  </div>
+</div>
+<p>L'intention métier mène à l'implémentation idiomatique. Le comment prescrit mène à un code fidèle à votre prescription, et c'est bien le problème.</p></div></div></section>
+<section class="diapo" data-ou="Avancer par petits pas" data-ancre="pas-a-pas"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">Avancer par petits pas</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Avancer par petits pas</h2>
+<p>Le deuxième piège est le prompt qui demande tout d'un coup : prépare les données, sélectionne les variables, ajuste, valide, et sors le rapport. Vous recevez quatre cents lignes, vous ne les lisez pas toutes, et personne ne pourra défendre le détail.</p>
+<p>La façon qui tient, c'est une demande par étape, validée avant la suivante, et enregistrée quand elle marche.</p></div></div></section>
+<section class="diapo" data-ou="Avancer par petits pas" data-ancre="pas-a-pas"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">Avancer par petits pas</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Avancer par petits pas <span class="suite">suite</span></h2>
+<ol class="steps">
+  <li><strong>Lis le jeu de données, décris les colonnes, identifie la cible</strong><p>Vous validez la description. C'est là que se repèrent les malentendus de grain et d'unité.</p></li>
+  <li><strong>Sors l'analyse univariée des variables candidates</strong><p>Vous validez les distributions, et vous voyez les valeurs aberrantes avant qu'elles entrent dans le modèle.</p></li>
+  <li><strong>Découpe l'ancienneté du véhicule en bandes défendables</strong><p>Vous validez le découpage. C'est une décision d'actuaire, elle ne se délègue pas.</p></li>
+  <li><strong>Ajuste un GLM Poisson avec l'exposition en décalage, teste la surdispersion</strong><p>Vous validez le modèle, et le test dit s'il faut passer à autre chose.</p></li>
+  <li><strong>Sors les diagnostics</strong><p>Vous validez la qualité : résidus, déviance, courbe de lift.</p></li>
+</ol>
+<p>Chaque étape coûte peu côté machine et un temps de relecture côté actuaire. Le total dépasse celui du prompt unique, et c'est le prix d'un résultat défendable ligne à ligne. Si l'étape quatre part de travers, on revient à la trois sans rien perdre.</p></div></div></section>
+<section class="diapo" data-ou="Avancer par petits pas" data-ancre="pas-a-pas"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">Avancer par petits pas</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Avancer par petits pas <span class="suite">suite</span></h2>
+<figure class="figure-frame">
+<svg viewBox="0 0 880 210" role="img" aria-label="Quatre phases enchaînées : explorer, proposer un plan, coder, enregistrer, avec une boucle de retour en arrière.">
+  <defs>
+    <marker id="pf" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"/></marker>
+    <marker id="pr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#BA1C3A"/></marker>
+  </defs>
+  <g font-family="Manrope, Segoe UI, sans-serif" text-anchor="middle">
+    <g>
+      <rect x="35" y="26" width="180" height="86" rx="14" fill="#fdf3e2" stroke="#f0dfbe"/>
+      <rect x="245" y="26" width="180" height="86" rx="14" fill="#eef2f7" stroke="#dbe3ed"/>
+      <rect x="455" y="26" width="180" height="86" rx="14" fill="#13264A"/>
+      <rect x="665" y="26" width="180" height="86" rx="14" fill="#e8f3f2" stroke="#cfe6e4"/>
+    </g>
+    <g font-size="16" font-weight="800">
+      <text x="125" y="58" fill="#9A6B1E">Il explore</text>
+      <text x="335" y="58" fill="#3B547D">Il propose</text>
+      <text x="545" y="58" fill="#ffffff">Il écrit</text>
+      <text x="755" y="58" fill="#1F6F6B">On enregistre</text>
+    </g>
+    <g font-size="12.5" fill="#4a5567">
+      <text x="125" y="80">il lit le code, les données,</text><text x="125" y="97">les références, sans toucher</text>
+      <text x="335" y="80">un plan, et il attend</text><text x="335" y="97">que vous le validiez</text>
+      <text x="545" y="80" fill="#c6d1e2">il modifie, exécute,</text><text x="545" y="97" fill="#c6d1e2">montre ce qui change</text>
+      <text x="755" y="80">l'étape validée est figée,</text><text x="755" y="97">avec son intention</text>
+    </g>
+  </g>
+  <g stroke="#7D92AC" stroke-width="2" fill="none" marker-end="url(#pf)">
+    <path d="M215 69 H237"/><path d="M425 69 H447"/><path d="M635 69 H657"/>
+  </g>
+  <path d="M755 112 V 150 H 125 V 122" stroke="#BA1C3A" stroke-width="2" fill="none" stroke-dasharray="6 5" marker-end="url(#pr)"/>
+  <text x="440" y="172" text-anchor="middle" font-family="Manrope, Segoe UI, sans-serif" font-size="12" font-weight="800" fill="#BA1C3A" letter-spacing="0.5">ON REVIENT EN ARRIÈRE, ET CE N'EST PAS UNE EXCEPTION</text>
+</svg>
+<figcaption>Quatre phases, et la règle qui va avec : à chaque étape validée, on enregistre tout de suite. Ce qui n'est pas enregistré reste sur le disque, mais sans point de retour.</figcaption>
+</figure></div></div></section>
+<section class="diapo" data-ou="La posture : diriger, pas se faire aider" data-ancre="posture"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">La posture : diriger, pas se faire aider</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">La posture : diriger, pas se faire aider</h2>
+<p>Quatre gestes structurent le rôle, et ils ne sont pas interchangeables.</p>
+<div class="feat">
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18"/></svg></div><div><strong>Briefer</strong><p>Dire l'intention, le contexte métier, le livrable attendu. Un brief court épargne de longues boucles.</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div><strong>Valider</strong><p>Pas lire : vérifier. Recalculer un chiffre, ouvrir le fichier produit, lancer un test indépendant.</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0 5 5l-9 9-2-2 9-9a4 4 0 0 0-3-3z"/><path d="M3 21l6-6"/></svg></div><div><strong>Corriger</strong><p>Pas « corrige », il ne sait pas quoi. « L'échelle est linéaire alors que la mortalité se lit en logarithme, et les valeurs extrêmes masquent la zone utile. »</p></div></div>
+  <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><div><strong>Archiver</strong><p>Enregistrer souvent, tenir la mémoire projet à jour, écrire les choix faits. C'est ce qui permet la reprise dans six mois.</p></div></div>
+</div></div></div></section>
+<section class="diapo" data-ou="La posture : diriger, pas se faire aider" data-ancre="posture"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">La posture : diriger, pas se faire aider</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">La posture : diriger, pas se faire aider <span class="suite">suite</span></h2>
+<div class="grid grid-2">
+  <div class="card">
+    <h4>Ce qui se délègue</h4>
+    <ul class="clean">
+      <li>La syntaxe exacte, en Python comme en R</li>
+      <li>Le code de plomberie : imports, gestion d'erreurs, mise en forme</li>
+      <li>Les tests unitaires</li>
+      <li>L'exploration rapide d'un jeu de données</li>
+      <li>La documentation, et la traduction d'un code R en Python</li>
+    </ul>
+  </div>
+  <div class="card accent">
+    <h4>Ce qui ne se délègue pas</h4>
+    <ul class="clean">
+      <li>Le jugement professionnel</li>
+      <li>La validation d'une formule</li>
+      <li>Le choix de la méthode, Chain-Ladder contre Bornhuetter-Ferguson, et l'incertitude par Mack ou par bootstrap</li>
+      <li>La responsabilité réglementaire</li>
+      <li>La signature</li>
+    </ul>
+  </div>
+</div></div></div></section>
+<section class="diapo" data-ou="La mémoire projet" data-ancre="memoire"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">La mémoire projet</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">La mémoire projet</h2>
+<p>Sans fichier de projet, l'assistant ne sait de votre projet que ce qu'il a noté lui-même, et vous ne savez pas ce qu'il a noté. Il redécouvre le reste à chaque démarrage : conventions de nommage, structure des dossiers, vocabulaire du cabinet. Vous redites tout, à chaque fois.</p>
+<p>Un fichier à la racine du projet règle cela : il est lu automatiquement au démarrage, et il porte ce que l'IA doit savoir une fois pour toutes.</p>
+<ul class="clean">
+  <li>Les commandes qui lancent les calculs du projet.</li>
+  <li>Les conventions de données, et c'est ici que le dictionnaire et l'ontologie entrent : les expositions sont en années, jamais en mois.</li>
+  <li>Les formules à respecter pour ne pas les voir réinventées.</li>
+  <li>Les fichiers de référence à consulter avant de coder, une spécification réglementaire par exemple.</li>
+  <li>Les interdits : ne jamais modifier la donnée brute, ne jamais envoyer sur le serveur partagé sans demander. Les données nominatives, elles, ne sont pas dans le dossier de travail : un interdit écrit ne les protège pas.</li>
+</ul>
+<p>Le fichier reste court : la documentation de l'assistant de l'annexe Installation vise moins de 200 lignes par fichier. Au delà, le fichier devient trop long pour rester utile, et ce qui dépasse se range ailleurs, dans des mémoires attachées à un dossier ou dans des compétences chargées à la demande.</p>
+<div class="callout assurance">
+  <span class="label">Partagé ou personnel</span>
+  <p>Ce qui est une règle du cabinet vit dans le projet et se partage avec l'équipe : les conventions, le vocabulaire, les formules. Ce qui est une préférence vit sur votre machine, dans un fichier qui ne se partage pas : la langue dans laquelle vous travaillez, la forme sous laquelle vous aimez voir les résultats. Mélanger les deux pollue le dépôt et agace vos collègues.</p>
+</div></div></div></section>
+<section class="diapo" data-ou="Quand une mémoire ne suffit plus" data-ancre="personnalisation"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">Quand une mémoire ne suffit plus</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Quand une mémoire ne suffit plus</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Mécanisme</th><th>Quand</th><th>Ce que ça coûte</th><th>Exemple actuariel</th></tr></thead>
+  <tbody>
+    <tr><td class="rowhead">La mémoire projet</td><td>Toujours chargée, pour les règles permanentes</td><td>De la place dans chaque session, d'où la limite de longueur</td><td>Conventions de nommage, formules clés</td></tr>
+    <tr><td class="rowhead">Une compétence</td><td>Appelée par son nom, ou chargée seule quand le sujet apparaît</td><td>De la place, mais seulement quand elle sert</td><td>Ouvrir une section précise d'une spécification ; un assistant IFRS 17 avec ses formules et ses contrôles</td></tr>
+    <tr><td class="rowhead">Un sous-agent</td><td>Pour déléguer dans un contexte à part</td><td>Peu, le contexte est séparé</td><td>Un spécialiste Solvabilité II qui charge la spécification</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Pour démarrer, la mémoire projet seule. Les autres mécanismes se découvrent le jour où le besoin se précise, pas avant.</p></div></div></section>
+<section class="diapo" data-ou="Demander la critique, à chaque décision qui compte" data-ancre="critique"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">Demander la critique, à chaque décision qui compte</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Demander la critique, à chaque décision qui compte</h2>
+<p>Le chapitre sur le moteur l'a posé : il ne contredit pas spontanément. Le pilotage rigoureux ajoute donc une étape, explicite, après chaque décision structurante.</p>
+<div class="try">
+  <span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt de revue</span>
+  <p>« Avant que je valide cette analyse, joue le rôle d'un actuaire senior en revue. Cherche les hypothèses implicites qui ne sont pas vérifiées. Liste les cas où mon approche tombe en défaut. Sois sévère. »</p>
+  <p>Il en sort des points à examiner un par un. Vous corrigez, ou vous justifiez de garder : c'est votre choix professionnel, et il est maintenant éclairé.</p>
+</div>
+<p>Pour une décision lourde, la variante qui marche bien : ouvrir une deuxième session, lui soumettre la solution de la première sans dire d'où elle vient, et demander la critique. Les contradictions qui sortent sont souvent les bonnes questions. La synthèse, elle, reste votre travail.</p></div></div></section>
+<section class="diapo" data-ou="Ce qu'il faut garder" data-ancre="retenir"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.2.3 Piloter l'IA</span><span class="sep">›</span><span class="sous">Ce qu'il faut garder</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Ce qu'il faut garder</h2>
+<ul class="clean">
+  <li>On décrit l'intention métier ; prescrire l'implémentation donne un code fidèle et médiocre.</li>
+  <li>Une demande par étape, validée avant la suivante, enregistrée quand elle marche.</li>
+  <li>Valider veut dire vérifier, pas lire.</li>
+  <li>Ce que l'IA doit savoir du cabinet s'écrit une fois, dans la mémoire projet, et se partage.</li>
+  <li>La critique ne vient pas toute seule : elle se demande, à chaque décision qui compte.</li>
+</ul></div></div></section>
+<section class="diapo titre" data-ou="1.3 Atelier : un premier échange cadré" data-ancre="introduction-atelier_premier_echange"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.3 Atelier</span></div><div class="diapo-cadre"><div class="diapo-corps"><div class="fil-demi"><span class=""><b>1.1</b> Comprendre le modèle</span><span class=""><b>1.2</b> S'en servir</span><span class="actif"><b>1.3</b> Atelier</span></div><h1><span class="n">1.3</span> Atelier : un premier échange cadré</h1><p>Premier passage au clavier, chacun sur son ordinateur portable. On ouvre un carnet, on installe l'assistant, on lui dit qui on est et comment on travaille, puis on lui fait produire un premier tableau sur une vraie donnée de portefeuille. Le but n'est pas le tableau : c'est d'attraper, dès la première heure, le réflexe qui sert tout le reste de la formation, vérifier un chiffre avant de le croire.</p><ul class="plan-chap puces"><li>Installer et poser le contexte</li><li>Le défi : le même tableau, à la main et avec l'assistant</li><li>Évaluation des acquis</li></ul></div></div></section>
+<section class="diapo" data-ou="Installer et poser le contexte" data-ancre="installer"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.3 Atelier</span><span class="sep">›</span><span class="sous">Installer et poser le contexte</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Installer et poser le contexte</h2>
+<ol class="steps">
+  <li><strong>Ouvrir un carnet</strong><p>Jupyter sur le poste, ou Google Colab pour qui ne peut rien installer. Colab a son propre assistant intégré et suffit pour suivre les ateliers sur la donnée publique ; il n'a ni mémoire projet ni permissions, et son code tourne sur les serveurs de Google. En Python ou en R, au choix : la démarche est la même, seul le prompt dit le langage.</p></li>
+  <li><strong>Installer l'assistant</strong><p>La marche à suivre est dans l'annexe <a href="../annexes/installation/index.html">Installation et premier pas</a>. Ceux dont l'organisme n'autorise qu'un assistant de bureautique font la même chose avec lui, sur la même donnée publique.</p></li>
+  <li><strong>Écrire la mémoire projet</strong><p>Le fichier lu à chaque session, vu au chapitre <a href="../introduction/piloter/index.html#memoire">Piloter l'IA</a> : qui vous êtes, la donnée, les conventions (montants en euros, exposition en années), et la règle « aucun chiffre sans le code qui le produit ».</p></li>
+  <li><strong>Donner le schéma, pas le fichier</strong><p>Les colonnes, leur type, leur unité, trois lignes d'exemple. Le schéma suffit pour écrire le code. Tout ce que l'assistant lit ou affiche part chez le fournisseur : un aperçu de table, un message d'erreur qui cite une valeur. Ici la donnée est publique ; sur la donnée du cabinet, les données nominatives restent hors du dossier de travail, et on travaille en synthétique ou pseudonymisé.</p></li>
+</ol></div></div></section>
+<section class="diapo" data-ou="Le défi : le même tableau, à la main et avec l'assistant" data-ancre="defi"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.3 Atelier</span><span class="sep">›</span><span class="sous">Le défi : le même tableau, à la main et avec l'assistant</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Le défi : le même tableau, à la main et avec l'assistant</h2>
+<p>La salle se partage. Une moitié écrit à la main le tableau de la fréquence observée par tranche de bonus-malus. L'autre moitié le fait écrire par l'assistant, en décrivant l'intention. On compare au bout d'un quart d'heure : le temps passé, et surtout le chiffre obtenu.</p>
+<div class="try">
+  <span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt d'intention</span>
+  <p class="prompt">Sur freMTPL2freq, je veux la fréquence de sinistres observée par tranche de bonus-malus, avec l'exposition de chaque tranche. Écris le code, ne donne aucun chiffre que le code n'a pas calculé.</p>
+</div>
+<p>Le piège classique, d'un côté comme de l'autre : la moyenne, ligne à ligne, du rapport sinistres sur exposition, au lieu du rapport des sommes. Un contrat présent quinze jours avec un sinistre pèse alors autant qu'un contrat présent un an. Le bon calcul est <code>somme(ClaimNb) / somme(Exposure)</code>, par tranche.</p></div></div></section>
+<section class="diapo" data-ou="Évaluation des acquis" data-ancre="verifier"><div class="diapo-tete"><span class="mod">1 · Introduction aux LLM</span><span class="sep">›</span><span class="sec">1.3 Atelier</span><span class="sep">›</span><span class="sous">Évaluation des acquis</span></div><div class="diapo-cadre"><div class="diapo-corps"><h2 class="diapo-sec">Évaluation des acquis</h2>
+<p>Les questions se posent à la salle avant d'ouvrir la réponse. Elles servent d'évaluation des acquis, celle que le programme annonce.</p>
+<ol class="steps">
+  <li><strong>L'assistant annonce « la fréquence moyenne du portefeuille est d'environ 10 % », sans code. Que faites-vous du chiffre ?</strong>
+    <details class="answer"><summary>Voir la réponse</summary>
+      <p>Rien. Il est peut-être juste, mais il ne vaut rien tant que le code qui le produit n'a pas tourné sur votre donnée. On redemande le calcul, on le lance, on lit le résultat. Ici, le code donne 10,07 % : 36 102 sinistres pour 358 499 années d'exposition, sur 678 013 contrats.</p>
+    </details>
+  </li>
+  <li><strong>Pourquoi la moyenne des rapports <code>ClaimNb / Exposure</code> surestime-t-elle la fréquence ?</strong>
+    <details class="answer"><summary>Voir la réponse</summary>
+      <p>Les deux chiffres d'abord : le rapport des sommes donne 10,07 %, la moyenne des rapports 26,4 %. Les expositions courtes donnent des rapports énormes dès qu'un sinistre tombe, et la moyenne simple leur donne le même poids qu'un contrat d'un an. Cela rend l'estimateur instable, pas biaisé : si chaque contrat suivait le même Poisson, chaque rapport aurait pour espérance la vraie fréquence.</p>
+      <p>Il surestime ici parce que, sur freMTPL2freq, les contrats courts ont plus de sinistres par année d'exposition :</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Exposition</th><th>Fréquence observée</th></tr></thead>
+        <tbody>
+          <tr><td>jusqu'à 0,12 an</td><td>42,5 %</td></tr>
+          <tr><td>de 0,12 à 0,36 an</td><td>17,4 %</td></tr>
+          <tr><td>de 0,36 à 0,66 an</td><td>11,1 %</td></tr>
+          <tr><td>de 0,66 à 1 an</td><td>7,6 %</td></tr>
+          <tr><td>au-delà d'un an</td><td>4,0 %</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>La moyenne simple donne le même poids à ces contrats courts, plus sinistrés, qu'aux contrats d'un an. Pourquoi sont-ils plus sinistrés ? Des résiliations après sinistre, des contrats souscrits en cours d'année : c'est une piste à vérifier, pas un fait établi. Le rapport des sommes pondère chaque contrat par son exposition, c'est la fréquence au sens actuariel.</p>
+    </details>
+  </li>
+  <li><strong>Un collègue colle les cent premières lignes du fichier dans la conversation « pour aller plus vite ». Qu'est-ce qui ne va pas ?</strong>
+    <details class="answer"><summary>Voir la réponse</summary>
+      <p>Sur une donnée publique, rien de grave. Sur la donnée du cabinet, des informations de contrat sortent vers un service tiers. Le réflexe se prend ici, sur une donnée sans risque : le schéma et des exemples fabriqués suffisent pour que l'assistant écrive le code.</p>
+    </details>
+  </li>
+</ol></div></div></section>
+    </div>
+  </div>
+</div>
+<div class="pilote">
+  <button type="button" class="prec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg> Précédent</button>
+  <button type="button" class="suiv">Suivant <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  <span class="rang"></span>
+  <span class="ou"></span>
+  <div class="droite">
+    <span class="aide">flèches pour avancer · S pour le sommaire</span>
+    <button type="button" class="sommaire-btn">Sommaire</button>
+    <a class="vers-page" href="../introduction/index.html">Version détaillée</a>
+  </div>
+</div>
+<div class="sommaire"><button type="button" class="fermer">Fermer</button><h2>Sommaire</h2><div class="groupe"><b>Ouverture · Introduction aux LLM</b><ol><li><button type="button" data-n="0"><b>1</b><span>Ouverture</span></button></li></ol></div><div class="groupe"><b>1.1 Comprendre le modèle</b><ol><li><button type="button" data-n="1"><b>2</b><span>Ouverture</span></button></li></ol></div><div class="groupe"><b>1.1.1 Un modèle qui écrit le mot suivant</b><ol><li><button type="button" data-n="2"><b>3</b><span>Ouverture</span></button></li><li><button type="button" data-n="3"><b>4</b><span>Le moteur : prédire le mot suivant</span></button></li><li><button type="button" data-n="4"><b>5</b><span>Concrètement : un fichier de poids</span></button></li><li><button type="button" data-n="5"><b>6</b><span>Ce qui entre, ce qui sort : du texte, et des images</span></button></li><li><button type="button" data-n="6"><b>7</b><span>Ce qu'on lui donne à chaque appel : le prompt système, la conversation, la mémoire</span></button></li><li><button type="button" data-n="8"><b>9</b><span>Ce qu'il faut garder</span></button></li></ol></div><div class="groupe"><b>1.1.2 Ce qu'il sait, ce qu'il invente</b><ol><li><button type="button" data-n="9"><b>10</b><span>Ouverture</span></button></li><li><button type="button" data-n="10"><b>11</b><span>Pourquoi il sait coder, et ce qu'il ne sait pas de vous</span></button></li><li><button type="button" data-n="11"><b>12</b><span>Ce qu'il ne sait pas encore : la date de coupure</span></button></li><li><button type="button" data-n="12"><b>13</b><span>Ce qu'il invente, et dans quels cas</span></button></li><li><button type="button" data-n="13"><b>14</b><span>Il ne calcule pas : la règle d'or</span></button></li><li><button type="button" data-n="14"><b>15</b><span>Il vous suit : le biais de confirmation</span></button></li><li><button type="button" data-n="15"><b>16</b><span>Cinq réponses piégées</span></button></li><li><button type="button" data-n="17"><b>18</b><span>Ce qu'il faut garder</span></button></li></ol></div><div class="groupe"><b>1.2 S'en servir</b><ol><li><button type="button" data-n="18"><b>19</b><span>Ouverture</span></button></li></ol></div><div class="groupe"><b>1.2.1 Pas toujours besoin d'un modèle de langue</b><ol><li><button type="button" data-n="19"><b>20</b><span>Ouverture</span></button></li><li><button type="button" data-n="20"><b>21</b><span>Avant le modèle de langue, l'escalier</span></button></li><li><button type="button" data-n="23"><b>24</b><span>Les trois niveaux d'usage</span></button></li><li><button type="button" data-n="27"><b>28</b><span>Créer l'outil, puis s'en servir</span></button></li><li><button type="button" data-n="28"><b>29</b><span>Le machine learning classique, la discipline voisine</span></button></li><li><button type="button" data-n="29"><b>30</b><span>Choisir, en trois questions</span></button></li><li><button type="button" data-n="30"><b>31</b><span>Ce qu'il faut garder</span></button></li></ol></div><div class="groupe"><b>1.2.2 Le brancher sans lui ouvrir les données</b><ol><li><button type="button" data-n="31"><b>32</b><span>Ouverture</span></button></li><li><button type="button" data-n="32"><b>33</b><span>La question en français, la requête en SQL : il ne voit pas les données</span></button></li><li><button type="button" data-n="33"><b>34</b><span>Un modèle capable, donc un modèle à restreindre</span></button></li><li><button type="button" data-n="34"><b>35</b><span>Ce qu'il faut garder</span></button></li></ol></div><div class="groupe"><b>1.2.3 Piloter l'IA</b><ol><li><button type="button" data-n="35"><b>36</b><span>Ouverture</span></button></li><li><button type="button" data-n="36"><b>37</b><span>Dire le quoi, pas le comment</span></button></li><li><button type="button" data-n="37"><b>38</b><span>Avancer par petits pas</span></button></li><li><button type="button" data-n="40"><b>41</b><span>La posture : diriger, pas se faire aider</span></button></li><li><button type="button" data-n="42"><b>43</b><span>La mémoire projet</span></button></li><li><button type="button" data-n="43"><b>44</b><span>Quand une mémoire ne suffit plus</span></button></li><li><button type="button" data-n="44"><b>45</b><span>Demander la critique, à chaque décision qui compte</span></button></li><li><button type="button" data-n="45"><b>46</b><span>Ce qu'il faut garder</span></button></li></ol></div><div class="groupe"><b>1.3 Atelier : un premier échange cadré</b><ol><li><button type="button" data-n="46"><b>47</b><span>Ouverture</span></button></li><li><button type="button" data-n="47"><b>48</b><span>Installer et poser le contexte</span></button></li><li><button type="button" data-n="48"><b>49</b><span>Le défi : le même tableau, à la main et avec l'assistant</span></button></li><li><button type="button" data-n="49"><b>50</b><span>Évaluation des acquis</span></button></li></ol></div></div>
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../assets/diapos.js"></script>
+</body>
+</html>

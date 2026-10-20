@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L'IA dans l'outil · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn active" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 4 · 4.2 Brancher l'IA et la cadrer</div>
+      <h1 style="max-width:28ch">L'IA dans l'outil</h1>
+      <p class="lede">Jusqu'ici l'IA était en face de vous. Dans ce dernier chapitre elle passe de l'autre côté : elle devient un composant de l'outil, que ses utilisateurs ne voient pas, et qui travaille pour eux. Deux usages très différents se cachent derrière cette idée, et il vaut mieux les distinguer tout de suite.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#deux-usages">Deux usages, deux risques</a><a href="#produire">L'IA qui produit : quand l'assistant n'est plus le bon outil</a><a href="#expliquer">L'IA qui explique : le chaînon qui manque</a><a href="#chatbot-outil">Le chatbot de l'outil ne modifie pas l'outil</a><a href="#besoin">Faut-il un assistant de création dans l'outil ?</a><a href="#construire">Ce que ça demande, concrètement</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Ajouts du segment du formateur du 20-10, ce que peut le chatbot d'un outil (_sources/transcriptions/2026-10-20_ce_que_peut_le_chatbot_d_un_outil.md). -->
+<!-- Chapitre « L'IA dans l'outil », partie 04, dernier du parcours.
+     Ticket 019, deuxième chapitre manquant. Kezhan, 11 octobre :
+     « incorporer l'IA dans les outils pour aider les user à comprendre la
+     modélisation et la documentation ». Reprend de 07_industrialisation.qmd
+     l'appel par API (§8) et ses trois cas, et le prolonge là où le support
+     s'arrêtait : l'IA au service de celui qui lit le résultat.
+     Couvre la ligne du programme officiel « Intégrer les LLM via API dans un
+     environnement de travail statistique et actuariel opérationnel ». -->
+
+<h2 id="deux-usages">Deux usages, deux risques</h2>
+<div class="grid grid-2">
+<div class="card accent">
+<h4>L'IA qui produit</h4>
+<p>Elle traite en lot, sans personne devant : elle relit des dossiers, classe du texte libre, rédige des courriers. Le risque est le volume : une erreur se répète mille fois avant qu'on la voie.</p>
+</div>
+<div class="card">
+<h4>L'IA qui explique</h4>
+<p>Elle répond à celui qui regarde un résultat : d'où vient ce chiffre, quelles hypothèses, où est la définition. Le risque est la confiance : une explication fluide et fausse se croit.</p>
+</div>
+</div>
+<h2 id="produire">L'IA qui produit : quand l'assistant n'est plus le bon outil</h2>
+<p>Des situations où personne n'est devant l'écran, et où il faut appeler le modèle depuis un programme plutôt que dialoguer avec lui.</p>
+<ol class="steps">
+<li><strong>Un traitement de nuit</strong><p>Relire les dossiers clos de la journée, repérer les incohérences, poser la liste sur le bureau d'un actuaire le lendemain matin.</p></li>
+<li><strong>Une étape dans une chaîne de données</strong><p>Classer la cause d'un sinistre à partir du texte libre, au milieu d'un flux, sans validation humaine à chaque ligne.</p></li>
+<li><strong>Un service appelé par une application</strong><p>Le modèle répond à une requête, l'utilisateur final ne sait pas qu'il est là.</p></li>
+</ol>
+<p>L'appel tient en quelques lignes : une clé, un modèle, un message, une longueur maximale de réponse, une réponse. Ce qui demande du soin vient après, et c'est là que se joue la différence entre une démonstration et un outil.</p>
+<div class="feat">
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16M15 4v16"/></svg></div><div><strong>Une sortie structurée</strong><p>On demande un objet aux champs fixés, pas une phrase. Un champ manquant est une erreur détectable ; une phrase mal tournée ne l'est pas.</p></div></div>
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div><strong>Un garde-fou par appel</strong><p>Ce qui sort est vérifié par du code : valeurs dans la liste attendue, montants dans des bornes, identifiant qui existe. Ce qui échoue part en revue humaine.</p></div></div>
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 7a7 7 0 1 0 0 10"/><path d="M4 10h10M4 14h10"/></svg></div><div><strong>Un compteur</strong><p>Appels, jetons, coût, dans le journal du traitement dès la première version, avec un plafond qui arrête et prévient.</p></div></div>
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div><strong>Un échantillon relu</strong><p>Sur un traitement en lot, une part des sorties est relue par un humain, chaque jour, et le taux d'erreur se suit comme un indicateur.</p></div></div>
+</div>
+<p>Des usages de ce type : la validation de dossiers clos avec remontée des anomalies, la génération en masse de courriers réglementaires relus par échantillon, la synthèse d'un dossier de risque industriel de quelques centaines de pages pour le souscripteur, qui garde la décision et peut toujours ouvrir le dossier source.</p>
+<h2 id="expliquer">L'IA qui explique : le chaînon qui manque</h2>
+<p>Celui qui ouvre le tableau de bord voit un nombre. Il ne sait pas de quelles données il vient, quelles hypothèses ont été prises, ni ce que signifie exactement la colonne qu'il regarde. Il n'ira pas lire le code, et il n'ira pas lire la documentation non plus. Alors il demande à l'actuaire, ou il ne demande pas et il conclut de travers.</p>
+<p>C'est là que tout ce qui précède paie. Le dictionnaire de données, l'ontologie, le registre des exécutions ne sont pas de la paperasse : ce sont les sources que l'outil peut citer.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Ce que l'utilisateur demande</th><th>Ce que l'outil répond, et avec quoi</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">« C'est quoi, la charge brute ? »</td><td>La définition du dictionnaire de données, mot pour mot, avec son unité et ce que vaut un vide.</td></tr>
+<tr><td class="rowhead">« Pourquoi l'auto 2015 et l'auto 2019 sont séparées ? »</td><td>La ligne d'ontologie du produit : les franchises ne sont pas exprimées pareil, les deux ne se somment pas sans retraitement.</td></tr>
+<tr><td class="rowhead">« D'où vient cette provision de 18 680 856 ? »</td><td>L'exécution qui l'a produite : la date, l'extraction, la version du calcul, les hypothèses, et le lien vers le détail.</td></tr>
+<tr><td class="rowhead">« Et si la queue était à 1,03 ? »</td><td>Rien. L'outil ne recalcule pas en improvisant : il dit quelle exécution lancer, ou il la lance et affiche son résultat.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout warn">
+<span class="label">Les garde-fous, et ils ne sont pas négociables</span>
+<p>L'assistant embarqué cite sa source et ne répond que sur ce qu'il a lu. Il ne calcule pas, il renvoie au calcul. Il dit « ce n'est pas documenté » au lieu de combler le trou. Et ce qu'il affiche porte la même mention que le reste de l'outil : qui l'a validé, et quand.</p>
+</div>
+<h2 id="chatbot-outil">Le chatbot de l'outil ne modifie pas l'outil</h2>
+<p>Une question revient dès qu'on montre un outil avec un chatbot intégré : ce chatbot peut-il modifier l'outil ? Non, et ce n'est pas une affaire de chatbot : il fait ce qu'on lui a donné, rien de plus. Ce qu'il peut faire, c'est vous qui le définissez.</p>
+<p>L'assistant avec lequel vous créez l'outil, Claude Code, Codex, Antigravity ou Cursor, est lui-même un outil : un modèle de langue, entouré de ce que ses concepteurs ont pensé pour créer du logiciel. Les consignes, la boucle qui écrit, exécute, lit l'erreur et corrige, le harnais qui dit à quoi il a accès. L'outil que vous créez avec lui n'hérite de rien de tout cela. Le chatbot que vous y mettez a ses propres outils, ceux que vous lui écrivez : chercher dans la documentation, lire un chiffre, l'expliquer.</p>
+<p>Lui donner le droit de modifier l'outil serait une très mauvaise idée. Chaque étape de la création logicielle, la sécurité, la structure, la revue du code, les tests, existe pour une raison, et un chatbot de production qui réécrit son application les saute toutes. Pour faire évoluer l'outil, on reprend l'assistant de création, avec ses revues.</p>
+<h2 id="besoin">Faut-il un assistant de création dans l'outil ?</h2>
+<p>Mettre un assistant de développement dans l'outil qu'on met à disposition, c'est recréer Claude Code. Avant la façon de faire, la question du besoin. Pourquoi cet outil, si la personne peut déjà travailler avec son assistant ? Souvent, ce qui manque n'est pas l'outil mais la documentation : le dictionnaire, l'ontologie, les skills. Mise à disposition, elle suffit, et la personne travaille directement avec son assistant ; parfois, elle n'a même pas besoin d'ouvrir votre outil.</p>
+<p>La sécurité, ensuite. Toutes les entreprises ne donneront pas un assistant de développement à tout le monde, pas tout de suite. Et le jour où chacun l'aura sur son poste, les droits se géreront comme aujourd'hui : vous ne pouvez pas installer un logiciel ; demain, l'assistant ne fera pas ce que vous n'avez pas le droit de faire, non parce qu'il n'en est pas capable, mais parce que vous ne l'êtes pas. Ce n'est pas une question d'IA, c'est une question de droits, celle du chapitre <a href="../../industrialisation/cadrer/index.html#permissions">Cadrer et tracer</a>.</p>
+<h2 id="construire">Ce que ça demande, concrètement</h2>
+<ol class="steps crimson">
+<li><strong>Des sources propres et à jour</strong><p>Dictionnaire, ontologie, registre des exécutions. Un assistant branché sur une documentation périmée répand l'erreur plus vite qu'il ne l'aurait propagée à l'oral.</p></li>
+<li><strong>Une recherche avant la réponse</strong><p>L'outil retrouve les passages pertinents et les donne au modèle avec la question. Le modèle reformule, il n'invente pas la matière.</p></li>
+<li><strong>Une réponse qui montre ses pièces</strong><p>Le passage cité, le lien vers la fiche, la date de la source. L'utilisateur peut vérifier en un clic, donc il vérifie.</p></li>
+<li><strong>Une trace des questions</strong><p>Ce qu'on demande à l'outil dit ce que la documentation ne couvre pas. C'est la meilleure liste de ce qu'il reste à écrire.</p></li>
+</ol>
+<div class="callout assurance">
+<span class="label">Pourquoi ce chapitre est le dernier</span>
+<p>Il ne tient que si le reste est là. Sans données structurées, l'outil n'a rien de fiable à citer. Sans algorithmes rangés, il ne peut pas renvoyer à un calcul. Sans exécutions versionnées, il ne peut pas dire d'où vient un chiffre. L'IA dans l'outil est la récompense de ce rangement, pas un raccourci pour s'en passer.</p>
+</div>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> À faire sur un de vos tableaux de bord</span>
+<p>Prenez le chiffre le plus regardé. Écrivez les trois questions que ses lecteurs posent le plus souvent, et cherchez où se trouve la réponse aujourd'hui. Si elle est dans votre tête, c'est le premier contenu à écrire.</p>
+</div>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>L'IA qui produit travaille en lot : sortie structurée, garde-fous par appel, compteur de coût, échantillon relu.</li>
+<li>L'IA qui explique cite ses sources, ne recalcule pas, et dit quand ce n'est pas documenté.</li>
+<li>Le dictionnaire, l'ontologie et le registre des exécutions sont ce qu'elle cite : la documentation devient un composant du produit.</li>
+<li>Ce chapitre est la récompense des données structurées, des algorithmes rangés et des résultats versionnés, pas un moyen de s'en passer.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../industrialisation/cadrer/index.html"><small>&larr; Précédent</small>Cadrer et tracer</a><a class="next" href="../../industrialisation/atelier-module/index.html"><small>Suivant &rarr;</small>Atelier : du carnet à l'outil</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

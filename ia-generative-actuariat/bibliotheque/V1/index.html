@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V1. Charger et lisser une table de mortalité · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">V1. Charger et lisser une table de mortalité</h1>
+      <p class="lede">Cette fiche illustre la démarche A appliquée à une table de mortalité. Ce que vous apprenez n’est pas la mortalité ni le lissage Makeham, mais comment détecter automatiquement une zone à corriger dans un dataset (variation médiane stable, seuil multiplicatif), pattern généralisable à toute série bruitée (cadences Chain-Ladder, courbes de lapse, etc.).</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : A, explorer une donnée nouvelle (et nettoyer)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="12.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="12.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Toute compagnie d’assurance vie ou de prévoyance utilise des tables de mortalité. En France, les tables réglementaires TH00-02 (hommes) et TF00-02 (femmes) ont été établies sur les données INSEE 2000-2002 et homologuées par l’arrêté du 20 décembre 2005 : la TH00-02 sert aux tarifs des contrats en cas de décès, la TF00-02 à ceux des contrats en cas de vie. Les rentes viagères relèvent d’autres tables, les tables générationnelles TGH05 et TGF05 (arrêté du 1er août 2006), construites sur des portefeuilles de rentiers.</p>
+<p>Une table publiée est déjà lissée et fermée. Cette fiche fait le travail qui la précède : partir des décès et des expositions observés âge par âge, et en tirer une table utilisable. On veut :</p>
+<ul>
+<li>Charger les données et vérifier leur structure : âges couverts, grain, unités, cases vides.</li>
+<li>Tracer la courbe des <span class="math inline">\(q_x\)</span> pour voir sa forme et repérer les anomalies.</li>
+<li>Détecter automatiquement les âges où les taux bruts ne sont plus fiables, faute de décès.</li>
+<li>Lisser ces âges par une loi paramétrique et fermer la table.</li>
+<li>Calculer une grandeur dérivée, l’espérance de vie, et la contrôler.</li>
+</ul>
+<p>Ce cas est le premier cas pratique de la formation, choisi parce qu’il est petit, concret, et touche un objet familier de tout actuaire vie.</p>
+</section>
+<section class="level2" data-number="12.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="12.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Dans la formation réelle, on charge les décès et les expositions par âge d’une population, par exemple les fichiers <code>Deaths_1x1</code> et <code>Exposures_1x1</code> de la Human Mortality Database (<code>mortality.org</code>, accès gratuit après inscription). Pour que la fiche soit reproductible, on les simule ici à partir d’une loi connue, de forme réaliste : la mortalité infantile, la bosse des accidents vers 20 ans, puis la croissance de Makeham. Connaître la loi vraie donne un avantage qu’on n’a jamais avec des données réelles : on pourra mesurer l’erreur du lissage.</p>
+<div class="cell" data-execution_count="1" id="290d7c12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>ages <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">121</span>)</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a><span class="co"># Force de mortalité de la simulation, supposée constante dans chaque année d'âge.</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="co"># Trois composantes : la mortalité infantile, la bosse des accidents vers 20 ans,</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a><span class="co"># le vieillissement selon Makeham (mu_x = A + B * c^x).</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>mu_infantile <span class="op">=</span> <span class="fl">0.0045</span> <span class="op">*</span> np.exp(<span class="op">-</span><span class="fl">2.5</span> <span class="op">*</span> ages) <span class="op">+</span> <span class="fl">0.0003</span> <span class="op">*</span> np.exp(<span class="op">-</span><span class="fl">0.6</span> <span class="op">*</span> ages)</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>mu_accidents <span class="op">=</span> <span class="fl">0.0008</span> <span class="op">*</span> np.exp(<span class="op">-</span><span class="dv">8</span> <span class="op">*</span> np.log(np.maximum(ages, <span class="dv">1</span>) <span class="op">/</span> <span class="dv">22</span>) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>mu_vieillissement <span class="op">=</span> <span class="fl">7e-5</span> <span class="op">+</span> <span class="fl">2.8e-5</span> <span class="op">*</span> <span class="fl">1.10</span> <span class="op">**</span> ages</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>mu_vrai <span class="op">=</span> mu_infantile <span class="op">+</span> mu_accidents <span class="op">+</span> mu_vieillissement</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>qx_vrai <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>mu_vrai)  <span class="co"># q_x = 1 - exp(-mu_x) quand mu est constante sur l'année</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a><span class="co"># Population observée : stationnaire, 300 000 naissances qui suivent la loi vraie.</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a><span class="co"># Exposition centrale en années-personnes, décès tirés selon une loi de Poisson.</span></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>lx_vrai <span class="op">=</span> np.concatenate([[<span class="fl">1.0</span>], np.cumprod(<span class="dv">1</span> <span class="op">-</span> qx_vrai)[:<span class="op">-</span><span class="dv">1</span>]])</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>exposition <span class="op">=</span> np.<span class="bu">round</span>(<span class="dv">300_000</span> <span class="op">*</span> lx_vrai <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> qx_vrai <span class="op">/</span> <span class="dv">2</span>)).astype(<span class="bu">int</span>)</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>deces <span class="op">=</span> rng.poisson(exposition <span class="op">*</span> mu_vrai)</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a></span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a><span class="co"># Taux brut : décès / exposition ; vide (NaN) quand personne n'est exposé</span></span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>mu_brut <span class="op">=</span> np.divide(deces, exposition, out<span class="op">=</span>np.full(<span class="bu">len</span>(ages), np.nan), where<span class="op">=</span>exposition <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>table_brute <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>    <span class="st">"age"</span>: ages,</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>    <span class="st">"exposition"</span>: exposition,</span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>    <span class="st">"deces"</span>: deces,</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>    <span class="st">"qx_brut"</span>: <span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>mu_brut),</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>})</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a><span class="bu">print</span>(table_brute.iloc[[<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">65</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">105</span>, <span class="dv">110</span>, <span class="dv">112</span>, <span class="dv">115</span>, <span class="dv">120</span>]].to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> age  exposition  deces  qx_brut
+   0      299267   1498 0.004993
+   1      298439    206 0.000690
+   5      298170     41 0.000137
+  10      297971     50 0.000168
+  20      296508    291 0.000981
+  30      293444    275 0.000937
+  40      290371    378 0.001301
+  65      254267   3627 0.014163
+  90       61653   9047 0.136482
+ 100        5192   1946 0.312578
+ 105         450    286 0.470359
+ 110           9     13 0.764123
+ 112           1      1 0.632121
+ 115           0      0      NaN
+ 120           0      0      NaN</code></pre>
+</div>
+</div>
+<p>Une ligne par âge, de 0 à 120 ans. <code>exposition</code> est en années-personnes (le temps vécu à cet âge par la population observée), <code>deces</code> est un nombre de décès, <code>qx_brut</code> la probabilité de décès dans l’année tirée du taux brut : <span class="math inline">\(q_x = 1 - \exp\!\left(-\text{décès} / \text{exposition}\right)\)</span>. L’extrait donne les ordres de grandeur : 1 498 décès dans la première année de vie pour un <span class="math inline">\(q_x\)</span> de 0,5 %, 41 décès à 5 ans, 3 627 à 65 ans, 286 à 105 ans. À 110 ans, 13 décès pour 9 années-personnes : le taux brut dépasse 1, ce qui reste possible pour un taux central, mais on ne mesure plus grand-chose. À 115 et 120 ans, <code>qx_brut</code> est vide, pas nul.</p>
+</section>
+<section class="level2" data-number="12.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="12.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<p>La séquence de prompts à donner à Claude Code, en mode bottom-up (un prompt = une étape validée). On part du principe que vous avez ouvert Claude Code sur ce fichier <code>.qmd</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Charger et décrire.</strong> <em>“Lis le DataFrame <code>table_brute</code> : une ligne par âge, l’exposition en années-personnes, les décès, le qx brut. Donne les âges couverts, les totaux, les âges sans décès et les âges sans exposition, et dis ce que vaut une case vide.”</em></p></li>
+<li><p><strong>Visualiser.</strong> <em>“Trace le qx brut en échelle logarithmique. Décris ce que la courbe montre, tranche d’âge par tranche d’âge, sans rien affirmer que la figure ne montre pas.”</em></p></li>
+<li><p><strong>Détecter la zone à lisser.</strong> <em>“Mesure la courbure de log qx d’un âge à l’autre, prends sa médiane sur une zone stable comme référence, et donne le premier âge où la variation locale dépasse cinq fois cette référence. Contrôle le résultat avec le nombre de décès par âge.”</em></p></li>
+<li><p><strong>Lisser.</strong> <em>“Ajuste une loi de Makeham sur la force de mortalité (μx = A + B·c^x), de 40 ans jusqu’à la veille de l’âge détecté, en pondérant par les décès. À partir de cet âge, remplace qx par 1 − exp(−μx) et ferme la table à 120 ans. Résultat dans une colonne <code>qx_lisse</code>.”</em></p></li>
+<li><p><strong>Calculer une grandeur dérivée.</strong> <em>“À partir de <code>qx_lisse</code>, calcule e0 et e65 sans boucle. Compare-les à la loi qui a servi à simuler. Si tu cites une valeur de référence extérieure, donne sa source.”</em></p></li>
+</ol>
+</div>
+</div>
+<p>À chaque prompt, vous validez ou corrigez la réponse de Claude avant de passer au suivant. Si Claude propose un détour (ajuster un Gompertz au lieu du Makeham demandé, ou ajuster directement les <span class="math inline">\(q_x\)</span>), demandez-lui pourquoi avant de basculer.</p>
+</section>
+<section class="level2" data-number="12.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="12.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="12.4.1" id="étape-1.-charger-et-décrire">
+<h3 class="anchored" data-anchor-id="étape-1.-charger-et-décrire" data-number="12.4.1"> Étape 1. Charger et décrire</h3>
+<div class="cell" data-execution_count="2" id="dfe0bdaf">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>sans_exposition <span class="op">=</span> table_brute.loc[table_brute[<span class="st">"exposition"</span>] <span class="op">==</span> <span class="dv">0</span>, <span class="st">"age"</span>]</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>sans_deces <span class="op">=</span> table_brute.loc[(table_brute[<span class="st">"exposition"</span>] <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (table_brute[<span class="st">"deces"</span>] <span class="op">==</span> <span class="dv">0</span>), <span class="st">"age"</span>]</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Lignes : </span><span class="sc">{</span><span class="bu">len</span>(table_brute)<span class="sc">}</span><span class="ss">, une par âge, de </span><span class="sc">{</span>table_brute[<span class="st">'age'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>table_brute[<span class="st">'age'</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss"> ans"</span>)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exposition totale : </span><span class="sc">{</span>table_brute[<span class="st">'exposition'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> années-personnes"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Décès totaux      : </span><span class="sc">{</span>table_brute[<span class="st">'deces'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss">"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>))</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Âges exposés sans aucun décès : </span><span class="sc">{</span>sans_deces<span class="sc">.</span>tolist()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Âges sans exposition (qx_brut vide) : </span><span class="sc">{</span>sans_exposition<span class="sc">.</span>tolist()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"qx_brut, âges avec décès : de </span><span class="sc">{</span>table_brute<span class="sc">.</span>loc[table_brute[<span class="st">'deces'</span>] <span class="op">&gt;</span> <span class="dv">0</span>, <span class="st">'qx_brut'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:.6f}</span><span class="ss"> "</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>      <span class="ss">f"à </span><span class="sc">{</span>table_brute[<span class="st">'qx_brut'</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Lignes : 121, une par âge, de 0 à 120 ans
+Exposition totale : 23 554 986 années-personnes
+Décès totaux      : 299 988
+Âges exposés sans aucun décès : []
+Âges sans exposition (qx_brut vide) : [113, 114, 115, 116, 117, 118, 119, 120]
+qx_brut, âges avec décès : de 0.000124 à 0.7641</code></pre>
+</div>
+</div>
+<p>121 lignes, 23,6 millions d’années-personnes, 299 988 décès. Aucun âge exposé n’est sans décès ; les âges 113 à 120 n’ont plus personne d’exposé et leur <code>qx_brut</code> est vide. Une table brute ne se ferme pas d’elle-même : l’étape 4 devra le faire. Décider ce que vaut un vide (ici « pas d’observation », jamais « zéro décès ») est exactement ce qu’il faut écrire avant de faire travailler une machine sur une table.</p>
+</section>
+<section class="level3" data-number="12.4.2" id="étape-2.-visualiser">
+<h3 class="anchored" data-anchor-id="étape-2.-visualiser" data-number="12.4.2"> Étape 2. Visualiser</h3>
+<div class="cell" data-execution_count="3" id="cell-fig-qx-brut">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>q_trace <span class="op">=</span> table_brute[<span class="st">"qx_brut"</span>].where(table_brute[<span class="st">"qx_brut"</span>] <span class="op">&gt;</span> <span class="dv">0</span>)  <span class="co"># log(0) n'existe pas</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>ax.semilogy(table_brute[<span class="st">"age"</span>], q_trace, <span class="st">"o-"</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, markersize<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Âge"</span>)</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>ax.set_ylabel(<span class="st">"qx brut (échelle log)"</span>)</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>ax.set_title(<span class="st">"Table de mortalité brute : décès / exposition"</span>)</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-qx-brut">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-qx-brut-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="471" src="img/fig-qx-brut-output-1_b0412307.png" width="854"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qx-brut-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 12.1: Taux bruts de décès qx, échelle logarithmique : mortalité infantile, bosse des accidents, croissance régulière, bruit aux grands âges
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La courbe se lit de gauche à droite : la mortalité infantile (un <span class="math inline">\(q_x\)</span> de 0,5 % la première année, qui chute avant 3 ans) ; un creux entre 3 et 12 ans, où <span class="math inline">\(q_x\)</span> reste sous 0,2 pour mille ; la bosse des accidents, qui monte de 13 à 20 ans et forme un plateau vers 1 pour mille jusqu’à 35 ans ; puis une droite presque parfaite en échelle log jusqu’à 105 ans, la signature de Gompertz-Makeham. Au-delà, les points s’écartent de la droite. C’est le bruit que l’étape 3 doit localiser, sans le faire à l’œil.</p>
+</section>
+<section class="level3" data-number="12.4.3" id="étape-3.-détecter-la-zone-à-lisser">
+<h3 class="anchored" data-anchor-id="étape-3.-détecter-la-zone-à-lisser" data-number="12.4.3"> Étape 3. Détecter la zone à lisser</h3>
+<div class="cell" data-execution_count="4" id="54bcde00">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a>log_q <span class="op">=</span> np.log(table_brute[<span class="st">"qx_brut"</span>].where(table_brute[<span class="st">"qx_brut"</span>] <span class="op">&gt;</span> <span class="dv">0</span>))</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>log_q.index <span class="op">=</span> table_brute[<span class="st">"age"</span>]</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a><span class="co"># Courbure : différence seconde de log qx, centrée sur l'âge x (âges x-1, x, x+1).</span></span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a><span class="co"># Sur une courbe régulière elle est presque nulle ; le bruit la fait sauter.</span></span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>courbure <span class="op">=</span> (log_q.shift(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> log_q <span class="op">+</span> log_q.shift(<span class="dv">1</span>)).<span class="bu">abs</span>()</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a><span class="co"># Variation locale : médiane glissante sur 5 âges, pour ignorer un point isolé</span></span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>variation_locale <span class="op">=</span> courbure.rolling(<span class="dv">5</span>, center<span class="op">=</span><span class="va">True</span>).median()</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>reference <span class="op">=</span> courbure.loc[<span class="dv">50</span>:<span class="dv">90</span>].median()  <span class="co"># zone stable : beaucoup de décès par âge</span></span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a>seuil <span class="op">=</span> <span class="dv">5</span> <span class="op">*</span> reference</span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>depassements <span class="op">=</span> variation_locale.loc[<span class="dv">50</span>:][variation_locale.loc[<span class="dv">50</span>:] <span class="op">&gt;</span> seuil]</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a>age_seuil <span class="op">=</span> <span class="bu">int</span>(depassements.index.<span class="bu">min</span>())</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a></span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Courbure médiane de la zone stable (50-90 ans) : </span><span class="sc">{</span>reference<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb6-16"><a aria-hidden="true" href="#cb6-16" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Seuil de détection (5 fois la médiane)         : </span><span class="sc">{</span>seuil<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb6-17"><a aria-hidden="true" href="#cb6-17" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Premier âge où la variation locale dépasse le seuil : </span><span class="sc">{</span>age_seuil<span class="sc">}</span><span class="ss"> ans"</span>)</span>
+<span id="cb6-18"><a aria-hidden="true" href="#cb6-18" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb6-19"><a aria-hidden="true" href="#cb6-19" tabindex="-1"></a><span class="co"># Contrôle par une règle statistique : l'erreur relative d'un taux brut vaut environ 1/racine(décès)</span></span>
+<span id="cb6-20"><a aria-hidden="true" href="#cb6-20" tabindex="-1"></a>peu_de_deces <span class="op">=</span> table_brute.loc[(table_brute[<span class="st">"age"</span>] <span class="op">&gt;=</span> <span class="dv">50</span>) <span class="op">&amp;</span> (table_brute[<span class="st">"deces"</span>] <span class="op">&lt;</span> <span class="dv">100</span>), <span class="st">"age"</span>]</span>
+<span id="cb6-21"><a aria-hidden="true" href="#cb6-21" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Premier âge avec moins de 100 décès (erreur relative &gt; 10 %) : </span><span class="sc">{</span>peu_de_deces<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss"> ans"</span>)</span>
+<span id="cb6-22"><a aria-hidden="true" href="#cb6-22" tabindex="-1"></a><span class="bu">print</span>(table_brute.loc[table_brute[<span class="st">"age"</span>].between(age_seuil <span class="op">-</span> <span class="dv">4</span>, age_seuil <span class="op">+</span> <span class="dv">2</span>),</span>
+<span id="cb6-23"><a aria-hidden="true" href="#cb6-23" tabindex="-1"></a>                      [<span class="st">"age"</span>, <span class="st">"exposition"</span>, <span class="st">"deces"</span>]]</span>
+<span id="cb6-24"><a aria-hidden="true" href="#cb6-24" tabindex="-1"></a>      .assign(erreur_relative<span class="op">=</span><span class="kw">lambda</span> d: <span class="dv">1</span> <span class="op">/</span> np.sqrt(d[<span class="st">"deces"</span>]))</span>
+<span id="cb6-25"><a aria-hidden="true" href="#cb6-25" tabindex="-1"></a>      .<span class="bu">round</span>(<span class="dv">3</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Courbure médiane de la zone stable (50-90 ans) : 0.0275
+Seuil de détection (5 fois la médiane)         : 0.1374
+Premier âge où la variation locale dépasse le seuil : 107 ans
+
+Premier âge avec moins de 100 décès (erreur relative &gt; 10 %) : 108 ans
+ age  exposition  deces  erreur_relative
+ 103        1377    720            0.037
+ 104         808    443            0.048
+ 105         450    286            0.059
+ 106         237    146            0.083
+ 107         117    106            0.097
+ 108          54     44            0.151
+ 109          23     17            0.243</code></pre>
+</div>
+</div>
+<p>La référence se prend entre 50 et 90 ans, où chaque âge compte des centaines ou des milliers de décès ; la médiane glissante sur cinq âges évite qu’un point isolé déclenche l’alerte. La courbure médiane de cette zone vaut 0,0275, le seuil 0,137, et la variation locale le dépasse pour la première fois à <strong>107 ans</strong>.</p>
+<p>La règle statistique arrive au même endroit par un autre chemin. L’erreur relative d’un taux brut vaut environ <span class="math inline">\(1/\sqrt{\text{décès}}\)</span> : 3,7 % à 103 ans (720 décès), 9,7 % à 107 ans (106 décès), 15 % à 108 ans, premier âge sous les 100 décès. Les deux règles se recoupent à un an près. La première est empirique et se transpose à n’importe quelle série ; la seconde explique pourquoi elle tombe là. Dans une population plus petite, un portefeuille d’assurés par exemple, chaque âge compterait moins de décès et la zone bruitée commencerait plus tôt.</p>
+</section>
+<section class="level3" data-number="12.4.4" id="étape-4.-lisser-par-une-loi-de-makeham">
+<h3 class="anchored" data-anchor-id="étape-4.-lisser-par-une-loi-de-makeham" data-number="12.4.4"> Étape 4. Lisser par une loi de Makeham</h3>
+<p>Makeham porte sur la force de mortalité <span class="math inline">\(\mu_x\)</span>, pas sur <span class="math inline">\(q_x\)</span>. On ajuste donc <span class="math inline">\(\ln \mu_x\)</span> brut (décès / exposition), puis on revient à <span class="math inline">\(q_x\)</span> par <span class="math inline">\(q_x = 1 - e^{-\mu_x}\)</span>, qui suppose <span class="math inline">\(\mu\)</span> constante dans l’année. La pondération par les décès donne plus de poids aux âges bien mesurés.</p>
+<div class="cell" data-execution_count="5" id="c9f36b95">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> curve_fit</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a><span class="kw">def</span> log_makeham(age, A, B, c):</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>    <span class="co">"""Logarithme de la force de mortalité de Makeham : mu_x = A + B * c^x."""</span></span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>    <span class="cf">return</span> np.log(A <span class="op">+</span> B <span class="op">*</span> c <span class="op">**</span> age)</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="co"># Ajustement sur log(mu brut), de 40 ans à la veille de la zone bruitée,</span></span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a><span class="co"># chaque âge pondéré par son nombre de décès (écart-type de log mu ~ 1/racine(décès))</span></span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>zone <span class="op">=</span> table_brute[(table_brute[<span class="st">"age"</span>] <span class="op">&gt;=</span> <span class="dv">40</span>) <span class="op">&amp;</span> (table_brute[<span class="st">"age"</span>] <span class="op">&lt;</span> age_seuil)]</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a>popt, _ <span class="op">=</span> curve_fit(</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>    log_makeham,</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>    zone[<span class="st">"age"</span>],</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>    np.log(zone[<span class="st">"deces"</span>] <span class="op">/</span> zone[<span class="st">"exposition"</span>]),</span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a>    p0<span class="op">=</span>[<span class="fl">1e-4</span>, <span class="fl">3e-5</span>, <span class="fl">1.10</span>],</span>
+<span id="cb8-15"><a aria-hidden="true" href="#cb8-15" tabindex="-1"></a>    sigma<span class="op">=</span><span class="dv">1</span> <span class="op">/</span> np.sqrt(zone[<span class="st">"deces"</span>]),</span>
+<span id="cb8-16"><a aria-hidden="true" href="#cb8-16" tabindex="-1"></a>    bounds<span class="op">=</span>([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>], [<span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">1.5</span>]),</span>
+<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a>)</span>
+<span id="cb8-18"><a aria-hidden="true" href="#cb8-18" tabindex="-1"></a>A_fit, B_fit, c_fit <span class="op">=</span> popt</span>
+<span id="cb8-19"><a aria-hidden="true" href="#cb8-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Makeham ajusté (40 à </span><span class="sc">{</span>age_seuil <span class="op">-</span> <span class="dv">1</span><span class="sc">}</span><span class="ss"> ans) : A = </span><span class="sc">{</span>A_fit<span class="sc">:.2e}</span><span class="ss">, B = </span><span class="sc">{</span>B_fit<span class="sc">:.2e}</span><span class="ss">, c = </span><span class="sc">{</span>c_fit<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb8-20"><a aria-hidden="true" href="#cb8-20" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Loi de la simulation, pour mémoire     : A = 7.00e-05, B = 2.80e-05, c = 1.1000"</span>)</span>
+<span id="cb8-21"><a aria-hidden="true" href="#cb8-21" tabindex="-1"></a></span>
+<span id="cb8-22"><a aria-hidden="true" href="#cb8-22" tabindex="-1"></a><span class="co"># Au-delà du seuil, qx vient de la loi ajustée ; la table est fermée à 120 ans (q = 1)</span></span>
+<span id="cb8-23"><a aria-hidden="true" href="#cb8-23" tabindex="-1"></a>mu_ajuste <span class="op">=</span> A_fit <span class="op">+</span> B_fit <span class="op">*</span> c_fit <span class="op">**</span> table_brute[<span class="st">"age"</span>]</span>
+<span id="cb8-24"><a aria-hidden="true" href="#cb8-24" tabindex="-1"></a>table_brute[<span class="st">"qx_lisse"</span>] <span class="op">=</span> np.where(table_brute[<span class="st">"age"</span>] <span class="op">&lt;</span> age_seuil,</span>
+<span id="cb8-25"><a aria-hidden="true" href="#cb8-25" tabindex="-1"></a>                                   table_brute[<span class="st">"qx_brut"</span>], <span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>mu_ajuste))</span>
+<span id="cb8-26"><a aria-hidden="true" href="#cb8-26" tabindex="-1"></a>table_brute.loc[table_brute[<span class="st">"age"</span>] <span class="op">==</span> <span class="dv">120</span>, <span class="st">"qx_lisse"</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb8-27"><a aria-hidden="true" href="#cb8-27" tabindex="-1"></a>table_brute[<span class="st">"qx_vrai"</span>] <span class="op">=</span> qx_vrai  <span class="co"># connu ici parce que la table est simulée</span></span>
+<span id="cb8-28"><a aria-hidden="true" href="#cb8-28" tabindex="-1"></a></span>
+<span id="cb8-29"><a aria-hidden="true" href="#cb8-29" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb8-30"><a aria-hidden="true" href="#cb8-30" tabindex="-1"></a><span class="bu">print</span>(table_brute.loc[table_brute[<span class="st">"age"</span>].isin([age_seuil <span class="op">-</span> <span class="dv">1</span>, age_seuil, age_seuil <span class="op">+</span> <span class="dv">3</span>, <span class="dv">112</span>, <span class="dv">115</span>, <span class="dv">119</span>, <span class="dv">120</span>]),</span>
+<span id="cb8-31"><a aria-hidden="true" href="#cb8-31" tabindex="-1"></a>                      [<span class="st">"age"</span>, <span class="st">"deces"</span>, <span class="st">"qx_brut"</span>, <span class="st">"qx_lisse"</span>, <span class="st">"qx_vrai"</span>]].<span class="bu">round</span>(<span class="dv">4</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Makeham ajusté (40 à 106 ans) : A = 5.11e-05, B = 2.81e-05, c = 1.1000
+Loi de la simulation, pour mémoire     : A = 7.00e-05, B = 2.80e-05, c = 1.1000
+
+ age  deces  qx_brut  qx_lisse  qx_vrai
+ 106    146   0.4599    0.4599   0.4952
+ 107    106   0.5959    0.5279   0.5286
+ 110     13   0.7641    0.6317   0.6324
+ 112      1   0.6321    0.7014   0.7021
+ 115      0      NaN    0.7998   0.8005
+ 119      0      NaN    0.9050   0.9056
+ 120      0      NaN    1.0000   0.9254</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="6" id="cell-fig-qx-lisse">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>ax.semilogy(table_brute[<span class="st">"age"</span>], q_trace, <span class="st">"o"</span>, color<span class="op">=</span><span class="st">"#9ca3af"</span>, markersize<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">"Brut (décès / exposition)"</span>)</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>ax.semilogy(table_brute[<span class="st">"age"</span>], table_brute[<span class="st">"qx_lisse"</span>], color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"Lissé"</span>)</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>ax.semilogy(table_brute[<span class="st">"age"</span>], table_brute[<span class="st">"qx_vrai"</span>], <span class="st">"--"</span>, color<span class="op">=</span><span class="st">"#047857"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="st">"Loi de la simulation"</span>)</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>ax.axvline(age_seuil, color<span class="op">=</span><span class="st">"#b45309"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, label<span class="op">=</span><span class="ss">f"Seuil détecté (</span><span class="sc">{</span>age_seuil<span class="sc">}</span><span class="ss"> ans)"</span>)</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>ax.set_xlim(<span class="dv">80</span>, <span class="dv">121</span>)</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>ax.set_ylim(<span class="fl">0.04</span>, <span class="fl">1.2</span>)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Âge"</span>)</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>ax.set_ylabel(<span class="st">"qx (échelle log)"</span>)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>ax.set_title(<span class="st">"Grands âges : avant et après lissage"</span>)</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>ax.legend()</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>ax.grid(<span class="va">True</span>, which<span class="op">=</span><span class="st">"both"</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-qx-lisse">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-qx-lisse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="471" src="img/fig-qx-lisse-output-1_8200cd43.png" width="854"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qx-lisse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 12.2: Grands âges : taux bruts, table lissée par Makeham à partir de l’âge détecté, loi de la simulation
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>L’ajustement retrouve <span class="math inline">\(B = 2{,}81 \times 10^{-5}\)</span> et <span class="math inline">\(c = 1{,}1000\)</span>, pour <span class="math inline">\(2{,}80 \times 10^{-5}\)</span> et 1,1000 dans la simulation. <span class="math inline">\(A\)</span>, le terme constant, sort à <span class="math inline">\(5{,}1 \times 10^{-5}\)</span> au lieu de <span class="math inline">\(7{,}0 \times 10^{-5}\)</span> : entre 40 et 106 ans il pèse peu face à <span class="math inline">\(B\,c^x\)</span>, et les données l’identifient mal. Sur la zone lissée, la table et la loi de la simulation coïncident au millième près (0,5279 contre 0,5286 à 107 ans). La table est fermée à 120 ans par <span class="math inline">\(q_x = 1\)</span>, là où la loi de la simulation vaut 0,925 : une table dont les derniers survivants ne s’éteignent jamais ne permet aucun calcul de rente.</p>
+<p>Le raccord se discute. À 106 ans, dernier âge gardé brut, le taux (0,4599) est déjà 7 % sous la loi vraie (0,4952) : le seuil n’est pas une frontière nette, et un actuaire pourrait avancer le raccord d’un an ou deux. La figure le montre : les points bruts suivent la droite jusqu’à 105 ans environ, puis s’en écartent, et la courbe lissée prolonge la tendance en se confondant avec la loi de la simulation.</p>
+</section>
+<section class="level3" data-number="12.4.5" id="étape-5.-calculer-lespérance-de-vie">
+<h3 class="anchored" data-anchor-id="étape-5.-calculer-lespérance-de-vie" data-number="12.4.5"> Étape 5. Calculer l’espérance de vie</h3>
+<div class="cell" data-execution_count="7" id="49502176">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="kw">def</span> esperance_de_vie(qx: np.ndarray, age: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>    <span class="co">"""e_x = 0,5 + somme des t_p_x pour t &gt;= 1 (décès supposés en milieu d'année).</span></span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a><span class="co">    np.cumprod(1 - q_x, 1 - q_x+1, ...) donne directement p_x, 2_p_x, 3_p_x... : pas de boucle.</span></span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">+</span> np.cumprod(<span class="dv">1</span> <span class="op">-</span> qx[age:]).<span class="bu">sum</span>()</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>q_lisse <span class="op">=</span> table_brute[<span class="st">"qx_lisse"</span>].to_numpy()</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>q_brut <span class="op">=</span> table_brute[<span class="st">"qx_brut"</span>].to_numpy()</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a><span class="cf">for</span> age <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">65</span>):</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"e</span><span class="sc">{</span>age<span class="sc">}</span><span class="ss"> : table lissée </span><span class="sc">{</span>esperance_de_vie(q_lisse, age)<span class="sc">:6.2f}</span><span class="ss"> ans | "</span></span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>          <span class="ss">f"loi de la simulation </span><span class="sc">{</span>esperance_de_vie(qx_vrai, age)<span class="sc">:6.2f}</span><span class="ss"> ans | "</span></span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>          <span class="ss">f"table brute </span><span class="sc">{</span>esperance_de_vie(q_brut, age)<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>survie_65 <span class="op">=</span> np.cumprod(<span class="dv">1</span> <span class="op">-</span> q_lisse[<span class="dv">65</span>:])</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Probabilité, à 65 ans, d'atteindre </span><span class="sc">{</span>age_seuil<span class="sc">}</span><span class="ss"> ans : </span><span class="sc">{</span>survie_65[age_seuil <span class="op">-</span> <span class="dv">66</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>e0 : table lissée  78.54 ans | loi de la simulation  78.52 ans | table brute nan
+e65 : table lissée  18.54 ans | loi de la simulation  18.54 ans | table brute nan
+
+Probabilité, à 65 ans, d'atteindre 107 ans : 0.0007</code></pre>
+</div>
+</div>
+<p>Sur la table lissée, <span class="math inline">\(e_0\)</span> vaut 78,54 ans et <span class="math inline">\(e_{65}\)</span> 18,54 ans ; la loi de la simulation donne 78,52 et 18,54. Le lissage ne change presque rien à <span class="math inline">\(e_{65}\)</span>, et c’est attendu : à 65 ans, la probabilité d’atteindre 107 ans est de 0,0007, les âges lissés pèsent très peu. Sur la table brute, le calcul est impossible (<code>nan</code>), faute de taux aux âges 113 à 120 : fermer la table n’était pas une coquetterie.</p>
+<p>La comparaison qui valide est celle qu’on contrôle. Ici, c’est la loi de la simulation. Sur des données réelles, ce serait l’espérance de vie publiée par l’INSEE pour la population et la période observées, source en main, jamais un chiffre cité de mémoire.</p>
+</section>
+</section>
+<section class="level2" data-number="12.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="12.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Une première version de cette fiche contenait le paragraphe suivant :</p>
+<blockquote class="blockquote">
+<p>« La table TH00-02, mortalité réglementaire française pour les rentes viagères, publiée par l’INSEE, est l’exemple canonique. On simule une table plausible avec la loi de Makeham <span class="math inline">\(q_x = A + B\,c^x\)</span>, paramètres calibrés sur la TH00-02 femmes. Sur la courbe en échelle log, on voit clairement la surmortalité infantile, le creux d’adolescence et le bruit au-delà de 95 ans. L’espérance de vie résiduelle à 65 ans vaut 23,33 ans, cohérente avec la valeur attendue de 21-22 ans pour une femme française vers 2002. »</p>
+</blockquote>
+<p>La simulation correspondante était <code>qx = 0.0005 + 1.5e-5 * 1.10 ** ages</code>, écrêtée à 1, plus un bruit ajouté au-delà de 95 ans. La détection de l’étape 3 affichait « Premier âge problématique : aucun », et l’étape suivante lissait quand même à partir de 95 ans, codé en dur. Relevez les erreurs.</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li><strong>L’attribution de la table.</strong> TH00-02 est la table des hommes, TF00-02 celle des femmes : « TH00-02 femmes » se contredit. Elle n’est pas « publiée par l’INSEE » : elle a été établie sur les données INSEE 2000-2002 et homologuée par l’arrêté du 20 décembre 2005. Et elle ne sert pas aux rentes viagères mais aux tarifs des contrats en cas de décès ; les rentes relèvent de TGH05 et TGF05 (arrêté du 1er août 2006).</li>
+<li><strong>La loi.</strong> Makeham et Gompertz décrivent la force de mortalité <span class="math inline">\(\mu_x\)</span>, pas la probabilité <span class="math inline">\(q_x\)</span>. Écrite sur <span class="math inline">\(q_x\)</span>, la loi donne des « probabilités » supérieures à 1 aux grands âges (1,39 à 120 ans avec ces paramètres), d’où l’écrêtage.</li>
+<li><strong>La prose ne dit pas ce que la sortie montre.</strong> Une loi de Makeham est croissante : elle ne produit ni surmortalité infantile ni creux, et la figure n’en montrait aucun. La détection ne trouvait rien, le texte annonçait un bruit au-delà de 95 ans, et le lissage partait d’un âge écrit à la main.</li>
+<li><strong>La validation.</strong> 23,33 ans n’est pas « cohérent » avec 21 à 22 ans : c’est 6 à 11 % de plus. Et la valeur attendue est citée sans source. Une comparaison ne valide rien tant que l’écart n’est pas lu et la référence sourcée.</li>
+</ol>
+</details>
+</section>
+<section class="level2" data-number="12.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="12.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Confondre <span class="math inline">\(q_x\)</span> et <span class="math inline">\(\mu_x\)</span>.</strong> <span class="math inline">\(q_x\)</span> est la probabilité de décéder entre <span class="math inline">\(x\)</span> et <span class="math inline">\(x+1\)</span> ans ; <span class="math inline">\(\mu_x\)</span> est la force de mortalité, un taux instantané. Les lois de Gompertz et de Makeham portent sur <span class="math inline">\(\mu_x\)</span>. Les deux sont proches quand la mortalité est faible et s’écartent quand elle devient forte : à 110 ans, le taux brut de 13 décès pour 9 années-personnes donne <span class="math inline">\(\mu = 1{,}44\)</span> et <span class="math inline">\(q_x = 0{,}76\)</span>. Toujours dire ce qu’on manipule, et passer de l’un à l’autre par <span class="math inline">\(q_x = 1 - e^{-\mu_x}\)</span> si <span class="math inline">\(\mu\)</span> est supposée constante dans l’année.</li>
+<li><strong>Lisser la mortalité infantile ou la bosse des accidents.</strong> Ce sont des phénomènes réels, pas du bruit. On ne remplace par une loi paramétrique que les âges où le manque de décès l’impose. Le léger bruit des âges jeunes, où l’on meurt peu, relèverait d’un lissage de toute la table (Whittaker-Henderson), qui n’est pas le propos ici.</li>
+<li><strong>Prolonger Makeham sans limite.</strong> Makeham fait croître <span class="math inline">\(\mu_x\)</span> exponentiellement jusqu’au bout ; aux très grands âges, les observations montrent un ralentissement. Pour fermer une table, on utilise plutôt les lois de Kannisto ou de Beard, ou la méthode de Coale-Kisker ; Heligman-Pollard, elle, décrit toute la courbe, de l’enfance aux grands âges. Ici la loi de la simulation est elle-même un Makeham, l’ajustement ne pouvait que tomber juste ; sur des données réelles, le choix de la loi de fermeture fait l’écart. Demandez à Claude : <em>“Quelles autres lois pourrais-je utiliser pour fermer la table, et quels sont leurs domaines de validité ?”</em></li>
+<li><strong>Prendre sa table lissée pour une table réglementaire.</strong> Une table lissée par vos soins est un outil d’analyse. Pour tarifer et provisionner en normes françaises, le code des assurances impose les tables réglementaires (TH00-02, TF00-02, TGH05, TGF05) ou une table d’expérience certifiée par un actuaire indépendant agréé. En Solvabilité II, le best estimate repose sur des hypothèses réalistes propres à l’organisme : c’est là qu’une table construite sur l’expérience du portefeuille trouve sa place.</li>
+<li><strong>Croire une valeur de référence citée de mémoire.</strong> Un assistant à qui l’on demande de « vérifier la cohérence avec la valeur attendue » cite volontiers un chiffre plausible sans source. Exigez la source, ou comparez à ce que vous contrôlez.</li>
+<li><strong>Ne pas commiter avant chaque ajustement.</strong> Si vous lancez plusieurs ajustements de courbes successifs sans commit intermédiaire, vous risquez de perdre la version qui marchait. À chaque étape validée, commit.</li>
+</ul>
+</section>
+<section class="level2" data-number="12.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="12.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>V2, projection de la longévité par Lee-Carter</strong> : pour projeter la mortalité dans le temps, et pas seulement la lisser à une date donnée. Elle part des mêmes données, décès et expositions par âge, sur plusieurs décennies.</li>
+<li><strong>V3, PM d’une rente viagère différée sur table prospective</strong> : reprend la table projetée par V2, ajoute l’actualisation, et calcule une provision mathématique avec ses sensibilités.</li>
+<li><strong>S4, lecture critique d’un texte de l’ACPR</strong> : autre cas Débutant, qui exerce le même muscle (faire lire un document par Claude, en sortir une synthèse structurée).</li>
+</ul>
+</section>
+<section class="level2" data-number="12.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="12.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>Les décès et expositions par âge de la France sont sur la Human Mortality Database (<code>mortality.org</code>, fichiers <code>Deaths_1x1</code> et <code>Exposures_1x1</code>). Pour la formation réelle, on remplace le bloc « Donnée d’entrée » par leur lecture, et la comparaison à la loi de la simulation par une comparaison aux espérances de vie publiées par l’INSEE.</li>
+<li>Charger la TH00-02 et la tracer à côté de votre table lissée est un bon second exercice. Demandez à Claude d’où vient le fichier qu’il propose, et vérifiez-le contre le texte homologué.</li>
+<li>Le package R <code>MortalityLaws</code> ajuste de façon standardisée la plupart des lois de mortalité paramétriques, de Gompertz à Heligman-Pollard et Kannisto. Côté Python, <code>lifelib</code> propose des modèles de projection de contrats vie.</li>
+<li>L’astuce du <em>diagnostic d’une zone à lisser</em> (variation médiane stable, seuil multiplicatif) se généralise : la même logique repère les points aberrants d’une cadence Chain-Ladder ou d’une courbe de lapse. Et le contrôle qui l’accompagne aussi : chercher la règle statistique qui explique pourquoi le seuil tombe là.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/R4/index.html"><small>&larr; Précédent</small>R4. Bootstrap Chain-Ladder</a><a class="next" href="../../bibliotheque/V2/index.html"><small>Suivant &rarr;</small>V2. Projection longévité Lee-Carter</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

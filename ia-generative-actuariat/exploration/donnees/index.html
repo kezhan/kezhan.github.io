@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structurer les données · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn active" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 2 · 2.1 Ranger la donnée et le calcul</div>
+      <h1 style="max-width:28ch">Structurer les données</h1>
+      <p class="lede">Une IA qui travaille sur des données mal rangées produit du faux, vite, et avec aplomb. C'est le vrai risque, bien avant l'hallucination : la donnée était ambiguë, personne ne l'a dit, et le résultat est faux sans que rien ne le signale. Ranger les données est donc le premier geste, et c'est un geste qui sert avec ou sans IA.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#grain">Le grain : une ligne, une chose</a><a href="#schema">Le schéma, dessiné une fois</a><a href="#types">Les types, les unités, et ce qui se perd entre deux fichiers</a><a href="#manquant">Absent, zéro, inconnu : trois choses différentes</a><a href="#dictionnaire">Le dictionnaire de données</a><a href="#controles">Les contrôles qui tournent à chaque chargement</a><a href="#disque">Comment ça se range sur le disque</a><a href="#colonne-texte">Une colonne de texte à nettoyer : la méthode, pas la ligne</a><a href="#ia">Ce que ça change quand l'IA entre dans la pièce</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Section « Une colonne de texte à nettoyer » : segment du formateur du 20-10 (_sources/transcriptions/2026-10-20_creer_l_outil_plutot_que_refaire.md). -->
+<!-- Chapitre « Structurer les données », premier des trois du socle.
+     Contenu nouveau, écrit pour la refonte du 11 octobre (ticket 016) :
+     « pour les actuaires, y a un point essentiel : structurer les données,
+     organiser les algorithmes et versionner les résultats ». Rien de ce
+     chapitre n'existait dans le support. -->
+
+<h2 id="grain">Le grain : une ligne, une chose</h2>
+<p>Une table a un grain, c'est-à-dire ce que représente une ligne : une police, un sinistre, un mois d'exposition d'une police, une cellule de triangle. Le grain se décide et s'écrit. Mélanger deux grains dans la même table est la faute la plus coûteuse du métier, parce qu'elle ne se voit pas : les totaux restent plausibles.</p>
+<div class="ba">
+<div class="before">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> Deux grains dans une table</div>
+<div class="ba-body">
+<p>Une ligne par sinistre, et sur cette même ligne la prime annuelle de la police. Une police à trois sinistres compte sa prime trois fois. La somme de la colonne prime n'est plus la prime du portefeuille, et le ratio sinistres sur primes est faux.</p>
+</div>
+</div>
+<div class="after">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg> Un grain par table, des clés</div>
+<div class="ba-body">
+<p>Une table de polices, une table de sinistres, une clé de police dans les deux. On joint au moment du calcul, en sachant ce qu'on agrège. La prime reste comptée une fois.</p>
+</div>
+</div>
+</div>
+<h2 id="schema">Le schéma, dessiné une fois</h2>
+<p>Un schéma de données tient sur une page : les tables, leurs colonnes, leurs clés, et qui se rattache à qui. Dessiné, il remplace les questions qu'on pose à trois personnes, et il se donne tel quel à un assistant avant de lui demander quoi que ce soit. Voici celui d'un portefeuille auto, réduit à ce qui sert.</p>
+<figure class="figure-frame">
+<svg aria-label="Schéma de données d'un portefeuille auto : police, garantie, exposition, sinistre, paiement, avec leurs clés et leurs liens." role="img" viewbox="0 0 880 470">
+<defs>
+<marker id="sf" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"></path></marker>
+</defs>
+<g font-family="Manrope, Segoe UI, sans-serif">
+<!-- police -->
+<g>
+<rect fill="#fff" height="156" rx="12" stroke="#dcd8d4" width="250" x="30" y="150"></rect>
+<path d="M30 162 a12 12 0 0 1 12 -12 h226 a12 12 0 0 1 12 12 v16 h-250 z" fill="#13264A"></path>
+<text fill="#fff" font-size="13.5" font-weight="800" x="46" y="172">POLICE</text>
+<text fill="#a9b7cc" font-size="11" text-anchor="end" x="262" y="172">une ligne par contrat</text>
+</g>
+<g fill="#1f2733" font-size="12.5">
+<text x="46" y="203"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>num_police</text>
+<text x="46" y="224">produit</text>
+<text x="46" y="245">date_effet, date_resiliation</text>
+<text x="46" y="266">zone, bonus</text>
+<text fill="#78828f" x="46" y="287">(et les autres variables tarifaires)</text>
+</g>
+<!-- garantie -->
+<g>
+<rect fill="#fff" height="114" rx="12" stroke="#dcd8d4" width="235" x="350" y="20"></rect>
+<path d="M350 32 a12 12 0 0 1 12 -12 h211 a12 12 0 0 1 12 12 v16 h-235 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="13.5" font-weight="800" x="366" y="42">GARANTIE</text>
+</g>
+<g fill="#1f2733" font-size="12.5">
+<text x="366" y="73"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>num_police + code_garantie</text>
+<text x="366" y="94">franchise, plafond</text>
+<text fill="#78828f" x="366" y="115">une ligne par garantie du contrat</text>
+</g>
+<!-- exposition -->
+<g>
+<rect fill="#fff" height="98" rx="12" stroke="#dcd8d4" width="235" x="350" y="166"></rect>
+<path d="M350 178 a12 12 0 0 1 12 -12 h211 a12 12 0 0 1 12 12 v16 h-235 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="13.5" font-weight="800" x="366" y="188">EXPOSITION</text>
+</g>
+<g fill="#1f2733" font-size="12.5">
+<text x="366" y="219"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>num_police + annee</text>
+<text x="366" y="240">exposition <tspan fill="#78828f">(en années, de 0 à 1)</tspan></text>
+</g>
+<!-- sinistre -->
+<g>
+<rect fill="#fff" height="156" rx="12" stroke="#dcd8d4" width="235" x="350" y="296"></rect>
+<path d="M350 308 a12 12 0 0 1 12 -12 h211 a12 12 0 0 1 12 12 v16 h-235 z" fill="#13264A"></path>
+<text fill="#fff" font-size="13.5" font-weight="800" x="366" y="318">SINISTRE</text>
+</g>
+<g fill="#1f2733" font-size="12.5">
+<text x="366" y="349"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>num_sinistre</text>
+<text x="366" y="370">num_police + code_garantie</text>
+<text x="366" y="391">date_survenance, date_declaration</text>
+<text x="366" y="412">statut <tspan fill="#78828f">(ouvert, clos, sans suite)</tspan></text>
+<text x="366" y="433">charge_brute <tspan fill="#78828f">(en euros)</tspan></text>
+</g>
+<!-- paiement -->
+<g>
+<rect fill="#fff" height="114" rx="12" stroke="#dcd8d4" width="205" x="650" y="296"></rect>
+<path d="M650 308 a12 12 0 0 1 12 -12 h181 a12 12 0 0 1 12 12 v16 h-205 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="13.5" font-weight="800" x="666" y="318">PAIEMENT</text>
+</g>
+<g fill="#1f2733" font-size="12.5">
+<text x="666" y="349">num_sinistre</text>
+<text x="666" y="370">date_paiement, montant</text>
+<text x="666" y="391">sens <tspan fill="#78828f">(règlement, recours)</tspan></text>
+</g>
+</g>
+<g fill="none" marker-end="url(#sf)" stroke="#7D92AC" stroke-width="2">
+<path d="M280 196 C 316 196, 316 77, 342 77"></path>
+<path d="M280 215 H 342"></path>
+<path d="M280 236 C 316 236, 316 374, 342 374"></path>
+<path d="M585 352 H 642"></path>
+</g>
+<g fill="#BA1C3A" font-family="Manrope, Segoe UI, sans-serif" font-size="11.5" font-weight="800">
+<text x="296" y="128">1 à n</text>
+<text x="296" y="208">1 à n</text>
+<text x="296" y="324">0 à n</text>
+<text x="596" y="344">0 à n</text>
+</g>
+</svg>
+<figcaption>Cinq tables, cinq grains. La clé de chacune dit ce qu'une ligne représente, et les liens disent comment joindre sans dupliquer. C'est ce dessin qu'on donne à l'assistant avant la première question.</figcaption>
+</figure>
+<p>Trois choses se lisent dessus, et elles évitent les erreurs les plus chères du métier. L'exposition est une table à part, parce qu'un contrat couvre plusieurs années et que la fréquence s'y rapporte. Les paiements sont détachés du sinistre, parce qu'un sinistre se règle en plusieurs fois, parfois avec un recours en sens inverse. Et un sinistre pointe vers une garantie précise, pas seulement vers un contrat, sinon on ne sait pas quelle couverture a joué.</p>
+<h2 id="types">Les types, les unités, et ce qui se perd entre deux fichiers</h2>
+<p>Une colonne a un type et une unité, et les deux se perdent dès qu'un fichier passe par un tableur. Les pièges habituels :</p>
+<ul class="clean">
+<li>Un montant tantôt en euros, tantôt en milliers, selon le fichier d'origine.</li>
+<li>Une date lue comme du texte, qui se trie dans l'ordre alphabétique, et un 01/02 qui change de mois selon la machine.</li>
+<li>Un code postal qui perd son zéro de tête parce qu'il a été lu comme un nombre.</li>
+<li>Une exposition exprimée tantôt en années, tantôt en jours.</li>
+<li>Un identifiant de contrat passé en notation scientifique, donc tronqué, donc deux contrats confondus.</li>
+</ul>
+<p>La parade tient en une règle : le type et l'unité sont écrits une fois, dans le dictionnaire de données, et vérifiés au chargement. Pas dans un commentaire, pas dans la tête de celui qui a produit le fichier.</p>
+<h2 id="manquant">Absent, zéro, inconnu : trois choses différentes</h2>
+<p>Une charge de sinistre vide ne veut pas dire zéro. Elle peut dire : pas encore évaluée, sans objet, refusée, ou perdue dans l'extraction. Les quatre mènent à des traitements différents, et les confondre déplace la moyenne sans que personne s'en aperçoive.</p>
+<div class="callout warn">
+<span class="label">À écrire noir sur blanc</span>
+<p>Pour chaque colonne qui peut être vide : ce que le vide signifie, et ce qu'on en fait dans le calcul. C'est une ligne de dictionnaire, et c'est la première question que posera un contrôleur comme un modèle de langue.</p>
+</div>
+<h2 id="dictionnaire">Le dictionnaire de données</h2>
+<p>C'est le document qui dit, pour chaque colonne : son nom, ce qu'elle désigne en français, son type, son unité, ses valeurs possibles, sa source, et ce que vaut un vide. Il tient dans un fichier texte versionné à côté des données, pas dans un courriel.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Colonne</th><th>Définition</th><th>Type</th><th>Unité</th><th>Vide</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">num_police</td><td>Identifiant du contrat chez l'assureur</td><td>texte</td><td></td><td>interdit</td></tr>
+<tr><td class="rowhead">exposition</td><td>Durée de présence du contrat dans l'année d'observation</td><td>décimal</td><td>année, entre 0 et 1</td><td>interdit</td></tr>
+<tr><td class="rowhead">charge_brute</td><td>Montant payé plus provision, avant recours et franchise</td><td>décimal</td><td>euro</td><td>non évalué</td></tr>
+<tr><td class="rowhead">date_survenance</td><td>Date du fait générateur</td><td>date</td><td>AAAA-MM-JJ</td><td>interdit</td></tr>
+</tbody>
+</table>
+</div>
+<p>Quatre lignes suffisent à montrer le format ; un portefeuille réel en a bien plus, et ce travail se rentabilise au premier calcul repris par quelqu'un d'autre. C'est aussi le document que l'IA lit avant de proposer le moindre traitement, et le chapitre sur la documentation montre comment le faire écrire par elle et le relire.</p>
+<h2 id="controles">Les contrôles qui tournent à chaque chargement</h2>
+<p>Un contrôle de cohérence est une affirmation vérifiable sur les données, écrite en code, qui s'exécute à chaque chargement et arrête le traitement si elle est fausse. Quelques-uns, immédiats à écrire :</p>
+<ol class="steps">
+<li><strong>Les bornes</strong><p>Exposition entre 0 et 1. Âge entre 0 et 120. Quotient de mortalité qx entre 0 et 1. Charge positive ou nulle.</p></li>
+<li><strong>L'ordre des dates</strong><p>Survenance avant déclaration, déclaration avant clôture, souscription avant survenance.</p></li>
+<li><strong>L'unicité des clés</strong><p>Un identifiant de police apparaît une fois dans la table des polices. Sinon la jointure duplique silencieusement.</p></li>
+<li><strong>Les totaux qui doivent se retrouver</strong><p>La somme du triangle par année de survenance égale la charge totale de l'année. L'écart se voit tout de suite, l'erreur se cherche après.</p></li>
+<li><strong>Les modalités attendues</strong><p>La colonne garantie ne contient que des valeurs de la liste connue. Une modalité nouvelle est un signal, pas un détail.</p></li>
+</ol>
+<h2 id="disque">Comment ça se range sur le disque</h2>
+<p>Une règle, et elle évite bien des accidents : <strong>la donnée brute ne se modifie jamais à la main</strong>. Elle arrive, elle est posée, elle ne bouge plus. Tout ce qui suit est produit par du code, donc rejouable.</p>
+<div class="grid grid-3">
+<div class="card"><h4>brut/</h4><p>Les extractions telles qu'elles sont arrivées, avec leur date dans le nom. En lecture seule. On n'y corrige pas une cellule.</p></div>
+<div class="card"><h4>prepare/</h4><p>Ce que le code produit : typé, contrôlé, documenté. Peut se jeter et se refabriquer en une commande.</p></div>
+<div class="card"><h4>resultats/</h4><p>Les sorties d'un calcul, rangées par exécution. C'est le sujet du chapitre sur les résultats versionnés.</p></div>
+</div>
+<h2 id="colonne-texte">Une colonne de texte à nettoyer : la méthode, pas la ligne</h2>
+<p>Une colonne d'adresses, de noms de clients, de commentaires libres : dix mille lignes, mal écrites par endroits. La première idée est de donner les lignes une par une à l'IA. C'est lent, ça coûte à chaque ligne, et rien ne garantit qu'elle traite deux lignes semblables de la même façon.</p>
+<p>L'autre façon : lui donner la colonne comme un objet, et lui demander une méthode.</p>
+<ol class="steps">
+<li><strong>Ce qui est juste ne bouge pas</strong><p>L'adresse qui existe telle quelle dans le référentiel, le nom identique à celui du référentiel : le plus souvent la grande majorité, et rien à faire.</p></li>
+<li><strong>Ce qui est presque juste se corrige par une règle</strong><p>Casse, accents, ponctuation, un « SA » en plus, une lettre doublée : une normalisation et une mesure de ressemblance, écrites une fois, rangent ces lignes sans IA.</p></li>
+<li><strong>L'IA ne raisonne que sur les cas difficiles</strong><p>Avec, pour chacun, une liste de candidats restreinte en amont, jamais toute la nomenclature. Elle raisonne alors comme vous : la ville est fausse, mais c'est la commune voisine, et l'erreur se comprend.</p></li>
+</ol>
+<div class="callout assurance">
+<span class="label">Le référentiel client</span>
+<p>Dans presque toutes les entreprises, il y a plusieurs référentiels clients, et des doublons. « AXA » et « AXA SA » sont le même client : la règle le voit. « AXAA » demande un raisonnement : si le référentiel n'a qu'AXA, c'est sûrement lui ; s'il contient « AXAA Imprimerie », c'est peut-être l'imprimerie. C'est là que l'IA aide le plus, sur peu de lignes, et sur celles où un humain hésiterait aussi.</p>
+</div>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt de la méthode</span>
+<p>« Voici la description de la colonne adresse et vingt lignes fabriquées qui en reproduisent les défauts, et le référentiel des communes. Ne corrige rien. Propose une méthode en trois temps : ce qui correspond exactement, ce qui se rapproche par une règle (dis laquelle, et le seuil), ce qui reste à examiner. Écris le code des deux premiers temps, et fais sortir la liste des cas difficiles avec, pour chacun, les trois candidats les plus proches. »</p>
+</div>
+<p>La méthode devient un outil : elle se relance sur la colonne entière, puis sur l'extraction suivante, et l'IA n'intervient plus que sur la liste des cas difficiles. Ces cas-là sont des données réelles, souvent personnelles : ils ne passent que par l'IA que votre établissement autorise, comme le dit <a href="../../industrialisation/cadrer/index.html#donnees">Ce qui ne sort pas</a>.</p>
+<h2 id="ia">Ce que ça change quand l'IA entre dans la pièce</h2>
+<p>Deux conséquences directes, et ce sont elles qui font de ce chapitre un préalable et pas une digression.</p>
+<p><strong>On ne lui envoie pas les données.</strong> On lui donne le schéma, le dictionnaire, quelques lignes d'exemple fabriquées, et des statistiques univariées. Il écrit le traitement, le traitement s'exécute sur votre poste. Mais ce que le traitement affiche, un aperçu, une erreur qui cite une valeur, revient dans la conversation et part chez le fournisseur. Les données nominatives restent donc hors du dossier de travail ; on travaille en synthétique ou pseudonymisé. C'est à la fois la bonne pratique de confidentialité et la plus efficace : un modèle travaille mieux sur une structure claire que sur dix mille lignes.</p>
+<p><strong>Ce qui est ambigu pour un collègue est ambigu pour lui.</strong> Une colonne nommée <code>mnt</code> sans unité, un vide qui veut dire trois choses, deux grains mélangés : il ne pose pas la question, il choisit. Le dictionnaire et les contrôles sont ce qui l'empêche de choisir à votre place.</p>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> À faire sur votre propre portefeuille</span>
+<p>Prenez l'extraction que vous utilisez le plus souvent. Écrivez son grain en une phrase, puis les lignes de dictionnaire des colonnes qui servent au calcul. Comptez combien de fois vous devez aller demander la réponse à quelqu'un.</p>
+<details class="answer"><summary>Ce qu'on trouve souvent</summary>
+<p>Deux ou trois colonnes dont personne ne sait dire l'unité ou ce que vaut un vide, et au moins une qui n'a pas le grain qu'on croyait. Ce sont exactement les colonnes sur lesquelles un calcul se trompe sans bruit.</p>
+</details>
+</div>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>Une table a un grain, écrit ; deux grains dans une table faussent les totaux sans rien casser.</li>
+<li>Le type, l'unité et le sens d'un vide s'écrivent dans le dictionnaire, et se vérifient au chargement.</li>
+<li>La donnée brute ne se modifie jamais à la main, tout le reste est produit par du code.</li>
+<li>L'IA reçoit le schéma et des exemples, pas le portefeuille : tout ce qu'elle lit ou affiche part chez le fournisseur, et les données nominatives restent hors du dossier de travail.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../introduction/atelier-premier-echange/index.html"><small>&larr; Précédent</small>Atelier : un premier échange cadré</a><a class="next" href="../../exploration/classeur/index.html"><small>Suivant &rarr;</small>Un classeur bien rangé</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

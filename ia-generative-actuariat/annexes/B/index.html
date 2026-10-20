@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe B. Bibliothèque de prompts d’intention · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe B. Bibliothèque de prompts d’intention</h1>
+      <p class="lede">Recueil de prompts d’intention réutilisables, organisés par famille de cas actuariel. Chaque entrée donne la situation, le prompt à copier dans Claude Code, une variante selon le contexte, et le piège à surveiller.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#patterns-transverses">Patterns transverses</a><a href="#pricing">Pricing</a><a href="#provisionnement">Provisionnement</a><a href="#démographie-et-vie">Démographie et vie</a><a href="#réglementaire">Réglementaire</a><a href="#communication-et-restitution">Communication et restitution</a><a href="#industrialisation">Industrialisation</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<p>Cette annexe s’ouvre à côté de la session Claude Code. Les prompts ne sont pas des formules : ce sont des points de départ, à adapter à votre cas. Ce qui compte est la posture, l’intention métier, pas la formulation au mot près.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Sur quelles données
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tous ces prompts supposent un dossier de travail qui ne contient que des données synthétiques, publiques ou pseudonymisées. Tout ce que Claude lit ou affiche part chez le fournisseur du modèle, et les permissions ne protègent pas un fichier qu’un script autorisé peut ouvrir (<a href="../../annexes/D/index.html">annexe D</a>).</p>
+</div>
+</div>
+<section class="level2" data-number="31.1" id="patterns-transverses">
+<h2 class="anchored" data-anchor-id="patterns-transverses" data-number="31.1" id="patterns-transverses"> Patterns transverses</h2>
+<p>Quelques gestes reviennent dans toutes les familles de cas.</p>
+<section class="level3" data-number="31.1.1" id="le-brief-douverture-de-projet">
+<h3 class="anchored" data-anchor-id="le-brief-douverture-de-projet" data-number="31.1.1"> Le brief d’ouverture de projet</h3>
+<blockquote class="blockquote">
+<p><em>“Voici le projet sur lequel je vais travailler aujourd’hui : [décrire en trois ou quatre phrases l’objectif, le périmètre, le livrable attendu]. Avant d’écrire du code, lis le CLAUDE.md et les fichiers de référence qu’il cite, puis propose-moi un plan en quelques points pour atteindre le livrable. Pose-moi tes questions de clarification d’abord.”</em></p>
+</blockquote>
+<p>À utiliser au début d’une session, surtout si Claude n’a pas vu le projet depuis longtemps. L’intention est cadrée avant la première ligne de code.</p>
+</section>
+<section class="level3" data-number="31.1.2" id="la-critique-systématique-avant-validation">
+<h3 class="anchored" data-anchor-id="la-critique-systématique-avant-validation" data-number="31.1.2"> La critique systématique avant validation</h3>
+<blockquote class="blockquote">
+<p><em>“Avant que je valide [cette analyse / ce modèle / cette note], joue le rôle d’un actuaire senior en revue. Cherche les hypothèses implicites qui ne sont pas vérifiées, les cas où mon approche tomberait en défaut, les chiffres qui mériteraient une source. Sois sévère, ne ménage pas l’auteur.”</em></p>
+</blockquote>
+<p>À utiliser avant tout livrable signable. C’est la parade à la complaisance du modèle, qui abonde volontiers dans votre sens.</p>
+</section>
+<section class="level3" data-number="31.1.3" id="la-traduction-en-langage-naturel">
+<h3 class="anchored" data-anchor-id="la-traduction-en-langage-naturel" data-number="31.1.3"> La traduction en langage naturel</h3>
+<blockquote class="blockquote">
+<p><em>“Reformule en français ce que tu viens de faire (ou ce que tu t’apprêtes à faire) et pourquoi.”</em></p>
+</blockquote>
+<p>À utiliser chaque fois que Claude lance une commande longue, ou propose une transformation de code dont l’intention vous échappe. Cela ne coûte qu’un échange.</p>
+</section>
+<section class="level3" data-number="31.1.4" id="le-commit-après-validation">
+<h3 class="anchored" data-anchor-id="le-commit-après-validation" data-number="31.1.4"> Le commit après validation</h3>
+<blockquote class="blockquote">
+<p><em>“Cette version me convient, commite-la avec un message qui décrit l’intention de la modification.”</em></p>
+</blockquote>
+<p>À utiliser à chaque étape validée. Ce qui n’est pas commité n’a pas de point de retour, et ce qui n’est pas poussé n’existe que sur votre poste (<a href="../../annexes/E/index.html">annexe E</a>).</p>
+</section>
+<section class="level3" data-number="31.1.5" id="la-demande-de-comparaison">
+<h3 class="anchored" data-anchor-id="la-demande-de-comparaison" data-number="31.1.5"> La demande de comparaison</h3>
+<blockquote class="blockquote">
+<p><em>“J’ai deux approches possibles pour [problème]. Approche A : [description courte]. Approche B : [description courte]. Compare-les sous trois angles : (1) défendabilité en revue, (2) coût de mise en œuvre, (3) tenue sur les cas limites. Recommande-moi laquelle privilégier dans mon contexte, et dis ce qui te ferait changer d’avis.”</em></p>
+</blockquote>
+<p>À utiliser à chaque choix de méthode. Claude doit exposer l’arbitrage au lieu de pencher vers la première approche venue.</p>
+</section>
+</section>
+<section class="level2" data-number="31.2" id="pricing">
+<h2 class="anchored" data-anchor-id="pricing" data-number="31.2" id="pricing"> Pricing</h2>
+<section class="level3" data-number="31.2.1" id="démarrer-une-exploration-univariée">
+<h3 class="anchored" data-anchor-id="démarrer-une-exploration-univariée" data-number="31.2.1"> Démarrer une exploration univariée</h3>
+<blockquote class="blockquote">
+<p><em>“Voici un portefeuille auto dans le DataFrame <code>polices_df</code>, une ligne par police, avec le nombre de sinistres <code>nb_sinistres</code> et l’exposition <code>exposition</code> en années. Pour chaque variable explicative candidate (<code>age</code>, <code>bonus_malus</code>, <code>puissance</code>, <code>zone</code>, <code>anciennete</code>), trace la fréquence observée par modalité, calculée comme la somme des sinistres divisée par la somme des expositions, avec l’exposition de chaque modalité. Mets tout sur une grille. Commente chaque graphique en une phrase, sans conclure au-delà de ce qu’il montre.”</em></p>
+</blockquote>
+<p><strong>Variante</strong>, une fois l’univariée faite : <em>“complète l’analyse par des graphiques croisés sur les couples de variables qui te semblent liés, et dis pourquoi tu les as choisis.”</em></p>
+<p><strong>Piège</strong> : la moyenne, ligne à ligne, du rapport sinistres sur exposition au lieu du rapport des sommes. Une police présente quinze jours avec un sinistre pèse alors autant qu’une police présente un an. Vérifier la formule dans le code.</p>
+</section>
+<section class="level3" data-number="31.2.2" id="construire-un-glm-poisson-de-fréquence">
+<h3 class="anchored" data-anchor-id="construire-un-glm-poisson-de-fréquence" data-number="31.2.2"> Construire un GLM Poisson de fréquence</h3>
+<blockquote class="blockquote">
+<p><em>“Pour ce portefeuille auto, je veux modéliser la fréquence de sinistres en tenant compte de l’exposition. Variables candidates : âge en tranches, bonus-malus en tranches, puissance, zone. Quelle famille de modèle me recommandes-tu et pourquoi ? Ajuste-le, vérifie la surdispersion, et sors-moi les diagnostics.”</em></p>
+</blockquote>
+<p><strong>Variante</strong> sévérité : <em>“même intention, pour le coût moyen des sinistres, sur les seules polices sinistrées.”</em> Claude proposera une loi Gamma. Vérifier la pondération : la cible est le coût moyen par police sinistrée, le poids est le nombre de sinistres.</p>
+<p><strong>Piège</strong> : la cible doit être le nombre de sinistres, avec <span class="math inline">\(\ln(\text{exposition})\)</span> en offset. Passer l’exposition en <code>weights</code> en gardant le nombre comme cible donne un modèle faux qui tourne sans erreur. Lire la formule dans le code.</p>
+</section>
+<section class="level3" data-number="31.2.3" id="comparer-glm-et-xgboost">
+<h3 class="anchored" data-anchor-id="comparer-glm-et-xgboost" data-number="31.2.3"> Comparer GLM et XGBoost</h3>
+<blockquote class="blockquote">
+<p><em>“Sur ce jeu de données, j’ai déjà un GLM Poisson de fréquence (<code>model_glm</code>). Ajuste un XGBoost challenger, objectif Poisson, avec validation croisée. Compare-les sur trois axes : déviance Poisson hors échantillon, interprétabilité, défendabilité en revue tarifaire. Recommande-moi lequel privilégier.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : l’exposition. Un XGBoost de fréquence la reçoit en marge de base, <code>base_margin=np.log(exposition)</code> avec <code>objective="count:poisson"</code>, l’équivalent de l’offset du GLM. Sans elle, il apprend la durée d’observation autant que le risque, et la comparaison ne vaut rien. Ensuite, un gain de déviance ne tranche pas à lui seul : le modèle d’apprentissage reste un challenger du GLM, et la défendabilité en revue pèse dans la décision.</p>
+</section>
+</section>
+<section class="level2" data-number="31.3" id="provisionnement">
+<h2 class="anchored" data-anchor-id="provisionnement" data-number="31.3" id="provisionnement"> Provisionnement</h2>
+<section class="level3" data-number="31.3.1" id="implémenter-un-chain-ladder">
+<h3 class="anchored" data-anchor-id="implémenter-un-chain-ladder" data-number="31.3.1"> Implémenter un Chain-Ladder</h3>
+<blockquote class="blockquote">
+<p><em>“Voici un triangle de paiements cumulés (<code>triangle</code>). Implémente le Chain-Ladder déterministe, en NumPy vectorisé : calcule les facteurs de développement, projette les ultimes et les réserves, et retourne aussi le détail cellule par cellule. Teste-le sur le triangle de Taylor-Ashe : réserve totale attendue 18 680 856, ultime total 53 038 946. Commite le module une fois le test passé.”</em></p>
+</blockquote>
+<p><strong>Variante</strong> Bornhuetter-Ferguson : <em>“même intention, avec un ratio sinistres à primes a priori de 75 %, que je justifierai par le tarif.”</em></p>
+<p><strong>Piège</strong> : confondre réserve et ultime. Sur Taylor-Ashe, comparer la somme des ultimes à 18 680 856 produit un écart énorme sur un module juste. Si les triangles sont gros ou que le calcul sera répété (bootstrap), préciser <em>“version vectorisée NumPy obligatoire”</em>.</p>
+</section>
+<section class="level3" data-number="31.3.2" id="bootstrap-de-la-distribution-des-réserves">
+<h3 class="anchored" data-anchor-id="bootstrap-de-la-distribution-des-réserves" data-number="31.3.2"> Bootstrap de la distribution des réserves</h3>
+<blockquote class="blockquote">
+<p><em>“À partir de ce Chain-Ladder, implémente le bootstrap ODP d’England et Verrall : 10 000 simulations, graine fixée à 42. Sauvegarde les réserves simulées en parquet. Donne la moyenne, l’écart-type et les quantiles à 50, 75, 95 et 99,5 % de la réserve totale. Trace l’histogramme.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : la graine est nécessaire, pas suffisante ; notez aussi la version de NumPy. Vérifiez que les simulations varient : des résidus tous nuls donnent 10 000 fois la même réserve. Sur Taylor-Ashe, l’écart-type attendu est d’environ 3,0 millions. Surtout, cette distribution est à l’ultime : elle ne donne ni le SCR de réserve, qui se mesure à horizon d’un an (Merz et Wüthrich), ni la marge de risque, qui est un coût du capital.</p>
+</section>
+<section class="level3" data-number="31.3.3" id="comparer-mack-et-bootstrap">
+<h3 class="anchored" data-anchor-id="comparer-mack-et-bootstrap" data-number="31.3.3"> Comparer Mack et bootstrap</h3>
+<blockquote class="blockquote">
+<p><em>“Sur ce triangle, compare l’incertitude sur la réserve totale estimée par Mack (racine de l’erreur quadratique moyenne de prédiction) et par le bootstrap ODP (écart-type des réserves simulées). Explique pourquoi les deux peuvent différer.”</em></p>
+</blockquote>
+<p><strong>Repère</strong> : sur Taylor-Ashe, Mack donne 2 447 095, soit un coefficient de variation de 13,1 % sur la réserve, et le bootstrap ODP un écart-type d’environ 3,0 millions.</p>
+<p><strong>Piège</strong> : comparer des grandeurs de même nature, un écart-type à un écart-type. Une variance, ou l’écart entre un quantile et la moyenne, ne se compare pas à un écart-type.</p>
+</section>
+</section>
+<section class="level2" data-number="31.4" id="démographie-et-vie">
+<h2 class="anchored" data-anchor-id="démographie-et-vie" data-number="31.4" id="démographie-et-vie"> Démographie et vie</h2>
+<section class="level3" data-number="31.4.1" id="lisser-une-table-de-mortalité">
+<h3 class="anchored" data-anchor-id="lisser-une-table-de-mortalité" data-number="31.4.1"> Lisser une table de mortalité</h3>
+<blockquote class="blockquote">
+<p><em>“Voici une table de mortalité (<code>mortalite_df</code>) avec les colonnes <code>age</code> et <code>qx_observe</code>. Repère la zone bruitée, en général les très grands âges. Ajuste une loi de Makeham sur la force de mortalité μx, sur une plage d’âges stable que tu me proposes et justifies, puis repasse en probabilités, qx = 1 − exp(−∫ μ entre x et x + 1), pour remplacer les qx bruités. Range le résultat dans une colonne <code>qx_lisse</code>. Trace l’avant et l’après.”</em></p>
+</blockquote>
+<p><strong>Variante</strong> : <em>“même intention, avec Heligman-Pollard au lieu de Makeham.”</em></p>
+<p><strong>Piège</strong> : Makeham porte sur <span class="math inline">\(\mu_x\)</span>, pas sur <span class="math inline">\(q_x\)</span> ; ajuster sa formule directement sur les <span class="math inline">\(q_x\)</span> mélange les deux. Et la mortalité de la première année de vie est réelle : elle ne se lisse pas.</p>
+</section>
+<section class="level3" data-number="31.4.2" id="projection-lee-carter">
+<h3 class="anchored" data-anchor-id="projection-lee-carter" data-number="31.4.2"> Projection Lee-Carter</h3>
+<blockquote class="blockquote">
+<p><em>“Sur ces données de la Human Mortality Database (<code>mortalite_par_annee</code>, taux centraux de mortalité m_x par âge et par année), ajuste un modèle de Lee-Carter sur log m_x, années 1950 à 2020, et projette sur 2021 à 2050. Trace m_x à 65 ans dans le temps. Donne l’espérance de vie résiduelle à 65 ans en 2030, en précisant si c’est une espérance du moment ou par génération.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : les années 2020 et 2021 (COVID) pèsent sur la tendance estimée ; les garder ou les écarter est une décision à écrire et à justifier. Lee-Carter porte sur les taux centraux <span class="math inline">\(m_x\)</span>, pas sur les <span class="math inline">\(q_x\)</span> : le passage de l’un à l’autre se fait explicitement.</p>
+</section>
+<section class="level3" data-number="31.4.3" id="calcul-de-pm-épargne">
+<h3 class="anchored" data-anchor-id="calcul-de-pm-épargne" data-number="31.4.3"> Calcul de PM épargne</h3>
+<blockquote class="blockquote">
+<p><em>“À partir de cette table prospective Lee-Carter (sortie du modèle précédent) et d’un taux d’actualisation de 1,5 %, calcule la PM épargne d’un assuré de 50 ans, avec un capital constitué de 100 000 euros et des versements annuels de 5 000 euros jusqu’à 65 ans, puis une sortie en rente viagère. Détaille les flux par âge.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : confondre le best estimate de Solvabilité II, calculé sur des hypothèses réalistes propres à l’organisme, et la provision mathématique des normes françaises, prudente (tables réglementaires, TGH05 et TGF05 pour les rentes, taux technique plafonné). Préciser laquelle on veut : une table prospective estimée par Lee-Carter relève du best estimate.</p>
+</section>
+</section>
+<section class="level2" data-number="31.5" id="réglementaire">
+<h2 class="anchored" data-anchor-id="réglementaire" data-number="31.5" id="réglementaire"> Réglementaire</h2>
+<section class="level3" data-number="31.5.1" id="lire-et-synthétiser-un-texte-de-lacpr">
+<h3 class="anchored" data-anchor-id="lire-et-synthétiser-un-texte-de-lacpr" data-number="31.5.1"> Lire et synthétiser un texte de l’ACPR</h3>
+<blockquote class="blockquote">
+<p><em>“Voici une recommandation de l’ACPR au format PDF (<code>@recommandation_acpr.pdf</code>). Lis-la et produis une fiche d’impact pour mon cabinet en cinq points : (1) qui est concerné, (2) quelles obligations nouvelles ou modifiées, (3) quelle date d’application, (4) quels processus internes seront à revoir, (5) quels indicateurs de suivi mettre en place. Cite la page pour chaque affirmation.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : Claude peut inventer un numéro d’article, ou prêter à un texte qui existe un contenu qu’il n’a pas. Vérifier chaque référence contre le PDF, page citée à l’appui.</p>
+</section>
+<section class="level3" data-number="31.5.2" id="structurer-une-note-méthodologique-scr">
+<h3 class="anchored" data-anchor-id="structurer-une-note-méthodologique-scr" data-number="31.5.2"> Structurer une note méthodologique SCR</h3>
+<blockquote class="blockquote">
+<p><em>“Voici le code Python du calcul du SCR de souscription non-vie (<code>calcul_scr.py</code>) et ses paramètres (<code>hypotheses.yaml</code>). Propose-moi le plan d’une note méthodologique destinée à la fonction actuarielle et au contrôleur, en six à huit sections. Pour chaque section, liste les points à couvrir sans rédiger encore. Identifie les hypothèses qui devront être justifiées, avec la ligne du code ou du YAML qui porte chacune.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : demander la note d’un coup. On fragmente : le plan d’abord, puis section par section, chaque chiffre repris du calcul et pas de la prose.</p>
+</section>
+<section class="level3" data-number="31.5.3" id="synthèse-orsa-pour-le-comité-de-direction">
+<h3 class="anchored" data-anchor-id="synthèse-orsa-pour-le-comité-de-direction" data-number="31.5.3"> Synthèse ORSA pour le comité de direction</h3>
+<blockquote class="blockquote">
+<p><em>“Voici le rapport ORSA (<code>@orsa_2026.pdf</code>). Produis une synthèse de deux pages pour le comité de direction : (1) chiffres clés du capital et de la solvabilité, (2) principaux risques identifiés et leur évolution, (3) actions de management recommandées, (4) points d’attention pour les douze prochains mois. Style : phrases courtes, conclusions d’abord.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : un rapport ORSA est confidentiel, et tout ce que Claude lit part chez le fournisseur. Ce prompt ne se lance que sous une offre entreprise validée par la DSI et le délégué à la protection des données, ou sur une version expurgée. Et chaque chiffre de la synthèse se vérifie contre le rapport : une synthèse peut inventer aussi.</p>
+</section>
+</section>
+<section class="level2" data-number="31.6" id="communication-et-restitution">
+<h2 class="anchored" data-anchor-id="communication-et-restitution" data-number="31.6" id="communication-et-restitution"> Communication et restitution</h2>
+<section class="level3" data-number="31.6.1" id="note-méthodologique-courte">
+<h3 class="anchored" data-anchor-id="note-méthodologique-courte" data-number="31.6.1"> Note méthodologique courte</h3>
+<blockquote class="blockquote">
+<p><em>“À partir du calcul <code>X</code>, produis une note méthodologique de deux pages : objectif, méthode, résultats, limites. Pyramide inversée : la conclusion en premier. Cite la source de chaque chiffre (fichier et colonne). Laisse-moi les passages techniques à compléter.”</em></p>
+</blockquote>
+</section>
+<section class="level3" data-number="31.6.2" id="présentation-au-conseil-en-cinq-diapositives">
+<h3 class="anchored" data-anchor-id="présentation-au-conseil-en-cinq-diapositives" data-number="31.6.2"> Présentation au conseil en cinq diapositives</h3>
+<blockquote class="blockquote">
+<p><em>“À partir de ce calcul de provisions (résultats dans <code>result_df</code>), prépare une présentation au conseil en cinq diapositives : (1) chiffre clé, (2) évolution par rapport à N-1, (3) principaux facteurs d’évolution, (4) sensibilités, (5) actions de management. Un seul message par diapositive, écrit dans le titre. Format Quarto Reveal.js, un fichier .qmd.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : un chiffre de diapositive tapé dans la prose au lieu d’être lu dans <code>result_df</code>. Demander que chaque nombre affiché soit calculé dans le fichier.</p>
+</section>
+<section class="level3" data-number="31.6.3" id="tableau-de-bord-de-sinistralité">
+<h3 class="anchored" data-anchor-id="tableau-de-bord-de-sinistralité" data-number="31.6.3"> Tableau de bord de sinistralité</h3>
+<blockquote class="blockquote">
+<p><em>“Décris-moi la spécification d’un tableau de bord de sinistralité auto : indicateurs globaux (S/P, fréquence, coût moyen), détail par tranche de bonus-malus et par région, alertes sur les dérives mensuelles. Puis construis-le en local, en Python avec Streamlit, sur <code>polices_synthetiques.csv</code>.”</em></p>
+</blockquote>
+<p><strong>Variante</strong> : <em>“génère-moi plutôt le prompt à copier dans Lovable pour démarrer.”</em></p>
+<p><strong>Piège</strong> : Lovable héberge l’application chez lui ; seules des données agrégées ou synthétiques y vont. La version locale tourne sur le poste, mais ce que Claude lit pour la construire part quand même chez le fournisseur : on la construit sur le fichier synthétique, puis on la branche sur les vraies données hors de la session.</p>
+</section>
+</section>
+<section class="level2" data-number="31.7" id="industrialisation">
+<h2 class="anchored" data-anchor-id="industrialisation" data-number="31.7" id="industrialisation"> Industrialisation</h2>
+<section class="level3" data-number="31.7.1" id="migrer-un-classeur-excel-vba-en-module-python">
+<h3 class="anchored" data-anchor-id="migrer-un-classeur-excel-vba-en-module-python" data-number="31.7.1"> Migrer un classeur Excel-VBA en module Python</h3>
+<blockquote class="blockquote">
+<p><em>“Voici un classeur Excel-VBA qui calcule [X] (capture d’écran ou description en cinq phrases). Propose-moi un découpage moteur et interface : (1) quel module Python pour la logique de calcul, (2) quelle interface, xlwings pour rester dans Excel ou Streamlit pour passer au web. Commence par le moteur, avec ses tests.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : le moteur Python doit reproduire Excel sur des cas de référence, arrondis compris : une différence d’arrondi se lit, elle ne s’ignore pas. Et une application web écrite en JavaScript (une application Lovable, par exemple) n’importe pas un module Python : il faut une API entre les deux.</p>
+</section>
+<section class="level3" data-number="31.7.2" id="vectoriser-un-monte-carlo-lent">
+<h3 class="anchored" data-anchor-id="vectoriser-un-monte-carlo-lent" data-number="31.7.2"> Vectoriser un Monte Carlo lent</h3>
+<blockquote class="blockquote">
+<p><em>“Voici un Monte Carlo non-vie écrit avec des boucles <code>for</code> (fichier <code>mc_naif.py</code>). Vectorise-le avec NumPy. Mesure le temps des deux versions avec <code>timeit</code>. Vérifie que les deux versions donnent la même distribution (test de Kolmogorov-Smirnov). Explique-moi la transformation en français.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : conclure sans mesurer. Une vectorisation peut allouer des tableaux énormes et ne rien gagner ; si le temps ne baisse pas, demander pourquoi.</p>
+</section>
+<section class="level3" data-number="31.7.3" id="écrire-les-tests-pytest-dun-module">
+<h3 class="anchored" data-anchor-id="écrire-les-tests-pytest-dun-module" data-number="31.7.3"> Écrire les tests pytest d’un module</h3>
+<blockquote class="blockquote">
+<p><em>“Pour ce module de Chain-Ladder (<code>chain_ladder.py</code>), écris une suite de tests pytest. Couvre au minimum : (1) un triangle dont les montants cumulés ne bougent plus d’une année de développement à l’autre donne des facteurs égaux à 1 et des réserves nulles, (2) Taylor-Ashe 1983 retombe sur la réserve totale publiée, 18 680 856, et sur l’ultime total, 53 038 946, (3) les cas dégénérés (triangle vide, colonne nulle, triangle 1 × 1), (4) multiplier le triangle par une constante multiplie les réserves par la même constante.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : un test qui compare la mauvaise grandeur échoue sur un module juste, et la tentation est alors de corriger le module. La graine, elle, n’a rien à faire dans les tests d’un Chain-Ladder, qui est déterministe.</p>
+</section>
+<section class="level3" data-number="31.7.4" id="configurer-git-pour-un-projet-récurrent">
+<h3 class="anchored" data-anchor-id="configurer-git-pour-un-projet-récurrent" data-number="31.7.4"> Configurer Git pour un projet récurrent</h3>
+<blockquote class="blockquote">
+<p><em>“Pour ce projet de calcul du SCR du premier trimestre 2026, configure Git : initialise le dépôt, écris un .gitignore adapté (données sensibles exclues, artefacts lourds exclus, réglages personnels exclus), ajoute un README court qui décrit le projet, fais le premier commit. Propose-moi un schéma d’étiquettes (tags) pour les versions remises au contrôleur.”</em></p>
+</blockquote>
+<p><strong>Piège</strong> : croire que le tag fige tout. Il ne fige ni les données exclues par le .gitignore ni l’environnement, et <code>git push</code> n’envoie pas les tags (<a href="../../annexes/E/index.html">annexe E</a>).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : trouvez les erreurs dans ce prompt
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un collègue a écrit ce prompt pour son dossier Solvabilité II :</p>
+<blockquote class="blockquote">
+<p><em>“Compare la marge pour risque de la réserve estimée par Mack (sigma²) et par le bootstrap (quantile à 99,5 % moins la moyenne), et retiens la plus prudente pour mon calcul Solvabilité II.”</em></p>
+</blockquote>
+<p>Qu’est-ce qui ne va pas ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li>Les deux grandeurs ne se comparent pas : une variance d’un côté, l’écart entre un quantile et la moyenne de l’autre. On compare un écart-type à un écart-type : la racine de la MSEP de Mack et l’écart-type des réserves simulées.</li>
+<li>Ni l’une ni l’autre n’est une marge de risque. Dans Solvabilité II, la marge de risque se calcule par le coût du capital (articles 37 à 39 du Règlement délégué 2015/35), pas par un quantile.</li>
+<li>Le quantile à 99,5 % d’une distribution à l’ultime n’est pas non plus le SCR de réserve, qui se mesure à horizon d’un an.</li>
+<li>« Retenir la plus prudente » n’a pas de sens pour un best estimate, qui repose sur des hypothèses réalistes.</li>
+</ol>
+<p>Le prompt corrigé : <em>“Sur ce triangle, compare l’incertitude sur la réserve totale estimée par Mack (racine de la MSEP) et par le bootstrap ODP (écart-type des réserves simulées), et explique pourquoi elles diffèrent.”</em></p>
+</details>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="31.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="31.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<p>Cette bibliothèque s’enrichit avec votre pratique.</p>
+<ol type="1">
+<li>Quand un prompt improvisé marche bien, <strong>copiez-le ici</strong> avec son contexte. Vous le réutiliserez.</li>
+<li>Quand un prompt rate plusieurs fois, <strong>cherchez pourquoi</strong> (intention floue, piège de méthode non énoncé), corrigez-le, gardez la version corrigée.</li>
+<li><strong>Partagez-la entre collègues</strong> : versionnée dans le dépôt de l’équipe, une bibliothèque de prompts se transmet comme le <code>CLAUDE.md</code>, et peut devenir un skill.</li>
+</ol>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/A/index.html"><small>&larr; Précédent</small>Annexe A. Glossaire Claude Code et IA générative</a><a class="next" href="../../annexes/C/index.html"><small>Suivant &rarr;</small>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

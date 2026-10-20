@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C3. Présentation board en cinq slides · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">C3. Présentation board en cinq slides</h1>
+      <p class="lede">Cette fiche illustre la démarche D sur des slides Reveal.js. Ce que vous apprenez n’est pas la CSM IFRS 17, mais le schéma « un message par slide, pyramide inversée, décisions explicites », la règle « aucun chiffre retapé », et la critique « administrateur non actuaire » qui révèle les passages opaques.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-préparez-les-réponses-du-board">Exercice : préparez les réponses du board</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : D, construire un dashboard ou un rapport (slide deck)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Communication et tableaux de bord » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="25.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="25.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le board d’un assureur a un agenda chargé. Pour défendre un calcul actuariel (révision du provisionnement, nouvelle tarification, position de solvabilité, IFRS 17), vous disposez de quelques minutes en séance, puis des questions. Le support doit faire <strong>passer un message clair en 5 slides maximum</strong>.</p>
+<p>Les écueils habituels : surcharge d’information, jargon, manque de hiérarchie, et des chiffres qui ne correspondent plus au calcul parce qu’ils ont été recopiés à la main. Le résultat : le board ne décide rien et demande des compléments.</p>
+<p>Le cas illustre <strong>l’organisation des données</strong> (chiffres clés tirés d’une source unique), <strong>l’interface de présentation</strong> (Quarto Reveal.js, pyramide inversée, un message par slide), <strong>la gouvernance</strong> (versionnement Git du <code>.qmd</code> final), et <strong>le pilotage IA</strong> (5 prompts pour identifier le message, produire les slides, critiquer en mode board).</p>
+</section>
+<section class="level2" data-number="25.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="25.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On reprend la cohorte IFRS 17 de la fiche S3 : 10 000 contrats temporaire décès sur 10 ans, émis en 2026. On ne retape aucun chiffre de S3 : le bloc ci-dessous lit la fiche S3 et exécute son bloc moteur (celui marqué <code>label: s3-moteur</code>), puis construit la présentation à partir de ses résultats. Si le calcul de S3 change, la présentation suit.</p>
+<p>Dans un projet réel, le moteur vivrait dans un module Python importé par la note technique et par la présentation : c’est le moteur séparé de son interface que pratique l’atelier du deuxième jour après-midi. Lire le <code>.qmd</code> de S3 est un raccourci propre à ce support.</p>
+<div class="cell" data-execution_count="1" id="87f62060">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="co"># Source unique : le bloc moteur de la fiche S3, exécuté tel quel</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>texte_s3 <span class="op">=</span> Path(<span class="st">"S3_ifrs17_csm.qmd"</span>).read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>moteur_s3 <span class="op">=</span> re.search(<span class="vs">r"```</span><span class="ch">\{</span><span class="vs">python</span><span class="ch">\}\n</span><span class="vs">#</span><span class="ch">\|</span><span class="vs"> label: s3-moteur</span><span class="ch">\n</span><span class="kw">(</span><span class="dv">.</span><span class="op">*?</span><span class="kw">)</span><span class="ch">\n</span><span class="vs">```"</span>, texte_s3, re.S).group(<span class="dv">1</span>)</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="bu">exec</span>(moteur_s3)                         <span class="co"># définit COHORTE, mesurer, liberer_csm, MESURE, LIBERATION</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="kw">def</span> meur(x: <span class="bu">float</span>, decimales: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    <span class="co">"""Montant en millions d'euros, virgule décimale à la française."""</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>x <span class="op">/</span> <span class="fl">1e6</span><span class="sc">:.</span>{decimales}f<span class="sc">}</span><span class="ss">"</span>.replace(<span class="st">"."</span>, <span class="st">","</span>) <span class="op">+</span> <span class="st">" M EUR"</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a><span class="kw">def</span> nb(n: <span class="bu">float</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    <span class="co">"""Nombre entier, espace comme séparateur de milliers."""</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>n<span class="sc">:,.0f}</span><span class="ss">"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>)</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>lib <span class="op">=</span> LIBERATION[<span class="st">"liberation"</span>]</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>PRESENTATION <span class="op">=</span> {</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>    <span class="st">"sujet"</span>: <span class="ss">f"CSM IFRS 17, cohorte </span><span class="sc">{</span>COHORTE[<span class="st">'annee_emission'</span>]<span class="sc">}</span><span class="ss"> temporaire décès"</span>,</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>    <span class="st">"audience"</span>: <span class="st">"Board (8 administrateurs, majoritairement non actuaires)"</span>,</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>    <span class="st">"duree_seance"</span>: <span class="st">"10 min + 15 min de questions"</span>,</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    <span class="st">"presentateur"</span>: <span class="st">"[Direction de l'actuariat]"</span>,</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>    <span class="st">"chiffres_cles"</span>: {</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>        <span class="st">"csm_initiale"</span>: MESURE[<span class="st">"csm"</span>],</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>        <span class="st">"best_estimate"</span>: MESURE[<span class="st">"best_estimate"</span>],</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>        <span class="st">"ra"</span>: MESURE[<span class="st">"ra"</span>],</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>        <span class="st">"liberation_premiere_annee"</span>: lib.iloc[<span class="dv">0</span>],</span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>        <span class="st">"liberation_derniere_annee"</span>: lib.iloc[<span class="op">-</span><span class="dv">1</span>],</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>        <span class="st">"taux_verrouille"</span>: COHORTE[<span class="st">"taux_verrouille"</span>],</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>    },</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>}</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>cc <span class="op">=</span> PRESENTATION[<span class="st">"chiffres_cles"</span>]</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>PRESENTATION[<span class="st">"messages_par_slide"</span>] <span class="op">=</span> [</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>    (<span class="st">"Slide 1"</span>, <span class="st">"Conclusion en une phrase"</span>,</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>     <span class="ss">f"La cohorte </span><span class="sc">{</span>COHORTE[<span class="st">'annee_emission'</span>]<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>nb(COHORTE[<span class="st">'n_contrats'</span>])<span class="sc">}</span><span class="ss"> contrats) porte un profit attendu "</span></span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>     <span class="ss">f"de </span><span class="sc">{</span>meur(cc[<span class="st">'csm_initiale'</span>])<span class="sc">}</span><span class="ss">, reconnu en résultat sur </span><span class="sc">{</span>COHORTE[<span class="st">'duree'</span>]<span class="sc">}</span><span class="ss"> ans, de "</span></span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>meur(cc[<span class="st">'liberation_premiere_annee'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> la première année à </span><span class="sc">{</span>meur(cc[<span class="st">'liberation_derniere_annee'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> la dernière."</span>),</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>    (<span class="st">"Slide 2"</span>, <span class="st">"Pourquoi cette cohorte"</span>,</span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>     <span class="ss">f"Première cohorte de l'année, </span><span class="sc">{</span>nb(COHORTE[<span class="st">'n_contrats'</span>])<span class="sc">}</span><span class="ss"> contrats homogènes (capital "</span></span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>nb(COHORTE[<span class="st">'capital_deces'</span>])<span class="sc">}</span><span class="ss"> EUR, souscription à </span><span class="sc">{</span>COHORTE[<span class="st">'age_souscription'</span>]<span class="sc">}</span><span class="ss"> ans) : elle sert de référence."</span>),</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    (<span class="st">"Slide 3"</span>, <span class="st">"La mécanique en une image"</span>,</span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>     <span class="st">"La CSM est un stock de profit non reconnu. Elle se libère au rythme de la couverture fournie, "</span></span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>     <span class="st">"c'est-à-dire du capital assuré encore en vigueur."</span>),</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>    (<span class="st">"Slide 4"</span>, <span class="st">"Ce qui peut la faire varier"</span>,</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>     <span class="st">"Une révision défavorable des hypothèses de mortalité, de résiliation ou de frais réduit la CSM. "</span></span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>     <span class="st">"Le tableau chiffre chaque hypothèse."</span>),</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a>    (<span class="st">"Slide 5"</span>, <span class="st">"Décisions demandées au board"</span>,</span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a>     <span class="st">"Valider les unités de couverture retenues et la méthode d'ajustement pour risque. "</span></span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a>     <span class="st">"Confirmer le suivi trimestriel des écarts d'expérience."</span>),</span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a>]</span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a></span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sujet : </span><span class="sc">{</span>PRESENTATION[<span class="st">'sujet'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Audience : </span><span class="sc">{</span>PRESENTATION[<span class="st">'audience'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CSM initiale lue dans S3 : </span><span class="sc">{</span>nb(cc[<span class="st">'csm_initiale'</span>])<span class="sc">}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb1-56"><a aria-hidden="true" href="#cb1-56" tabindex="-1"></a><span class="cf">for</span> slide_num, titre, message <span class="kw">in</span> PRESENTATION[<span class="st">"messages_par_slide"</span>]:</span>
+<span id="cb1-57"><a aria-hidden="true" href="#cb1-57" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>slide_num<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>titre<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-58"><a aria-hidden="true" href="#cb1-58" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"    </span><span class="sc">{</span>message<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sujet : CSM IFRS 17, cohorte 2026 temporaire décès
+Audience : Board (8 administrateurs, majoritairement non actuaires)
+CSM initiale lue dans S3 : 10 616 711 EUR
+
+Slide 1, Conclusion en une phrase
+    La cohorte 2026 (10 000 contrats) porte un profit attendu de 10,6 M EUR, reconnu en résultat sur 10 ans, de 1,43 M EUR la première année à 0,94 M EUR la dernière.
+
+Slide 2, Pourquoi cette cohorte
+    Première cohorte de l'année, 10 000 contrats homogènes (capital 100 000 EUR, souscription à 45 ans) : elle sert de référence.
+
+Slide 3, La mécanique en une image
+    La CSM est un stock de profit non reconnu. Elle se libère au rythme de la couverture fournie, c'est-à-dire du capital assuré encore en vigueur.
+
+Slide 4, Ce qui peut la faire varier
+    Une révision défavorable des hypothèses de mortalité, de résiliation ou de frais réduit la CSM. Le tableau chiffre chaque hypothèse.
+
+Slide 5, Décisions demandées au board
+    Valider les unités de couverture retenues et la méthode d'ajustement pour risque. Confirmer le suivi trimestriel des écarts d'expérience.
+</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="25.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="25.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Identifier les 5 messages.</strong> <em>“À partir des résultats du cas S3 (CSM IFRS 17, cohorte 2026), identifie les 5 messages à passer au board. Pour chacun : la conclusion en une phrase et le chiffre qui la soutient, pris dans <code>MESURE</code> ou <code>LIBERATION</code>, jamais retapé. C’est la pyramide inversée.”</em></p></li>
+<li><p><strong>Structurer la présentation.</strong> <em>“Pour ces 5 messages, propose une structure de présentation Reveal.js : ordre des slides, type de visuel par slide, durée de parole indicative par slide pour tenir 10 minutes.”</em></p></li>
+<li><p><strong>Produire le .qmd Quarto Reveal.js.</strong> <em>“Génère le fichier <code>.qmd</code> Reveal.js avec : titre, sous-titre, 5 slides selon la structure validée. Les chiffres sont insérés par le code à partir des résultats de S3. Style sobre. Charte : bleu nuit, ambre, émeraude. Pas de transitions.”</em></p></li>
+<li><p><strong>Critique board.</strong> <em>“Joue le rôle d’un administrateur non actuaire qui découvre ces slides 5 minutes avant la séance. Pour chaque slide : (1) est-ce que le message est clair en 10 secondes ? (2) quel mot devrait être remplacé ? (3) quelle question vais-je poser ?”</em></p></li>
+<li><p><strong>Anticiper les questions.</strong> <em>“Sur ce sujet, liste les 5 questions les plus probables du board, avec une réponse de 2-3 phrases chacune, chiffrée par le calcul quand c’est possible. Anticipe les questions techniques (CSM et Solvabilité II, résiliations, taux) et de communication financière.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="25.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="25.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="25.4.1" id="étape-1.-identifier-les-5-messages">
+<h3 class="anchored" data-anchor-id="étape-1.-identifier-les-5-messages" data-number="25.4.1"> Étape 1. Identifier les 5 messages</h3>
+<p>Les cinq messages sont ceux du dictionnaire <code>PRESENTATION</code>, affichés ci-dessus. Test de la pyramide : si le board ne voit que la slide 1, il a la conclusion ; chaque slide suivante ajoute un niveau (le contexte, puis la mécanique, puis les risques, puis les décisions), et chacune se suffit à elle-même. L’étape 2 chiffre ce test avec les durées de parole.</p>
+</section>
+<section class="level3" data-number="25.4.2" id="étape-2.-structure-de-la-présentation">
+<h3 class="anchored" data-anchor-id="étape-2.-structure-de-la-présentation" data-number="25.4.2"> Étape 2. Structure de la présentation</h3>
+<div class="cell" data-execution_count="2" id="d4bb4f8b">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>structure_slides <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    {<span class="st">"slide"</span>: <span class="dv">1</span>, <span class="st">"type_visuel"</span>: <span class="st">"Texte + 2 chiffres en grand"</span>,</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>     <span class="st">"duree_parole_min"</span>: <span class="fl">1.0</span>, <span class="st">"objectif"</span>: <span class="st">"Conclusion claire dès le début"</span>},</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    {<span class="st">"slide"</span>: <span class="dv">2</span>, <span class="st">"type_visuel"</span>: <span class="st">"Tableau cohorte (4 lignes)"</span>,</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>     <span class="st">"duree_parole_min"</span>: <span class="fl">1.5</span>, <span class="st">"objectif"</span>: <span class="st">"Contexte chiffré rapide"</span>},</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    {<span class="st">"slide"</span>: <span class="dv">3</span>, <span class="st">"type_visuel"</span>: <span class="st">"Courbe de libération (figure de S3)"</span>,</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>     <span class="st">"duree_parole_min"</span>: <span class="fl">3.0</span>, <span class="st">"objectif"</span>: <span class="st">"Pédagogie sur la mécanique"</span>},</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    {<span class="st">"slide"</span>: <span class="dv">4</span>, <span class="st">"type_visuel"</span>: <span class="st">"Tableau des sensibilités"</span>,</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>     <span class="st">"duree_parole_min"</span>: <span class="fl">2.5</span>, <span class="st">"objectif"</span>: <span class="st">"Anticiper les risques"</span>},</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>    {<span class="st">"slide"</span>: <span class="dv">5</span>, <span class="st">"type_visuel"</span>: <span class="st">"3 décisions avec cases à cocher"</span>,</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>     <span class="st">"duree_parole_min"</span>: <span class="fl">2.0</span>, <span class="st">"objectif"</span>: <span class="st">"Demander les décisions explicitement"</span>},</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>])</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>structure_slides[<span class="st">"cumul_min"</span>] <span class="op">=</span> structure_slides[<span class="st">"duree_parole_min"</span>].cumsum()</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>total_parole <span class="op">=</span> structure_slides[<span class="st">"duree_parole_min"</span>].<span class="bu">sum</span>()</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a><span class="bu">print</span>(structure_slides.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Durée totale de parole : </span><span class="sc">{</span>total_parole<span class="sc">:g}</span><span class="ss"> min pour 10 min prévues."</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> slide                         type_visuel  duree_parole_min                             objectif  cumul_min
+     1         Texte + 2 chiffres en grand               1.0       Conclusion claire dès le début        1.0
+     2          Tableau cohorte (4 lignes)               1.5              Contexte chiffré rapide        2.5
+     3 Courbe de libération (figure de S3)               3.0           Pédagogie sur la mécanique        5.5
+     4            Tableau des sensibilités               2.5                Anticiper les risques        8.0
+     5     3 décisions avec cases à cocher               2.0 Demander les décisions explicitement       10.0
+
+Durée totale de parole : 10 min pour 10 min prévues.</code></pre>
+</div>
+</div>
+<p>La colonne des cumuls donne le test de la pyramide en minutes : au bout de 1 minute, le board a la conclusion ; au bout de 2 min 30, le contexte ; au bout de 5 min 30, la mécanique. Les durées remplissent exactement les 10 minutes : aucune marge. C’est un point à corriger avant la séance (raccourcir la slide 3, par exemple), pas après.</p>
+</section>
+<section class="level3" data-number="25.4.3" id="étape-3.-produire-le-.qmd-reveal.js">
+<h3 class="anchored" data-anchor-id="étape-3.-produire-le-.qmd-reveal.js" data-number="25.4.3"> Étape 3. Produire le <code>.qmd</code> Reveal.js</h3>
+<p>Le tableau de sensibilités de la slide 4 est calculé, pas estimé : chaque ligne relance le moteur de S3 avec une hypothèse modifiée et lit la nouvelle CSM initiale.</p>
+<div class="cell" data-execution_count="3" id="41c33dcf">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>variantes <span class="op">=</span> {</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>    <span class="st">"Mortalité best estimate +10 %"</span>: <span class="bu">dict</span>(COHORTE, facteur_mortalite<span class="op">=</span><span class="fl">1.10</span>),</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>    <span class="st">"Taux de résiliation 9 % au lieu de 6 %"</span>: <span class="bu">dict</span>(COHORTE, taux_rachat<span class="op">=</span><span class="fl">0.09</span>),</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="st">"Frais de gestion +10 %"</span>: <span class="bu">dict</span>(COHORTE, frais_gestion_par_an<span class="op">=</span>COHORTE[<span class="st">"frais_gestion_par_an"</span>] <span class="op">*</span> <span class="fl">1.10</span>),</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>    <span class="st">"RA : marge de mortalité 15 % au lieu de 10 %"</span>: <span class="bu">dict</span>(COHORTE, marge_mortalite_ra<span class="op">=</span><span class="fl">0.15</span>),</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>}</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>sensibilites <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    {<span class="st">"hypothese"</span>: nom, <span class="st">"csm_initiale"</span>: mesurer(c)[<span class="st">"csm"</span>],</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>     <span class="st">"ecart"</span>: mesurer(c)[<span class="st">"csm"</span>] <span class="op">-</span> MESURE[<span class="st">"csm"</span>],</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>     <span class="st">"perte_immediate"</span>: mesurer(c)[<span class="st">"composante_perte"</span>]}</span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>    <span class="cf">for</span> nom, c <span class="kw">in</span> variantes.items()</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>]).sort_values(<span class="st">"ecart"</span>, ignore_index<span class="op">=</span><span class="va">True</span>)           <span class="co"># la plus pénalisante en tête</span></span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a><span class="bu">print</span>(sensibilites.<span class="bu">round</span>(<span class="dv">0</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                   hypothese  csm_initiale      ecart  perte_immediate
+               Mortalité best estimate +10 %     7875572.0 -2741140.0              0.0
+RA : marge de mortalité 15 % au lieu de 10 %     9369644.0 -1247068.0              0.0
+      Taux de résiliation 9 % au lieu de 6 %     9719532.0  -897180.0              0.0
+                      Frais de gestion +10 %    10441149.0  -175562.0              0.0</code></pre>
+</div>
+</div>
+<p>La mortalité est l’hypothèse qui pèse le plus : relevée de 10 %, elle retire 2,7 M EUR à la CSM, qui reste positive (aucune perte immédiate). Viennent ensuite la marge de l’ajustement pour risque (1,2 M), les résiliations (0,9 M), puis les frais (0,2 M).</p>
+<p>Le code produit ensuite les fichiers de la présentation, dans un dossier à part : l’image de la slide 3, qui retrace la figure de S3 à partir de <code>LIBERATION</code> ; la charte de couleurs demandée au prompt 3 ; le texte du <code>.qmd</code>, où les chiffres entrent par le code. Ici le dossier est temporaire, pour ne rien écrire dans la bibliothèque ; dans votre projet, c’est le dossier de la présentation.</p>
+<div class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>dossier <span class="op">=</span> Path(tempfile.gettempdir()) <span class="op">/</span> <span class="st">"board_csm"</span></span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>dossier.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>ax.bar(LIBERATION[<span class="st">"annee"</span>], LIBERATION[<span class="st">"liberation"</span>] <span class="op">/</span> <span class="fl">1e6</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>,</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>       label<span class="op">=</span><span class="st">"Libération de l'année (résultat)"</span>)</span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>ax.plot(LIBERATION[<span class="st">"annee"</span>], LIBERATION[<span class="st">"csm_fin"</span>] <span class="op">/</span> <span class="fl">1e6</span>, <span class="st">"o-"</span>, color<span class="op">=</span><span class="st">"#b45309"</span>,</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>        linewidth<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">8</span>, label<span class="op">=</span><span class="st">"CSM en fin d'année (bilan)"</span>)</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Année"</span>)</span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>ax.set_ylabel(<span class="st">"M EUR"</span>)</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>ax.set_xticks(LIBERATION[<span class="st">"annee"</span>])</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>ax.set_title(<span class="st">"La CSM se vide en 10 ans ; la libération baisse avec les contrats en vigueur"</span>)</span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>ax.legend()</span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>plt.savefig(dossier <span class="op">/</span> <span class="st">"csm_courbe.png"</span>, dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a></span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a>(dossier <span class="op">/</span> <span class="st">"charte.css"</span>).write_text(</span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>    <span class="st">".reveal h1, .reveal h2 { color: #0f172a; }</span><span class="ch">\n</span><span class="st">"</span>            <span class="co"># bleu nuit</span></span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a>    <span class="st">".reveal h2 { border-bottom: 3px solid #b45309; }</span><span class="ch">\n</span><span class="st">"</span>      <span class="co"># ambre</span></span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a>    <span class="st">".reveal strong { color: #047857; }</span><span class="ch">\n</span><span class="st">"</span>,                    <span class="co"># émeraude</span></span>
+<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a>    encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span></code></pre></div></div>
+<div class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="4" id="fig-c3-slide3">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-c3-slide3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-c3-slide3-1">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-c3-slide3-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" data-ref-parent="fig-c3-slide3" height="470" src="img/fig-c3-slide3-output-1_a5721f90.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-c3-slide3-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Image de la slide 3, retracée à partir du calcul de S3
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="4" id="fig-c3-slide3-2">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-c3-slide3-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<pre><code>127</code></pre>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-c3-slide3-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-c3-slide3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 25.1
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell" data-execution_count="5" id="621fb8c8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>lignes_sensi <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(<span class="ss">f"| </span><span class="sc">{</span>r<span class="sc">.</span>hypothese<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>meur(r.ecart, <span class="dv">1</span>)<span class="sc">}</span><span class="ss"> |"</span> <span class="cf">for</span> r <span class="kw">in</span> sensibilites.itertuples())</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>qmd_board <span class="op">=</span> <span class="ss">f"""---</span></span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a><span class="ss">title: "CSM IFRS 17 : cohorte </span><span class="sc">{</span>COHORTE[<span class="st">'annee_emission'</span>]<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a><span class="ss">subtitle: "Board, présentation de la direction de l'actuariat"</span></span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a><span class="ss">format:</span></span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a><span class="ss">  revealjs:</span></span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a><span class="ss">    theme: simple</span></span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a><span class="ss">    slide-number: true</span></span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a><span class="ss">    css: charte.css</span></span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a><span class="ss">---</span></span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a><span class="ss">## 1. Conclusion </span><span class="ch">{{</span><span class="ss">.center</span><span class="ch">}}</span></span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a></span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a><span class="ss">**Profit attendu de la cohorte : </span><span class="sc">{</span>meur(cc[<span class="st">'csm_initiale'</span>])<span class="sc">}</span><span class="ss">**, reconnu en résultat sur </span><span class="sc">{</span>COHORTE[<span class="st">'duree'</span>]<span class="sc">}</span><span class="ss"> ans.</span></span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a></span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a><span class="ss">De </span><span class="sc">{</span>meur(cc[<span class="st">'liberation_premiere_annee'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> la première année à </span><span class="sc">{</span>meur(cc[<span class="st">'liberation_derniere_annee'</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> la dernière.</span></span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a></span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a><span class="ss">## 2. Pourquoi cette cohorte</span></span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a></span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a><span class="ss">| Caractéristique | Valeur |</span></span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a><span class="ss">|---|---|</span></span>
+<span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a><span class="ss">| Volume | </span><span class="sc">{</span>nb(COHORTE[<span class="st">'n_contrats'</span>])<span class="sc">}</span><span class="ss"> contrats |</span></span>
+<span id="cb9-24"><a aria-hidden="true" href="#cb9-24" tabindex="-1"></a><span class="ss">| Garantie | capital décès de </span><span class="sc">{</span>nb(COHORTE[<span class="st">'capital_deces'</span>])<span class="sc">}</span><span class="ss"> EUR, </span><span class="sc">{</span>COHORTE[<span class="st">'duree'</span>]<span class="sc">}</span><span class="ss"> ans |</span></span>
+<span id="cb9-25"><a aria-hidden="true" href="#cb9-25" tabindex="-1"></a><span class="ss">| Âge à la souscription | </span><span class="sc">{</span>COHORTE[<span class="st">'age_souscription'</span>]<span class="sc">}</span><span class="ss"> ans |</span></span>
+<span id="cb9-26"><a aria-hidden="true" href="#cb9-26" tabindex="-1"></a><span class="ss">| Rôle | première cohorte de l'année, référence |</span></span>
+<span id="cb9-27"><a aria-hidden="true" href="#cb9-27" tabindex="-1"></a></span>
+<span id="cb9-28"><a aria-hidden="true" href="#cb9-28" tabindex="-1"></a><span class="ss">## 3. La mécanique en une image</span></span>
+<span id="cb9-29"><a aria-hidden="true" href="#cb9-29" tabindex="-1"></a></span>
+<span id="cb9-30"><a aria-hidden="true" href="#cb9-30" tabindex="-1"></a><span class="ss">![Libération de la CSM sur </span><span class="sc">{</span>COHORTE[<span class="st">'duree'</span>]<span class="sc">}</span><span class="ss"> ans](csm_courbe.png)</span></span>
+<span id="cb9-31"><a aria-hidden="true" href="#cb9-31" tabindex="-1"></a></span>
+<span id="cb9-32"><a aria-hidden="true" href="#cb9-32" tabindex="-1"></a><span class="ss">La CSM est un **stock** de profit non reconnu. Elle se libère au rythme de la couverture fournie.</span></span>
+<span id="cb9-33"><a aria-hidden="true" href="#cb9-33" tabindex="-1"></a></span>
+<span id="cb9-34"><a aria-hidden="true" href="#cb9-34" tabindex="-1"></a><span class="ss">## 4. Ce qui peut la faire varier</span></span>
+<span id="cb9-35"><a aria-hidden="true" href="#cb9-35" tabindex="-1"></a></span>
+<span id="cb9-36"><a aria-hidden="true" href="#cb9-36" tabindex="-1"></a><span class="ss">| Hypothèse revue | Effet sur la CSM |</span></span>
+<span id="cb9-37"><a aria-hidden="true" href="#cb9-37" tabindex="-1"></a><span class="ss">|---|---|</span></span>
+<span id="cb9-38"><a aria-hidden="true" href="#cb9-38" tabindex="-1"></a><span class="sc">{</span>lignes_sensi<span class="sc">}</span></span>
+<span id="cb9-39"><a aria-hidden="true" href="#cb9-39" tabindex="-1"></a></span>
+<span id="cb9-40"><a aria-hidden="true" href="#cb9-40" tabindex="-1"></a><span class="ss">Tant que la CSM reste positive, elle absorbe ces révisions ; au-delà, la perte passe en résultat.</span></span>
+<span id="cb9-41"><a aria-hidden="true" href="#cb9-41" tabindex="-1"></a></span>
+<span id="cb9-42"><a aria-hidden="true" href="#cb9-42" tabindex="-1"></a><span class="ss">## 5. Décisions demandées au board </span><span class="ch">{{</span><span class="ss">.center</span><span class="ch">}}</span></span>
+<span id="cb9-43"><a aria-hidden="true" href="#cb9-43" tabindex="-1"></a></span>
+<span id="cb9-44"><a aria-hidden="true" href="#cb9-44" tabindex="-1"></a><span class="ss">- [ ] **Valider** les unités de couverture (capital assuré en vigueur).</span></span>
+<span id="cb9-45"><a aria-hidden="true" href="#cb9-45" tabindex="-1"></a><span class="ss">- [ ] **Valider** la méthode d'ajustement pour risque (marge de </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> COHORTE[<span class="st">'marge_mortalite_ra'</span>]<span class="sc">:.0f}</span><span class="ss"> % sur la mortalité).</span></span>
+<span id="cb9-46"><a aria-hidden="true" href="#cb9-46" tabindex="-1"></a><span class="ss">- [ ] **Confirmer** le suivi trimestriel des écarts d'expérience.</span></span>
+<span id="cb9-47"><a aria-hidden="true" href="#cb9-47" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb9-48"><a aria-hidden="true" href="#cb9-48" tabindex="-1"></a>(dossier <span class="op">/</span> <span class="st">"board.qmd"</span>).write_text(qmd_board, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb9-49"><a aria-hidden="true" href="#cb9-49" tabindex="-1"></a><span class="bu">print</span>(qmd_board)</span>
+<span id="cb9-50"><a aria-hidden="true" href="#cb9-50" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Fichiers écrits dans"</span>, dossier, <span class="st">":"</span>, <span class="st">", "</span>.join(<span class="bu">sorted</span>(f.name <span class="cf">for</span> f <span class="kw">in</span> dossier.iterdir())))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>---
+title: "CSM IFRS 17 : cohorte 2026"
+subtitle: "Board, présentation de la direction de l'actuariat"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    css: charte.css
+---
+
+## 1. Conclusion {.center}
+
+**Profit attendu de la cohorte : 10,6 M EUR**, reconnu en résultat sur 10 ans.
+
+De 1,43 M EUR la première année à 0,94 M EUR la dernière.
+
+## 2. Pourquoi cette cohorte
+
+| Caractéristique | Valeur |
+|---|---|
+| Volume | 10 000 contrats |
+| Garantie | capital décès de 100 000 EUR, 10 ans |
+| Âge à la souscription | 45 ans |
+| Rôle | première cohorte de l'année, référence |
+
+## 3. La mécanique en une image
+
+![Libération de la CSM sur 10 ans](csm_courbe.png)
+
+La CSM est un **stock** de profit non reconnu. Elle se libère au rythme de la couverture fournie.
+
+## 4. Ce qui peut la faire varier
+
+| Hypothèse revue | Effet sur la CSM |
+|---|---|
+| Mortalité best estimate +10 % | -2,7 M EUR |
+| RA : marge de mortalité 15 % au lieu de 10 % | -1,2 M EUR |
+| Taux de résiliation 9 % au lieu de 6 % | -0,9 M EUR |
+| Frais de gestion +10 % | -0,2 M EUR |
+
+Tant que la CSM reste positive, elle absorbe ces révisions ; au-delà, la perte passe en résultat.
+
+## 5. Décisions demandées au board {.center}
+
+- [ ] **Valider** les unités de couverture (capital assuré en vigueur).
+- [ ] **Valider** la méthode d'ajustement pour risque (marge de 10 % sur la mortalité).
+- [ ] **Confirmer** le suivi trimestriel des écarts d'expérience.
+
+Fichiers écrits dans C:\Users\shike\AppData\Local\Temp\board_csm : board.qmd, charte.css, csm_courbe.png</code></pre>
+</div>
+</div>
+<p>Le texte est un <code>.qmd</code> Quarto Reveal.js : un titre <code>##</code> par slide (pas besoin de <code>---</code> en plus), des tableaux Markdown, une classe <code>.center</code> sur les slides courtes. Le dossier contient tout ce qu’il référence (<code>csm_courbe.png</code>, <code>charte.css</code>). On le rend en ouvrant un terminal dans ce dossier : <code>quarto render board.qmd</code> produit <code>board.html</code>, la présentation.</p>
+</section>
+<section class="level3" data-number="25.4.4" id="étape-4.-critique-en-mode-administrateur-non-actuaire">
+<h3 class="anchored" data-anchor-id="étape-4.-critique-en-mode-administrateur-non-actuaire" data-number="25.4.4"> Étape 4. Critique en mode « administrateur non actuaire »</h3>
+<p>À demander à Claude (ou à un collègue qui ne connaît pas le dossier) :</p>
+<blockquote class="blockquote">
+<p><em>“Voici les 5 slides de la présentation board. Joue le rôle d’un administrateur non actuaire qui les découvre 5 minutes avant la séance. Pour chaque slide : (1) le message principal est-il clair en 10 secondes de lecture ? (2) quel mot ou concept devrait être expliqué ou remplacé ? (3) quelle question vais-je poser en séance ?”</em></p>
+</blockquote>
+<p>Avant de lancer le prompt, notez vous-même, slide par slide, la question que vous poseriez à la place d’un administrateur.</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Réactions typiques à anticiper :</p>
+<ul>
+<li>Slide 1 : <em>« qu’est-ce qu’une “cohorte” au juste ? Le mot fait technique. »</em></li>
+<li>Slide 2 : <em>« pourquoi 10 ans ? C’est notre choix ou le produit ? »</em></li>
+<li>Slide 3 : <em>« pourquoi la libération baisse-t-elle chaque année ? Nous gagnons moins ? »</em> (Le profit reconnu baisse, mais pas la rentabilité : moins de contrats sont encore couverts.)</li>
+<li>Slide 4 : <em>« la marge de l’ajustement pour risque, vous l’avez choisie comment ? C’est prudent ou non ? »</em></li>
+<li>Slide 5 : <em>« que se passe-t-il si nous ne validons rien ce trimestre ? »</em></li>
+</ul>
+</details>
+</section>
+<section class="level3" data-number="25.4.5" id="étape-5.-anticiper-les-questions-et-préparer-les-réponses">
+<h3 class="anchored" data-anchor-id="étape-5.-anticiper-les-questions-et-préparer-les-réponses" data-number="25.4.5"> Étape 5. Anticiper les questions et préparer les réponses</h3>
+<p>Les réponses chiffrées se calculent avec le moteur de S3, avant la séance.</p>
+</section>
+</section>
+<section class="level2" data-number="25.5" id="exercice-préparez-les-réponses-du-board">
+<h2 class="anchored" data-anchor-id="exercice-préparez-les-réponses-du-board" data-number="25.5" id="exercice-préparez-les-réponses-du-board"> Exercice : préparez les réponses du board</h2>
+<p>Rédigez en 2 ou 3 phrases votre réponse à chacune de ces questions, puis comparez avec la réponse repliée.</p>
+<ol type="1">
+<li>Pourquoi la libération n’est-elle pas la même chaque année ?</li>
+<li>La CSM peut-elle devenir négative ?</li>
+<li>Comment se compare cette CSM avec la marge de risque Solvabilité II ?</li>
+<li>Que se passe-t-il pour la CSM si les taux remontent ?</li>
+<li>Que se passe-t-il en cas de résiliation massive de contrats ?</li>
+</ol>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>La question 5 se calcule avec le moteur de S3 : on suppose que 30 % des contrats en vigueur résilient au début de 2028, et on mesure, au taux verrouillé, la part des flux d’exécution futurs qui disparaît avec eux.</p>
+<div class="cell" data-execution_count="6" id="bbb9b427">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="co"># Résiliation massive : 30 % des contrats en vigueur résilient au début de 2028 (année 2)</span></span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>t_choc, part_resiliee <span class="op">=</span> <span class="dv">2</span>, <span class="fl">0.30</span></span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>flux_futurs <span class="op">=</span> mesurer(COHORTE, depuis<span class="op">=</span>t_choc)[<span class="st">"flux_execution"</span>]    <span class="co"># au taux verrouillé</span></span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>csm_avant <span class="op">=</span> LIBERATION.loc[t_choc, <span class="st">"csm_debut"</span>]</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>ajustement <span class="op">=</span> part_resiliee <span class="op">*</span> flux_futurs                             <span class="co"># négatif : profit futur perdu</span></span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>csm_apres <span class="op">=</span> <span class="bu">max</span>(<span class="fl">0.0</span>, csm_avant <span class="op">+</span> ajustement)</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>unites <span class="op">=</span> LIBERATION[<span class="st">"unites_couverture"</span>].to_numpy()</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>part_annee <span class="op">=</span> unites[t_choc] <span class="op">/</span> unites[t_choc:].<span class="bu">sum</span>()</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>r <span class="op">=</span> COHORTE[<span class="st">"taux_verrouille"</span>]</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>lib_avant <span class="op">=</span> LIBERATION.loc[t_choc, <span class="st">"liberation"</span>]</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>lib_apres <span class="op">=</span> csm_apres <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> r) <span class="op">*</span> part_annee</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a></span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>questions_anticipees <span class="op">=</span> [</span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>    (<span class="st">"Pourquoi la libération n'est-elle pas la même chaque année ?"</span>,</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a>     <span class="st">"La libération suit les unités de couverture, ici le capital assuré encore en vigueur (IFRS 17, B119). "</span></span>
+<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a>     <span class="st">"Les décès et les résiliations réduisent ce capital d'année en année, donc la part de CSM libérée aussi : "</span></span>
+<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a>     <span class="ss">f"de </span><span class="sc">{</span>meur(lib.iloc[<span class="dv">0</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> en </span><span class="sc">{</span>COHORTE[<span class="st">'annee_emission'</span>]<span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>meur(lib.iloc[<span class="op">-</span><span class="dv">1</span>], <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> en "</span></span>
+<span id="cb11-18"><a aria-hidden="true" href="#cb11-18" tabindex="-1"></a>     <span class="ss">f"</span><span class="sc">{</span>COHORTE[<span class="st">'annee_emission'</span>] <span class="op">+</span> COHORTE[<span class="st">'duree'</span>] <span class="op">-</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">. Ce n'est pas la prestation versée qui compte, "</span></span>
+<span id="cb11-19"><a aria-hidden="true" href="#cb11-19" tabindex="-1"></a>     <span class="st">"c'est la couverture fournie."</span>),</span>
+<span id="cb11-20"><a aria-hidden="true" href="#cb11-20" tabindex="-1"></a>    (<span class="st">"La CSM peut-elle devenir négative ?"</span>,</span>
+<span id="cb11-21"><a aria-hidden="true" href="#cb11-21" tabindex="-1"></a>     <span class="st">"Non. Si les hypothèses se dégradent au-delà de la CSM restante, la CSM tombe à zéro et l'excédent passe "</span></span>
+<span id="cb11-22"><a aria-hidden="true" href="#cb11-22" tabindex="-1"></a>     <span class="st">"immédiatement en résultat comme perte (composante de perte). La CSM ne peut pas cacher une perte : "</span></span>
+<span id="cb11-23"><a aria-hidden="true" href="#cb11-23" tabindex="-1"></a>     <span class="st">"c'est l'intérêt de cette règle."</span>),</span>
+<span id="cb11-24"><a aria-hidden="true" href="#cb11-24" tabindex="-1"></a>    (<span class="st">"Comment se compare cette CSM avec la marge de risque Solvabilité II ?"</span>,</span>
+<span id="cb11-25"><a aria-hidden="true" href="#cb11-25" tabindex="-1"></a>     <span class="st">"Ce ne sont pas des homologues. La marge de risque Solvabilité II répond à l'ajustement pour risque IFRS 17 "</span></span>
+<span id="cb11-26"><a aria-hidden="true" href="#cb11-26" tabindex="-1"></a>     <span class="ss">f"(</span><span class="sc">{</span>meur(MESURE[<span class="st">'ra'</span>])<span class="sc">}</span><span class="ss"> ici) : les deux rémunèrent l'incertitude. La CSM est un profit futur ; "</span></span>
+<span id="cb11-27"><a aria-hidden="true" href="#cb11-27" tabindex="-1"></a>     <span class="st">"en Solvabilité II, ce profit n'est pas au passif, il est dans les fonds propres."</span>),</span>
+<span id="cb11-28"><a aria-hidden="true" href="#cb11-28" tabindex="-1"></a>    (<span class="st">"Que se passe-t-il pour la CSM si les taux remontent ?"</span>,</span>
+<span id="cb11-29"><a aria-hidden="true" href="#cb11-29" tabindex="-1"></a>     <span class="ss">f"Rien sur la CSM de cette cohorte : elle est accrétée au taux verrouillé de </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> r<span class="sc">:.0f}</span><span class="ss"> %. Les flux d'exécution "</span></span>
+<span id="cb11-30"><a aria-hidden="true" href="#cb11-30" tabindex="-1"></a>     <span class="st">"sont réévalués au nouveau taux, et l'écart passe en résultat financier d'assurance (ou en OCI selon "</span></span>
+<span id="cb11-31"><a aria-hidden="true" href="#cb11-31" tabindex="-1"></a>     <span class="st">"l'option choisie). Une cohorte émise plus tard aura son propre taux verrouillé."</span>),</span>
+<span id="cb11-32"><a aria-hidden="true" href="#cb11-32" tabindex="-1"></a>    (<span class="st">"Que se passe-t-il en cas de résiliation massive de contrats ?"</span>,</span>
+<span id="cb11-33"><a aria-hidden="true" href="#cb11-33" tabindex="-1"></a>     <span class="ss">f"La résiliation réduit la CSM, elle ne la libère pas. Si 30 % des contrats résilient début 2028, le profit futur "</span></span>
+<span id="cb11-34"><a aria-hidden="true" href="#cb11-34" tabindex="-1"></a>     <span class="ss">f"attendu sur ces contrats disparaît : la CSM passe de </span><span class="sc">{</span>meur(csm_avant)<span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>meur(csm_apres)<span class="sc">}</span><span class="ss">. "</span></span>
+<span id="cb11-35"><a aria-hidden="true" href="#cb11-35" tabindex="-1"></a>     <span class="ss">f"La libération de 2028 baisse dans la même proportion, de </span><span class="sc">{</span>meur(lib_avant, <span class="dv">2</span>)<span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>meur(lib_apres, <span class="dv">2</span>)<span class="sc">}</span><span class="ss">. "</span></span>
+<span id="cb11-36"><a aria-hidden="true" href="#cb11-36" tabindex="-1"></a>     <span class="st">"Tant que la CSM reste positive, rien ne passe en perte immédiate."</span>),</span>
+<span id="cb11-37"><a aria-hidden="true" href="#cb11-37" tabindex="-1"></a>]</span>
+<span id="cb11-38"><a aria-hidden="true" href="#cb11-38" tabindex="-1"></a><span class="cf">for</span> i, (q, rep) <span class="kw">in</span> <span class="bu">enumerate</span>(questions_anticipees, <span class="dv">1</span>):</span>
+<span id="cb11-39"><a aria-hidden="true" href="#cb11-39" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Q</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>q<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-40"><a aria-hidden="true" href="#cb11-40" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"    </span><span class="sc">{</span>rep<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Q1 : Pourquoi la libération n'est-elle pas la même chaque année ?
+    La libération suit les unités de couverture, ici le capital assuré encore en vigueur (IFRS 17, B119). Les décès et les résiliations réduisent ce capital d'année en année, donc la part de CSM libérée aussi : de 1,43 M EUR en 2026 à 0,94 M EUR en 2035. Ce n'est pas la prestation versée qui compte, c'est la couverture fournie.
+
+Q2 : La CSM peut-elle devenir négative ?
+    Non. Si les hypothèses se dégradent au-delà de la CSM restante, la CSM tombe à zéro et l'excédent passe immédiatement en résultat comme perte (composante de perte). La CSM ne peut pas cacher une perte : c'est l'intérêt de cette règle.
+
+Q3 : Comment se compare cette CSM avec la marge de risque Solvabilité II ?
+    Ce ne sont pas des homologues. La marge de risque Solvabilité II répond à l'ajustement pour risque IFRS 17 (2,5 M EUR ici) : les deux rémunèrent l'incertitude. La CSM est un profit futur ; en Solvabilité II, ce profit n'est pas au passif, il est dans les fonds propres.
+
+Q4 : Que se passe-t-il pour la CSM si les taux remontent ?
+    Rien sur la CSM de cette cohorte : elle est accrétée au taux verrouillé de 2 %. Les flux d'exécution sont réévalués au nouveau taux, et l'écart passe en résultat financier d'assurance (ou en OCI selon l'option choisie). Une cohorte émise plus tard aura son propre taux verrouillé.
+
+Q5 : Que se passe-t-il en cas de résiliation massive de contrats ?
+    La résiliation réduit la CSM, elle ne la libère pas. Si 30 % des contrats résilient début 2028, le profit futur attendu sur ces contrats disparaît : la CSM passe de 8,2 M EUR à 5,9 M EUR. La libération de 2028 baisse dans la même proportion, de 1,30 M EUR à 0,94 M EUR. Tant que la CSM reste positive, rien ne passe en perte immédiate.
+</code></pre>
+</div>
+</div>
+</details>
+</section>
+<section class="level2" data-number="25.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="25.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Retaper les chiffres.</strong> Une première version de cette fiche annonçait une CSM de 850 k EUR recopiée à la main, sans lien avec le calcul de S3. Un chiffre de slide se lit dans une sortie de code, et le code de la présentation lit le moteur du calcul.</li>
+<li><strong>Trop de chiffres par slide.</strong> Un board ne lit pas un tableau de 20 lignes. <strong>Un message principal et 1 ou 2 chiffres en soutien</strong> par slide ; le reste en annexe.</li>
+<li><strong>Jargon non expliqué.</strong> « CSM », « ajustement pour risque », « taux verrouillé », « unités de couverture » sont opaques pour un administrateur non actuaire. <strong>Soit on les remplace</strong> par des paraphrases justes (« profit attendu non encore reconnu », « prix de l’incertitude sur les flux »), <strong>soit on les définit</strong> une fois en début de présentation. Une paraphrase fausse (« marge de prudence » pour l’ajustement pour risque) est pire que le terme technique.</li>
+<li><strong>Demander à Claude la présentation entière d’un coup.</strong> Vous obtenez 10 slides plausibles que vous ne pouvez pas défendre en séance. <strong>Toujours fragmenter</strong> : messages d’abord, structure ensuite, slides en dernier.</li>
+<li><strong>Pas d’anticipation des questions.</strong> Sans réponses préparées, vous improvisez en séance. Les réponses chiffrées (résiliation massive, sensibilités) se calculent avant, pas pendant.</li>
+<li><strong>Slide « Décisions » floue.</strong> « Le board est invité à donner son avis » ne provoque aucune décision. <strong>Formuler des décisions explicites</strong> (« Valider X », « Confirmer Y ») avec des cases à cocher.</li>
+</ul>
+</section>
+<section class="level2" data-number="25.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="25.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>S2 ORSA, synthèse exécutive</strong> : version document (2-3 pages) du même type de restitution.</li>
+<li><strong>S3 IFRS 17 et CSM</strong> : le calcul et l’explication technique sous-jacents à cette présentation.</li>
+<li><strong>C2 Rapport annuel d’un fonds vie</strong> : pendant document écrit, pour les assurés et le réseau de distribution.</li>
+<li><strong>La demi-journée « Communication et tableaux de bord »</strong> (deuxième jour au matin) : le principe de la pyramide inversée, puis l’atelier qui le pratique.</li>
+</ul>
+</section>
+<section class="level2" data-number="25.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="25.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Naviguer pendant les questions.</strong> Dans une présentation Reveal.js, la touche O (ou Échap) affiche la vue d’ensemble des slides, et le menu de Quarto (option <code>menu</code>, active par défaut) liste les titres pour revenir à n’importe quelle slide.</li>
+<li><strong>Envoyer les slides en PDF avant la séance.</strong> Reveal.js s’imprime en PDF depuis le navigateur : touche E pour passer en mode impression, puis Imprimer vers PDF.</li>
+<li><strong>Charte versionnée.</strong> Le <code>charte.css</code> produit à l’étape 3 ne fixe que trois couleurs. Complété (polices, tableaux, pied de page) et versionné dans Git, il sert de modèle commun à toutes les présentations.</li>
+<li><strong>Présentation avec calcul en direct.</strong> Pour un comité technique, une slide peut contenir un bloc Python qui recalcule la CSM à partir des hypothèses. Demander à Claude <em>“prépare-moi une slide avec un bloc Python qui calcule la CSM en direct à partir du moteur de S3”</em>.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/C2/index.html"><small>&larr; Précédent</small>C2. Rapport annuel d’un fonds vie</a><a class="next" href="../../bibliotheque/I1/index.html"><small>Suivant &rarr;</small>I1. Migration d’un calcul Excel-VBA en module Python</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

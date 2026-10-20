@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P2. GLM Poisson de fréquence · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">P2. GLM Poisson de fréquence</h1>
+      <p class="lede">Cette fiche illustre la démarche B (construire un modèle) sur un GLM Poisson de fréquence. Ce que vous apprenez ici n’est pas le GLM (vous savez), mais comment fragmenter le pipeline en 5 micro-prompts validés un par un, comment cadrer l’intention métier sans prescrire le COMMENT, et comment imposer la critique systématique au LLM avant validation.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="4.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="4.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Toute compagnie d’assurance auto modélise la fréquence des sinistres pour tarifer. Le GLM Poisson avec offset <span class="math inline">\(\log(\text{exposure})\)</span> est le standard professionnel : interprétable, défendable en revue tarifaire interne comme devant la fonction actuarielle. Sa mise en place suit toujours les mêmes étapes : explorer, préparer, ajuster, diagnostiquer, valider.</p>
+<p>Ce cas porte le corrigé de l’atelier « Exploration et modélisation ». Il met en pratique le prompting d’intention, l’approche bottom-up et la validation systématique. À la fin, le participant a un pipeline complet sur son poste, qu’il pourra rebrancher sur ses propres données. Pas sur le fichier nominatif : tout ce que Claude lit ou affiche part chez le fournisseur, et les permissions de Claude Code évitent les accidents sans protéger les données. On travaille sur un extrait pseudonymisé, rangé hors du dossier tant qu’il ne l’est pas.</p>
+</section>
+<section class="level2" data-number="4.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="4.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le jeu public de référence est <strong>freMTPL2freq</strong> (package R <code>CASdatasets</code>, aussi sur OpenML) : 678 013 contrats de responsabilité civile auto français, librement utilisables. Pour que cette fiche soit reproductible et rapide à rendre, on simule un portefeuille de même structure, celui des fiches P1 à P5 (même code, même graine) : fréquence en U selon l’âge, jeunes conducteurs les plus risqués, croissante avec la densité de la zone, et un bonus-malus qui résume les sinistres passés.</p>
+<div class="cell" data-execution_count="1" id="09a703a5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">50_000</span>  <span class="co"># le vrai freMTPL2freq compte 678 013 lignes</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>age <span class="op">=</span> rng.integers(<span class="dv">18</span>, <span class="dv">86</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>puissance <span class="op">=</span> rng.integers(<span class="dv">4</span>, <span class="dv">12</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>zone <span class="op">=</span> rng.choice(<span class="bu">list</span>(<span class="st">"ABCDEF"</span>), size<span class="op">=</span>N, p<span class="op">=</span>[<span class="fl">0.12</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.20</span>, <span class="fl">0.10</span>])  <span class="co"># A rural, F urbain dense</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="co"># 60 % des contrats présents toute l'année, les autres entrés ou sortis en cours d'année</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>exposure <span class="op">=</span> np.where(rng.random(N) <span class="op">&lt;</span> <span class="fl">0.6</span>, <span class="fl">1.0</span>, rng.uniform(<span class="fl">0.05</span>, <span class="fl">1.0</span>, size<span class="op">=</span>N)).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="co"># Risque propre au conducteur, que le tarif ne voit pas (moyenne 1). Il fait les</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="co"># sinistres passés, donc le bonus-malus, et les sinistres de l'année : c'est par lui</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="co"># que le bonus-malus prédit la fréquence.</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>risque_cache <span class="op">=</span> rng.gamma(shape<span class="op">=</span><span class="fl">2.0</span>, scale<span class="op">=</span><span class="fl">0.5</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>sinistres_passes <span class="op">=</span> rng.poisson(<span class="fl">0.25</span> <span class="op">*</span> risque_cache)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="co"># Bonus-malus à la française (clause type de l'article A121-1 du Code des assurances) :</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="co"># 100 au permis, 0,95 par an sans sinistre responsable, plancher 50, 1,25 par</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="co"># sinistre responsable, plafond 350.</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>plancher <span class="op">=</span> np.maximum(<span class="dv">50</span>, <span class="dv">100</span> <span class="op">*</span> <span class="fl">0.95</span> <span class="op">**</span> (age <span class="op">-</span> <span class="dv">18</span>))</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>bonus_malus <span class="op">=</span> np.minimum(<span class="dv">350</span>, np.<span class="bu">round</span>(plancher <span class="op">*</span> <span class="fl">1.25</span> <span class="op">**</span> sinistres_passes)).astype(<span class="bu">int</span>)</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a><span class="co"># Fréquence annuelle : en U selon l'âge (jeunes conducteurs les plus risqués, remontée</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="co"># après 70 ans), croissante avec la densité, un peu avec la puissance, et plus forte</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="co"># pour un conducteur de 25 ans ou moins au volant d'un véhicule puissant.</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>effet_zone <span class="op">=</span> pd.Series(zone).<span class="bu">map</span>({<span class="st">"A"</span>: <span class="op">-</span><span class="fl">0.30</span>, <span class="st">"B"</span>: <span class="op">-</span><span class="fl">0.15</span>, <span class="st">"C"</span>: <span class="fl">0.0</span>,</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>                                  <span class="st">"D"</span>: <span class="fl">0.10</span>, <span class="st">"E"</span>: <span class="fl">0.25</span>, <span class="st">"F"</span>: <span class="fl">0.40</span>}).to_numpy()</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>log_freq <span class="op">=</span> (np.log(<span class="fl">0.07</span>)</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">1.1</span> <span class="op">*</span> np.exp(<span class="op">-</span>(age <span class="op">-</span> <span class="dv">18</span>) <span class="op">/</span> <span class="dv">6</span>)</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> np.maximum(age <span class="op">-</span> <span class="dv">70</span>, <span class="dv">0</span>)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> (puissance <span class="op">-</span> <span class="dv">6</span>)</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> ((age <span class="op">&lt;=</span> <span class="dv">25</span>) <span class="op">&amp;</span> (puissance <span class="op">&gt;=</span> <span class="dv">9</span>))</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>            <span class="op">+</span> effet_zone</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>            <span class="op">+</span> np.log(risque_cache))</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>nb_sinistres <span class="op">=</span> rng.poisson(np.exp(log_freq) <span class="op">*</span> exposure)</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a></span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>polices <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>    <span class="st">"age"</span>: age,</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    <span class="st">"bonus_malus"</span>: bonus_malus,</span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>    <span class="st">"puissance"</span>: puissance,</span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>    <span class="st">"zone"</span>: zone,</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>    <span class="st">"exposure"</span>: exposure,</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>    <span class="st">"nb_sinistres"</span>: nb_sinistres,</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>})</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a>polices.head()</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">bonus_malus</th>
+<th data-quarto-table-cell-role="th">puissance</th>
+<th data-quarto-table-cell-role="th">zone</th>
+<th data-quarto-table-cell-role="th">exposure</th>
+<th data-quarto-table-cell-role="th">nb_sinistres</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>24</td>
+<td>74</td>
+<td>4</td>
+<td>E</td>
+<td>0.851</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>70</td>
+<td>50</td>
+<td>11</td>
+<td>C</td>
+<td>0.766</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>62</td>
+<td>50</td>
+<td>8</td>
+<td>D</td>
+<td>1.000</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>47</td>
+<td>62</td>
+<td>11</td>
+<td>B</td>
+<td>1.000</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>47</td>
+<td>50</td>
+<td>7</td>
+<td>D</td>
+<td>0.747</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="2" id="0c460b46">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Nombre de polices : </span><span class="sc">{</span><span class="bu">len</span>(polices)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Nombre total de sinistres : </span><span class="sc">{</span>polices[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exposition totale (années) : </span><span class="sc">{</span>polices[<span class="st">'exposure'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Fréquence moyenne brute : </span><span class="sc">{</span>polices[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> polices[<span class="st">'exposure'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nombre de polices : 50,000
+Nombre total de sinistres : 4,014
+Exposition totale (années) : 40,575
+Fréquence moyenne brute : 0.0989</code></pre>
+</div>
+</div>
+<p>4 014 sinistres pour 40 575 années d’exposition : une fréquence de 0,0989 sinistre par an, à peu près un sinistre pour dix années-police.</p>
+</section>
+<section class="level2" data-number="4.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="4.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention, en bottom-up
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>À donner à Claude Code dans cet ordre. Valider chaque réponse avant de passer à la suivante.</p>
+<ol type="1">
+<li><p><strong>Explorer.</strong> <em>“Lis ce DataFrame <code>polices</code>. Décris la structure : colonnes, types, ordres de grandeur. Identifie la cible (la fréquence de sinistres) et l’exposition. Dis-moi si tu vois des anomalies.”</em></p></li>
+<li><p><strong>Analyser.</strong> <em>“Pour chaque variable explicative (age, bonus_malus, puissance, zone), trace la fréquence observée (sinistres/exposure) par classe. Mets-moi tout sur une grille 2x2.”</em></p></li>
+<li><p><strong>Préparer.</strong> <em>“Discrétise <code>age</code> et <code>bonus_malus</code> en bandes actuarielles défendables, avec assez d’exposition dans chaque bande. Justifie le choix des seuils. Garde <code>puissance</code> et <code>zone</code> telles quelles. Mets de côté 30 % des polices, tirées au hasard, qui ne serviront qu’au diagnostic.”</em></p></li>
+<li><p><strong>Modéliser.</strong> <em>“Pour ce portefeuille, je veux modéliser la fréquence de sinistres en tenant compte de l’exposition. Variables : âge bandé, bonus bandé, puissance, zone. Quelle famille de modèle me recommandes-tu et pourquoi ? Ajuste-le sur les 70 %, vérifie la surdispersion.”</em></p></li>
+<li><p><strong>Diagnostiquer.</strong> <em>“Je veux savoir si ce modèle est utilisable pour tarifer : qu’il prédit juste sur les polices mises de côté, segment par segment, et qu’il sépare les risques mieux qu’un tarif uniforme. Quels diagnostics sont adaptés à des comptages rares ? Fais-les, puis donne-moi ton avis.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="4.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="4.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="4.4.1" id="étape-1.-explorer">
+<h3 class="anchored" data-anchor-id="étape-1.-explorer" data-number="4.4.1"> Étape 1. Explorer</h3>
+<div class="cell" data-execution_count="3" id="cbffc35e">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Structure :"</span>)</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a><span class="bu">print</span>(polices.dtypes)</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Total lignes : </span><span class="sc">{</span><span class="bu">len</span>(polices)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Aucun manquant : </span><span class="sc">{</span>polices<span class="sc">.</span>isnull()<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">.</span><span class="bu">sum</span>() <span class="op">==</span> <span class="dv">0</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Statistiques univariées :"</span>)</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a><span class="bu">print</span>(polices.describe().<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Structure :
+age               int64
+bonus_malus       int64
+puissance         int64
+zone             object
+exposure        float64
+nb_sinistres      int64
+dtype: object
+
+Total lignes : 50,000
+Aucun manquant : True
+
+Statistiques univariées :
+             age  bonus_malus  puissance   exposure  nb_sinistres
+count  50000.000    50000.000  50000.000  50000.000     50000.000
+mean      51.462       58.306      7.503      0.812         0.080
+std       19.644       14.882      2.291      0.289         0.296
+min       18.000       50.000      4.000      0.050         0.000
+25%       34.000       50.000      6.000      0.646         0.000
+50%       52.000       50.000      8.000      1.000         0.000
+75%       68.000       62.000      9.000      1.000         0.000
+max       85.000      249.000     11.000      1.000         4.000</code></pre>
+</div>
+</div>
+<p>Six colonnes, aucun manquant. L’exposition va de 0,05 à 1 an (moyenne 0,812), le nombre de sinistres de 0 à 4. Le bonus-malus a sa médiane au plancher de 50 et monte jusqu’à 249. La cible est le nombre de sinistres, rapporté à l’exposition : c’est elle qui fera l’offset.</p>
+</section>
+<section class="level3" data-number="4.4.2" id="étape-2.-analyser-visuellement">
+<h3 class="anchored" data-anchor-id="étape-2.-analyser-visuellement" data-number="4.4.2"> Étape 2. Analyser visuellement</h3>
+<div class="cell" data-execution_count="4" id="cell-fig-univariate">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="kw">def</span> frequency_by(df, col, bins<span class="op">=</span><span class="va">None</span>, labels<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>    cle <span class="op">=</span> pd.cut(df[col], bins<span class="op">=</span>bins, labels<span class="op">=</span>labels) <span class="cf">if</span> bins <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> df[col]</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>    g <span class="op">=</span> df.groupby(cle, observed<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>        sinistres<span class="op">=</span>(<span class="st">"nb_sinistres"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>        exposure<span class="op">=</span>(<span class="st">"exposure"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>    )</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>    g[<span class="st">"freq"</span>] <span class="op">=</span> g[<span class="st">"sinistres"</span>] <span class="op">/</span> g[<span class="st">"exposure"</span>]</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>    <span class="cf">return</span> g</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>BANDES_AGE <span class="op">=</span> [<span class="dv">17</span>, <span class="dv">21</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">85</span>]</span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a>LIBELLES_AGE <span class="op">=</span> [<span class="st">"18-21"</span>, <span class="st">"22-25"</span>, <span class="st">"26-30"</span>, <span class="st">"31-45"</span>, <span class="st">"46-60"</span>, <span class="st">"61-70"</span>, <span class="st">"71-85"</span>]</span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>BANDES_BM <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">80</span>, <span class="dv">100</span>, <span class="dv">350</span>]</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a>LIBELLES_BM <span class="op">=</span> [<span class="st">"50"</span>, <span class="st">"51-60"</span>, <span class="st">"61-80"</span>, <span class="st">"81-100"</span>, <span class="st">"101+"</span>]</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a></span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a>vues <span class="op">=</span> {</span>
+<span id="cb6-16"><a aria-hidden="true" href="#cb6-16" tabindex="-1"></a>    <span class="st">"Âge du conducteur"</span>: frequency_by(polices, <span class="st">"age"</span>, BANDES_AGE, LIBELLES_AGE),</span>
+<span id="cb6-17"><a aria-hidden="true" href="#cb6-17" tabindex="-1"></a>    <span class="st">"Coefficient bonus-malus"</span>: frequency_by(polices, <span class="st">"bonus_malus"</span>, BANDES_BM, LIBELLES_BM),</span>
+<span id="cb6-18"><a aria-hidden="true" href="#cb6-18" tabindex="-1"></a>    <span class="st">"Puissance du véhicule"</span>: frequency_by(polices, <span class="st">"puissance"</span>),</span>
+<span id="cb6-19"><a aria-hidden="true" href="#cb6-19" tabindex="-1"></a>    <span class="st">"Zone (A rural, F urbain dense)"</span>: frequency_by(polices, <span class="st">"zone"</span>),</span>
+<span id="cb6-20"><a aria-hidden="true" href="#cb6-20" tabindex="-1"></a>}</span>
+<span id="cb6-21"><a aria-hidden="true" href="#cb6-21" tabindex="-1"></a></span>
+<span id="cb6-22"><a aria-hidden="true" href="#cb6-22" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb6-23"><a aria-hidden="true" href="#cb6-23" tabindex="-1"></a><span class="cf">for</span> ax, (titre, g) <span class="kw">in</span> <span class="bu">zip</span>(axes.flat, vues.items()):</span>
+<span id="cb6-24"><a aria-hidden="true" href="#cb6-24" tabindex="-1"></a>    ax.bar(<span class="bu">range</span>(<span class="bu">len</span>(g)), g[<span class="st">"freq"</span>], color<span class="op">=</span><span class="st">"#1d4ed8"</span>)</span>
+<span id="cb6-25"><a aria-hidden="true" href="#cb6-25" tabindex="-1"></a>    ax.set_xticks(<span class="bu">range</span>(<span class="bu">len</span>(g)))</span>
+<span id="cb6-26"><a aria-hidden="true" href="#cb6-26" tabindex="-1"></a>    ax.set_xticklabels([<span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> g.index])</span>
+<span id="cb6-27"><a aria-hidden="true" href="#cb6-27" tabindex="-1"></a>    ax.set_title(titre)</span>
+<span id="cb6-28"><a aria-hidden="true" href="#cb6-28" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Sinistres / exposition"</span>)</span>
+<span id="cb6-29"><a aria-hidden="true" href="#cb6-29" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb6-30"><a aria-hidden="true" href="#cb6-30" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-31"><a aria-hidden="true" href="#cb6-31" tabindex="-1"></a></span>
+<span id="cb6-32"><a aria-hidden="true" href="#cb6-32" tabindex="-1"></a><span class="cf">for</span> titre, g <span class="kw">in</span> vues.items():</span>
+<span id="cb6-33"><a aria-hidden="true" href="#cb6-33" tabindex="-1"></a>    <span class="bu">print</span>(titre, <span class="st">":"</span>, <span class="st">" | "</span>.join(<span class="ss">f"</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>f<span class="sc">:.3f}</span><span class="ss">"</span> <span class="cf">for</span> i, f <span class="kw">in</span> g[<span class="st">"freq"</span>].items()))</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-univariate">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-univariate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="758" src="img/fig-univariate-output-1_97a4c53a.png" width="1142"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-univariate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 4.1: Fréquence observée (sinistres / exposition) par classe de chaque variable explicative
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Âge du conducteur : 18-21 0.235 | 22-25 0.151 | 26-30 0.093 | 31-45 0.082 | 46-60 0.077 | 61-70 0.075 | 71-85 0.104
+Coefficient bonus-malus : 50 0.077 | 51-60 0.093 | 61-80 0.112 | 81-100 0.201 | 101+ 0.279
+Puissance du véhicule : 4 0.086 | 5 0.091 | 6 0.095 | 7 0.089 | 8 0.098 | 9 0.114 | 10 0.113 | 11 0.106
+Zone (A rural, F urbain dense) : A 0.061 | B 0.078 | C 0.097 | D 0.100 | E 0.118 | F 0.134</code></pre>
+</div>
+</div>
+<p>Les mêmes vues qu’en P1 : l’âge en U (0,235 chez les 18-21 ans, un creux à 0,075 entre 61 et 70 ans, 0,104 après 70 ans), le bonus-malus croissant (de 0,077 à 0,279), la zone monotone (de 0,061 en A à 0,134 en F), la puissance faible avec une marche à partir de 9.</p>
+</section>
+<section class="level3" data-number="4.4.3" id="étape-3.-préparer-discrétisation-actuarielle-et-échantillon-de-test">
+<h3 class="anchored" data-anchor-id="étape-3.-préparer-discrétisation-actuarielle-et-échantillon-de-test" data-number="4.4.3"> Étape 3. Préparer (discrétisation actuarielle et échantillon de test)</h3>
+<div class="cell" data-execution_count="5" id="4e48f113">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>polices[<span class="st">"age_bande"</span>] <span class="op">=</span> pd.cut(polices[<span class="st">"age"</span>], bins<span class="op">=</span>BANDES_AGE, labels<span class="op">=</span>LIBELLES_AGE)</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>polices[<span class="st">"bm_bande"</span>] <span class="op">=</span> pd.cut(polices[<span class="st">"bonus_malus"</span>], bins<span class="op">=</span>BANDES_BM, labels<span class="op">=</span>LIBELLES_BM)</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> [<span class="st">"age_bande"</span>, <span class="st">"bm_bande"</span>]:</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>    t <span class="op">=</span> polices.groupby(col, observed<span class="op">=</span><span class="va">True</span>).agg(exposition<span class="op">=</span>(<span class="st">"exposure"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>                                                sinistres<span class="op">=</span>(<span class="st">"nb_sinistres"</span>, <span class="st">"sum"</span>))</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>    <span class="bu">print</span>(t.<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>).T.to_string(), <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a><span class="co"># 30 % des polices mises de côté AVANT tout ajustement. Graine à part : les fiches</span></span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a><span class="co"># P4 et P5 retrouvent exactement le même découpage.</span></span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>test <span class="op">=</span> np.random.default_rng(<span class="dv">2026</span>).random(N) <span class="op">&lt;</span> <span class="fl">0.30</span></span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>app, tst <span class="op">=</span> polices[<span class="op">~</span>test].copy(), polices[test].copy()</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Apprentissage : </span><span class="sc">{</span><span class="bu">len</span>(app)<span class="sc">:,}</span><span class="ss"> polices, </span><span class="sc">{</span>app[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> sinistres"</span>)</span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Test          : </span><span class="sc">{</span><span class="bu">len</span>(tst)<span class="sc">:,}</span><span class="ss"> polices, </span><span class="sc">{</span>tst[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> sinistres"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>age_bande   18-21  22-25  26-30  31-45  46-60  61-70  71-85
+exposition   2417   2365   2993   8945   8910   6017   8929
+sinistres     569    358    279    735    690    454    929 
+
+bm_bande       50  51-60  61-80  81-100  101+
+exposition  25465   1906   9434    2978   792
+sinistres    1957    178   1059     599   221 
+
+Apprentissage : 34,872 polices, 2,805 sinistres
+Test          : 15,128 polices, 1,209 sinistres</code></pre>
+</div>
+</div>
+<p>Les seuils suivent le métier : permis récent, 25 ans, entrée dans le grand âge pour l’âge ; plancher de 50, coefficient de départ de 100 pour le bonus-malus. Chaque bande d’âge porte au moins 2 365 années d’exposition et 279 sinistres. La bande de bonus-malus 101+ n’a que 792 années et 221 sinistres : on la garde, en sachant que son coefficient sera le moins précis. Le découpage met 34 872 polices (2 805 sinistres) en apprentissage et 15 128 polices (1 209 sinistres) de côté pour le test.</p>
+</section>
+<section class="level3" data-number="4.4.4" id="étape-4.-modéliser-glm-poisson">
+<h3 class="anchored" data-anchor-id="étape-4.-modéliser-glm-poisson" data-number="4.4.4"> Étape 4. Modéliser (GLM Poisson)</h3>
+<div class="cell" data-execution_count="6" id="221d2c49">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>formule <span class="op">=</span> (<span class="st">"nb_sinistres ~ C(age_bande, Treatment('31-45')) + C(bm_bande, Treatment('50'))"</span></span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>           <span class="st">" + puissance + C(zone)"</span>)</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>glm <span class="op">=</span> smf.glm(formule, data<span class="op">=</span>app, family<span class="op">=</span>sm.families.Poisson(),</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>              offset<span class="op">=</span>np.log(app[<span class="st">"exposure"</span>])).fit()</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>ic <span class="op">=</span> np.exp(glm.conf_int())</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>coefs <span class="op">=</span> pd.DataFrame({<span class="st">"relativite"</span>: np.exp(glm.params), <span class="st">"IC95_bas"</span>: ic[<span class="dv">0</span>],</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>                      <span class="st">"IC95_haut"</span>: ic[<span class="dv">1</span>], <span class="st">"p_valeur"</span>: glm.pvalues})</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>coefs.index <span class="op">=</span> coefs.index.<span class="bu">str</span>.replace(<span class="vs">r"C</span><span class="ch">\(</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">.</span><span class="op">*?</span><span class="ch">\)\[</span><span class="vs">T</span><span class="ch">\.</span><span class="kw">(</span><span class="dv">.</span><span class="op">+</span><span class="kw">)</span><span class="ch">\]</span><span class="vs">"</span>, <span class="vs">r"</span><span class="ch">\1</span><span class="vs"> = </span><span class="ch">\2</span><span class="vs">"</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a><span class="bu">print</span>(coefs.<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a></span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a><span class="co"># Pour lire l'âge : où sont les conducteurs de chaque bande d'âge en bonus-malus ?</span></span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Répartition de l'exposition par bande de bonus-malus (%), par bande d'âge :"</span>)</span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a><span class="bu">print</span>((<span class="dv">100</span> <span class="op">*</span> pd.crosstab(app[<span class="st">"age_bande"</span>], app[<span class="st">"bm_bande"</span>], values<span class="op">=</span>app[<span class="st">"exposure"</span>],</span>
+<span id="cb10-18"><a aria-hidden="true" href="#cb10-18" tabindex="-1"></a>                         aggfunc<span class="op">=</span><span class="st">"sum"</span>, normalize<span class="op">=</span><span class="st">"index"</span>)).<span class="bu">round</span>(<span class="dv">0</span>).to_string())</span>
+<span id="cb10-19"><a aria-hidden="true" href="#cb10-19" tabindex="-1"></a></span>
+<span id="cb10-20"><a aria-hidden="true" href="#cb10-20" tabindex="-1"></a><span class="co"># Et la relativité de bonus-malus qu'ils portent en moyenne (pondérée par l'exposition)</span></span>
+<span id="cb10-21"><a aria-hidden="true" href="#cb10-21" tabindex="-1"></a>rel_bm <span class="op">=</span> coefs.loc[coefs.index.<span class="bu">str</span>.startswith(<span class="st">"bm_bande"</span>), <span class="st">"relativite"</span>]</span>
+<span id="cb10-22"><a aria-hidden="true" href="#cb10-22" tabindex="-1"></a>rel_bm.index <span class="op">=</span> rel_bm.index.<span class="bu">str</span>.replace(<span class="st">"bm_bande = "</span>, <span class="st">""</span>, regex<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-23"><a aria-hidden="true" href="#cb10-23" tabindex="-1"></a>rel_bm[<span class="st">"50"</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb10-24"><a aria-hidden="true" href="#cb10-24" tabindex="-1"></a>porte <span class="op">=</span> app[<span class="st">"exposure"</span>] <span class="op">*</span> app[<span class="st">"bm_bande"</span>].astype(<span class="bu">str</span>).<span class="bu">map</span>(rel_bm)</span>
+<span id="cb10-25"><a aria-hidden="true" href="#cb10-25" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Relativité de bonus-malus moyenne, par bande d'âge :"</span>)</span>
+<span id="cb10-26"><a aria-hidden="true" href="#cb10-26" tabindex="-1"></a><span class="bu">print</span>((porte.groupby(app[<span class="st">"age_bande"</span>], observed<span class="op">=</span><span class="va">True</span>).<span class="bu">sum</span>()</span>
+<span id="cb10-27"><a aria-hidden="true" href="#cb10-27" tabindex="-1"></a>       <span class="op">/</span> app.groupby(<span class="st">"age_bande"</span>, observed<span class="op">=</span><span class="va">True</span>)[<span class="st">"exposure"</span>].<span class="bu">sum</span>()).<span class="bu">round</span>(<span class="dv">2</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   relativite  IC95_bas  IC95_haut  p_valeur
+Intercept               0.032     0.026      0.039     0.000
+age_bande = 18-21       1.299     1.025      1.647     0.031
+age_bande = 22-25       1.074     0.885      1.302     0.469
+age_bande = 26-30       0.821     0.675      0.998     0.048
+age_bande = 46-60       0.969     0.856      1.098     0.625
+age_bande = 61-70       0.939     0.816      1.080     0.376
+age_bande = 71-85       1.268     1.128      1.425     0.000
+bm_bande = 51-60        1.283     1.012      1.626     0.039
+bm_bande = 61-80        1.469     1.332      1.619     0.000
+bm_bande = 81-100       2.241     1.806      2.782     0.000
+bm_bande = 101+         3.324     2.588      4.269     0.000
+zone = B                1.365     1.139      1.636     0.001
+zone = C                1.689     1.443      1.978     0.000
+zone = D                1.608     1.375      1.882     0.000
+zone = E                1.959     1.674      2.293     0.000
+zone = F                2.175     1.834      2.580     0.000
+puissance               1.047     1.030      1.064     0.000
+
+Répartition de l'exposition par bande de bonus-malus (%), par bande d'âge :
+bm_bande     50  51-60  61-80  81-100  101+
+age_bande                                  
+18-21       0.0    0.0    0.0    79.0  21.0
+22-25       0.0    0.0   58.0    32.0  10.0
+26-30       0.0   47.0   45.0     6.0   1.0
+31-45      74.0    5.0   20.0     0.0   0.0
+46-60      79.0    0.0   20.0     0.0   0.0
+61-70      78.0    0.0   21.0     0.0   0.0
+71-85      79.0    0.0   20.0     1.0   0.0
+
+Relativité de bonus-malus moyenne, par bande d'âge :
+age_bande
+18-21    2.47
+22-25    1.90
+26-30    1.45
+31-45    1.12
+46-60    1.10
+61-70    1.11
+71-85    1.10</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="7" id="c1a8adac">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="co"># Surdispersion : ratio du khi-deux de Pearson aux degrés de liberté résiduels.</span></span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a><span class="co"># Proche de 1 pour un Poisson bien spécifié ; au-dessus, les intervalles de</span></span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a><span class="co"># confiance du Poisson sont trop étroits.</span></span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>dispersion <span class="op">=</span> glm.pearson_chi2 <span class="op">/</span> glm.df_resid</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ratio de dispersion : </span><span class="sc">{</span>dispersion<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ratio de dispersion : 1.053</code></pre>
+</div>
+</div>
+<p>La réponse attendue au prompt 4 est un GLM de Poisson à lien log, avec l’offset <span class="math inline">\(\log(\text{exposure})\)</span> : c’est ce qui est ajusté ici. Les relativités se lisent contre la référence (31-45 ans, bonus-malus 50, zone A).</p>
+<ul>
+<li><strong>Bonus-malus</strong> : il porte l’essentiel du signal. 1,47 entre 61 et 80, 2,24 entre 81 et 100, 3,32 au-delà de 100.</li>
+<li><strong>Zone</strong> : croissante de A à F (2,18), avec C (1,69) un peu au-dessus de D (1,61) ; leurs intervalles de confiance se recouvrent presque entièrement, l’inversion n’est pas significative.</li>
+<li><strong>Puissance</strong> : +4,7 % par cheval.</li>
+<li><strong>Âge</strong> : il paraît faible. 1,30 pour les 18-21 ans, 1,07 pour les 22-25 ans, 0,82 pour les 26-30 ans, 1,27 après 70 ans.</li>
+</ul>
+<p>L’âge n’est pas faux, il se lit avec le bonus-malus. Le tableau croisé le montre : 79 % de l’exposition des 18-21 ans est dans la bande 81-100 et le reste au-delà, alors que les plus de 30 ans sont aux trois quarts au plancher. La bande 81-100 est presque une bande « jeunes conducteurs », et sa relativité de 2,24 porte une grande partie de leur surrisque. En moyenne, pondérée par l’exposition, les 18-21 ans portent une relativité de bonus-malus de 2,47, les 31-45 ans de 1,12 : <span class="math inline">\(1{,}30 \times 2{,}47 / 1{,}12 = 2{,}87\)</span>, le rapport des fréquences brutes entre les deux bandes (<span class="math inline">\(0{,}235 / 0{,}082\)</span>). Le GLM ne perd pas le surrisque des jeunes conducteurs, il le range dans le bonus-malus. Même chose pour les 26-30 ans, répartis entre les bandes 51-60 et 61-80 : leur 0,82 compense des relativités de bonus-malus supérieures à 1. Une relativité ne se lit jamais seule quand deux variables se recouvrent ; on demande à Claude la prédiction par profil, pas le coefficient isolé.</p>
+<p>Le ratio de dispersion vaut 1,053 : une légère surdispersion, la trace du risque propre au conducteur que les variables ne voient pas. En quasi-Poisson, les intervalles de confiance s’élargiraient d’environ 2,6 % (<span class="math inline">\(\sqrt{1{,}053}\)</span>) : rien qui change la lecture.</p>
+</section>
+<section class="level3" data-number="4.4.5" id="étape-5.-diagnostiquer">
+<h3 class="anchored" data-anchor-id="étape-5.-diagnostiquer" data-number="4.4.5"> Étape 5. Diagnostiquer</h3>
+<p>Un Poisson de moyenne 0,1 par police produit surtout des 0 et quelques 1. Le QQ-plot des résidus de Pearson, réflexe hérité de la régression linéaire, n’y montre qu’une marche d’escalier : il ne dit rien de l’ajustement. Les diagnostics adaptés sont les résidus quantiles randomisés (Dunn et Smyth, 1996), qui suivent une loi normale quand le modèle est juste, le réel contre prédit par décile de fréquence prédite, et la courbe de Lorenz triée par fréquence prédite. Tout se calcule sur l’échantillon de test, avec la déviance de test du GLM comparée à celle d’un tarif uniforme.</p>
+<div class="cell" data-execution_count="8" id="cell-fig-diagnostics-p2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> (app, tst):</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>    d[<span class="st">"freq_pred"</span>] <span class="op">=</span> glm.predict(d, offset<span class="op">=</span>np.zeros(<span class="bu">len</span>(d)))</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a>    d[<span class="st">"nb_pred"</span>] <span class="op">=</span> d[<span class="st">"freq_pred"</span>] <span class="op">*</span> d[<span class="st">"exposure"</span>]</span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a></span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a>y, mu <span class="op">=</span> tst[<span class="st">"nb_sinistres"</span>].to_numpy(), tst[<span class="st">"nb_pred"</span>].to_numpy()</span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a>residus_pearson <span class="op">=</span> (y <span class="op">-</span> mu) <span class="op">/</span> np.sqrt(mu)</span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a>u <span class="op">=</span> rng.uniform(stats.poisson.cdf(y <span class="op">-</span> <span class="dv">1</span>, mu), stats.poisson.cdf(y, mu))</span>
+<span id="cb14-10"><a aria-hidden="true" href="#cb14-10" tabindex="-1"></a>residus_quantiles <span class="op">=</span> stats.norm.ppf(u)</span>
+<span id="cb14-11"><a aria-hidden="true" href="#cb14-11" tabindex="-1"></a></span>
+<span id="cb14-12"><a aria-hidden="true" href="#cb14-12" tabindex="-1"></a><span class="kw">def</span> deviance_poisson(y, mu):</span>
+<span id="cb14-13"><a aria-hidden="true" href="#cb14-13" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">2</span> <span class="op">*</span> np.<span class="bu">sum</span>(np.where(y <span class="op">&gt;</span> <span class="dv">0</span>, y <span class="op">*</span> np.log(np.where(y <span class="op">&gt;</span> <span class="dv">0</span>, y, <span class="dv">1</span>) <span class="op">/</span> mu), <span class="dv">0</span>) <span class="op">-</span> (y <span class="op">-</span> mu))</span>
+<span id="cb14-14"><a aria-hidden="true" href="#cb14-14" tabindex="-1"></a></span>
+<span id="cb14-15"><a aria-hidden="true" href="#cb14-15" tabindex="-1"></a>freq_app <span class="op">=</span> app[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>() <span class="op">/</span> app[<span class="st">"exposure"</span>].<span class="bu">sum</span>()</span>
+<span id="cb14-16"><a aria-hidden="true" href="#cb14-16" tabindex="-1"></a>dev_modele <span class="op">=</span> deviance_poisson(y, mu)</span>
+<span id="cb14-17"><a aria-hidden="true" href="#cb14-17" tabindex="-1"></a>dev_nul <span class="op">=</span> deviance_poisson(y, freq_app <span class="op">*</span> tst[<span class="st">"exposure"</span>].to_numpy())</span>
+<span id="cb14-18"><a aria-hidden="true" href="#cb14-18" tabindex="-1"></a></span>
+<span id="cb14-19"><a aria-hidden="true" href="#cb14-19" tabindex="-1"></a><span class="kw">def</span> lorenz(d):</span>
+<span id="cb14-20"><a aria-hidden="true" href="#cb14-20" tabindex="-1"></a>    d <span class="op">=</span> d.sort_values(<span class="st">"freq_pred"</span>)</span>
+<span id="cb14-21"><a aria-hidden="true" href="#cb14-21" tabindex="-1"></a>    x <span class="op">=</span> np.r_[<span class="dv">0</span>, d[<span class="st">"exposure"</span>].cumsum() <span class="op">/</span> d[<span class="st">"exposure"</span>].<span class="bu">sum</span>()]</span>
+<span id="cb14-22"><a aria-hidden="true" href="#cb14-22" tabindex="-1"></a>    z <span class="op">=</span> np.r_[<span class="dv">0</span>, d[<span class="st">"nb_sinistres"</span>].cumsum() <span class="op">/</span> d[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>()]</span>
+<span id="cb14-23"><a aria-hidden="true" href="#cb14-23" tabindex="-1"></a>    <span class="cf">return</span> x, z, <span class="dv">1</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> np.<span class="bu">sum</span>(np.diff(x) <span class="op">*</span> (z[<span class="dv">1</span>:] <span class="op">+</span> z[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb14-24"><a aria-hidden="true" href="#cb14-24" tabindex="-1"></a></span>
+<span id="cb14-25"><a aria-hidden="true" href="#cb14-25" tabindex="-1"></a>x_t, z_t, gini_test <span class="op">=</span> lorenz(tst)</span>
+<span id="cb14-26"><a aria-hidden="true" href="#cb14-26" tabindex="-1"></a>gini_app <span class="op">=</span> lorenz(app)[<span class="dv">2</span>]</span>
+<span id="cb14-27"><a aria-hidden="true" href="#cb14-27" tabindex="-1"></a></span>
+<span id="cb14-28"><a aria-hidden="true" href="#cb14-28" tabindex="-1"></a>tst <span class="op">=</span> tst.sort_values(<span class="st">"freq_pred"</span>)</span>
+<span id="cb14-29"><a aria-hidden="true" href="#cb14-29" tabindex="-1"></a>tst[<span class="st">"decile"</span>] <span class="op">=</span> np.minimum((tst[<span class="st">"exposure"</span>].cumsum() <span class="op">/</span> tst[<span class="st">"exposure"</span>].<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">10</span>).astype(<span class="bu">int</span>), <span class="dv">9</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb14-30"><a aria-hidden="true" href="#cb14-30" tabindex="-1"></a>deciles <span class="op">=</span> tst.groupby(<span class="st">"decile"</span>).agg(exposition<span class="op">=</span>(<span class="st">"exposure"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb14-31"><a aria-hidden="true" href="#cb14-31" tabindex="-1"></a>                                    reel<span class="op">=</span>(<span class="st">"nb_sinistres"</span>, <span class="st">"sum"</span>), predit<span class="op">=</span>(<span class="st">"nb_pred"</span>, <span class="st">"sum"</span>))</span>
+<span id="cb14-32"><a aria-hidden="true" href="#cb14-32" tabindex="-1"></a>deciles[<span class="st">"reel/predit"</span>] <span class="op">=</span> deciles[<span class="st">"reel"</span>] <span class="op">/</span> deciles[<span class="st">"predit"</span>]</span>
+<span id="cb14-33"><a aria-hidden="true" href="#cb14-33" tabindex="-1"></a>deciles[<span class="st">"ecart_sigma"</span>] <span class="op">=</span> (deciles[<span class="st">"reel"</span>] <span class="op">-</span> deciles[<span class="st">"predit"</span>]) <span class="op">/</span> np.sqrt(deciles[<span class="st">"predit"</span>])</span>
+<span id="cb14-34"><a aria-hidden="true" href="#cb14-34" tabindex="-1"></a></span>
+<span id="cb14-35"><a aria-hidden="true" href="#cb14-35" tabindex="-1"></a>par_age <span class="op">=</span> tst.groupby(<span class="st">"age_bande"</span>, observed<span class="op">=</span><span class="va">True</span>).agg(exposition<span class="op">=</span>(<span class="st">"exposure"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb14-36"><a aria-hidden="true" href="#cb14-36" tabindex="-1"></a>                                                      reel<span class="op">=</span>(<span class="st">"nb_sinistres"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb14-37"><a aria-hidden="true" href="#cb14-37" tabindex="-1"></a>                                                      predit<span class="op">=</span>(<span class="st">"nb_pred"</span>, <span class="st">"sum"</span>))</span>
+<span id="cb14-38"><a aria-hidden="true" href="#cb14-38" tabindex="-1"></a>par_age[<span class="st">"freq_reelle"</span>] <span class="op">=</span> par_age[<span class="st">"reel"</span>] <span class="op">/</span> par_age[<span class="st">"exposition"</span>]</span>
+<span id="cb14-39"><a aria-hidden="true" href="#cb14-39" tabindex="-1"></a>par_age[<span class="st">"freq_predite"</span>] <span class="op">=</span> par_age[<span class="st">"predit"</span>] <span class="op">/</span> par_age[<span class="st">"exposition"</span>]</span>
+<span id="cb14-40"><a aria-hidden="true" href="#cb14-40" tabindex="-1"></a></span>
+<span id="cb14-41"><a aria-hidden="true" href="#cb14-41" tabindex="-1"></a><span class="bu">print</span>(deciles.<span class="bu">round</span>(<span class="dv">2</span>).to_string())</span>
+<span id="cb14-42"><a aria-hidden="true" href="#cb14-42" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Par bande d'âge (test) :"</span>)</span>
+<span id="cb14-43"><a aria-hidden="true" href="#cb14-43" tabindex="-1"></a><span class="bu">print</span>(par_age.<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb14-44"><a aria-hidden="true" href="#cb14-44" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Sinistres du test : </span><span class="sc">{</span>y<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> observés, </span><span class="sc">{</span>mu<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1f}</span><span class="ss"> prédits"</span>)</span>
+<span id="cb14-45"><a aria-hidden="true" href="#cb14-45" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Déviance de test : modèle </span><span class="sc">{</span>dev_modele<span class="sc">:,.1f}</span><span class="ss">, tarif uniforme </span><span class="sc">{</span>dev_nul<span class="sc">:,.1f}</span><span class="ss">, "</span></span>
+<span id="cb14-46"><a aria-hidden="true" href="#cb14-46" tabindex="-1"></a>      <span class="ss">f"soit </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> dev_modele <span class="op">/</span> dev_nul)<span class="sc">:.1f}</span><span class="ss"> % de déviance expliquée"</span>)</span>
+<span id="cb14-47"><a aria-hidden="true" href="#cb14-47" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gini : </span><span class="sc">{</span>gini_app<span class="sc">:.3f}</span><span class="ss"> en apprentissage, </span><span class="sc">{</span>gini_test<span class="sc">:.3f}</span><span class="ss"> en test"</span>)</span>
+<span id="cb14-48"><a aria-hidden="true" href="#cb14-48" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Résidus quantiles : moyenne </span><span class="sc">{</span>residus_quantiles<span class="sc">.</span>mean()<span class="sc">:.3f}</span><span class="ss">, écart-type </span><span class="sc">{</span>residus_quantiles<span class="sc">.</span>std()<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb14-49"><a aria-hidden="true" href="#cb14-49" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices à 2 sinistres ou plus : </span><span class="sc">{</span>(y <span class="op">&gt;=</span> <span class="dv">2</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> observées, "</span></span>
+<span id="cb14-50"><a aria-hidden="true" href="#cb14-50" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>stats<span class="sc">.</span>poisson<span class="sc">.</span>sf(<span class="dv">1</span>, mu)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1f}</span><span class="ss"> attendues par le modèle"</span>)</span>
+<span id="cb14-51"><a aria-hidden="true" href="#cb14-51" tabindex="-1"></a></span>
+<span id="cb14-52"><a aria-hidden="true" href="#cb14-52" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">9</span>))</span>
+<span id="cb14-53"><a aria-hidden="true" href="#cb14-53" tabindex="-1"></a>stats.probplot(residus_pearson, dist<span class="op">=</span><span class="st">"norm"</span>, plot<span class="op">=</span>axes[<span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb14-54"><a aria-hidden="true" href="#cb14-54" tabindex="-1"></a>axes[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">"QQ-plot des résidus de Pearson : une marche d'escalier"</span>)</span>
+<span id="cb14-55"><a aria-hidden="true" href="#cb14-55" tabindex="-1"></a>stats.probplot(residus_quantiles, dist<span class="op">=</span><span class="st">"norm"</span>, plot<span class="op">=</span>axes[<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb14-56"><a aria-hidden="true" href="#cb14-56" tabindex="-1"></a>axes[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">"QQ-plot des résidus quantiles randomisés"</span>)</span>
+<span id="cb14-57"><a aria-hidden="true" href="#cb14-57" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes[<span class="dv">0</span>]:</span>
+<span id="cb14-58"><a aria-hidden="true" href="#cb14-58" tabindex="-1"></a>    ax.get_lines()[<span class="dv">0</span>].<span class="bu">set</span>(markerfacecolor<span class="op">=</span><span class="st">"#1d4ed8"</span>, markeredgecolor<span class="op">=</span><span class="st">"#1d4ed8"</span>, markersize<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb14-59"><a aria-hidden="true" href="#cb14-59" tabindex="-1"></a>    ax.get_lines()[<span class="dv">1</span>].set_color(<span class="st">"#b45309"</span>)</span>
+<span id="cb14-60"><a aria-hidden="true" href="#cb14-60" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Quantiles théoriques (loi normale)"</span>)</span>
+<span id="cb14-61"><a aria-hidden="true" href="#cb14-61" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Quantiles observés"</span>)</span>
+<span id="cb14-62"><a aria-hidden="true" href="#cb14-62" tabindex="-1"></a></span>
+<span id="cb14-63"><a aria-hidden="true" href="#cb14-63" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].plot(deciles.index, deciles[<span class="st">"reel"</span>] <span class="op">/</span> deciles[<span class="st">"exposition"</span>], <span class="st">"o"</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, label<span class="op">=</span><span class="st">"réel"</span>)</span>
+<span id="cb14-64"><a aria-hidden="true" href="#cb14-64" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].plot(deciles.index, deciles[<span class="st">"predit"</span>] <span class="op">/</span> deciles[<span class="st">"exposition"</span>], <span class="st">"-"</span>, color<span class="op">=</span><span class="st">"#b45309"</span>, label<span class="op">=</span><span class="st">"prédit"</span>)</span>
+<span id="cb14-65"><a aria-hidden="true" href="#cb14-65" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].set_xticks(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>))</span>
+<span id="cb14-66"><a aria-hidden="true" href="#cb14-66" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].set_xlabel(<span class="st">"Décile de fréquence prédite (déciles d'exposition)"</span>)</span>
+<span id="cb14-67"><a aria-hidden="true" href="#cb14-67" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].set_ylabel(<span class="st">"Fréquence annuelle"</span>)</span>
+<span id="cb14-68"><a aria-hidden="true" href="#cb14-68" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].set_title(<span class="st">"Réel contre prédit par décile (test)"</span>)</span>
+<span id="cb14-69"><a aria-hidden="true" href="#cb14-69" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">0</span>].legend()</span>
+<span id="cb14-70"><a aria-hidden="true" href="#cb14-70" tabindex="-1"></a></span>
+<span id="cb14-71"><a aria-hidden="true" href="#cb14-71" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">1</span>].plot(x_t, z_t, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, label<span class="op">=</span><span class="ss">f"GLM, Gini test </span><span class="sc">{</span>gini_test<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb14-72"><a aria-hidden="true" href="#cb14-72" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">1</span>].plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">":"</span>, color<span class="op">=</span><span class="st">"#9ca3af"</span>, label<span class="op">=</span><span class="st">"tarif uniforme"</span>)</span>
+<span id="cb14-73"><a aria-hidden="true" href="#cb14-73" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">1</span>].set_xlabel(<span class="st">"Part cumulée de l'exposition (du moins au plus risqué prédit)"</span>)</span>
+<span id="cb14-74"><a aria-hidden="true" href="#cb14-74" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">1</span>].set_ylabel(<span class="st">"Part cumulée des sinistres"</span>)</span>
+<span id="cb14-75"><a aria-hidden="true" href="#cb14-75" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">1</span>].set_title(<span class="st">"Courbe de Lorenz (test)"</span>)</span>
+<span id="cb14-76"><a aria-hidden="true" href="#cb14-76" tabindex="-1"></a>axes[<span class="dv">1</span>, <span class="dv">1</span>].legend()</span>
+<span id="cb14-77"><a aria-hidden="true" href="#cb14-77" tabindex="-1"></a><span class="cf">for</span> ax <span class="kw">in</span> axes.flat:</span>
+<span id="cb14-78"><a aria-hidden="true" href="#cb14-78" tabindex="-1"></a>    ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb14-79"><a aria-hidden="true" href="#cb14-79" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb14-80"><a aria-hidden="true" href="#cb14-80" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        exposition  reel  predit  reel/predit  ecart_sigma
+decile                                                    
+1          1225.19    59   58.88         1.00         0.02
+2          1225.13    81   76.31         1.06         0.54
+3          1225.28    94   85.09         1.10         0.97
+4          1225.28    88   93.48         0.94        -0.57
+5          1224.52    94  100.91         0.93        -0.69
+6          1226.03   109  109.71         0.99        -0.07
+7          1224.95   113  120.95         0.93        -0.72
+8          1224.87   126  134.82         0.93        -0.76
+9          1225.43   165  161.06         1.02         0.31
+10         1225.96   280  270.08         1.04         0.60
+
+Par bande d'âge (test) :
+           exposition  reel   predit  freq_reelle  freq_predite
+age_bande                                                      
+18-21         719.377   169  169.981        0.235         0.236
+22-25         736.093   114  108.137        0.155         0.147
+26-30         902.369    94   79.683        0.104         0.088
+31-45        2732.366   222  225.163        0.081         0.082
+46-60        2648.770   195  208.965        0.074         0.079
+61-70        1800.317   129  138.015        0.072         0.077
+71-85        2713.355   286  281.339        0.105         0.104
+
+Sinistres du test : 1209 observés, 1211.3 prédits
+Déviance de test : modèle 5,929.2, tarif uniforme 6,187.5, soit 4.2 % de déviance expliquée
+Gini : 0.240 en apprentissage, 0.239 en test
+Résidus quantiles : moyenne -0.010, écart-type 1.002
+Polices à 2 sinistres ou plus : 73 observées, 62.1 attendues par le modèle</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-diagnostics-p2">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-diagnostics-p2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="855" src="img/fig-diagnostics-p2-output-2_5b1ab85d.png" width="1143"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-diagnostics-p2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 4.2: Diagnostics sur l’échantillon de test. En haut : résidus de Pearson (inexploitables) contre résidus quantiles randomisés. En bas : réel contre prédit par décile, courbe de Lorenz.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Ce que la sortie montre, sur les 15 128 polices que le modèle n’a pas vues.</p>
+<ul>
+<li><strong>Résidus.</strong> Le QQ-plot de Pearson est la marche d’escalier annoncée. Les résidus quantiles randomisés suivent la diagonale (moyenne -0,010, écart-type 1,002), sauf tout en haut, où la queue s’écarte un peu au-dessus : 73 polices ont 2 sinistres ou plus, le modèle en attendait 62,1. C’est la surdispersion du ratio 1,053, vue autrement.</li>
+<li><strong>Calibration.</strong> Par décile de fréquence prédite, le rapport réel / prédit reste entre 0,90 et 1,16 et aucun écart n’atteint 2 écarts-types de Poisson (le plus fort, 1,51, au troisième décile). La fréquence observée va de 0,048 dans le premier décile à 0,228 dans le dernier. Par bande d’âge, le U est retrouvé (0,236 prédit contre 0,235 observé chez les 18-21 ans, 0,104 contre 0,105 après 70 ans) ; le plus gros écart est sur les 26-30 ans (94 sinistres pour 79,7 prédits, 1,6 écart-type). Au total, 1 209 sinistres observés pour 1 211,3 prédits.</li>
+<li><strong>Séparation.</strong> Le Gini vaut 0,239 en apprentissage comme en test : le modèle ne s’est pas ajusté au bruit. La déviance de test baisse de 4,2 % par rapport au tarif uniforme. C’est peu en apparence : sur des comptages rares, la plus grande part de la déviance vient du hasard de Poisson, qu’aucun tarif ne prévoit.</li>
+</ul>
+<p>L’avis à rendre : modèle utilisable pour une première grille, avec deux réserves écrites. La bande 101+ repose sur 792 années d’exposition. Et ces diagnostics ne voient pas une interaction manquante : un décile mélange des profils très différents, il faut croiser réel et prédit par segment (la fiche P5 le fait avec un modèle de boosting en challenger).</p>
+</section>
+</section>
+<section class="level2" data-number="4.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="4.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Un collègue a écrit son GLM ainsi, puis a conclu : <em>“Dispersion à 0,9, les coefficients ont le bon signe, modèle validé.”</em></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>glm_collegue <span class="op">=</span> smf.glm(</span>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a>    <span class="st">"nb_sinistres ~ C(age_bande) + C(bm_bande) + puissance + C(zone)"</span>,</span>
+<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a>    data<span class="op">=</span>polices, family<span class="op">=</span>sm.families.Poisson(),</span>
+<span id="cb16-4"><a aria-hidden="true" href="#cb16-4" tabindex="-1"></a>    var_weights<span class="op">=</span>polices[<span class="st">"exposure"</span>],</span>
+<span id="cb16-5"><a aria-hidden="true" href="#cb16-5" tabindex="-1"></a>).fit()</span></code></pre></div></div>
+<p>Qu’est-ce qui ne va pas, dans le code et dans la conclusion ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li>La cible est un <strong>nombre</strong> de sinistres et l’exposition entre comme <strong>poids</strong>. C’est l’erreur à ne pas laisser passer : le modèle estime alors un nombre moyen de sinistres par ligne, sans tenir compte de la durée d’exposition, et le poids donne simplement plus d’influence aux contrats longs. Une police présente un mois est traitée comme si elle avait eu toute l’année pour sinistrer. Les deux écritures correctes sont équivalentes pour un Poisson : cible <code>nb_sinistres</code> avec <code>offset=np.log(exposure)</code>, ou cible <code>nb_sinistres / exposure</code> avec <code>var_weights=exposure</code>.</li>
+<li>Le modèle est ajusté sur tout le portefeuille (<code>data=polices</code>) : aucune police n’a été mise de côté, donc rien ne dit qu’il prédit juste sur des données qu’il n’a pas vues.</li>
+<li>« Dispersion à 0,9 et bon signe » ne valide rien : ni la calibration par segment (réel contre prédit par décile), ni le pouvoir de séparation (Lorenz, déviance de test contre un tarif uniforme) n’ont été regardés.</li>
+</ol>
+<p>Le bloc ci-dessous mesure l’effet du premier point sur ce portefeuille, et vérifie que les deux écritures correctes donnent les mêmes relativités.</p>
+<div class="cell" data-execution_count="9" id="93244fb6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a>glm_collegue <span class="op">=</span> smf.glm(</span>
+<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a>    <span class="st">"nb_sinistres ~ C(age_bande, Treatment('31-45')) + C(bm_bande, Treatment('50')) + puissance + C(zone)"</span>,</span>
+<span id="cb17-3"><a aria-hidden="true" href="#cb17-3" tabindex="-1"></a>    data<span class="op">=</span>app, family<span class="op">=</span>sm.families.Poisson(), var_weights<span class="op">=</span>app[<span class="st">"exposure"</span>],</span>
+<span id="cb17-4"><a aria-hidden="true" href="#cb17-4" tabindex="-1"></a>).fit()</span>
+<span id="cb17-5"><a aria-hidden="true" href="#cb17-5" tabindex="-1"></a>glm_frequence <span class="op">=</span> smf.glm(</span>
+<span id="cb17-6"><a aria-hidden="true" href="#cb17-6" tabindex="-1"></a>    <span class="st">"I(nb_sinistres / exposure) ~ C(age_bande, Treatment('31-45')) + C(bm_bande, Treatment('50')) + puissance + C(zone)"</span>,</span>
+<span id="cb17-7"><a aria-hidden="true" href="#cb17-7" tabindex="-1"></a>    data<span class="op">=</span>app, family<span class="op">=</span>sm.families.Poisson(), var_weights<span class="op">=</span>app[<span class="st">"exposure"</span>],</span>
+<span id="cb17-8"><a aria-hidden="true" href="#cb17-8" tabindex="-1"></a>).fit()</span>
+<span id="cb17-9"><a aria-hidden="true" href="#cb17-9" tabindex="-1"></a>comparaison <span class="op">=</span> pd.DataFrame({<span class="st">"offset (juste)"</span>: np.exp(glm.params),</span>
+<span id="cb17-10"><a aria-hidden="true" href="#cb17-10" tabindex="-1"></a>                            <span class="st">"fréquence + poids (juste)"</span>: np.exp(glm_frequence.params),</span>
+<span id="cb17-11"><a aria-hidden="true" href="#cb17-11" tabindex="-1"></a>                            <span class="st">"nombre + poids (faux)"</span>: np.exp(glm_collegue.params)})</span>
+<span id="cb17-12"><a aria-hidden="true" href="#cb17-12" tabindex="-1"></a>comparaison.index <span class="op">=</span> comparaison.index.<span class="bu">str</span>.replace(<span class="vs">r"C</span><span class="ch">\(</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">.</span><span class="op">*?</span><span class="ch">\)\[</span><span class="vs">T</span><span class="ch">\.</span><span class="kw">(</span><span class="dv">.</span><span class="op">+</span><span class="kw">)</span><span class="ch">\]</span><span class="vs">"</span>, <span class="vs">r"</span><span class="ch">\1</span><span class="vs"> = </span><span class="ch">\2</span><span class="vs">"</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-13"><a aria-hidden="true" href="#cb17-13" tabindex="-1"></a><span class="bu">print</span>(comparaison.<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb17-14"><a aria-hidden="true" href="#cb17-14" tabindex="-1"></a></span>
+<span id="cb17-15"><a aria-hidden="true" href="#cb17-15" tabindex="-1"></a><span class="co"># Ce que chacun prédit sur le test : l'offset multiplie par l'exposition de la</span></span>
+<span id="cb17-16"><a aria-hidden="true" href="#cb17-16" tabindex="-1"></a><span class="co"># police, le modèle du collègue donne un nombre de sinistres par ligne.</span></span>
+<span id="cb17-17"><a aria-hidden="true" href="#cb17-17" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Sinistres du test : </span><span class="sc">{</span>tst[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> observés, "</span></span>
+<span id="cb17-18"><a aria-hidden="true" href="#cb17-18" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>glm<span class="sc">.</span>predict(tst, offset<span class="op">=</span>np.log(tst[<span class="st">'exposure'</span>]))<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.0f}</span><span class="ss"> prédits avec l'offset, "</span></span>
+<span id="cb17-19"><a aria-hidden="true" href="#cb17-19" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>glm_collegue<span class="sc">.</span>predict(tst)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.0f}</span><span class="ss"> prédits par le modèle du collègue"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   offset (juste)  fréquence + poids (juste)  nombre + poids (faux)
+Intercept                   0.032                      0.032                  0.030
+age_bande = 18-21           1.299                      1.299                  1.315
+age_bande = 22-25           1.074                      1.074                  1.053
+age_bande = 26-30           0.821                      0.821                  0.802
+age_bande = 46-60           0.969                      0.969                  0.968
+age_bande = 61-70           0.939                      0.939                  0.961
+age_bande = 71-85           1.268                      1.268                  1.287
+bm_bande = 51-60            1.283                      1.283                  1.314
+bm_bande = 61-80            1.469                      1.469                  1.474
+bm_bande = 81-100           2.241                      2.241                  2.264
+bm_bande = 101+             3.324                      3.324                  3.349
+zone = B                    1.365                      1.365                  1.363
+zone = C                    1.689                      1.689                  1.662
+zone = D                    1.608                      1.608                  1.570
+zone = E                    1.959                      1.959                  1.908
+zone = F                    2.175                      2.175                  2.144
+puissance                   1.047                      1.047                  1.045
+
+Sinistres du test : 1209 observés, 1211 prédits avec l'offset, 1367 prédits par le modèle du collègue</code></pre>
+</div>
+</div>
+<p>Les deux écritures justes donnent exactement les mêmes relativités. L’écriture fausse s’en écarte peu ici (1,315 contre 1,299 pour les 18-21 ans), parce que la simulation tire l’exposition indépendamment de toutes les variables du tarif ; dès que l’exposition varie avec l’une d’elles, l’écart se reporte sur sa relativité. Le dommage se voit sur le niveau : le modèle du collègue prédit 1 367 sinistres sur le test, contre 1 209 observés et 1 211 avec l’offset, parce qu’il donne à une police présente quelques mois le nombre de sinistres d’une police présente toute l’année.</p>
+</details>
+</section>
+<section class="level2" data-number="4.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="4.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Oublier l’offset.</strong> Sans <code>offset=np.log(exposure)</code>, le modèle ajuste des comptages bruts au lieu de fréquences. Le LLM oublie parfois cet offset dans un premier jet, ou le remplace par un poids : vérifier systématiquement la ligne qui ajuste le modèle.</li>
+<li><strong>Ne pas tester la surdispersion.</strong> Le Poisson suppose <span class="math inline">\(\operatorname{Var}(N) = \mathbb{E}[N]\)</span>. Sur un portefeuille réel, l’hétérogénéité non captée par les variables produit souvent un ratio supérieur à 1. Si vous gardez le Poisson sans correction, vos intervalles de confiance sont trop étroits : passer en quasi-Poisson ou binomiale négative.</li>
+<li><strong>Diagnostiquer un Poisson rare comme une régression linéaire.</strong> QQ-plot des résidus de Pearson, <span class="math inline">\(R^2\)</span> : sur des comptages rares, ces outils ne disent rien. Résidus quantiles randomisés, réel contre prédit par décile, Lorenz, déviance de test.</li>
+<li><strong>Lire un coefficient isolé contre l’univariée.</strong> La relativité d’âge du GLM est un effet à bonus-malus donné : elle est plus faible que le rapport des fréquences brutes, et c’est normal (fiche P1, étape 5).</li>
+<li><strong>Discrétiser au petit bonheur.</strong> Couper les variables continues sans réflexion métier produit des bandes incohérentes (une bande 31-43 ans qui ne correspond à rien). Justifier chaque seuil par une réalité métier (permis récent, 25 ans, entrée dans le grand âge) et vérifier l’exposition de chaque bande.</li>
+<li><strong>Accepter sans critiquer.</strong> Le LLM peut produire un modèle parfaitement codé mais conceptuellement faux. Demander systématiquement <em>“avant que je valide ce modèle, joue le rôle d’un actuaire senior en revue tarifaire et liste les hypothèses non vérifiées”</em>.</li>
+<li><strong>Ne pas commiter.</strong> Entre l’étape 3 et l’étape 4, vous validez la discrétisation. C’est le moment de commiter. Si l’étape 4 part en vrille, vous revenez sans tout perdre.</li>
+</ul>
+</section>
+<section class="level2" data-number="4.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="4.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>P3 GLM Gamma de coût moyen</strong> : compléter ce GLM Poisson de fréquence par un GLM Gamma sur la sévérité, pour obtenir <span class="math inline">\(\text{prime pure} = \text{fréquence} \times \text{coût moyen}\)</span>.</li>
+<li><strong>P4 Prime pure Tweedie</strong> : alternative où l’on modélise directement la prime pure en un seul GLM Tweedie, comparée hors échantillon à fréquence × coût moyen.</li>
+<li><strong>P5 GLM contre gradient boosting</strong> : un modèle de boosting en challenger de ce GLM, sur le même découpage, sous contrainte de défendabilité en revue tarifaire.</li>
+<li><strong>I3 Tests pytest sur un module de provisionnement</strong> : la même méthode (transformer le notebook en module testé) s’applique à ce pipeline pour l’industrialiser.</li>
+</ul>
+</section>
+<section class="level2" data-number="4.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="4.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>En vrai sur freMTPL2freq : remplacer le bloc <em>“Donnée d’entrée”</em> par le chargement du fichier et le renommage des colonnes donnés dans la fiche P1 (<code>ClaimNb</code>, <code>Exposure</code>, <code>DrivAge</code>, <code>BonusMalus</code>, <code>VehPower</code>, <code>Area</code>), puis plafonner l’exposition à 1 et le nombre de sinistres à 4 comme Noll, Salzmann et Wüthrich (2018). Les bandes de bonus-malus restent valables (le coefficient y va de 50 à 230) ; la bande d’âge 71-85 devient 71-100.</li>
+<li>Pour aller plus loin sur la discrétisation, consulter les techniques de WOE (Weight of Evidence) ou de discrétisation supervisée. Demander à Claude : <em>“propose-moi une discrétisation supervisée de l’âge, optimisée pour la déviance Poisson”</em>.</li>
+<li>Pour l’interaction entre variables (par exemple âge et puissance), créer la variable croisée puis l’ajouter à la formule : <code>polices["puissant"] = polices["puissance"] &gt;= 9</code>, puis <code>"nb_sinistres ~ ... + C(age_bande):puissant"</code>. Attention au sur-paramétrage, et à l’exposition de chaque case croisée. La fiche P5 montre comment un modèle de boosting aide à trouver l’interaction qui manque.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/P1/index.html"><small>&larr; Précédent</small>P1. Analyse univariée d’un portefeuille auto</a><a class="next" href="../../bibliotheque/P3/index.html"><small>Suivant &rarr;</small>P3. GLM Gamma de coût moyen</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

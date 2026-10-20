@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</h1>
+      <p class="lede">Le fichier <code>.claude/settings.json</code> règle ce que Claude Code fait sans demander, ce pour quoi il demande toujours, et ce qu’il refuse. Bien réglé, il supprime la fatigue de validation et évite les accidents : une suppression, un push, un appel réseau partis sans qu’on y pense. Il ne protège pas des données. Cette annexe décrit la mécanique réelle (état au 29 septembre 2026, d’après la documentation officielle), donne un point de départ commenté, puis ce qui protège vraiment.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#comment-claude-code-décide">Comment Claude Code décide</a><a href="#les-quatre-niveaux-de-réglages">Les quatre niveaux de réglages</a><a href="#la-forme-des-règles">La forme des règles</a><a href="#un-point-de-départ-pour-un-projet-actuariel">Un point de départ pour un projet actuariel</a><a href="#variantes">Variantes</a><a href="#le-bac-à-sable-la-seule-barrière-qui-arrête-un-script">Le bac à sable, la seule barrière qui arrête un script</a><a href="#les-réglages-gérés-déployés-par-la-dsi">Les réglages gérés, déployés par la DSI</a><a href="#un-hook-ce-qui-doit-arriver-à-chaque-fois">Un hook : ce qui doit arriver à chaque fois</a><a href="#devant-une-demande-dautorisation-inconnue">Devant une demande d’autorisation inconnue</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Ce que les permissions font, et ce qu’elles ne font pas
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Elles évitent les accidents et le oui machinal à la trentième demande d’autorisation.</li>
+<li>Elles ne protègent pas des données : un deny <code>Read</code> n’empêche pas un script Python autorisé d’ouvrir le fichier et d’en afficher le contenu.</li>
+<li>Seul le bac à sable arrête ce script, et il n’existe pas sous Windows natif.</li>
+<li>Les données sensibles restent donc hors du dossier de travail ; on travaille sur des données synthétiques ou pseudonymisées.</li>
+<li>Tout ce que Claude lit ou affiche part chez le fournisseur. Seule une offre entreprise (Team, Enterprise, API avec contrat) fait du fournisseur un sous-traitant au sens du RGPD.</li>
+</ul>
+</div>
+</div>
+<section class="level2" data-number="33.1" id="comment-claude-code-décide">
+<h2 class="anchored" data-anchor-id="comment-claude-code-décide" data-number="33.1" id="comment-claude-code-décide"> Comment Claude Code décide</h2>
+<p>Deux choses décident de ce que Claude fait seul : le <strong>mode</strong>, et les <strong>règles</strong>.</p>
+<p><strong>Le mode.</strong> En mode <code>default</code> (Manuel), Claude lit librement dans le dossier du projet et demande avant de modifier un fichier ou de lancer une commande. <code>acceptEdits</code> accepte en plus les modifications de fichiers ; <code>plan</code> lit et propose sans rien modifier ; <code>auto</code> confie l’examen de chaque action à un second modèle, qui laisse passer ce qu’il juge conforme à votre demande et bloque le reste ; <code>dontAsk</code> refuse tout ce qui demanderait un accord, sauf ce que les règles autorisent ; <code>bypassPermissions</code> ne demande plus rien, et n’a sa place que dans un environnement isolé. Depuis la version 2.1.283, <code>auto</code> est le mode de départ par défaut dans le terminal et dans VS Code. Le réglage <code>defaultMode</code> choisit le mode de départ, et la DSI peut interdire les modes <code>auto</code> et <code>bypassPermissions</code> (<code>disableAutoMode</code>, <code>disableBypassPermissionsMode</code>).</p>
+<p><strong>Les règles.</strong> Trois listes : <code>allow</code> (sans demander), <code>ask</code> (toujours demander), <code>deny</code> (jamais). Claude Code les examine dans cet ordre : <strong>deny, puis ask, puis allow</strong>, et la première règle qui correspond décide. La précision d’une règle ne change pas cet ordre : un allow ne peut pas découper d’exception dans un deny, et un ask demande même si un allow plus précis correspond aussi. Cela vaut entre fichiers : un deny écrit à n’importe quel niveau bloque un allow écrit à n’importe quel autre. En mode <code>auto</code>, les règles s’appliquent toujours : un ask demande, même quand le second modèle laisserait passer.</p>
+<p><strong>Ce qui n’a pas besoin de règle.</strong> Lire un fichier du projet ne demande pas d’accord, en mode Manuel non plus. Une série de commandes reconnues en lecture seule (<code>ls</code>, <code>cat</code>, <code>head</code>, <code>tail</code>, <code>grep</code>, <code>wc</code>, les formes de <code>git</code> qui ne modifient rien) passe sans demande dans tous les modes. Autoriser <code>Read(**)</code>, <code>Glob(**)</code>, <code>Grep(**)</code> ou <code>cat</code> ne sert donc à rien.</p>
+</section>
+<section class="level2" data-number="33.2" id="les-quatre-niveaux-de-réglages">
+<h2 class="anchored" data-anchor-id="les-quatre-niveaux-de-réglages" data-number="33.2" id="les-quatre-niveaux-de-réglages"> Les quatre niveaux de réglages</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Niveau</th>
+<th>Fichier</th>
+<th>Qui l’écrit</th>
+<th>Portée</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Géré</td>
+<td><code>managed-settings.json</code> : <code>C:\Program Files\ClaudeCode\</code> sous Windows, <code>/Library/Application Support/ClaudeCode/</code> sous macOS, <code>/etc/claude-code/</code> sous Linux et WSL ; ou le registre Windows</td>
+<td>La DSI</td>
+<td>Tous les utilisateurs du poste ; ne se contourne pas</td>
+</tr>
+<tr class="even">
+<td>Local</td>
+<td><code>.claude/settings.local.json</code></td>
+<td>Vous</td>
+<td>Ce projet, sur votre seul poste, hors Git</td>
+</tr>
+<tr class="odd">
+<td>Projet</td>
+<td><code>.claude/settings.json</code></td>
+<td>L’équipe</td>
+<td>Ce projet, pour tous ceux qui le clonent ; versionné</td>
+</tr>
+<tr class="even">
+<td>Utilisateur</td>
+<td><code>~/.claude/settings.json</code></td>
+<td>Vous</td>
+<td>Tous vos projets</td>
+</tr>
+</tbody>
+</table>
+<p>L’ordre de priorité, du plus fort au plus faible : géré, puis les options passées en ligne de commande, puis local, projet, utilisateur. Une politique commune à tout le cabinet passe par le niveau géré : il n’existe ni <code>settings.cabinet.json</code> ni directive d’inclusion d’un fichier de réglages dans un autre.</p>
+</section>
+<section class="level2" data-number="33.3" id="la-forme-des-règles">
+<h2 class="anchored" data-anchor-id="la-forme-des-règles" data-number="33.3" id="la-forme-des-règles"> La forme des règles</h2>
+<p><strong>Les commandes.</strong> <code>Bash(python *)</code> autorise toute commande qui commence par <code>python</code> ; un <code>*</code> final précédé d’une espace couvre aussi la commande seule. L’ancienne écriture <code>Bash(python:*)</code> reste acceptée et veut dire la même chose. Le <code>*</code> se place après la sous-commande : <code>Bash(git commit *)</code> n’autorise que les commits, <code>Bash(git *)</code> autorise tout Git, push compris. Dans une commande composée (<code>a &amp;&amp; b</code>), chaque morceau doit correspondre à une règle.</p>
+<p>Une règle vise le texte de la commande, pas le programme. <code>Bash(curl *)</code> en deny arrête <code>curl https://…</code>, pas <code>/usr/bin/curl https://…</code>, ni <code>sh -c 'curl …'</code>, ni un script Python qui appelle le réseau. Et <code>Bash(python *)</code> autorise n’importe quel script Python, donc toutes les lectures, écritures et connexions que ce script fera. C’est le prix de l’exécution sans demande.</p>
+<p><strong>Sous Windows.</strong> Claude Code dispose de l’outil PowerShell, dont les règles ont la même forme : <code>PowerShell(python *)</code>, <code>PowerShell(Remove-Item *)</code>. Sans Git for Windows, c’est son seul outil de commande. Avec Git for Windows, il a aussi l’outil Bash (Git Bash), mais l’outil PowerShell reste actif par défaut avec un compte Claude ou Console, et Claude le traite comme son shell principal. Une règle <code>Bash(...)</code> ne s’applique pas à PowerShell : <code>Bash(rm *)</code> ne couvre pas <code>Remove-Item</code>, et <code>Bash(git reset --hard *)</code> n’arrête pas la même commande lancée depuis PowerShell. D’où les deux familles de règles dans le modèle ci-dessous. Sur un poste qui a Git for Windows, des réglages qui portent un deny <code>Bash(...)</code> et aucune règle <code>PowerShell(...)</code> coupent l’outil PowerShell, pour que rien ne passe par lui. Une règle écrite pour une cmdlet couvre ses alias courants (<code>PowerShell(Get-ChildItem *)</code> couvre <code>ls</code> et <code>dir</code>).</p>
+<p><strong>Les fichiers.</strong> Les règles sur les chemins s’écrivent avec <code>Read(...)</code> et <code>Edit(...)</code>, en syntaxe gitignore. Une règle de chemin sur <code>Write</code>, <code>Glob</code> ou <code>NotebookEdit</code> est acceptée mais jamais consultée : on écrit <code>Edit(docs/**)</code> et <code>Read(docs/**)</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Préfixe</th>
+<th>Sens</th>
+<th>Exemple</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>//chemin</code></td>
+<td>Absolu, depuis la racine du disque</td>
+<td><code>Read(//srv/production/**)</code> ; sous Windows, <code>Read(//c/Donnees/**)</code> pour <code>C:\Donnees</code></td>
+</tr>
+<tr class="even">
+<td><code>~/chemin</code></td>
+<td>Depuis votre dossier personnel</td>
+<td><code>Read(~/.aws/**)</code></td>
+</tr>
+<tr class="odd">
+<td><code>/chemin</code></td>
+<td>Depuis le dossier lié au fichier de réglages : la racine du projet pour <code>.claude/settings.json</code>, <code>~/.claude/</code> pour vos réglages personnels</td>
+<td><code>Edit(/src/**)</code></td>
+</tr>
+<tr class="even">
+<td><code>chemin</code> ou <code>./chemin</code></td>
+<td>Depuis le dossier courant</td>
+<td><code>Read(./.env)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Le piège classique : <code>Read(/tmp/donnees/**)</code> ne vise pas le dossier <code>/tmp</code> du disque mais un dossier <code>tmp</code> sous la racine du projet. Le chemin absolu s’écrit <code>Read(//tmp/donnees/**)</code>.</p>
+<p><strong>Le web.</strong> <code>WebFetch(domain:raw.githubusercontent.com)</code> autorise l’outil de lecture web de Claude sur un domaine. Pour restreindre le réseau, on interdit <code>curl</code> et <code>wget</code> et on autorise des domaines par <code>WebFetch(domain:…)</code>, plutôt que d’écrire des règles <code>curl</code> par adresse, qui se contournent par une option ou une redirection.</p>
+</section>
+<section class="level2" data-number="33.4" id="un-point-de-départ-pour-un-projet-actuariel">
+<h2 class="anchored" data-anchor-id="un-point-de-départ-pour-un-projet-actuariel" data-number="33.4" id="un-point-de-départ-pour-un-projet-actuariel"> Un point de départ pour un projet actuariel</h2>
+<p>À placer dans <code>.claude/settings.json</code>, à la racine du projet, puis à commiter : l’équipe en hérite.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>      <span class="st">"Bash(python *)"</span><span class="ot">,</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>      <span class="st">"Bash(pytest *)"</span><span class="ot">,</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>      <span class="st">"Bash(git add *)"</span><span class="ot">,</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>      <span class="st">"Bash(git commit *)"</span><span class="ot">,</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>      <span class="st">"PowerShell(python *)"</span><span class="ot">,</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>      <span class="st">"PowerShell(pytest *)"</span><span class="ot">,</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>      <span class="st">"PowerShell(git add *)"</span><span class="ot">,</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>      <span class="st">"PowerShell(git commit *)"</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    <span class="dt">"ask"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>      <span class="st">"Bash(git push *)"</span><span class="ot">,</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>      <span class="st">"PowerShell(git push *)"</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>    <span class="dt">"deny"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>      <span class="st">"Bash(rm *)"</span><span class="ot">,</span></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>      <span class="st">"Bash(curl *)"</span><span class="ot">,</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>      <span class="st">"Bash(wget *)"</span><span class="ot">,</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>      <span class="st">"Bash(ssh *)"</span><span class="ot">,</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>      <span class="st">"Bash(scp *)"</span><span class="ot">,</span></span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>      <span class="st">"Bash(sudo *)"</span><span class="ot">,</span></span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>      <span class="st">"Bash(git reset --hard *)"</span><span class="ot">,</span></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>      <span class="st">"Bash(git clean *)"</span><span class="ot">,</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>      <span class="st">"Bash(git push --force *)"</span><span class="ot">,</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>      <span class="st">"PowerShell(Remove-Item *)"</span><span class="ot">,</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>      <span class="st">"PowerShell(Invoke-WebRequest *)"</span><span class="ot">,</span></span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>      <span class="st">"PowerShell(Invoke-RestMethod *)"</span><span class="ot">,</span></span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>      <span class="st">"PowerShell(ssh *)"</span><span class="ot">,</span></span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>      <span class="st">"PowerShell(scp *)"</span><span class="ot">,</span></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>      <span class="st">"PowerShell(git reset --hard *)"</span><span class="ot">,</span></span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>      <span class="st">"PowerShell(git clean *)"</span><span class="ot">,</span></span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>      <span class="st">"PowerShell(git push --force *)"</span><span class="ot">,</span></span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>      <span class="st">"Read(./.env)"</span><span class="ot">,</span></span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>      <span class="st">"Read(./.env.*)"</span><span class="ot">,</span></span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>      <span class="st">"Read(./secrets/**)"</span></span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p><strong>Lecture en clair.</strong></p>
+<ul>
+<li><strong>Sans demander</strong> : lancer Python et pytest, préparer et faire un commit. Lire, chercher, consulter l’état de Git passent déjà sans règle.</li>
+<li><strong>Toujours demander</strong> : <code>git push</code>. Envoyer le travail sur le serveur partagé reste une décision humaine, même en mode <code>auto</code>.</li>
+<li><strong>Jamais</strong> : supprimer par <code>rm</code> ou <code>Remove-Item</code>, appeler le réseau par <code>curl</code>, <code>wget</code>, <code>Invoke-WebRequest</code> ou <code>Invoke-RestMethod</code>, se connecter à une autre machine (<code>ssh</code>, <code>scp</code>), élever ses droits par <code>sudo</code>, effacer l’historique ou les fichiers non suivis (<code>git reset --hard</code>, <code>git clean</code>), forcer un push. Chaque refus existe en <code>Bash(...)</code> et en <code>PowerShell(...)</code>, sauf <code>sudo</code>, propre à Bash. Le deny sur <code>git push --force</code> passe avant le ask sur <code>git push</code> : le push simple demande, le push forcé est refusé.</li>
+<li><strong>Le fichier <code>.env</code> et le dossier <code>secrets/</code></strong> : l’outil de lecture de Claude ne les ouvre pas, ni <code>cat</code>, ni une redirection. Un script Python, si.</li>
+<li><strong>Tout le reste</strong> suit le mode : en mode Manuel, Claude demande ; en mode <code>auto</code>, le second modèle décide.</li>
+</ul>
+<p>Ces règles visent la forme habituelle de chaque commande, et une variante leur échappe. <code>git push origin main --force</code> ne correspond pas au deny <code>git push --force *</code> : il tombe sur le ask <code>git push *</code>, qui demande au lieu de refuser. <code>git -C . push</code> ne correspond à aucune des deux règles et retombe dans le mode. Elles évitent l’accident courant ; elles ne sont pas une enceinte.</p>
+<p>On peut ajouter un deny <code>Read</code> sur un dossier de données (<code>Read(./donnees/**)</code>) : c’est un garde-fou contre l’ouverture par mégarde avec l’outil de lecture, pas une protection. Les données sensibles n’ont rien à faire dans ce dossier.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : ce réglage protège-t-il les données ?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un collègue garde <code>"Bash(python *)"</code> dans <code>allow</code> et ajoute <code>"Read(./data/clients_nominatifs/**)"</code> dans <code>deny</code>. Il annonce à l’équipe : <em>« Claude ne pourra plus lire ces fichiers, même si on le lui demande. On peut laisser les données d’assurés dans le projet. »</em> A-t-il raison ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Non. Le deny <code>Read</code> empêche l’outil de lecture de Claude Code, les commandes de lecture qu’il reconnaît (<code>cat</code>, <code>head</code>, <code>tail</code>, <code>sed</code>, <code>tee</code>) et les redirections d’ouvrir ces fichiers. Il ne s’applique pas à un programme qui ouvre le fichier lui-même, comme un script Python. Or <code>Bash(python *)</code> autorise n’importe quel script :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="bu">print</span>(pd.read_csv(<span class="st">"data/clients_nominatifs/assures.csv"</span>).head())</span></code></pre></div></div>
+<p>Claude peut écrire ce script, le lancer sans demander et lire la sortie : les cinq premières lignes partent chez le fournisseur. Seul le bac à sable bloquerait la lecture, et il n’existe pas sous Windows natif. La bonne réponse : sortir les données nominatives du dossier de travail, et travailler sur un jeu synthétique ou pseudonymisé.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="33.5" id="variantes">
+<h2 class="anchored" data-anchor-id="variantes" data-number="33.5" id="variantes"> Variantes</h2>
+<section class="level3" data-number="33.5.1" id="exploration-personnelle">
+<h3 class="anchored" data-anchor-id="exploration-personnelle" data-number="33.5.1"> Exploration personnelle</h3>
+<p>Pour vos explorations sur données publiques, des autorisations en plus, dans <code>.claude/settings.local.json</code> (hors Git, pour vous seul) :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>      <span class="st">"Bash(jupyter *)"</span><span class="ot">,</span></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>      <span class="st">"Bash(streamlit run *)"</span><span class="ot">,</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>      <span class="st">"Bash(quarto render *)"</span><span class="ot">,</span></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>      <span class="st">"WebFetch(domain:raw.githubusercontent.com)"</span></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p>La dernière ligne autorise Claude à lire des fichiers publics sur GitHub (un jeu de données ouvert, par exemple) par son outil web. Un <code>curl</code> vers ce domaine resterait refusé : le deny <code>Bash(curl *)</code> du fichier de l’équipe passe avant tout allow, quel que soit le fichier qui le porte.</p>
+</section>
+<section class="level3" data-number="33.5.2" id="production-verrouillée">
+<h3 class="anchored" data-anchor-id="production-verrouillée" data-number="33.5.2"> Production verrouillée</h3>
+<p>Pour un projet de production, l’idée est de nommer ce qui est permis et de refuser tout le reste sans demander. C’est le rôle du mode <code>dontAsk</code> :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>    <span class="dt">"defaultMode"</span><span class="fu">:</span> <span class="st">"dontAsk"</span><span class="fu">,</span></span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>      <span class="st">"Edit(./src/**)"</span><span class="ot">,</span></span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>      <span class="st">"Edit(./tests/**)"</span><span class="ot">,</span></span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>      <span class="st">"Bash(python -m pytest *)"</span><span class="ot">,</span></span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>      <span class="st">"Bash(python -m mypy src)"</span></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p>Claude lit le projet, modifie le code et les tests, lance les tests et la vérification de types. Toute autre action qui demanderait un accord est refusée d’office.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : pourquoi ce réglage bloque-t-il tout ?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Une ancienne version de cette annexe proposait, pour la production, d’autoriser <code>Bash(pytest:*)</code> et quelques commandes Git en lecture, avec <code>"deny": ["Bash(*)"]</code> pour « interdire tout le reste ». Que se passe-t-il ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p><code>Bash(*)</code> équivaut à <code>Bash</code> : en deny, il retire l’outil Bash entier. Et le deny passe avant l’allow, quelle que soit la précision de ce dernier. Plus aucune commande ne passe, pytest compris. Pour « tout refuser sauf ce qui est nommé », on autorise ce qui est nommé et on choisit le mode <code>dontAsk</code>, comme ci-dessus.</p>
+</details>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="33.6" id="le-bac-à-sable-la-seule-barrière-qui-arrête-un-script">
+<h2 class="anchored" data-anchor-id="le-bac-à-sable-la-seule-barrière-qui-arrête-un-script" data-number="33.6" id="le-bac-à-sable-la-seule-barrière-qui-arrête-un-script"> Le bac à sable, la seule barrière qui arrête un script</h2>
+<p>Le bac à sable est posé par le système d’exploitation autour des commandes que lance Claude (Bash, PowerShell, et tous les programmes qu’elles démarrent, scripts Python compris). Il limite les fichiers lisibles et modifiables et les domaines joignables, quel que soit le texte de la commande.</p>
+<ul>
+<li>Il fonctionne sous macOS, Linux et WSL2. <strong>Sous Windows natif, les commandes tournent sans bac à sable</strong> ; pour l’avoir sur un poste Windows, on lance Claude Code dans WSL2.</li>
+<li>Par défaut, il laisse la lecture ouverte sur presque toute la machine : il faut lui dire quoi refuser.</li>
+<li>Il ne couvre que les commandes. Les outils de fichiers de Claude (Read, Edit) suivent les règles de permissions. Les deux se complètent : un deny <code>Read</code> pour l’outil, un <code>denyRead</code> du bac à sable pour les scripts.</li>
+<li>Ses chemins suivent la convention habituelle (<code>/srv/production</code> est absolu, <code>~/</code> part du dossier personnel), différente de celle des règles <code>Read</code> (<code>//</code> pour l’absolu).</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>    <span class="dt">"deny"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"Read(//srv/production/**)"</span><span class="ot">]</span></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>  <span class="dt">"sandbox"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>    <span class="dt">"enabled"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>    <span class="dt">"allowUnsandboxedCommands"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    <span class="dt">"filesystem"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>      <span class="dt">"denyRead"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"/srv/production"</span><span class="ot">]</span></span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>    <span class="dt">"network"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>      <span class="dt">"allowedDomains"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"pypi.org"</span><span class="ot">,</span> <span class="st">"files.pythonhosted.org"</span><span class="ot">]</span></span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p>Lecture en clair : ni l’outil de lecture de Claude ni aucune commande, script Python compris, ne lisent <code>/srv/production</code> ; côté réseau, les commandes joignent d’office l’index des paquets Python, et tout autre domaine demande votre accord en mode Manuel (en mode <code>auto</code>, il est refusé, sauf si le second modèle l’a approuvé pour cette commande) ; enfin <code>allowUnsandboxedCommands: false</code> empêche Claude de relancer hors du bac à sable une commande qui y a échoué. Même ainsi, tout ce que Claude lit dans le projet part chez le fournisseur : le bac à sable protège les fichiers qu’il exclut, pas ceux qu’on laisse lisibles.</p>
+</section>
+<section class="level2" data-number="33.7" id="les-réglages-gérés-déployés-par-la-dsi">
+<h2 class="anchored" data-anchor-id="les-réglages-gérés-déployés-par-la-dsi" data-number="33.7" id="les-réglages-gérés-déployés-par-la-dsi"> Les réglages gérés, déployés par la DSI</h2>
+<p>Ce qui doit valoir pour tous les postes du cabinet, sans que personne puisse le retirer, va dans <code>managed-settings.json</code>, installé par la DSI aux emplacements du tableau des niveaux. Un deny posé là bloque partout ; certains réglages n’existent qu’à ce niveau, comme <code>allowManagedPermissionRulesOnly</code>, qui ne laisse s’appliquer que les règles du niveau géré.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>    <span class="dt">"disableBypassPermissionsMode"</span><span class="fu">:</span> <span class="st">"disable"</span><span class="fu">,</span></span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>    <span class="dt">"deny"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>      <span class="st">"Bash(curl *)"</span><span class="ot">,</span></span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>      <span class="st">"Bash(wget *)"</span><span class="ot">,</span></span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>      <span class="st">"PowerShell(Invoke-WebRequest *)"</span></span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p>Sur un parc macOS, Linux ou WSL2, la DSI y ajoute le bac à sable avec <code>"failIfUnavailable": true</code>, qui empêche Claude Code de démarrer si le bac à sable ne peut pas tourner. Sur un parc Windows natif, ce réglage empêcherait Claude Code de démarrer : la protection des données y repose entièrement sur leur absence du poste de travail. Si la politique du cabinet veut qu’un humain valide chaque commande, la DSI coupe aussi le mode <code>auto</code> (<code>"disableAutoMode": "disable"</code>).</p>
+</section>
+<section class="level2" data-number="33.8" id="un-hook-ce-qui-doit-arriver-à-chaque-fois">
+<h2 class="anchored" data-anchor-id="un-hook-ce-qui-doit-arriver-à-chaque-fois" data-number="33.8" id="un-hook-ce-qui-doit-arriver-à-chaque-fois"> Un hook : ce qui doit arriver à chaque fois</h2>
+<p>Une consigne du CLAUDE.md, « lance les tests après chaque modification », peut être oubliée. Un hook ne l’est pas : c’est une commande que Claude Code lance lui-même à un moment précis, quoi que décide le modèle. Les moments les plus utiles : <code>SessionStart</code> (début ou reprise de session), <code>PreToolUse</code> (avant une action, qu’il peut bloquer), <code>PostToolUse</code> (après une action réussie), <code>Stop</code> (quand Claude a fini de répondre).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>  <span class="dt">"hooks"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>    <span class="dt">"PostToolUse"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>        <span class="dt">"matcher"</span><span class="fu">:</span> <span class="st">"Edit|Write"</span><span class="fu">,</span></span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>        <span class="dt">"hooks"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>          <span class="fu">{</span> <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"command"</span><span class="fu">,</span> <span class="dt">"command"</span><span class="fu">:</span> <span class="st">"python -m pytest -q"</span> <span class="fu">}</span></span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>        <span class="ot">]</span></span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p>Après chaque fichier créé ou modifié par Claude, les tests tournent. S’ils échouent, la commande se termine en erreur et un avertissement apparaît dans la session. Gardez des tests rapides : ils tournent à chaque modification. Un hook <code>PreToolUse</code> qui se termine avec le code 2 bloque l’action, même dans le mode le plus permissif ; un hook peut durcir les règles, jamais les assouplir. La commande <code>/hooks</code> liste les hooks actifs.</p>
+<p>Un hook s’exécute avec vos droits, hors du bac à sable. Un dépôt cloné peut en contenir dans son <code>.claude/settings.json</code> : on les lit avant de travailler dans ce dépôt.</p>
+</section>
+<section class="level2" data-number="33.9" id="devant-une-demande-dautorisation-inconnue">
+<h2 class="anchored" data-anchor-id="devant-une-demande-dautorisation-inconnue" data-number="33.9" id="devant-une-demande-dautorisation-inconnue"> Devant une demande d’autorisation inconnue</h2>
+<p>Quand Claude demande l’accord pour une commande que vous ne connaissez pas :</p>
+<ol type="1">
+<li><strong>Demandez ce qu’elle fait.</strong> <em>« Reformule en français ce que tu cherches à exécuter, et pourquoi. »</em></li>
+<li><strong>Décidez en connaissance de cause.</strong> Utile et anodine : acceptez, ou ajoutez une règle dans <code>.claude/settings.local.json</code> (pour vous) ou <code>.claude/settings.json</code> (pour l’équipe, après en avoir parlé). Suspecte : refusez, et demandez une autre voie.</li>
+</ol>
+<p>« Oui, et ne plus demander » enregistre une règle : relisez-la dans <code>/permissions</code>. On n’accepte jamais une demande sans l’avoir lue.</p>
+</section>
+<section class="level2" data-number="33.10" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="33.10" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>La documentation officielle : code.claude.com/docs/en/permissions, code.claude.com/docs/en/permission-modes, code.claude.com/docs/en/settings, code.claude.com/docs/en/sandboxing, code.claude.com/docs/en/hooks-guide.</li>
+<li>L’<a href="../../annexes/installation/index.html">annexe Installation</a> : le premier <code>settings.json</code>, au moment d’installer.</li>
+<li>Le chapitre « Cadrer et tracer » (partie 4) : les permissions dans un outil que d’autres utilisent.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/C/index.html"><small>&larr; Précédent</small>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a class="next" href="../../annexes/E/index.html"><small>Suivant &rarr;</small>Annexe E. Conventions Git légères pour une équipe actuarielle</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

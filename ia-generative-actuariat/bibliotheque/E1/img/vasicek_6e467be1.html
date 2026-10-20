@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vasicek : le taux court revient vers sa moyenne</title>
+<!-- Produit par _construire.py depuis _src/ : ne pas modifier ici. -->
+<style>
+/* Les illustrations de la bibliothèque : une page par modèle, intégrée par iframe dans sa fiche.
+   Charte des sites (navy, crimson, acier) ; fond clair partout. */
+:root { --navy:#13264A; --crimson:#BA1C3A; --crimson-l:#e8536e; --crimson-w:#fbeef1; --steel:#3B547D; --steel-l:#7D92AC;
+  --teal:#1F6F6B; --teal-w:#e8f3f2; --amber:#9A6B1E; --sand:#F7F4F2; --line:#dcd8d4; --ink:#1f2733; --ink-soft:#4a5567; --mute:#78828f; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #fff; }
+body { font-family: Inter, "Segoe UI", system-ui, sans-serif; color: var(--ink); font-size: 14px; line-height: 1.45; }
+.ill { padding: 14px 16px 16px; }
+.tete { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tete h1 { font: 800 17px Manrope, "Segoe UI", sans-serif; color: var(--navy); margin: 0 0 3px; }
+.tete p { color: var(--ink-soft); margin: 0; font-size: 13.5px; }
+.reglages { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 10px 18px; margin-top: 12px;
+  padding: 12px 14px; background: var(--sand); border: 1px solid var(--line); border-radius: 10px; }
+.curseur label { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--navy); }
+.curseur output { font-family: "JetBrains Mono", Consolas, monospace; color: var(--crimson); font-weight: 600; }
+.curseur input[type=range] { width: 100%; margin: 4px 0 2px; accent-color: var(--crimson); }
+.curseur small { display: block; color: var(--mute); font-size: 11.5px; line-height: 1.3; }
+.boutons { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+button { font: 600 12.5px Inter, sans-serif; border: 1px solid var(--line); background: #fff; color: var(--navy);
+  border-radius: 18px; padding: 5px 13px; cursor: pointer; white-space: nowrap; }
+button:hover { border-color: var(--steel-l); }
+button.principal { background: var(--navy); border-color: var(--navy); color: #fff; }
+button.actif { background: var(--navy); border-color: var(--navy); color: #fff; }
+.boutons .note { color: var(--mute); font-size: 12px; }
+.chiffres { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 12px 0; }
+.chiffre { border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
+.chiffre span { display: block; font-size: 11.5px; color: var(--mute); }
+.chiffre b { font: 800 16px Manrope, sans-serif; color: var(--navy); }
+.chiffre b.alerte { color: var(--crimson); }
+.chiffre b.bon { color: var(--teal); }
+.grille { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; }
+.grille.egale { grid-template-columns: 1fr 1fr; }
+@media (max-width: 760px) { .grille, .grille.egale { grid-template-columns: 1fr; } }
+.panneau { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px 6px; min-width: 0; }
+.panneau + .panneau.large, .large { margin-top: 12px; }
+.panneau h2 { font: 700 13px Manrope, sans-serif; color: var(--navy); margin: 0 0 2px; }
+.panneau .leg { font-size: 11.5px; color: var(--mute); margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.leg i { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
+svg { display: block; width: 100%; height: auto; }
+.formule { font-family: "JetBrains Mono", Consolas, monospace; font-size: 12.5px; background: var(--sand); border-radius: 8px;
+  padding: 8px 12px; margin-top: 12px; color: var(--navy); line-height: 1.6; }
+.formule b { font-family: Inter, sans-serif; color: var(--ink-soft); font-weight: 600; margin-right: 6px; }
+</style>
+<script>
+// Exporte : ILL
+/* Ce que partagent les illustrations de la bibliothèque : les tirages, la loi normale, les curseurs,
+   le tracé SVG, l'histogramme, la lecture animée et le bouton plein écran. Inclus tel quel dans
+   chaque page par _construire.py, pour que chaque page reste un seul fichier autonome. */
+const ILL = (function () {
+  "use strict";
+
+  // Tirages reproductibles : mulberry32, le générateur de CL_SIMUL dans Vision ; normales de Box-Muller.
+  function tirages(graine) {
+    let a = graine >>> 0, garde = null;
+    const u = () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    const normale = () => {
+      if (garde !== null) { const z = garde; garde = null; return z; }
+      let x = u(); while (x === 0) x = u();
+      const y = u(), r = Math.sqrt(-2 * Math.log(x));
+      garde = r * Math.sin(2 * Math.PI * y);
+      return r * Math.cos(2 * Math.PI * y);
+    };
+    // Poisson par produit d'uniformes : suffisant pour des intensités de quelques unités
+    const poisson = (l) => { const L = Math.exp(-l); let k = 0, p = u(); while (p > L) { k++; p *= u(); } return k; };
+    return { u, normale, poisson };
+  }
+
+  // Fonction de répartition de la loi normale (Abramowitz et Stegun 7.1.26, erreur < 1,5e-7)
+  function phi(x) {
+    const z = Math.abs(x) / Math.SQRT2, t = 1 / (1 + 0.3275911 * z);
+    const e = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z);
+    return x >= 0 ? 0.5 * (1 + e) : 0.5 * (1 - e);
+  }
+  const densite = (x, m, s) => Math.exp(-0.5 * ((x - m) / s) ** 2) / (s * Math.sqrt(2 * Math.PI));
+
+  const nb = (x, d = 0) => (Number.isFinite(x) ? x.toFixed(d).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, " ") : "n.d.");
+  const pct = (x, d = 2) => (Number.isFinite(x) ? (x * 100).toFixed(d).replace(".", ",") + " %" : "n.d.");
+  const quantile = (trie, q) => { const i = (trie.length - 1) * q, b = Math.floor(i); return trie[b] + (trie[Math.min(b + 1, trie.length - 1)] - trie[b]) * (i - b); };
+  const moyenne = (t) => t.reduce((s, x) => s + x, 0) / t.length;
+
+  // Des graduations rondes entre a et b
+  function graduations(a, b, n = 5) {
+    const brut = (b - a) / n, p = Math.pow(10, Math.floor(Math.log10(brut))), r = brut / p;
+    const pas = (r < 1.5 ? 1 : r < 2.25 ? 2 : r < 3.5 ? 2.5 : r < 7.5 ? 5 : 10) * p, out = [];
+    for (let v = Math.ceil(a / pas) * pas; v <= b + pas * 1e-9; v += pas) out.push(Math.abs(v) < pas * 1e-9 ? 0 : v);
+    return out;
+  }
+
+  // Les curseurs : défs [{cle, nom, min, max, pas, val, echelle, fmt, aide}] ; v[cle] vaut val × echelle.
+  function curseurs(boite, defs, auChangement) {
+    const v = {}, sorties = {};
+    for (const d of defs) {
+      const div = document.createElement("div");
+      div.className = "curseur";
+      div.innerHTML = `<label>${d.nom}<output></output></label><input type="range" min="${d.min}" max="${d.max}" step="${d.pas}" value="${d.val}">` +
+        (d.aide ? `<small>${d.aide}</small>` : "");
+      const champ = div.querySelector("input"), sortie = div.querySelector("output");
+      const lire = () => { v[d.cle] = Number(champ.value) * (d.echelle || 1); sortie.textContent = d.fmt ? d.fmt(Number(champ.value)) : champ.value; };
+      champ.addEventListener("input", () => { lire(); auChangement(d.cle); });
+      lire();
+      sorties[d.cle] = { champ, lire };
+      boite.appendChild(div);
+    }
+    return { v, regler: (cle, val) => { sorties[cle].champ.value = val; sorties[cle].lire(); } };
+  }
+
+  // Le tracé : axes, grille, et des couches (ligne, bande, barres, zone, h, v, point, texte).
+  function trace(svg, o) {
+    const L = o.l || 640, H = o.h || 280, m = Object.assign({ g: 50, d: 14, h: 12, b: 30 }, o.marges || {});
+    const lx = L - m.g - m.d, ly = H - m.h - m.b;
+    const X = (x) => m.g + (x - o.x[0]) / (o.x[1] - o.x[0]) * lx;
+    const Y = (y) => H - m.b - (y - o.y[0]) / (o.y[1] - o.y[0]) * ly;
+    const fx = o.fx || String, fy = o.fy || String, id = "z" + Math.random().toString(36).slice(2, 8);
+    const chemin = (xs, ys) => { let d = "", lev = true; for (let i = 0; i < xs.length; i++) { if (!Number.isFinite(ys[i])) { lev = true; continue; } d += (lev ? "M" : "L") + X(xs[i]).toFixed(1) + " " + Y(ys[i]).toFixed(1); lev = false; } return d; };
+    let s = `<defs><clipPath id="${id}"><rect x="${m.g}" y="${m.h}" width="${lx}" height="${ly}"/></clipPath></defs>`;
+    for (const v of (o.yt || graduations(o.y[0], o.y[1], 4))) s += `<line x1="${m.g}" x2="${L - m.d}" y1="${Y(v)}" y2="${Y(v)}" stroke="#efeae5"/><text x="${m.g - 6}" y="${Y(v) + 4}" font-size="11" text-anchor="end" fill="#78828f">${fy(v)}</text>`;
+    for (const v of (o.xt || graduations(o.x[0], o.x[1], 6))) s += `<text x="${X(v)}" y="${H - m.b + 16}" font-size="11" text-anchor="middle" fill="#78828f">${fx(v)}</text>`;
+    s += `<line x1="${m.g}" x2="${L - m.d}" y1="${H - m.b}" y2="${H - m.b}" stroke="#cfc8c1"/>`;
+    if (o.xTitre) s += `<text x="${L - m.d}" y="${H - 3}" font-size="11" text-anchor="end" fill="#78828f">${o.xTitre}</text>`;
+    let dessus = "";
+    s += `<g clip-path="url(#${id})">`;
+    for (const c of o.couches) {
+      const col = c.couleur || "#13264A", op = c.op == null ? 1 : c.op;
+      if (c.type === "bande") {
+        let d = ""; c.xs.forEach((x, i) => { d += (i ? "L" : "M") + X(x).toFixed(1) + " " + Y(c.hi[i]).toFixed(1); });
+        for (let i = c.xs.length - 1; i >= 0; i--) d += "L" + X(c.xs[i]).toFixed(1) + " " + Y(c.lo[i]).toFixed(1);
+        s += `<path d="${d}Z" fill="${col}" opacity="${op}"/>`;
+      } else if (c.type === "ligne") {
+        s += `<path d="${chemin(c.xs, c.ys)}" fill="none" stroke="${col}" stroke-width="${c.ep || 1.5}" opacity="${op}"${c.tirets ? ` stroke-dasharray="${c.tirets}"` : ""} stroke-linejoin="round"/>`;
+      } else if (c.type === "barres") {
+        c.x0.forEach((x0, i) => { const y = Y(c.y[i]); s += `<rect x="${X(x0).toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(0, X(c.x1[i]) - X(x0) - 0.6).toFixed(1)}" height="${Math.max(0, Y(o.y[0]) - y).toFixed(1)}" fill="${col}" opacity="${op}"/>`; });
+      } else if (c.type === "zone") {
+        const a = X(Math.max(c.x0, o.x[0])), b = X(Math.min(c.x1, o.x[1]));
+        if (b > a) s += `<rect x="${a}" y="${m.h}" width="${b - a}" height="${ly}" fill="${col}" opacity="${op}"/>`;
+      } else if (c.type === "h") {
+        s += `<line x1="${m.g}" x2="${L - m.d}" y1="${Y(c.y)}" y2="${Y(c.y)}" stroke="${col}" stroke-width="${c.ep || 1.2}"${c.tirets ? ` stroke-dasharray="${c.tirets}"` : ""} opacity="${op}"/>`;
+        if (c.texte) dessus += `<text x="${L - m.d - 4}" y="${Y(c.y) - 4}" font-size="11" text-anchor="end" fill="${col}" font-weight="600">${c.texte}</text>`;
+      } else if (c.type === "v") {
+        s += `<line x1="${X(c.x)}" x2="${X(c.x)}" y1="${m.h}" y2="${H - m.b}" stroke="${col}" stroke-width="${c.ep || 1.2}"${c.tirets ? ` stroke-dasharray="${c.tirets}"` : ""} opacity="${op}"/>`;
+        if (c.texte) dessus += `<text x="${X(c.x) + (c.gauche ? -4 : 4)}" y="${m.h + 12}" font-size="11" text-anchor="${c.gauche ? "end" : "start"}" fill="${col}" font-weight="600">${c.texte}</text>`;
+      } else if (c.type === "point") {
+        s += `<circle cx="${X(c.x)}" cy="${Y(c.y)}" r="${c.r || 4}" fill="${col}"/>`;
+      }
+    }
+    s += `</g>` + dessus;
+    svg.setAttribute("viewBox", `0 0 ${L} ${H}`);
+    svg.innerHTML = s;
+  }
+
+  // L'histogramme en densité, sur [a, b] en n classes
+  function histo(vals, a, b, n) {
+    const l = (b - a) / n, c = new Array(n).fill(0);
+    for (const x of vals) { const k = Math.floor((x - a) / l); if (k >= 0 && k < n) c[k]++; }
+    return { x0: c.map((_, k) => a + k * l), x1: c.map((_, k) => a + (k + 1) * l), y: c.map((k) => k / (vals.length * l)) };
+  }
+
+  // La lecture animée : f va de 0 à 1 en `duree` secondes ; un second clic arrête.
+  function lecteur(bouton, duree, image, fin) {
+    let ref = null;
+    const arreter = () => { if (ref) cancelAnimationFrame(ref); ref = null; bouton.textContent = "▶ Lecture"; bouton.classList.remove("actif"); if (fin) fin(); };
+    bouton.addEventListener("click", () => {
+      if (ref) { arreter(); return; }
+      const t0 = performance.now(); bouton.textContent = "■ Arrêter"; bouton.classList.add("actif");
+      const pas = (t) => { const f = Math.min(1, (t - t0) / (duree * 1000)); image(f); if (f < 1) ref = requestAnimationFrame(pas); else arreter(); };
+      ref = requestAnimationFrame(pas);
+    });
+    return { enCours: () => ref !== null };
+  }
+
+  // Ouvrir la même page seule, en grand (la page est dans une iframe de sa fiche)
+  function pleinEcran(bouton) {
+    if (window.self === window.top) { bouton.remove(); return; }
+    bouton.addEventListener("click", () => window.open(window.location.href, "_blank", "noopener"));
+  }
+
+  return { tirages, phi, densite, nb, pct, quantile, moyenne, graduations, curseurs, trace, histo, lecteur, pleinEcran };
+})();
+</script>
+</head>
+<body>
+<div class="ill">
+  <div class="tete">
+    <div>
+      <h1>Vasicek : le taux court revient vers sa moyenne</h1>
+      <p>Déplacez les curseurs : les trajectoires, la loi du taux à l'horizon choisi et la courbe des taux suivent. La lecture fait avancer le temps.</p>
+    </div>
+    <button id="grand">Plein écran</button>
+  </div>
+  <div class="reglages" id="reglages"></div>
+  <div class="boutons"><button class="principal" id="lecture">▶ Lecture</button><button id="tirage">Nouveau tirage</button><span class="note" id="note"></span></div>
+  <div class="chiffres" id="chiffres"></div>
+  <div class="grille">
+    <div class="panneau">
+      <h2>Trajectoires du taux court, sur 30 ans</h2>
+      <svg id="g-traj"></svg>
+      <p class="leg"><span><i style="background:#13264A"></i>moyenne</span><span><i style="background:#d5dde8;height:8px"></i>95 % des trajectoires</span><span><i style="background:#BA1C3A"></i>niveau b</span></p>
+    </div>
+    <div class="panneau">
+      <h2 id="t-loi">Loi du taux</h2>
+      <svg id="g-loi"></svg>
+      <p class="leg"><span><i style="background:#9fb0c6;height:8px"></i>tirages</span><span><i style="background:#13264A"></i>loi normale exacte</span><span><i style="background:#f3c6cf;height:8px"></i>taux négatifs</span></p>
+    </div>
+  </div>
+  <div class="panneau large">
+    <h2>La courbe des taux zéro-coupon que le modèle donne aujourd'hui</h2>
+    <svg id="g-courbe"></svg>
+    <p class="leg"><span><i style="background:#13264A"></i>taux zéro-coupon selon la maturité</span><span><i style="background:#BA1C3A"></i>taux long b − σ² / 2a²</span></p>
+  </div>
+  <div class="formule"><b>Le modèle</b>dr = a (b − r) dt + σ dW<br><b>À l'horizon t</b>une loi normale, de moyenne r₀ e<sup>−at</sup> + b (1 − e<sup>−at</sup>) et de variance σ² (1 − e<sup>−2at</sup>) / 2a</div>
+</div>
+<script>
+(function () {
+  "use strict";
+  const H = 30, PAS = 1 / 12, N = H * 12, NAFF = 24, NLOI = 4000;
+  let graine = 7, tLecture = null;
+  const pc = (x, d = 2) => ILL.nb(x, d) + " %";
+  const R = ILL.curseurs(document.getElementById("reglages"), [
+    { cle: "a", nom: "Vitesse de retour a", min: 0.02, max: 1.5, pas: 0.01, val: 0.3, fmt: (x) => ILL.nb(x, 2), aide: "Grande : le taux revient vite vers b." },
+    { cle: "b", nom: "Niveau de long terme b", min: -1, max: 6, pas: 0.05, val: 2.5, echelle: 0.01, fmt: pc, aide: "Le niveau autour duquel le taux finit par tourner." },
+    { cle: "s", nom: "Volatilité σ", min: 0.1, max: 3, pas: 0.05, val: 1, echelle: 0.01, fmt: pc, aide: "L'amplitude des chocs, par an." },
+    { cle: "r0", nom: "Taux de départ r₀", min: -1, max: 6, pas: 0.05, val: 2, echelle: 0.01, fmt: pc, aide: "Le taux court aujourd'hui." },
+    { cle: "t", nom: "Horizon de la loi t", min: 0.5, max: 30, pas: 0.5, val: 10, fmt: (x) => ILL.nb(x, 1) + " ans", aide: "Le moment où l'on regarde la loi." },
+  ], () => dessiner());
+  const v = R.v;
+
+  const moments = (t) => {
+    const e = Math.exp(-v.a * t);
+    return { m: v.r0 * e + v.b * (1 - e), sd: v.s * Math.sqrt((1 - e * e) / (2 * v.a)) };
+  };
+
+  function trajectoires() {
+    const g = ILL.tirages(graine), e = Math.exp(-v.a * PAS), sp = v.s * Math.sqrt((1 - e * e) / (2 * v.a)), out = [];
+    for (let j = 0; j < NAFF; j++) {
+      const r = new Float64Array(N + 1); r[0] = v.r0;
+      for (let k = 0; k < N; k++) r[k + 1] = r[k] * e + v.b * (1 - e) + sp * g.normale();
+      out.push(r);
+    }
+    return out;
+  }
+
+  function dessiner() {
+    const t = tLecture == null ? v.t : Math.max(tLecture, 1 / 12);
+    const xs = Array.from({ length: N + 1 }, (_, k) => k * PAS);
+    const kmax = tLecture == null ? N : Math.round(tLecture / PAS);
+    const mo = xs.map(moments), paths = trajectoires();
+    const moy = xs.map((x, k) => (k <= kmax ? mo[k].m : NaN));
+    const lo = mo.map((q) => q.m - 1.96 * q.sd), hi = mo.map((q) => q.m + 1.96 * q.sd);
+    let ymin = Math.min(0, ...lo, v.b), ymax = Math.max(...hi, v.b);
+    for (const p of paths) for (let k = 0; k <= kmax; k++) { ymin = Math.min(ymin, p[k]); ymax = Math.max(ymax, p[k]); }
+    const marge = (ymax - ymin) * 0.06; ymin -= marge; ymax += marge;
+    const cut = (arr) => Array.from(arr, (y, k) => (k <= kmax ? y : NaN));
+    const couches = [
+      { type: "bande", xs: xs.slice(0, kmax + 1), lo: lo.slice(0, kmax + 1), hi: hi.slice(0, kmax + 1), couleur: "#d5dde8", op: 0.85 },
+      { type: "h", y: 0, couleur: "#9aa4b1", ep: 1 },
+      ...paths.map((p) => ({ type: "ligne", xs, ys: cut(p), couleur: "#7D92AC", ep: 1, op: 0.55 })),
+      { type: "ligne", xs, ys: moy, couleur: "#13264A", ep: 2.6 },
+      { type: "h", y: v.b, couleur: "#BA1C3A", tirets: "6 4", texte: "b" },
+      { type: "v", x: t, couleur: "#BA1C3A", ep: 1, tirets: "2 3", texte: "t", gauche: t > 25 },
+    ];
+    ILL.trace(document.getElementById("g-traj"), { l: 620, h: 270, x: [0, H], y: [ymin, ymax], fx: (x) => x + " a", fy: (y) => pc(y * 100, 1), couches });
+
+    // la loi à t : des tirages exacts, et la densité normale
+    const q = moments(t), g = ILL.tirages(graine + 101), tir = [];
+    for (let i = 0; i < NLOI; i++) tir.push(q.m + q.sd * g.normale());
+    const a0 = q.m - 4 * q.sd, a1 = q.m + 4 * q.sd, h = ILL.histo(tir, a0, a1, 36);
+    const dx = Array.from({ length: 121 }, (_, i) => a0 + (a1 - a0) * i / 120), dy = dx.map((x) => ILL.densite(x, q.m, q.sd));
+    const ytop = Math.max(...h.y, ...dy) * 1.08;
+    ILL.trace(document.getElementById("g-loi"), { l: 440, h: 270, x: [a0, a1], y: [0, ytop], fx: (x) => ILL.nb(x * 100, 1), fy: () => "", xTitre: "taux, en %", marges: { g: 14 },
+      couches: [
+        { type: "zone", x0: a0, x1: 0, couleur: "#f3c6cf", op: 0.7 },
+        { type: "barres", x0: h.x0, x1: h.x1, y: h.y, couleur: "#9fb0c6", op: 0.9 },
+        { type: "ligne", xs: dx, ys: dy, couleur: "#13264A", ep: 2.2 },
+        { type: "v", x: q.m, couleur: "#13264A", tirets: "4 3", texte: "moyenne" },
+      ] });
+    document.getElementById("t-loi").textContent = "Loi du taux à t = " + ILL.nb(t, 1) + " ans";
+
+    // la courbe des taux zéro-coupon (la formule de Vision, alm_esg.js)
+    const B = (tau) => (1 - Math.exp(-v.a * tau)) / v.a, long = v.b - v.s * v.s / (2 * v.a * v.a);
+    const taus = Array.from({ length: 120 }, (_, i) => (i + 1) * 0.25);
+    const zc = taus.map((tau) => { const k = B(tau); return -((long) * (k - tau) - v.s * v.s * k * k / (4 * v.a) - k * v.r0) / tau; });
+    let c0 = Math.min(...zc, v.r0, long), c1 = Math.max(...zc, v.r0, long); const mc = (c1 - c0) * 0.12 + 0.001; c0 -= mc; c1 += mc;
+    ILL.trace(document.getElementById("g-courbe"), { l: 1060, h: 200, x: [0, 30], y: [c0, c1], fx: (x) => x + " ans", fy: (y) => pc(y * 100, 1), xTitre: "maturité",
+      couches: [
+        { type: "h", y: long, couleur: "#BA1C3A", tirets: "6 4", texte: "taux long " + pc(long * 100) },
+        { type: "ligne", xs: [0, ...taus], ys: [v.r0, ...zc], couleur: "#13264A", ep: 2.4 },
+        { type: "point", x: 0, y: v.r0, couleur: "#13264A" },
+      ] });
+
+    const p0 = ILL.phi(-q.m / q.sd);
+    document.getElementById("chiffres").innerHTML = [
+      ["Moyenne à t", pc(q.m * 100)],
+      ["Écart type à t", pc(q.sd * 100)],
+      ["Demi-vie du retour (ln 2 / a)", ILL.nb(Math.log(2) / v.a, 1) + " ans"],
+      ["Probabilité d'un taux négatif à t", ILL.pct(p0, 1), p0 > 0.1 ? "alerte" : ""],
+      ["Taux long de la courbe", pc(long * 100)],
+    ].map(([n, x, c]) => `<div class="chiffre"><span>${n}</span><b class="${c || ""}">${x}</b></div>`).join("");
+    document.getElementById("note").textContent = "Tirage n° " + (graine - 6) + ", " + NAFF + " trajectoires affichées, " + ILL.nb(NLOI) + " tirages pour la loi";
+  }
+
+  document.getElementById("tirage").addEventListener("click", () => { graine++; dessiner(); });
+  ILL.lecteur(document.getElementById("lecture"), 8, (f) => { tLecture = f * H; dessiner(); }, () => { tLecture = null; dessiner(); });
+  ILL.pleinEcran(document.getElementById("grand"));
+  dessiner();
+})();
+</script>
+</body>
+</html>

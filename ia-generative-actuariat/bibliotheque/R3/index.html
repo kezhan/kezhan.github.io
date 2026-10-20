@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R3. Mack stochastique · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">R3. Mack stochastique</h1>
+      <p class="lede">Cette fiche illustre la démarche B avec un fort focus sur la vérification d’hypothèses (Mack impose linéarité, indépendance, structure de variance). Ce que vous apprenez n’est pas Mack, mais comment instrumenter une vérification visuelle des hypothèses d’un modèle, et comment décider quand basculer vers une alternative (bootstrap).</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#les-trois-hypothèses-de-mack">Les trois hypothèses de Mack</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle (avec vérification d’hypothèses)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="10.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="10.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le Chain-Ladder déterministe (R1) donne une <strong>estimation centrale</strong> de la réserve. Il faut aussi une <strong>mesure d’incertitude</strong> : pour la note méthodologique, pour l’ORSA, pour éclairer un ajustement pour risque IFRS 17.</p>
+<p>La méthode de <strong>Mack (1993)</strong> donne l’erreur de prédiction de la réserve Chain-Ladder par formule analytique, sans simulation. Elle est rapide, défendable, et largement utilisée. Elle mesure l’incertitude <strong>jusqu’à l’extinction des sinistres</strong> (horizon ultime) : ce n’est ni la marge de risque Solvabilité II, qui est un coût du capital, ni le SCR de réserve, défini à horizon un an. L’étape 3 y revient.</p>
+<p>Sa contrepartie : elle s’appuie sur trois hypothèses (linéarité, indépendance, structure de variance), qu’on vérifie avant de publier le chiffre.</p>
+<p>Le cas illustre <strong>l’organisation des données</strong> (résultats rangés avec leurs hypothèses), <strong>l’optimisation du code</strong> (Mack vectorisé), <strong>la gouvernance</strong> (vérification des hypothèses avant utilisation, validation contre la valeur publiée), et <strong>le pilotage IA</strong> (5 prompts incluant la critique des hypothèses).</p>
+</section>
+<section class="level2" data-number="10.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="10.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On reprend le triangle Taylor-Ashe (cas R1 et R2) : montants de sinistres cumulés, en unités non monétaires, années d’origine 1 à 10 (Taylor et Ashe 1983 ; Mack 1993 ; jeu <code>GenIns</code> du package R ChainLadder). Mack (1993) l’utilise pour illustrer sa méthode, ce qui donne une valeur de référence : <strong>erreur de prédiction de la réserve totale 2 447 095</strong>, pour une réserve de 18 680 856.</p>
+<div class="cell" data-execution_count="1" id="fe39de8b">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> norm</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> comb</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>TAYLOR_ASHE <span class="op">=</span> np.array([</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    [<span class="dv">357848</span>, <span class="dv">1124788</span>, <span class="dv">1735330</span>, <span class="dv">2218270</span>, <span class="dv">2745596</span>, <span class="dv">3319994</span>, <span class="dv">3466336</span>, <span class="dv">3606286</span>, <span class="dv">3833515</span>, <span class="dv">3901463</span>],</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    [<span class="dv">352118</span>, <span class="dv">1236139</span>, <span class="dv">2170033</span>, <span class="dv">3353322</span>, <span class="dv">3799067</span>, <span class="dv">4120063</span>, <span class="dv">4647867</span>, <span class="dv">4914039</span>, <span class="dv">5339085</span>, np.nan],</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    [<span class="dv">290507</span>, <span class="dv">1292306</span>, <span class="dv">2218525</span>, <span class="dv">3235179</span>, <span class="dv">3985995</span>, <span class="dv">4132918</span>, <span class="dv">4628910</span>, <span class="dv">4909315</span>,      np.nan, np.nan],</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    [<span class="dv">310608</span>, <span class="dv">1418858</span>, <span class="dv">2195047</span>, <span class="dv">3757447</span>, <span class="dv">4029929</span>, <span class="dv">4381982</span>, <span class="dv">4588268</span>,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    [<span class="dv">443160</span>, <span class="dv">1136350</span>, <span class="dv">2128333</span>, <span class="dv">2897821</span>, <span class="dv">3402672</span>, <span class="dv">3873311</span>,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    [<span class="dv">396132</span>, <span class="dv">1333217</span>, <span class="dv">2180715</span>, <span class="dv">2985752</span>, <span class="dv">3691712</span>,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    [<span class="dv">440832</span>, <span class="dv">1288463</span>, <span class="dv">2419861</span>, <span class="dv">3483130</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    [<span class="dv">359480</span>, <span class="dv">1421128</span>, <span class="dv">2864498</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    [<span class="dv">376686</span>, <span class="dv">1363294</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>    [<span class="dv">344014</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>])</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>n <span class="op">=</span> TAYLOR_ASHE.shape[<span class="dv">0</span>]</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>annees <span class="op">=</span> np.arange(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>CONNU <span class="op">=</span> <span class="op">~</span>np.isnan(TAYLOR_ASHE)</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>C <span class="op">=</span> np.where(CONNU, TAYLOR_ASHE, <span class="fl">0.0</span>)</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>PAIRE <span class="op">=</span> CONNU[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> CONNU[:, <span class="dv">1</span>:]      <span class="co"># lignes où les colonnes j et j+1 sont connues</span></span></code></pre></div></div>
+</div>
+</section>
+<section class="level2" data-number="10.3" id="les-trois-hypothèses-de-mack">
+<h2 class="anchored" data-anchor-id="les-trois-hypothèses-de-mack" data-number="10.3" id="les-trois-hypothèses-de-mack"> Les trois hypothèses de Mack</h2>
+<p>Avant d’appliquer Mack, on rappelle les hypothèses sous-jacentes.</p>
+<ol type="1">
+<li><p><strong>Linéarité</strong> :</p>
+<p><span class="math display">\[
+\mathbb{E}\left[C_{i,j+1} \mid C_{i,1}, \dots, C_{i,j}\right] = f_j \, C_{i,j}.
+\]</span></p>
+<p>Le montant cumulé futur est proportionnel au montant cumulé actuel, avec un coefficient <span class="math inline">\(f_j\)</span> constant.</p></li>
+<li><p><strong>Indépendance entre années d’origine</strong> : les développements des différentes années d’origine sont indépendants. Un effet d’année calendaire (inflation, changement de gestion) la viole.</p></li>
+<li><p><strong>Structure de variance</strong> :</p>
+<p><span class="math display">\[
+\operatorname{Var}\left(C_{i,j+1} \mid C_{i,1}, \dots, C_{i,j}\right) = \sigma_j^2 \, C_{i,j}.
+\]</span></p>
+<p>La variance conditionnelle est proportionnelle au montant cumulé.</p></li>
+</ol>
+<p>Si une de ces hypothèses est fortement violée, l’erreur de Mack n’est plus fiable. On ne bascule pas pour autant « sur le bootstrap » par principe : le bootstrap ODP de R4 repose sur un autre modèle, avec ses propres hypothèses (incréments indépendants, variance proportionnelle à la moyenne, un seul paramètre de dispersion). On cherche quelle hypothèse tombe, et quel modèle la respecte.</p>
+</section>
+<section class="level2" data-number="10.4" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="10.4" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Calculer le CL et les <span class="math inline">\(\sigma_j\)</span>.</strong> <em>“À partir du triangle Taylor-Ashe, calcule les facteurs CL et les sigma_j (estimateur de Mack de l’écart-type par développement), avec l’extrapolation de Mack pour la dernière colonne. Vectorisé NumPy.”</em></p></li>
+<li><p><strong>Calculer l’erreur de prédiction.</strong> <em>“Applique la formule de Mack (1993) pour la MSEP conditionnelle de la réserve par année d’origine et de la réserve totale, covariances comprises. Sépare variance de processus et erreur d’estimation. Valide contre la valeur publiée : 2 447 095 pour la racine de la MSEP de la réserve totale.”</em></p></li>
+<li><p><strong>Construire des intervalles.</strong> <em>“À partir de la réserve et de son erreur de prédiction, construis les quantiles 5 %, 95 % et 99,5 % de la réserve en supposant une loi log-normale de même moyenne et même écart-type. Sors-moi le tableau, et dis-moi ce que ces quantiles ne sont pas en Solvabilité II.”</em></p></li>
+<li><p><strong>Vérifier les hypothèses.</strong> <em>“Vérifie visuellement la linéarité (résidus standardisés contre montants cumulés) et teste l’effet année calendaire (test de Mack 1994). Conclus si Mack est applicable.”</em></p></li>
+<li><p><strong>Comparer avec le bootstrap.</strong> <em>“Compare l’erreur de Mack avec l’écart-type du bootstrap ODP de R4 sur le même triangle. Explique l’écart sans le présenter comme une erreur de l’une des deux méthodes.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="10.5" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="10.5" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="10.5.1" id="étape-1.-facteurs-cl-et-sigma_j">
+<h3 class="anchored" data-anchor-id="étape-1.-facteurs-cl-et-sigma_j" data-number="10.5.1"> Étape 1. Facteurs CL et sigma_j</h3>
+<p>Les facteurs <span class="math inline">\(f_j\)</span> sont ceux de R1. Pour <span class="math inline">\(\sigma_j^2\)</span>, le code reprend l’estimateur de Mack sur les <span class="math inline">\(n - j\)</span> lignes où les colonnes <span class="math inline">\(j\)</span> et <span class="math inline">\(j + 1\)</span> sont connues (<span class="math inline">\(n = 10\)</span>), et extrapole la dernière transition, qui n’a qu’une ligne, comme Mack (1993) :</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sigma_j^2 &amp;= \frac{1}{n-j-1} \sum_{i=1}^{n-j} C_{i,j} \left(\frac{C_{i,j+1}}{C_{i,j}} - f_j\right)^2, \qquad j = 1, \dots, n-2, \\
+\sigma_{n-1}^2 &amp;= \min\left(\frac{\sigma_{n-2}^4}{\sigma_{n-3}^2},\ \sigma_{n-3}^2,\ \sigma_{n-2}^2\right).
+\end{aligned}
+\]</span></p>
+<div class="cell" data-execution_count="2" id="ba230639">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">def</span> chain_ladder_factors(triangle: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    <span class="co">"""Facteurs age-to-age : somme(col j+1) / somme(col j) sur les lignes où j et j+1 sont connus."""</span></span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>    C <span class="op">=</span> np.where(connu, triangle, <span class="fl">0.0</span>)</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>    <span class="cf">return</span> (C[:, <span class="dv">1</span>:] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>) <span class="op">/</span> (C[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a><span class="kw">def</span> mack_sigma(triangle: np.ndarray, factors: np.ndarray) <span class="op">-&gt;</span> np.ndarray:</span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>    <span class="co">"""Estimateur de Mack de l'écart-type par développement, vectorisé.</span></span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a></span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a><span class="co">    sigma_j^2 = 1/(n_j - 1) × somme_i C_{i,j} × (C_{i,j+1}/C_{i,j} - f_j)^2,</span></span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a><span class="co">    sur les n_j lignes où j et j+1 sont connus. La dernière colonne n'a qu'une</span></span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a><span class="co">    observation : extrapolation de Mack (1993),</span></span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a><span class="co">    sigma_J^2 = min(sigma_{J-1}^4 / sigma_{J-2}^2, sigma_{J-2}^2, sigma_{J-1}^2).</span></span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>    C <span class="op">=</span> np.where(connu, triangle, <span class="fl">0.0</span>)</span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb2-19"><a aria-hidden="true" href="#cb2-19" tabindex="-1"></a>    f_indiv <span class="op">=</span> np.divide(C[:, <span class="dv">1</span>:], C[:, :<span class="op">-</span><span class="dv">1</span>], out<span class="op">=</span>np.zeros_like(C[:, <span class="dv">1</span>:]), where<span class="op">=</span>paire)</span>
+<span id="cb2-20"><a aria-hidden="true" href="#cb2-20" tabindex="-1"></a>    n_j <span class="op">=</span> paire.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-21"><a aria-hidden="true" href="#cb2-21" tabindex="-1"></a>    somme <span class="op">=</span> (C[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> (f_indiv <span class="op">-</span> factors) <span class="op">**</span> <span class="dv">2</span> <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-22"><a aria-hidden="true" href="#cb2-22" tabindex="-1"></a>    sigma2 <span class="op">=</span> np.divide(somme, n_j <span class="op">-</span> <span class="dv">1</span>, out<span class="op">=</span>np.full(<span class="bu">len</span>(factors), np.nan), where<span class="op">=</span>n_j <span class="op">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb2-23"><a aria-hidden="true" href="#cb2-23" tabindex="-1"></a>    sigma2[<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="bu">min</span>(sigma2[<span class="op">-</span><span class="dv">2</span>] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> sigma2[<span class="op">-</span><span class="dv">3</span>], sigma2[<span class="op">-</span><span class="dv">3</span>], sigma2[<span class="op">-</span><span class="dv">2</span>])</span>
+<span id="cb2-24"><a aria-hidden="true" href="#cb2-24" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(sigma2)</span>
+<span id="cb2-25"><a aria-hidden="true" href="#cb2-25" tabindex="-1"></a></span>
+<span id="cb2-26"><a aria-hidden="true" href="#cb2-26" tabindex="-1"></a>factors <span class="op">=</span> chain_ladder_factors(TAYLOR_ASHE)</span>
+<span id="cb2-27"><a aria-hidden="true" href="#cb2-27" tabindex="-1"></a>sigma <span class="op">=</span> mack_sigma(TAYLOR_ASHE, factors)</span>
+<span id="cb2-28"><a aria-hidden="true" href="#cb2-28" tabindex="-1"></a></span>
+<span id="cb2-29"><a aria-hidden="true" href="#cb2-29" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Facteurs CL et sigma_j de Mack :"</span>)</span>
+<span id="cb2-30"><a aria-hidden="true" href="#cb2-30" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({</span>
+<span id="cb2-31"><a aria-hidden="true" href="#cb2-31" tabindex="-1"></a>    <span class="st">"transition"</span>: [<span class="ss">f"</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> à </span><span class="sc">{</span>j<span class="op">+</span><span class="dv">2</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(factors))],</span>
+<span id="cb2-32"><a aria-hidden="true" href="#cb2-32" tabindex="-1"></a>    <span class="st">"lignes"</span>: PAIRE.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb2-33"><a aria-hidden="true" href="#cb2-33" tabindex="-1"></a>    <span class="st">"f_j (CL)"</span>: factors.<span class="bu">round</span>(<span class="dv">4</span>),</span>
+<span id="cb2-34"><a aria-hidden="true" href="#cb2-34" tabindex="-1"></a>    <span class="st">"sigma_j (Mack)"</span>: sigma.<span class="bu">round</span>(<span class="dv">2</span>),</span>
+<span id="cb2-35"><a aria-hidden="true" href="#cb2-35" tabindex="-1"></a>}).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Facteurs CL et sigma_j de Mack :
+transition  lignes  f_j (CL)  sigma_j (Mack)
+     1 à 2       9    3.4906          400.35
+     2 à 3       8    1.7473          194.26
+     3 à 4       7    1.4574          204.85
+     4 à 5       6    1.1739          123.22
+     5 à 6       5    1.1038          117.18
+     6 à 7       4    1.0863           90.48
+     7 à 8       3    1.0539           21.13
+     8 à 9       2    1.0766           33.87
+    9 à 10       1    1.0177           21.13</code></pre>
+</div>
+</div>
+<p>Les <span class="math inline">\(\sigma_j\)</span> décroissent de 400,35 (transition 1 à 2) à 21,13 (7 à 8), avec deux ressauts : 204,85 sur la transition 3 à 4, et 33,87 sur la transition 8 à 9, calculée sur deux lignes. Le dernier, extrapolé, vaut 21,13 : la règle de Mack retient ici le <span class="math inline">\(\sigma\)</span> de la transition 7 à 8.</p>
+</section>
+<section class="level3" data-number="10.5.2" id="étape-2.-erreur-de-prédiction-par-année-dorigine-et-totale">
+<h3 class="anchored" data-anchor-id="étape-2.-erreur-de-prédiction-par-année-dorigine-et-totale" data-number="10.5.2"> Étape 2. Erreur de prédiction par année d’origine et totale</h3>
+<p>La MSEP (erreur quadratique moyenne de prédiction) de Mack additionne deux termes : la <strong>variance de processus</strong> (l’aléa des montants futurs, même si les facteurs étaient connus) et l’<strong>erreur d’estimation</strong> (les <span class="math inline">\(f_j\)</span> sont estimés sur peu de lignes). Sur la réserve totale s’ajoutent des covariances d’estimation : toutes les années d’origine utilisent les mêmes facteurs.</p>
+<p>Pour l’année d’origine <span class="math inline">\(i\)</span>, connue jusqu’à la colonne <span class="math inline">\(n - i + 1\)</span>, le code calcule, avec <span class="math inline">\(\widehat{C}_{i,j}\)</span> le montant connu sur la diagonale puis projeté au-delà :</p>
+<p><span class="math display">\[
+\begin{aligned}
+\operatorname{MSEP}_i &amp;= \widehat{C}_{i,n}^{\,2} \sum_{j=n-i+1}^{n-1} \frac{\sigma_j^2}{f_j^2} \left( \frac{1}{\widehat{C}_{i,j}} + \frac{1}{S_j} \right), \qquad S_j = \sum_{k=1}^{n-j} C_{k,j}, \\
+\operatorname{MSEP} &amp;= \sum_{i=1}^{n} \operatorname{MSEP}_i + 2 \sum_{i&lt;k} \widehat{C}_{i,n}\, \widehat{C}_{k,n} \sum_{j=n-i+1}^{n-1} \frac{\sigma_j^2 / f_j^2}{S_j}.
+\end{aligned}
+\]</span></p>
+<p>Dans la parenthèse, <span class="math inline">\(1/\widehat{C}_{i,j}\)</span> porte la variance de processus et <span class="math inline">\(1/S_j\)</span> l’erreur d’estimation ; <span class="math inline">\(S_j\)</span> est le dénominateur de <span class="math inline">\(f_j\)</span>. L’erreur de Mack est la racine de la MSEP.</p>
+<div class="cell" data-execution_count="3" id="d76a71aa">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> mack_msep(triangle: np.ndarray, factors: np.ndarray, sigma: np.ndarray, S<span class="op">=</span><span class="va">None</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    <span class="co">"""Erreur de prédiction de Mack (1993) sur la réserve, vectorisée.</span></span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a><span class="co">    Pour la ligne i, j parcourant les transitions encore à projeter :</span></span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a><span class="co">      processus  = U_i^2 × somme_j sigma_j^2/f_j^2 × 1/C_ij (projeté)</span></span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a><span class="co">      estimation = U_i^2 × somme_j sigma_j^2/f_j^2 × 1/S_j</span></span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a><span class="co">    U_i est l'ultime, S_j le dénominateur de f_j : somme des C_kj sur les lignes</span></span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a><span class="co">    où j+1 est connu. Au total s'ajoutent les covariances d'estimation : pour</span></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a><span class="co">    i plus ancienne que k, 2 U_i U_k somme_j sigma_j^2/f_j^2/S_j sur les</span></span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a><span class="co">    transitions à projeter de i.</span></span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a><span class="co">    S : dénominateur à utiliser (par défaut, celui de l'estimation de f_j).</span></span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    n <span class="op">=</span> triangle.shape[<span class="dv">0</span>]</span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    C <span class="op">=</span> np.where(connu, triangle, <span class="fl">0.0</span>)</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>    <span class="cf">if</span> S <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>        S <span class="op">=</span> (C[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>    F <span class="op">=</span> np.concatenate([[<span class="fl">1.0</span>], np.cumprod(factors)])</span>
+<span id="cb4-21"><a aria-hidden="true" href="#cb4-21" tabindex="-1"></a>    derniere_col <span class="op">=</span> connu.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb4-22"><a aria-hidden="true" href="#cb4-22" tabindex="-1"></a>    dernier_connu <span class="op">=</span> C[np.arange(n), derniere_col]</span>
+<span id="cb4-23"><a aria-hidden="true" href="#cb4-23" tabindex="-1"></a>    projete <span class="op">=</span> np.where(connu, triangle, dernier_connu[:, <span class="va">None</span>] <span class="op">*</span> F[<span class="va">None</span>, :] <span class="op">/</span> F[derniere_col][:, <span class="va">None</span>])</span>
+<span id="cb4-24"><a aria-hidden="true" href="#cb4-24" tabindex="-1"></a>    ultimes <span class="op">=</span> projete[:, <span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb4-25"><a aria-hidden="true" href="#cb4-25" tabindex="-1"></a></span>
+<span id="cb4-26"><a aria-hidden="true" href="#cb4-26" tabindex="-1"></a>    a_projeter <span class="op">=</span> <span class="op">~</span>connu[:, <span class="dv">1</span>:]                      <span class="co"># transition j → j+1 encore à projeter pour la ligne i</span></span>
+<span id="cb4-27"><a aria-hidden="true" href="#cb4-27" tabindex="-1"></a>    a <span class="op">=</span> sigma <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> factors <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb4-28"><a aria-hidden="true" href="#cb4-28" tabindex="-1"></a>    processus <span class="op">=</span> ultimes <span class="op">**</span> <span class="dv">2</span> <span class="op">*</span> (a <span class="op">/</span> projete[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> a_projeter).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-29"><a aria-hidden="true" href="#cb4-29" tabindex="-1"></a>    somme_estimation <span class="op">=</span> (a <span class="op">/</span> S <span class="op">*</span> a_projeter).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-30"><a aria-hidden="true" href="#cb4-30" tabindex="-1"></a>    estimation <span class="op">=</span> ultimes <span class="op">**</span> <span class="dv">2</span> <span class="op">*</span> somme_estimation</span>
+<span id="cb4-31"><a aria-hidden="true" href="#cb4-31" tabindex="-1"></a>    ultimes_plus_recentes <span class="op">=</span> ultimes[::<span class="op">-</span><span class="dv">1</span>].cumsum()[::<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span> ultimes</span>
+<span id="cb4-32"><a aria-hidden="true" href="#cb4-32" tabindex="-1"></a>    covariance <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (ultimes <span class="op">*</span> ultimes_plus_recentes <span class="op">*</span> somme_estimation).<span class="bu">sum</span>()</span>
+<span id="cb4-33"><a aria-hidden="true" href="#cb4-33" tabindex="-1"></a></span>
+<span id="cb4-34"><a aria-hidden="true" href="#cb4-34" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb4-35"><a aria-hidden="true" href="#cb4-35" tabindex="-1"></a>        <span class="st">"ultimes"</span>: ultimes,</span>
+<span id="cb4-36"><a aria-hidden="true" href="#cb4-36" tabindex="-1"></a>        <span class="st">"reserves"</span>: ultimes <span class="op">-</span> dernier_connu,</span>
+<span id="cb4-37"><a aria-hidden="true" href="#cb4-37" tabindex="-1"></a>        <span class="st">"erreur"</span>: np.sqrt(processus <span class="op">+</span> estimation),</span>
+<span id="cb4-38"><a aria-hidden="true" href="#cb4-38" tabindex="-1"></a>        <span class="st">"processus_total"</span>: processus.<span class="bu">sum</span>(),</span>
+<span id="cb4-39"><a aria-hidden="true" href="#cb4-39" tabindex="-1"></a>        <span class="st">"estimation_total"</span>: estimation.<span class="bu">sum</span>() <span class="op">+</span> covariance,</span>
+<span id="cb4-40"><a aria-hidden="true" href="#cb4-40" tabindex="-1"></a>        <span class="st">"erreur_totale"</span>: np.sqrt(processus.<span class="bu">sum</span>() <span class="op">+</span> estimation.<span class="bu">sum</span>() <span class="op">+</span> covariance),</span>
+<span id="cb4-41"><a aria-hidden="true" href="#cb4-41" tabindex="-1"></a>    }</span>
+<span id="cb4-42"><a aria-hidden="true" href="#cb4-42" tabindex="-1"></a></span>
+<span id="cb4-43"><a aria-hidden="true" href="#cb4-43" tabindex="-1"></a>mack <span class="op">=</span> mack_msep(TAYLOR_ASHE, factors, sigma)</span>
+<span id="cb4-44"><a aria-hidden="true" href="#cb4-44" tabindex="-1"></a>reserve_totale <span class="op">=</span> mack[<span class="st">"reserves"</span>].<span class="bu">sum</span>()</span>
+<span id="cb4-45"><a aria-hidden="true" href="#cb4-45" tabindex="-1"></a><span class="cf">with</span> np.errstate(divide<span class="op">=</span><span class="st">"ignore"</span>, invalid<span class="op">=</span><span class="st">"ignore"</span>):</span>
+<span id="cb4-46"><a aria-hidden="true" href="#cb4-46" tabindex="-1"></a>    cv <span class="op">=</span> mack[<span class="st">"erreur"</span>] <span class="op">/</span> mack[<span class="st">"reserves"</span>]</span>
+<span id="cb4-47"><a aria-hidden="true" href="#cb4-47" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({</span>
+<span id="cb4-48"><a aria-hidden="true" href="#cb4-48" tabindex="-1"></a>    <span class="st">"annee_origine"</span>: annees,</span>
+<span id="cb4-49"><a aria-hidden="true" href="#cb4-49" tabindex="-1"></a>    <span class="st">"reserve"</span>: mack[<span class="st">"reserves"</span>].<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb4-50"><a aria-hidden="true" href="#cb4-50" tabindex="-1"></a>    <span class="st">"erreur_Mack"</span>: mack[<span class="st">"erreur"</span>].<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb4-51"><a aria-hidden="true" href="#cb4-51" tabindex="-1"></a>    <span class="st">"CV reserve (%)"</span>: np.<span class="bu">round</span>(<span class="dv">100</span> <span class="op">*</span> cv, <span class="dv">1</span>),</span>
+<span id="cb4-52"><a aria-hidden="true" href="#cb4-52" tabindex="-1"></a>}).to_string(index<span class="op">=</span><span class="va">False</span>, na_rep<span class="op">=</span><span class="st">"-"</span>))</span>
+<span id="cb4-53"><a aria-hidden="true" href="#cb4-53" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb4-54"><a aria-hidden="true" href="#cb4-54" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve totale                          : </span><span class="sc">{</span>reserve_totale<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb4-55"><a aria-hidden="true" href="#cb4-55" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Erreur de Mack (racine MSEP) totale      : </span><span class="sc">{</span>mack[<span class="st">'erreur_totale'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb4-56"><a aria-hidden="true" href="#cb4-56" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  dont processus (racine de la variance) : </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(mack[<span class="st">'processus_total'</span>])<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb4-57"><a aria-hidden="true" href="#cb4-57" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  dont estimation (racine)               : </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(mack[<span class="st">'estimation_total'</span>])<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb4-58"><a aria-hidden="true" href="#cb4-58" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CV sur la réserve                       : </span><span class="sc">{</span>mack[<span class="st">'erreur_totale'</span>] <span class="op">/</span> reserve_totale<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb4-59"><a aria-hidden="true" href="#cb4-59" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CV sur l'ultime (à ne pas publier)      : </span><span class="sc">{</span>mack[<span class="st">'erreur_totale'</span>] <span class="op">/</span> mack[<span class="st">'ultimes'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb4-60"><a aria-hidden="true" href="#cb4-60" tabindex="-1"></a></span>
+<span id="cb4-61"><a aria-hidden="true" href="#cb4-61" tabindex="-1"></a>MACK_REFERENCE <span class="op">=</span> <span class="dv">2_447_095</span>   <span class="co"># Mack (1993), racine de la MSEP de la réserve totale de Taylor-Ashe</span></span>
+<span id="cb4-62"><a aria-hidden="true" href="#cb4-62" tabindex="-1"></a>ecart <span class="op">=</span> mack[<span class="st">"erreur_totale"</span>] <span class="op">-</span> MACK_REFERENCE</span>
+<span id="cb4-63"><a aria-hidden="true" href="#cb4-63" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Écart à la valeur publiée (</span><span class="sc">{</span>MACK_REFERENCE<span class="sc">:,}</span><span class="ss">) : </span><span class="sc">{</span>ecart<span class="sc">:+.2f}</span><span class="ss">"</span>)</span>
+<span id="cb4-64"><a aria-hidden="true" href="#cb4-64" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Validation OK."</span> <span class="cf">if</span> <span class="bu">abs</span>(ecart) <span class="op">&lt;=</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">"Écart anormal, vérifier l'implémentation."</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> annee_origine  reserve  erreur_Mack  CV reserve (%)
+             1        0            0               -
+             2    94634        75535            79.8
+             3   469511       121699            25.9
+             4   709638       133549            18.8
+             5   984889       261406            26.5
+             6  1419459       411010            29.0
+             7  2177641       558317            25.6
+             8  3920301       875328            22.3
+             9  4278972       971258            22.7
+            10  4625811      1363155            29.5
+
+Réserve totale                          : 18,680,856
+Erreur de Mack (racine MSEP) totale      : 2,447,095
+  dont processus (racine de la variance) : 1,878,292
+  dont estimation (racine)               : 1,568,532
+CV sur la réserve                       : 13.1%
+CV sur l'ultime (à ne pas publier)      : 4.6%
+
+Écart à la valeur publiée (2,447,095) : -0.14
+Validation OK.</code></pre>
+</div>
+</div>
+<p>La validation passe : 2 447 095 à 0,14 unité près, CV de 13,1 % sur la réserve. Lu dans la sortie :</p>
+<ul>
+<li>Le CV se calcule <strong>sur la réserve</strong>, la grandeur incertaine. Rapporté à l’ultime, qui contient 34 millions de montants déjà connus, le même écart-type donne 4,6 % : un chiffre qui rassure à tort.</li>
+<li>Par année d’origine, le CV vaut 22,3 %, 22,7 % et 29,5 % pour les années 8 à 10. L’année 2 a un CV de 79,8 %, mais sur une réserve de 94 634 : en montant, son erreur (75 535) est la plus faible des années qui ont encore une réserve. Une année ancienne n’est pas déterministe ; sa réserve est petite.</li>
+<li>Les deux termes de la MSEP sont du même ordre : environ 1,9 million d’écart-type pour le processus et 1,6 million pour l’estimation. Ils s’additionnent en variance, pas en écart-type.</li>
+</ul>
+</section>
+<section class="level3" data-number="10.5.3" id="étape-3.-intervalles-par-approximation-log-normale">
+<h3 class="anchored" data-anchor-id="étape-3.-intervalles-par-approximation-log-normale" data-number="10.5.3"> Étape 3. Intervalles par approximation log-normale</h3>
+<div class="cell" data-execution_count="4" id="07b33e2e">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="kw">def</span> quantiles_lognormaux(moyennes: np.ndarray, ecarts_types: np.ndarray,</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>                         niveaux<span class="op">=</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>, <span class="fl">0.995</span>)) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>    <span class="co">"""Quantiles d'une log-normale de moyenne et d'écart-type donnés."""</span></span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>    s2 <span class="op">=</span> np.log1p((ecarts_types <span class="op">/</span> moyennes) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>    mu <span class="op">=</span> np.log(moyennes) <span class="op">-</span> s2 <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame({<span class="ss">f"q</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> p<span class="sc">:g}</span><span class="ss">"</span>: np.exp(mu <span class="op">+</span> norm.ppf(p) <span class="op">*</span> np.sqrt(s2)) <span class="cf">for</span> p <span class="kw">in</span> niveaux})</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>avec_reserve <span class="op">=</span> mack[<span class="st">"reserves"</span>] <span class="op">&gt;</span> <span class="dv">0</span>            <span class="co"># l'année 1 n'a plus rien à développer</span></span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>ic <span class="op">=</span> quantiles_lognormaux(mack[<span class="st">"reserves"</span>][avec_reserve], mack[<span class="st">"erreur"</span>][avec_reserve])</span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>ic.insert(<span class="dv">0</span>, <span class="st">"erreur"</span>, mack[<span class="st">"erreur"</span>][avec_reserve])</span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a>ic.insert(<span class="dv">0</span>, <span class="st">"reserve"</span>, mack[<span class="st">"reserves"</span>][avec_reserve])</span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>ic.insert(<span class="dv">0</span>, <span class="st">"annee_origine"</span>, annees[avec_reserve])</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Quantiles de la réserve par année d'origine (log-normale) :"</span>)</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a><span class="bu">print</span>(ic.<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a aria-hidden="true" href="#cb6-16" tabindex="-1"></a>ic_total <span class="op">=</span> quantiles_lognormaux(np.array([reserve_totale]), np.array([mack[<span class="st">"erreur_totale"</span>]]))</span>
+<span id="cb6-17"><a aria-hidden="true" href="#cb6-17" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Quantiles de la réserve totale (log-normale) :"</span>)</span>
+<span id="cb6-18"><a aria-hidden="true" href="#cb6-18" tabindex="-1"></a><span class="bu">print</span>(ic_total.<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb6-19"><a aria-hidden="true" href="#cb6-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Quantile 99,5 % moins réserve, horizon ultime : </span><span class="sc">{</span>ic_total[<span class="st">'q99.5'</span>]<span class="sc">.</span>iloc[<span class="dv">0</span>] <span class="op">-</span> reserve_totale<span class="sc">:,.0f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Quantiles de la réserve par année d'origine (log-normale) :
+ annee_origine  reserve  erreur      q5     q95   q99.5
+             2    94634   75535   23306  234717  451242
+             3   469511  121699  298790  691331  876571
+             4   709638  133549  513111  947866 1127653
+             5   984889  261406  619757 1462138 1864146
+             6  1419459  411010  854961 2174373 2831766
+             7  2177641  558317 1392898 3194511 4040363
+             8  3920301  875328 2661890 5499455 6753054
+             9  4278972  971258 2886133 6033153 7433061
+            10  4625811 1363155 2760349 7132577 9330845
+
+Quantiles de la réserve totale (log-normale) :
+      q5      q95    q99.5
+14945956 22955180 25919050
+
+Quantile 99,5 % moins réserve, horizon ultime : 7,238,195</code></pre>
+</div>
+</div>
+<p>Le quantile à 99,5 % de la réserve totale dépasse la réserve d’environ 7,2 millions. La log-normale est asymétrique à droite, ce qui se lit à niveaux symétriques : le quantile à 95 % est 4,3 millions au-dessus de la réserve, le quantile à 5 % 3,7 millions en dessous. Comparer le quantile à 99,5 % à celui à 5 % ne prouverait rien : une loi normale aussi s’écarte plus loin du côté du 99,5 %. Le quantile à 99,5 % décrit l’incertitude de la réserve <strong>jusqu’à l’extinction des sinistres</strong>, sous une hypothèse de loi choisie pour sa commodité. Il ne correspond à aucune grandeur Solvabilité II :</p>
+<ul>
+<li><strong>La marge de risque</strong> est un coût du capital : le coût de détenir les SCR futurs jusqu’à l’extinction des engagements (articles 37 à 39 du Règlement délégué 2015/35). Ce n’est pas un quantile.</li>
+<li><strong>Le SCR de réserve</strong> est défini à horizon un an : il porte sur le résultat de liquidation de l’année (CDR) : paiements de l’année plus meilleure estimation de clôture, moins meilleure estimation d’ouverture. Merz et Wüthrich (2008) donnent l’équivalent de Mack à cet horizon. L’incertitude à un an est en général plus faible que l’incertitude à l’ultime, puisqu’une partie seulement de l’information arrive dans l’année.</li>
+</ul>
+</section>
+<section class="level3" data-number="10.5.4" id="étape-4.-vérifier-les-hypothèses-de-mack">
+<h3 class="anchored" data-anchor-id="étape-4.-vérifier-les-hypothèses-de-mack" data-number="10.5.4"> Étape 4. Vérifier les hypothèses de Mack</h3>
+<p><strong>Linéarité et structure de variance</strong> : résidus standardisés <span class="math display">\[
+r_{i,j} = \left(\frac{C_{i,j+1}}{C_{i,j}} - f_j\right) \frac{\sqrt{C_{i,j}}}{\sigma_j},
+\]</span> tracés contre le montant cumulé <span class="math inline">\(C_{i,j}\)</span>.</p>
+<div class="cell" data-execution_count="5" id="cell-fig-mack-residus">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>f_indiv <span class="op">=</span> np.divide(C[:, <span class="dv">1</span>:], C[:, :<span class="op">-</span><span class="dv">1</span>], out<span class="op">=</span>np.zeros_like(C[:, <span class="dv">1</span>:]), where<span class="op">=</span>PAIRE)</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>residus <span class="op">=</span> np.where(PAIRE, (f_indiv <span class="op">-</span> factors) <span class="op">*</span> np.sqrt(C[:, :<span class="op">-</span><span class="dv">1</span>]) <span class="op">/</span> sigma, np.nan)</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Résidus calculés : </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(PAIRE)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Hors de la bande ±2 : </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(np.<span class="bu">abs</span>(residus) <span class="op">&gt;</span> <span class="dv">2</span>)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Plus grand résidu en valeur absolue : </span><span class="sc">{</span>np<span class="sc">.</span>nanmax(np.<span class="bu">abs</span>(residus))<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a>couleurs <span class="op">=</span> plt.cm.viridis(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, n <span class="op">-</span> <span class="dv">1</span>))</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>):     <span class="co"># une série par transition, pour la légende</span></span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a>    ax.scatter(C[PAIRE[:, j], j], residus[PAIRE[:, j], j], color<span class="op">=</span>couleurs[j],</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>               label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> → </span><span class="sc">{</span>j<span class="op">+</span><span class="dv">2</span><span class="sc">}</span><span class="ss">"</span>, s<span class="op">=</span><span class="dv">50</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>ax.axhline(<span class="dv">2</span>, color<span class="op">=</span><span class="st">"#dc2626"</span>, linestyle<span class="op">=</span><span class="st">":"</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, label<span class="op">=</span><span class="st">"±2"</span>)</span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a>ax.axhline(<span class="op">-</span><span class="dv">2</span>, color<span class="op">=</span><span class="st">"#dc2626"</span>, linestyle<span class="op">=</span><span class="st">":"</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb8-15"><a aria-hidden="true" href="#cb8-15" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Montant cumulé C_{i,j} (unités non monétaires)"</span>)</span>
+<span id="cb8-16"><a aria-hidden="true" href="#cb8-16" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Résidu standardisé"</span>)</span>
+<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a>ax.set_title(<span class="st">"Diagnostic de Mack : résidus standardisés"</span>)</span>
+<span id="cb8-18"><a aria-hidden="true" href="#cb8-18" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>, loc<span class="op">=</span><span class="st">"best"</span>, ncol<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-19"><a aria-hidden="true" href="#cb8-19" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb8-20"><a aria-hidden="true" href="#cb8-20" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-21"><a aria-hidden="true" href="#cb8-21" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Résidus calculés : 45
+Hors de la bande ±2 : 0
+Plus grand résidu en valeur absolue : 1.84</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-mack-residus">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mack-residus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="471" src="img/fig-mack-residus-output-2_a58cc427.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mack-residus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 10.1: Résidus standardisés de Mack contre les montants cumulés, une couleur par transition, bande à ±2
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Effet année calendaire</strong> (Mack 1994). Dans chaque colonne, on classe chaque facteur individuel en « petit » ou « grand » selon qu’il est sous ou au-dessus de la médiane de la colonne (le facteur médian d’une colonne impaire est écarté). Puis, pour chaque diagonale calendaire, on compte les petits et les grands : sans effet calendaire, ils se répartissent au hasard. La statistique <span class="math inline">\(Z\)</span> somme, sur les diagonales, le plus petit des deux comptes ; on la compare à son espérance, à ± 2 écarts-types.</p>
+<div class="cell" data-execution_count="6" id="738d3d55">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="kw">def</span> test_annee_calendaire(triangle: np.ndarray, factors: np.ndarray) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>    <span class="co">"""Test de l'effet année calendaire de Mack (1994), vectorisé."""</span></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>    C <span class="op">=</span> np.where(connu, triangle, <span class="fl">0.0</span>)</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>    f_indiv <span class="op">=</span> np.where(paire, np.divide(C[:, <span class="dv">1</span>:], C[:, :<span class="op">-</span><span class="dv">1</span>], out<span class="op">=</span>np.zeros_like(C[:, <span class="dv">1</span>:]), where<span class="op">=</span>paire), np.nan)</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>    mediane <span class="op">=</span> np.nanmedian(f_indiv, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>    petit <span class="op">=</span> paire <span class="op">&amp;</span> (f_indiv <span class="op">&lt;</span> mediane)</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>    grand <span class="op">=</span> paire <span class="op">&amp;</span> (f_indiv <span class="op">&gt;</span> mediane)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>    i_idx, j_idx <span class="op">=</span> np.indices(paire.shape)</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>    diagonale <span class="op">=</span> i_idx <span class="op">+</span> j_idx                       <span class="co"># diagonale calendaire du facteur (i, j)</span></span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>    nb_diag <span class="op">=</span> paire.shape[<span class="dv">1</span>]</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a>    S <span class="op">=</span> np.bincount(diagonale[petit], minlength<span class="op">=</span>nb_diag)[<span class="dv">1</span>:]   <span class="co"># la diagonale 0 (un seul facteur) est exclue</span></span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>    L <span class="op">=</span> np.bincount(diagonale[grand], minlength<span class="op">=</span>nb_diag)[<span class="dv">1</span>:]</span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>    nd <span class="op">=</span> S <span class="op">+</span> L</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>    m <span class="op">=</span> (nd <span class="op">-</span> <span class="dv">1</span>) <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a>    z <span class="op">=</span> np.minimum(S, L)</span>
+<span id="cb10-18"><a aria-hidden="true" href="#cb10-18" tabindex="-1"></a>    esp <span class="op">=</span> nd <span class="op">/</span> <span class="dv">2</span> <span class="op">-</span> comb(nd <span class="op">-</span> <span class="dv">1</span>, m) <span class="op">*</span> nd <span class="op">/</span> <span class="fl">2.0</span> <span class="op">**</span> nd</span>
+<span id="cb10-19"><a aria-hidden="true" href="#cb10-19" tabindex="-1"></a>    var <span class="op">=</span> nd <span class="op">*</span> (nd <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">4</span> <span class="op">-</span> comb(nd <span class="op">-</span> <span class="dv">1</span>, m) <span class="op">*</span> nd <span class="op">*</span> (nd <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="fl">2.0</span> <span class="op">**</span> nd <span class="op">+</span> esp <span class="op">-</span> esp <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb10-20"><a aria-hidden="true" href="#cb10-20" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"S"</span>: S, <span class="st">"L"</span>: L, <span class="st">"Z"</span>: z.<span class="bu">sum</span>(), <span class="st">"E"</span>: esp.<span class="bu">sum</span>(), <span class="st">"Var"</span>: var.<span class="bu">sum</span>()}</span>
+<span id="cb10-21"><a aria-hidden="true" href="#cb10-21" tabindex="-1"></a></span>
+<span id="cb10-22"><a aria-hidden="true" href="#cb10-22" tabindex="-1"></a>test <span class="op">=</span> test_annee_calendaire(TAYLOR_ASHE, factors)</span>
+<span id="cb10-23"><a aria-hidden="true" href="#cb10-23" tabindex="-1"></a>borne_basse <span class="op">=</span> test[<span class="st">"E"</span>] <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> np.sqrt(test[<span class="st">"Var"</span>])</span>
+<span id="cb10-24"><a aria-hidden="true" href="#cb10-24" tabindex="-1"></a>borne_haute <span class="op">=</span> test[<span class="st">"E"</span>] <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> np.sqrt(test[<span class="st">"Var"</span>])</span>
+<span id="cb10-25"><a aria-hidden="true" href="#cb10-25" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Petits / grands par diagonale :"</span>, <span class="bu">list</span>(<span class="bu">zip</span>(test[<span class="st">"S"</span>].tolist(), test[<span class="st">"L"</span>].tolist())))</span>
+<span id="cb10-26"><a aria-hidden="true" href="#cb10-26" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Z = </span><span class="sc">{</span>test[<span class="st">'Z'</span>]<span class="sc">}</span><span class="ss">, E[Z] = </span><span class="sc">{</span>test[<span class="st">'E'</span>]<span class="sc">:.3f}</span><span class="ss">, Var[Z] = </span><span class="sc">{</span>test[<span class="st">'Var'</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb10-27"><a aria-hidden="true" href="#cb10-27" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Intervalle E[Z] ± 2 écarts-types : [</span><span class="sc">{</span>borne_basse<span class="sc">:.1f}</span><span class="ss"> ; </span><span class="sc">{</span>borne_haute<span class="sc">:.1f}</span><span class="ss">]"</span>)</span>
+<span id="cb10-28"><a aria-hidden="true" href="#cb10-28" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pas d'effet calendaire détecté."</span> <span class="cf">if</span> borne_basse <span class="op">&lt;=</span> test[<span class="st">"Z"</span>] <span class="op">&lt;=</span> borne_haute</span>
+<span id="cb10-29"><a aria-hidden="true" href="#cb10-29" tabindex="-1"></a>      <span class="cf">else</span> <span class="st">"Effet calendaire possible : l'hypothèse d'indépendance est à revoir."</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Petits / grands par diagonale : [(1, 0), (1, 2), (1, 3), (3, 2), (3, 3), (6, 1), (3, 3), (1, 6)]
+Z = 12, E[Z] = 12.500, Var[Z] = 3.346
+Intervalle E[Z] ± 2 écarts-types : [8.8 ; 16.2]
+Pas d'effet calendaire détecté.</code></pre>
+</div>
+</div>
+<p>Ce que montrent les sorties :</p>
+<ul>
+<li><strong>Aucun résidu ne sort de la bande ±2</strong> sur les 45 calculés ; le plus grand vaut 1,84 en valeur absolue. Le nuage ne s’élargit ni ne se resserre avec le montant cumulé, et les résidus se répartissent de part et d’autre de 0. Le point de la transition 9 à 10 vaut 0 par construction : une seule observation, qui est son propre facteur. Sur 45 points répartis en neuf transitions, dont les dernières ont une à trois lignes, ce graphique repère une violation grossière, pas une violation fine.</li>
+<li><strong><span class="math inline">\(Z = 12\)</span>, pour une espérance de 12,5</strong> : l’intervalle [8,8 ; 16,2] le contient, pas d’effet calendaire détecté.</li>
+</ul>
+<p>Mack est applicable sur ce triangle, avec la réserve d’usage : un test non significatif sur 10 années ne prouve pas l’absence d’effet, il dit que le triangle ne permet pas de le détecter.</p>
+</section>
+<section class="level3" data-number="10.5.5" id="étape-5.-comparaison-avec-le-bootstrap-r4">
+<h3 class="anchored" data-anchor-id="étape-5.-comparaison-avec-le-bootstrap-r4" data-number="10.5.5"> Étape 5. Comparaison avec le bootstrap (R4)</h3>
+<p>La fiche R4 applique le bootstrap ODP d’England et Verrall (2002) au même triangle, avec 10 000 simulations et la graine 42. Côte à côte :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Méthode</th>
+<th>Réserve centrale</th>
+<th>Écart-type</th>
+<th>CV sur la réserve</th>
+<th>Quantile 99,5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mack analytique (cette fiche, quantile log-normal)</td>
+<td>18 680 856</td>
+<td>2 447 095</td>
+<td>13,1 %</td>
+<td>25 919 050</td>
+</tr>
+<tr class="even">
+<td>Bootstrap ODP (R4, simulé, graine 42)</td>
+<td>18 837 744 (moyenne)</td>
+<td>2 993 182</td>
+<td>15,9 %</td>
+<td>27 766 189</td>
+</tr>
+</tbody>
+</table>
+<p>L’écart-type bootstrap dépasse l’erreur de Mack de 22 % avec la graine 42 (24 % avec la graine 43, voir R4). Ce n’est pas une erreur de l’une des deux méthodes : elles partagent l’estimation centrale du Chain-Ladder, pas le modèle de variance. Mack estime une variance par transition (<span class="math inline">\(\sigma_j\)</span>) sur les montants cumulés ; l’ODP impose un seul paramètre de dispersion à toutes les cellules incrémentales, avec une variance proportionnelle à la moyenne, et gonfle les résidus rééchantillonnés par l’ajustement <span class="math inline">\(\sqrt{N/(N - p)}\)</span>, où <span class="math inline">\(N\)</span> compte les cellules du triangle et <span class="math inline">\(p\)</span> les paramètres. Sur ce triangle, l’ODP attribue l’essentiel de son incertitude à l’estimation des facteurs (2,8 millions d’écart-type sans erreur de processus, R4), là où Mack répartit la sienne entre processus (1,9 million) et estimation (1,6 million, étape 2).</p>
+<p>Le choix se discute sur l’adéquation des hypothèses de chacun aux données (résidus de Mack ici, résidus de Pearson de l’ODP), et la note méthodologique présente les deux chiffres plutôt que de retenir le plus commode.</p>
+</section>
+</section>
+<section class="level2" data-number="10.6" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="10.6" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Un collègue a programmé Mack de son côté. Sa fonction est identique à <code>mack_msep</code>, à une ligne près : pour le dénominateur <span class="math inline">\(S_j\)</span>, il somme toute la colonne <span class="math inline">\(j\)</span> connue.</p>
+<div class="cell" data-execution_count="7" id="c30fadc3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>S_collegue <span class="op">=</span> np.nansum(TAYLOR_ASHE[:, :<span class="op">-</span><span class="dv">1</span>], axis<span class="op">=</span><span class="dv">0</span>)    <span class="co"># toute la colonne j connue</span></span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>mack_collegue <span class="op">=</span> mack_msep(TAYLOR_ASHE, factors, sigma, S<span class="op">=</span>S_collegue)</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Erreur de Mack du collègue : </span><span class="sc">{</span>mack_collegue[<span class="st">'erreur_totale'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart à la valeur publiée  : </span><span class="sc">{</span>mack_collegue[<span class="st">'erreur_totale'</span>] <span class="op">/</span> MACK_REFERENCE <span class="op">-</span> <span class="dv">1</span><span class="sc">:+.1%}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Erreur de Mack du collègue : 2,328,136
+Écart à la valeur publiée  : -4.9%</code></pre>
+</div>
+</div>
+<p>Ses <span class="math inline">\(\sigma_j\)</span> sont justes, ses facteurs aussi. Il trouve l’écart « acceptable, moins de 5 % ». Qu’est-ce qui ne va pas, et dans quel sens se trompe-t-il ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Le terme d’estimation mesure l’incertitude sur <span class="math inline">\(f_j\)</span>, dont la variance vaut <span class="math inline">\(\sigma_j^2 / S_j\)</span>, où <span class="math inline">\(S_j\)</span> est <strong>le dénominateur de <span class="math inline">\(f_j\)</span></strong> : la somme des <span class="math inline">\(C_{k,j}\)</span> sur les seules lignes où <span class="math inline">\(C_{k,j+1}\)</span> est connu. Le collègue y ajoute la cellule de la diagonale, qui n’a servi à estimer aucun facteur (on ne connaît pas encore son développement). Son <span class="math inline">\(S_j\)</span> est trop grand, sa variance d’estimation trop petite : l’erreur sort sous-estimée, 2 328 136 contre 2 447 095.</p>
+<p>Deux leçons :</p>
+<ol type="1">
+<li><strong>Le sens de l’erreur compte plus que sa taille.</strong> Une erreur de prédiction trop faible, c’est une incertitude sous-déclarée dans la note méthodologique. « Moins de 5 % » n’est pas une tolérance pour un calcul qui a une valeur publiée : l’implémentation juste la retrouve à l’unité.</li>
+<li><strong>La valeur publiée a trouvé le défaut.</strong> Les <span class="math inline">\(\sigma_j\)</span>, justes, ne le montraient pas ; seule la comparaison du résultat final à Mack (1993) le révèle. C’est la même démarche qu’en R1 : valider contre une référence avant de faire confiance.</li>
+</ol>
+</details>
+</section>
+<section class="level2" data-number="10.7" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="10.7" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Appliquer Mack sans vérifier les hypothèses.</strong> Mack est rapide et défendable, mais ses hypothèses (linéarité, indépendance, structure de variance) ne sont pas universelles. <strong>Toujours produire le graphique de résidus et le test calendaire</strong>, et les commenter dans la note méthodologique.</li>
+<li><strong>Confondre MSEP, variance de processus et écart-type.</strong> La MSEP de Mack est la somme de la variance de processus (l’aléa des montants futurs) et de l’erreur d’estimation (l’incertitude sur les <span class="math inline">\(f_j\)</span>). L’erreur de prédiction en est la racine carrée. Les deux termes s’additionnent en variance.</li>
+<li><strong>Calculer le CV sur l’ultime.</strong> L’ultime contient des montants déjà connus, sans incertitude : rapporter l’erreur à l’ultime divise ici le CV par près de trois (4,6 % contre 13,1 %). Le CV se calcule sur la réserve.</li>
+<li><strong>Oublier le terme de covariance dans la MSEP totale.</strong> La MSEP de la réserve totale n’est pas la somme des MSEP par année : toutes les années partagent les mêmes facteurs estimés. <strong>Toujours utiliser la formule complète</strong> de Mack (1993).</li>
+<li><strong>Prendre un quantile à l’ultime pour la marge de risque ou le SCR.</strong> La marge de risque Solvabilité II est un coût du capital ; le SCR de réserve est à un an (Merz-Wüthrich). Le quantile à 99,5 % d’une log-normale ajustée sur Mack n’est ni l’un ni l’autre.</li>
+<li><strong>Approximation log-normale par défaut.</strong> Passer de (moyenne, écart-type) aux quantiles par une log-normale est commode mais arbitraire. Le bootstrap de R4 donne une distribution simulée, sous les hypothèses du modèle ODP : ce n’est pas une distribution sans hypothèse.</li>
+<li><strong>Oublier l’extrapolation du dernier <span class="math inline">\(\sigma_j\)</span>.</strong> Sur la dernière colonne, une seule observation : <span class="math inline">\(\sigma^2\)</span> n’est pas estimable (division par zéro). Mack (1993) propose une extrapolation ; sans elle, la dernière transition sort de la MSEP ou fait planter le calcul.</li>
+</ul>
+</section>
+<section class="level2" data-number="10.8" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="10.8" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>R1 Chain-Ladder</strong> : le calcul déterministe sous-jacent.</li>
+<li><strong>R2 Bornhuetter-Ferguson</strong> : pour stabiliser les années récentes.</li>
+<li><strong>R4 Bootstrap ODP</strong> : un autre modèle stochastique, qui reproduit la même réserve centrale ; sur ce triangle, son écart-type dépasse l’erreur de Mack de 22 à 24 % selon la graine. À comparer systématiquement.</li>
+<li><strong>I3 Tests pytest</strong> : pour transformer ce module en code testé en production, avec 2 447 095 comme test de référence.</li>
+</ul>
+</section>
+<section class="level2" data-number="10.9" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="10.9" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Horizon un an</strong> : Merz et Wüthrich (2008), « Modelling the claims development result for solvency purposes », prolongent Mack pour l’incertitude du résultat de liquidation de l’année suivante, l’horizon du SCR de réserve. À explorer si vous travaillez sur le SCR de réserve en modèle interne ou en paramètres propres.</li>
+<li><strong>Facteur de queue</strong> : quand le triangle ne couvre pas toute la liquidation, l’erreur de Mack doit inclure l’incertitude sur la queue (Mack 1999, <em>ASTIN Bulletin</em> 29(2)).</li>
+<li><strong>Autres tests de Mack (1994)</strong> : la corrélation entre facteurs de développement successifs se teste aussi. Demander à Claude de l’implémenter, puis valider sa sortie sur Taylor-Ashe contre l’article.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/R2/index.html"><small>&larr; Précédent</small>R2. Bornhuetter-Ferguson</a><a class="next" href="../../bibliotheque/R4/index.html"><small>Suivant &rarr;</small>R4. Bootstrap Chain-Ladder</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

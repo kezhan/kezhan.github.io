@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation et premier pas avec Claude Code · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Installation et premier pas avec Claude Code</h1>
+      <p class="lede">Avant le premier prompt utile, il faut installer Claude Code, se connecter et régler les permissions. Cette annexe est la marche à suivre pratique, celle à laquelle renvoie l’atelier « Un premier échange cadré » (partie 1). Le but n’est pas de devenir expert du terminal : c’est d’avoir un environnement qui marche, qu’on comprend, et dont on sait ce qu’il envoie au fournisseur. Ce qui suit décrit l’état au 29 septembre 2026, d’après la documentation officielle (code.claude.com/docs).</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#choisir-sa-surface">Choisir sa surface</a><a href="#installer">Installer</a><a href="#se-connecter-et-choisir-son-offre">Se connecter, et choisir son offre</a><a href="#premier-dialogue-un-essai-sur-un-fichier-synthétique">Premier dialogue : un essai sur un fichier synthétique</a><a href="#les-permissions-modes-et-règles">Les permissions : modes et règles</a><a href="#ce-qui-protège-vraiment">Ce qui protège vraiment</a><a href="#lire-ce-que-claude-exécute-les-commandes-à-reconnaître">Lire ce que Claude exécute : les commandes à reconnaître</a><a href="#astuce-demander-la-traduction-en-langage-naturel">Astuce : demander la traduction en langage naturel</a><a href="#la-suite">La suite</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<section class="level2" data-number="29.1" id="choisir-sa-surface">
+<h2 class="anchored" data-anchor-id="choisir-sa-surface" data-number="29.1" id="choisir-sa-surface"> Choisir sa surface</h2>
+<p>Claude Code se présente sous plusieurs formes, qui partagent le même moteur. Les principales :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Surface</th>
+<th>Pour qui</th>
+<th>Avantage principal</th>
+<th>Limite</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Extension VS Code</strong></td>
+<td>Public sans terminal, débutants</td>
+<td>Panneau graphique, diff côte à côte, mention de fichiers par <code>@</code></td>
+<td>Demande VS Code</td>
+</tr>
+<tr class="even">
+<td><strong>Ligne de commande</strong></td>
+<td>Utilisateurs à l’aise, automatisation</td>
+<td>La plus directe</td>
+<td>Le terminal intimide au début</td>
+</tr>
+<tr class="odd">
+<td><strong>Application de bureau</strong></td>
+<td>Qui veut une fenêtre dédiée</td>
+<td>Séparée de l’éditeur</td>
+<td>Une application de plus</td>
+</tr>
+<tr class="even">
+<td><strong>Web (claude.ai/code)</strong></td>
+<td>Démonstrations, essais</td>
+<td>Rien à installer</td>
+<td>Travaille sur un dépôt GitHub dans un environnement distant : rien de sensible dedans</td>
+</tr>
+</tbody>
+</table>
+<p>Il existe aussi une extension pour les éditeurs JetBrains, des applications mobiles et des intégrations (Slack, GitHub Actions) ; la liste à jour est sur code.claude.com/docs.</p>
+<p><strong>Recommandation pour un actuaire qui découvre : l’extension VS Code.</strong> Le panneau Claude Code s’ouvre à côté de l’éditeur : votre code d’un côté, la conversation de l’autre. Quand Claude propose une modification, vous voyez le diff avant d’accepter.</p>
+<p>Si vous êtes à l’aise avec un terminal (PowerShell sous Windows, Terminal sous macOS, un shell sous Linux ou WSL), la ligne de commande offre plus de souplesse pour les travaux scriptés. On y vient avec l’habitude.</p>
+</section>
+<section class="level2" data-number="29.2" id="installer">
+<h2 class="anchored" data-anchor-id="installer" data-number="29.2" id="installer"> Installer</h2>
+<p><strong>Prérequis :</strong></p>
+<ul>
+<li><strong>Windows 10 (version 1809) ou plus récent, ou macOS 13 ou plus récent</strong>, et 4 Go de mémoire vive.</li>
+<li><strong>Python 3.11 ou plus récent</strong> pour les exercices (vérifier dans un terminal avec <code>python --version</code>).</li>
+<li><strong>VS Code</strong>, version 1.94 ou plus récente pour l’extension.</li>
+<li><strong>Git</strong>, pour les commits (<a href="../../annexes/E/index.html">annexe E</a>) ; sous Windows, Git for Windows. Claude Code n’en a pas besoin pour fonctionner : sans Git for Windows, il lance ses commandes par PowerShell ; avec lui, il dispose aussi de Git Bash, mais PowerShell reste par défaut son shell principal. Les règles de permission s’écrivent donc pour les deux, <code>Bash(...)</code> et <code>PowerShell(...)</code>, comme dans l’<a href="../../annexes/D/index.html">annexe D</a>.</li>
+<li><strong>Pour l’atelier</strong>, de quoi ouvrir un carnet Jupyter : l’extension Jupyter de VS Code, ou Google Colab pour qui ne peut rien installer.</li>
+<li><strong>Une connexion internet</strong> : Claude Code interroge le modèle chez le fournisseur à chaque échange. Tout ce qu’il lit ou affiche part donc chez le fournisseur.</li>
+</ul>
+<p><strong>L’extension VS Code, pour démarrer :</strong></p>
+<ol type="1">
+<li>Ouvrir VS Code, aller dans l’onglet Extensions (l’icône faite de carrés, à gauche).</li>
+<li>Chercher « Claude Code » et installer l’extension officielle d’Anthropic, d’identifiant <code>anthropic.claude-code</code>.</li>
+<li>Recharger VS Code si demandé.</li>
+<li>L’icône de Claude apparaît dans la barre latérale.</li>
+</ol>
+<p>L’extension embarque ce qu’il faut pour son panneau. Pour taper <code>claude</code> dans un terminal, on installe en plus la ligne de commande.</p>
+<p><strong>La ligne de commande, par l’installeur natif :</strong></p>
+<ul>
+<li>Sous Windows, dans PowerShell : <code>irm https://claude.ai/install.ps1 | iex</code></li>
+<li>Sous macOS, Linux ou WSL, dans un terminal : <code>curl -fsSL https://claude.ai/install.sh | bash</code></li>
+</ul>
+<p>Ces commandes téléchargent et exécutent un script d’installation : sur un poste d’entreprise, elles peuvent être bloquées, et c’est une question pour votre service informatique. D’autres voies existent (WinGet, Homebrew, les gestionnaires de paquets de Linux, et npm, qui demande Node.js 22 ou plus récent), mais l’installeur natif est la voie que documente Anthropic (code.claude.com/docs/en/setup).</p>
+<p><strong>Point de vérification :</strong> dans VS Code, le panneau Claude Code affiche une zone de saisie et un bouton pour se connecter. Dans un terminal, <code>claude --version</code> affiche un numéro de version.</p>
+</section>
+<section class="level2" data-number="29.3" id="se-connecter-et-choisir-son-offre">
+<h2 class="anchored" data-anchor-id="se-connecter-et-choisir-son-offre" data-number="29.3" id="se-connecter-et-choisir-son-offre"> Se connecter, et choisir son offre</h2>
+<p>Claude Code n’est pas disponible dans l’offre gratuite ; il est inclus dans tous les plans payants. Au 29 septembre 2026, en dollars hors taxes (claude.com/pricing) :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Offre</th>
+<th>Prix</th>
+<th>Nature</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Pro</strong></td>
+<td>20 $ par mois (17 $ en annuel)</td>
+<td>Grand public, usage individuel : la formation</td>
+</tr>
+<tr class="even">
+<td><strong>Max</strong></td>
+<td>100 $ ou 200 $ par mois</td>
+<td>Grand public, usage individuel intensif</td>
+</tr>
+<tr class="odd">
+<td><strong>Team</strong></td>
+<td>Siège Standard 25 $ par mois (20 $ en annuel), Premium 125 $ (100 $)</td>
+<td>Entreprise</td>
+</tr>
+<tr class="even">
+<td><strong>Enterprise</strong></td>
+<td>Siège, plus l’usage au tarif de l’API</td>
+<td>Entreprise, grandes organisations</td>
+</tr>
+<tr class="odd">
+<td><strong>API (Console, platform.claude.com)</strong></td>
+<td>Au token</td>
+<td>Entreprise avec contrat ; suivi fin des coûts par projet ou par utilisateur</td>
+</tr>
+</tbody>
+</table>
+<p>Côté API, la documentation d’Anthropic (« Manage costs », code.claude.com/docs/en/costs) donne un coût moyen d’environ 13 $ par développeur et par jour actif, 150 à 250 $ par développeur et par mois, et moins de 30 $ par jour actif pour 90 % des utilisateurs. C’est l’ordre de grandeur à inscrire au budget si l’équipe passe par l’API.</p>
+<p><strong>Se connecter.</strong> Dans l’extension, le bouton de connexion ouvre le navigateur. Dans un terminal, <code>claude</code> propose de se connecter avec un compte Claude (Pro, Max, Team, Enterprise) ou un compte de la Console (API). Si votre organisme passe par un fournisseur cloud (AWS Bedrock, Google Vertex AI), votre service informatique donne la configuration.</p>
+<p><strong>La question qui décide : les données.</strong> Tout ce que Claude lit ou affiche part chez le fournisseur. Les offres grand public (Pro, Max) et les offres entreprise (Team, Enterprise, API avec contrat de traitement des données) ne se valent pas : seule une offre entreprise fait du fournisseur un sous-traitant de votre organisme au sens du RGPD. Pour la formation, un abonnement Pro suffit, parce qu’on travaille sur des données synthétiques ou publiques. Pour le travail du cabinet, l’offre se choisit avec la DSI et le délégué à la protection des données, avant le premier fichier réel (<a href="../../annexes/G/index.html">annexe G</a>).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Si votre organisme n’autorise pas Claude Code
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La démarche de la formation ne dépend pas de l’outil. Avec l’assistant que votre organisme autorise (un assistant d’entreprise, un Copilot sous contrat, un modèle interne), ou dans Google Colab, vous gardez les mêmes gestes : intention avant code, petits pas, chiffres produits par un code exécuté, relecture des sorties, commits. Vous perdez l’exécution automatique : vous copiez le code, vous l’exécutez, vous recollez la sortie, comme au niveau 1 du cadrage (chapitre « Pas toujours besoin d’un modèle de langue », partie 1). Et les données restent synthétiques ou publiques.</p>
+</div>
+</div>
+</section>
+<section class="level2" data-number="29.4" id="premier-dialogue-un-essai-sur-un-fichier-synthétique">
+<h2 class="anchored" data-anchor-id="premier-dialogue-un-essai-sur-un-fichier-synthétique" data-number="29.4" id="premier-dialogue-un-essai-sur-un-fichier-synthétique"> Premier dialogue : un essai sur un fichier synthétique</h2>
+<p>Le premier prompt sert à vérifier que tout marche, sur un fichier synthétique ou public, jamais sur un extrait de votre base de production.</p>
+<p>Ouvrez un dossier de travail vide dans VS Code. Pour ce premier essai, passez en mode Manuel : dans VS Code, cliquez sur l’indicateur de mode, sous la zone de saisie, et choisissez Manual (dans un terminal, c’est Shift+Tab ; voir la section suivante). Vous verrez chaque demande d’autorisation. Il faut d’abord un fichier ; le faire créer par Claude garantit qu’il est synthétique. Dans le panneau Claude Code, tapez :</p>
+<blockquote class="blockquote">
+<p><em>“Crée dans ce dossier un fichier <code>portefeuille_auto.csv</code> : un portefeuille auto synthétique de 1 000 polices, avec un identifiant, l’âge du conducteur, le coefficient de bonus-malus, la région, l’exposition en années et la prime annuelle. Montre-moi le script avant de l’exécuter.”</em></p>
+</blockquote>
+<p>Puis, une fois le fichier créé :</p>
+<blockquote class="blockquote">
+<p><em>“Lis <code>portefeuille_auto.csv</code>, donne-moi le nombre de polices, la répartition par tranche de bonus-malus, et la prime annuelle moyenne par région. Si tu manques d’information sur la structure du fichier, demande-moi avant de te lancer.”</em></p>
+</blockquote>
+<p>Vous devriez voir Claude :</p>
+<ol type="1">
+<li>Lire le fichier : dans le dossier du projet, la lecture ne demande pas d’accord. Ce qu’il lit part chez le fournisseur.</li>
+<li>Examiner le contenu, repérer les colonnes.</li>
+<li>Proposer un script Python avec pandas.</li>
+<li>Demander l’autorisation de l’exécuter, sauf si vos permissions l’y autorisent déjà.</li>
+<li>Rendre les chiffres demandés, en tableau ou en liste.</li>
+</ol>
+<p>Si tout fonctionne, vous êtes prêt. Sinon, vérifiez la connexion au compte et l’accès au réseau. L’atelier poursuit sur freMTPL2freq, un portefeuille public de responsabilité civile automobile.</p>
+</section>
+<section class="level2" data-number="29.5" id="les-permissions-modes-et-règles">
+<h2 class="anchored" data-anchor-id="les-permissions-modes-et-règles" data-number="29.5" id="les-permissions-modes-et-règles"> Les permissions : modes et règles</h2>
+<p>Claude Code décide de ce qu’il fait seul selon un <strong>mode</strong> et des <strong>règles</strong>.</p>
+<p><strong>Les modes.</strong> En mode Manuel (<code>default</code>), il lit librement dans le dossier du projet, lance sans demander les commandes de pure lecture (<code>ls</code>, <code>cat</code>, <code>git status</code>), et demande votre accord avant de modifier un fichier ou de lancer toute autre commande. <code>acceptEdits</code> accepte en plus les modifications de fichiers ; <code>plan</code> lit et propose sans rien modifier ; <code>auto</code> confie l’examen de chaque action à un second modèle, qui laisse passer ce qu’il juge conforme à votre demande et bloque le reste, sans vous poser la question. <strong>Depuis la version 2.1.283, <code>auto</code> est le mode de départ par défaut</strong> dans le terminal et dans VS Code ; un administrateur peut le désactiver. En cours de session, on change de mode par l’indicateur de mode sous la zone de saisie dans VS Code, par Shift+Tab dans un terminal. Au début, travaillez en mode Manuel : vous voyez chaque demande, et c’est ainsi qu’on apprend ce que fait l’outil. Pour démarrer chaque session en mode Manuel, ajoutez à vos réglages personnels (<code>~/.claude/settings.json</code>) ce qui suit ; dans VS Code, le dernier mode choisi dans l’indicateur passe avant ce réglage.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a>    <span class="dt">"defaultMode"</span><span class="fu">:</span> <span class="st">"default"</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p><strong>Les règles.</strong> Le fichier <code>.claude/settings.json</code> du projet autorise, fait demander ou interdit des familles de commandes une fois pour toutes. Il existe à quatre niveaux : les réglages imposés par la DSI (<code>managed-settings.json</code>, qui priment sur tout), vos réglages personnels (<code>~/.claude/settings.json</code>, où <code>~</code> désigne votre dossier personnel, <code>C:\Users\&lt;vous&gt;</code> sous Windows), ceux du projet (<code>.claude/settings.json</code>, versionné) et ceux du projet sur votre seul poste (<code>.claude/settings.local.json</code>).</p>
+<p><strong>Un point de départ.</strong> Créez à la racine du projet un dossier <code>.claude</code>, et dedans le fichier <code>settings.json</code> (ou demandez à Claude de le créer) :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>  <span class="dt">"permissions"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    <span class="dt">"allow"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>      <span class="st">"Bash(python *)"</span><span class="ot">,</span></span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>      <span class="st">"Bash(pytest *)"</span><span class="ot">,</span></span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>      <span class="st">"Bash(git add *)"</span><span class="ot">,</span></span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>      <span class="st">"Bash(git commit *)"</span></span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>    <span class="dt">"ask"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>      <span class="st">"Bash(git push *)"</span></span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a>    <span class="dt">"deny"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>      <span class="st">"Bash(rm *)"</span><span class="ot">,</span></span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a>      <span class="st">"Bash(curl *)"</span><span class="ot">,</span></span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a>      <span class="st">"Bash(wget *)"</span><span class="ot">,</span></span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>      <span class="st">"Bash(ssh *)"</span></span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb2-19"><a aria-hidden="true" href="#cb2-19" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div></div>
+<p>Lecture en clair : Claude lance n’importe quel script Python, lance pytest et fait des commits sans demander. Il demande toujours avant un <code>git push</code>, même en mode <code>auto</code>. Il ne supprime pas par <code>rm</code>, n’appelle pas le réseau par <code>curl</code> ou <code>wget</code>, ne se connecte pas à une autre machine par <code>ssh</code>. Pour tout le reste, c’est le mode qui décide : en Manuel il demande, en <code>auto</code> le second modèle tranche. La forme documentée est <code>Bash(python *)</code> ; l’ancienne écriture <code>Bash(python:*)</code> reste acceptée et veut dire la même chose. Ces règles visent l’outil Bash. Avec Git for Windows, des réglages qui portent un deny <code>Bash(...)</code> et aucune règle <code>PowerShell(...)</code> coupent l’outil PowerShell : Claude passe alors par Git Bash, et ces règles s’appliquent. Sans Git for Windows, Claude n’a que PowerShell, qui a ses propres règles (<code>PowerShell(Remove-Item *)</code>) : <code>Bash(rm *)</code> n’y couvre pas <code>Remove-Item</code>, et ce fichier n’arrête rien. La version complète, pour les deux, est en <a href="../../annexes/D/index.html">annexe D</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : trouvez l’erreur
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cherchez avant de lire la section suivante. Un collègue a ajouté à ce fichier la règle <code>"Read(./data/clients_nominatifs/**)"</code> dans <code>deny</code>, en gardant <code>"Bash(python *)"</code> dans <code>allow</code>. Il explique à son équipe : <em>« Claude ne pourra pas lire ces fichiers, même si on le lui demande. Nos données d’assurés sont protégées, on peut les laisser dans le dossier du projet. »</em> Qu’est-ce qui ne va pas ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>La règle <code>deny</code> sur <code>Read</code> empêche l’outil de lecture de Claude Code, et les commandes de lecture qu’il reconnaît (<code>cat</code>, <code>head</code>, <code>tail</code>…), d’ouvrir ces fichiers. Elle n’empêche pas un script Python d’ouvrir le fichier lui-même, comme la documentation des permissions le précise. Or <code>Bash(python *)</code> autorise n’importe quel script Python, par exemple :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="bu">print</span>(pd.read_csv(<span class="st">"data/clients_nominatifs/assures.csv"</span>).head())</span></code></pre></div></div>
+<p>Claude peut écrire ce script, le lancer sans demander, et lire la sortie : les cinq premières lignes du fichier partent alors chez le fournisseur. Les permissions évitent les accidents ; elles ne protègent pas des données. La seule barrière au niveau du système est le bac à sable de Claude Code, qui n’existe pas sous Windows natif. La bonne réponse est de sortir les données nominatives du dossier de travail.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="29.6" id="ce-qui-protège-vraiment">
+<h2 class="anchored" data-anchor-id="ce-qui-protège-vraiment" data-number="29.6" id="ce-qui-protège-vraiment"> Ce qui protège vraiment</h2>
+<ul>
+<li><strong>Les permissions évitent les accidents, elles ne protègent pas des données.</strong> Une règle <code>deny</code> sur un dossier n’arrête pas un script Python autorisé qui l’ouvre.</li>
+<li><strong>La seule barrière au niveau du système est le bac à sable</strong> (réglage <code>sandbox</code>), qui restreint ce que les commandes et les programmes qu’elles lancent peuvent lire, écrire et joindre. Il fonctionne sous macOS, Linux et WSL2, pas sous Windows natif, et par défaut il laisse la lecture ouverte sur toute la machine : il faut le configurer (<a href="../../annexes/D/index.html">annexe D</a>).</li>
+<li><strong>Les données sensibles restent hors du dossier de travail.</strong> On travaille sur des données synthétiques ou pseudonymisées, ou sur des agrégats produits en dehors de la session.</li>
+<li><strong>Tout ce que Claude lit ou affiche part chez le fournisseur</strong> : le contenu d’un fichier ouvert, la sortie d’un script, un <code>head</code> sur un CSV.</li>
+<li><strong>L’offre compte</strong> : seule une offre entreprise (Team, Enterprise, API avec contrat) fait du fournisseur un sous-traitant au sens du RGPD.</li>
+</ul>
+</section>
+<section class="level2" data-number="29.7" id="lire-ce-que-claude-exécute-les-commandes-à-reconnaître">
+<h2 class="anchored" data-anchor-id="lire-ce-que-claude-exécute-les-commandes-à-reconnaître" data-number="29.7" id="lire-ce-que-claude-exécute-les-commandes-à-reconnaître"> Lire ce que Claude exécute : les commandes à reconnaître</h2>
+<p>Inutile de devenir développeur ; il suffit de reconnaître ce que fait Claude quand il lance une commande. Sans Git for Windows, il passe par PowerShell : la deuxième colonne donne l’équivalent.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Commande (bash)</th>
+<th>Équivalent PowerShell</th>
+<th>Ce qu’elle fait</th>
+<th>Anodine quand</th>
+<th>Vigilance quand</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ls</code></td>
+<td><code>Get-ChildItem</code> (alias <code>ls</code>, <code>dir</code>)</td>
+<td>Lister les fichiers d’un dossier</td>
+<td>Toujours</td>
+<td>Jamais</td>
+</tr>
+<tr class="even">
+<td><code>cd</code></td>
+<td><code>Set-Location</code> (alias <code>cd</code>)</td>
+<td>Changer de dossier de travail</td>
+<td>Dans votre projet</td>
+<td>Claude sort de votre projet</td>
+</tr>
+<tr class="odd">
+<td><code>cat fichier.csv</code></td>
+<td><code>Get-Content fichier.csv</code> (alias <code>cat</code>)</td>
+<td>Afficher le contenu d’un fichier</td>
+<td>Sur un fichier de code ou synthétique</td>
+<td>Sur des données réelles, dont le contenu part chez le fournisseur ; ou suivie d’une redirection <code>&gt;</code>, qui écrit un fichier</td>
+</tr>
+<tr class="even">
+<td><code>python script.py</code></td>
+<td><code>python script.py</code></td>
+<td>Exécuter un script Python</td>
+<td>Le script est dans votre projet et vous savez ce qu’il fait</td>
+<td>Le script appelle le réseau, lit hors du projet ou écrit ailleurs</td>
+</tr>
+<tr class="odd">
+<td><code>git commit -m "message"</code></td>
+<td>identique</td>
+<td>Figer une version dans Git</td>
+<td>Toujours souhaitable</td>
+<td>Jamais</td>
+</tr>
+</tbody>
+</table>
+<p>Les motifs à signaler : <code>rm -rf</code> (en PowerShell, <code>Remove-Item -Recurse -Force</code>), une redirection vers <code>/</code> ou <code>~/</code>, <code>sudo</code> (en PowerShell, une élévation en administrateur), <code>chmod 777</code>, un <code>git push --force</code>. Devant l’un d’eux, refusez et demandez à Claude pourquoi il en a besoin.</p>
+</section>
+<section class="level2" data-number="29.8" id="astuce-demander-la-traduction-en-langage-naturel">
+<h2 class="anchored" data-anchor-id="astuce-demander-la-traduction-en-langage-naturel" data-number="29.8" id="astuce-demander-la-traduction-en-langage-naturel"> Astuce : demander la traduction en langage naturel</h2>
+<p>Quand Claude lance une commande longue et illisible (par exemple <code>find . -name "*.py" | xargs grep -l "chainladder" | head -5</code>), répondez simplement :</p>
+<blockquote class="blockquote">
+<p><em>“Reformule en français ce que tu viens de faire, et pourquoi.”</em></p>
+</blockquote>
+<p>Claude répond en clair. Cela ne coûte qu’un échange, et c’est ainsi qu’on apprend à lire l’outil. Faites-le systématiquement au début : les motifs reviennent, et vous finissez par les reconnaître sans demander.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : accepter ou refuser ?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sous Windows sans Git for Windows, en mode Manuel, Claude vous demande l’autorisation pour chacune de ces commandes. Lesquelles acceptez-vous, lesquelles refusez-vous ou questionnez-vous ?</p>
+<ol type="1">
+<li><code>Get-ChildItem .\sorties</code></li>
+<li><code>python -m pytest tests</code></li>
+<li><code>Get-Content .\donnees\extraction_production.csv -TotalCount 20</code></li>
+<li><code>Remove-Item -Recurse -Force .\sorties</code></li>
+<li><code>git push --force origin main</code></li>
+</ol>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li>Accepter : elle liste le contenu d’un dossier.</li>
+<li>Accepter : elle lance les tests du projet.</li>
+<li>Refuser : elle affiche les vingt premières lignes d’une extraction de production, qui partent chez le fournisseur. La vraie question est ailleurs : ce fichier n’a rien à faire dans le dossier de travail.</li>
+<li>Questionner : elle supprime le dossier et tout ce qu’il contient, sans corbeille. Demandez pourquoi, et vérifiez que ce qui s’y trouve est régénérable ou commité.</li>
+<li>Refuser : elle écrase l’historique du dépôt distant, y compris le travail de vos collègues.</li>
+</ol>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="29.9" id="la-suite">
+<h2 class="anchored" data-anchor-id="la-suite" data-number="29.9" id="la-suite"> La suite</h2>
+<p>Le chapitre « Piloter l’IA » (partie 1) aborde la conduite de l’outil : l’intention plutôt que le code, les petits pas, la mémoire projet. L’atelier « Un premier échange cadré » met le tout en pratique, sur une vraie donnée publique.</p>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/I3/index.html"><small>&larr; Précédent</small>I3. Tests pytest sur un module de provisionnement</a><a class="next" href="../../annexes/A/index.html"><small>Suivant &rarr;</small>Annexe A. Glossaire Claude Code et IA générative</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

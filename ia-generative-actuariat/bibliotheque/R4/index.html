@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R4. Bootstrap Chain-Ladder · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">R4. Bootstrap Chain-Ladder</h1>
+      <p class="lede">Cette fiche illustre la démarche B couplée à la démarche E sur la reproductibilité stochastique. Ce que vous apprenez n’est pas le bootstrap, mais comment fixer une seed proprement (générateurs explicites vs seed globale), comment persister les trajectoires en parquet pour audit-trail, et comment vérifier la reproductibilité bit à bit.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle, et E, industrialiser (reproductibilité)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="11.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="11.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le Chain-Ladder déterministe donne une estimation centrale de la réserve. Le bootstrap en donne une distribution simulée, donc des quantiles et un écart-type. Il ne le fait pas « sans hypothèses » : il rééchantillonne les résidus d’un modèle stochastique explicite. Le plus utilisé avec le Chain-Ladder est le modèle de Poisson surdispersé (ODP) d’England et Verrall (2002, <em>British Actuarial Journal</em> 8(3)) : les montants incrémentaux sont indépendants, de moyenne égale à celle du Chain-Ladder et de variance proportionnelle à cette moyenne, avec un seul paramètre de dispersion <span class="math inline">\(\varphi\)</span> pour tout le triangle.</p>
+<p>Ce cas met en pratique ce qui a été vu : prompting d’intention, vectorisation, reproductibilité stochastique, sauvegarde des simulations, Git en routine. C’est la synthèse industrialisation.</p>
+</section>
+<section class="level2" data-number="11.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="11.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le triangle de Taylor et Ashe (1983), repris par Mack (1993), public et disponible dans plusieurs librairies (jeu <code>GenIns</code> du package R ChainLadder, <code>chainladder</code> en Python). Montants de sinistres cumulés, en unités non monétaires, années d’origine 1 à 10. On l’instancie directement pour rester autonome.</p>
+<div class="cell" data-execution_count="1" id="56d16f44">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="co"># Triangle Taylor-Ashe : montants cumulés, années d'origine en lignes, développement en colonnes</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>TAYLOR_ASHE <span class="op">=</span> np.array([</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>    [<span class="dv">357848</span>, <span class="dv">1124788</span>, <span class="dv">1735330</span>, <span class="dv">2218270</span>, <span class="dv">2745596</span>, <span class="dv">3319994</span>, <span class="dv">3466336</span>, <span class="dv">3606286</span>, <span class="dv">3833515</span>, <span class="dv">3901463</span>],</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    [<span class="dv">352118</span>, <span class="dv">1236139</span>, <span class="dv">2170033</span>, <span class="dv">3353322</span>, <span class="dv">3799067</span>, <span class="dv">4120063</span>, <span class="dv">4647867</span>, <span class="dv">4914039</span>, <span class="dv">5339085</span>, np.nan],</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    [<span class="dv">290507</span>, <span class="dv">1292306</span>, <span class="dv">2218525</span>, <span class="dv">3235179</span>, <span class="dv">3985995</span>, <span class="dv">4132918</span>, <span class="dv">4628910</span>, <span class="dv">4909315</span>,      np.nan, np.nan],</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    [<span class="dv">310608</span>, <span class="dv">1418858</span>, <span class="dv">2195047</span>, <span class="dv">3757447</span>, <span class="dv">4029929</span>, <span class="dv">4381982</span>, <span class="dv">4588268</span>,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    [<span class="dv">443160</span>, <span class="dv">1136350</span>, <span class="dv">2128333</span>, <span class="dv">2897821</span>, <span class="dv">3402672</span>, <span class="dv">3873311</span>,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    [<span class="dv">396132</span>, <span class="dv">1333217</span>, <span class="dv">2180715</span>, <span class="dv">2985752</span>, <span class="dv">3691712</span>,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    [<span class="dv">440832</span>, <span class="dv">1288463</span>, <span class="dv">2419861</span>, <span class="dv">3483130</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    [<span class="dv">359480</span>, <span class="dv">1421128</span>, <span class="dv">2864498</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    [<span class="dv">376686</span>, <span class="dv">1363294</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    [<span class="dv">344014</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>])</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Triangle shape : </span><span class="sc">{</span>TAYLOR_ASHE<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cellules connues : </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(<span class="op">~</span>np.isnan(TAYLOR_ASHE))<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>TAYLOR_ASHE<span class="sc">.</span>size<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Triangle shape : (10, 10)
+Cellules connues : 55 / 100</code></pre>
+</div>
+</div>
+<p>Triangle 10 années d’origine × 10 années de développement, 55 cellules connues (la partie supérieure), 45 à projeter (la partie inférieure).</p>
+</section>
+<section class="level2" data-number="11.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="11.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention, en bottom-up
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Implémenter le CL déterministe.</strong> <em>“Implémente le Chain-Ladder déterministe vectorisé sur ce triangle. Calcule les facteurs de développement age-to-age, projette les ultimes, retourne la réserve par année d’origine.”</em></p></li>
+<li><p><strong>Vérifier sur cas connu.</strong> <em>“Compare ta réserve totale à la valeur de référence de Taylor-Ashe (18 680 856) et ton ultime total à la sienne (53 038 946), chacun à une unité près.”</em></p></li>
+<li><p><strong>Bootstrap ODP avec graine fixe.</strong> <em>“Implémente le bootstrap ODP d’England et Verrall (2002) : valeurs ajustées par récurrence arrière depuis la diagonale, résidus de Pearson, ajustement sqrt(n/(n-p)), Chain-Ladder sur chaque pseudo-triangle, erreur de processus Gamma. 10 000 simulations, vectorisé sur les simulations, générateur <code>np.random.default_rng</code> avec graine explicite. Sauvegarde les réserves simulées en parquet.”</em></p></li>
+<li><p><strong>Analyser la distribution.</strong> <em>“Sors les statistiques de la réserve totale : moyenne, médiane, écart-type, quantiles 1, 5, 50, 95, 99, 99,5 %. Trace l’histogramme. Compare l’écart-type à l’erreur de Mack sur le même triangle (2 447 095).”</em></p></li>
+<li><p><strong>Tester la reproductibilité.</strong> <em>“Relance le bootstrap avec la même graine. Vérifie avec <code>np.array_equal</code> que tu obtiens exactement les mêmes simulations, et qu’une autre graine en donne d’autres. C’est la condition pour qu’un auditeur puisse reproduire ton calcul.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="11.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="11.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="11.4.1" id="étape-1.-chain-ladder-déterministe-vectorisé">
+<h3 class="anchored" data-anchor-id="étape-1.-chain-ladder-déterministe-vectorisé" data-number="11.4.1"> Étape 1. Chain-Ladder déterministe vectorisé</h3>
+<p>La fonction rend aussi les <strong>valeurs ajustées</strong> du modèle sur la partie connue. Elles s’obtiennent par récurrence arrière depuis la diagonale : on part du dernier montant connu de chaque ligne et on divise par les facteurs en remontant les colonnes. C’est la même formule que la projection vers l’avant (dernier connu × rapport de produits cumulés de facteurs), appliquée à toutes les colonnes.</p>
+<div class="cell" data-execution_count="2" id="792eccaa">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> chain_ladder(triangle: np.ndarray) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="co">"""Chain-Ladder déterministe vectorisé.</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a><span class="co">        triangle: array (n, n), montants cumulés, cellules connues contiguës</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="co">            depuis la colonne 0, NaN ailleurs.</span></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a><span class="co">        dict avec 'factors' (n-1,), 'cumul_modele' (n, n) : valeurs ajustées</span></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a><span class="co">        sur la partie connue, projection sur la partie inconnue, 'ultimates',</span></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a><span class="co">        'reserves' (n,), 'total_ultimate', 'total_reserve'.</span></span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>    n <span class="op">=</span> triangle.shape[<span class="dv">0</span>]</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>    C <span class="op">=</span> np.where(connu, triangle, <span class="fl">0.0</span>)</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>    factors <span class="op">=</span> (C[:, <span class="dv">1</span>:] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>) <span class="op">/</span> (C[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>    F <span class="op">=</span> np.concatenate([[<span class="fl">1.0</span>], np.cumprod(factors)])            <span class="co"># F[j] = f_0 × ... × f_{j-1}</span></span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>    derniere_col <span class="op">=</span> connu.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>    dernier_connu <span class="op">=</span> C[np.arange(n), derniere_col]</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>    <span class="co"># Récurrence arrière (j &lt; dernière colonne) et projection (j &gt; dernière colonne) en une formule</span></span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>    cumul_modele <span class="op">=</span> dernier_connu[:, <span class="va">None</span>] <span class="op">*</span> F[<span class="va">None</span>, :] <span class="op">/</span> F[derniere_col][:, <span class="va">None</span>]</span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>    ultimates <span class="op">=</span> cumul_modele[:, <span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a>    reserves <span class="op">=</span> ultimates <span class="op">-</span> dernier_connu</span>
+<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb3-26"><a aria-hidden="true" href="#cb3-26" tabindex="-1"></a>        <span class="st">"factors"</span>: factors,</span>
+<span id="cb3-27"><a aria-hidden="true" href="#cb3-27" tabindex="-1"></a>        <span class="st">"cumul_modele"</span>: cumul_modele,</span>
+<span id="cb3-28"><a aria-hidden="true" href="#cb3-28" tabindex="-1"></a>        <span class="st">"ultimates"</span>: ultimates,</span>
+<span id="cb3-29"><a aria-hidden="true" href="#cb3-29" tabindex="-1"></a>        <span class="st">"reserves"</span>: reserves,</span>
+<span id="cb3-30"><a aria-hidden="true" href="#cb3-30" tabindex="-1"></a>        <span class="st">"total_ultimate"</span>: ultimates.<span class="bu">sum</span>(),</span>
+<span id="cb3-31"><a aria-hidden="true" href="#cb3-31" tabindex="-1"></a>        <span class="st">"total_reserve"</span>: reserves.<span class="bu">sum</span>(),</span>
+<span id="cb3-32"><a aria-hidden="true" href="#cb3-32" tabindex="-1"></a>    }</span>
+<span id="cb3-33"><a aria-hidden="true" href="#cb3-33" tabindex="-1"></a></span>
+<span id="cb3-34"><a aria-hidden="true" href="#cb3-34" tabindex="-1"></a>result <span class="op">=</span> chain_ladder(TAYLOR_ASHE)</span>
+<span id="cb3-35"><a aria-hidden="true" href="#cb3-35" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Facteurs age-to-age :"</span>)</span>
+<span id="cb3-36"><a aria-hidden="true" href="#cb3-36" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">round</span>(result[<span class="st">"factors"</span>], <span class="dv">4</span>))</span>
+<span id="cb3-37"><a aria-hidden="true" href="#cb3-37" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Réserve par année d'origine :"</span>)</span>
+<span id="cb3-38"><a aria-hidden="true" href="#cb3-38" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">round</span>(result[<span class="st">"reserves"</span>], <span class="dv">0</span>))</span>
+<span id="cb3-39"><a aria-hidden="true" href="#cb3-39" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Réserve totale : </span><span class="sc">{</span>result[<span class="st">'total_reserve'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb3-40"><a aria-hidden="true" href="#cb3-40" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ultime total   : </span><span class="sc">{</span>result[<span class="st">'total_ultimate'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Facteurs age-to-age :
+[3.4906 1.7473 1.4574 1.1739 1.1038 1.0863 1.0539 1.0766 1.0177]
+
+Réserve par année d'origine :
+[      0.   94634.  469511.  709638.  984889. 1419459. 2177641. 3920301.
+ 4278972. 4625811.]
+
+Réserve totale : 18,680,856
+Ultime total   : 53,038,946</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="11.4.2" id="étape-2.-vérification-sur-cas-connu">
+<h3 class="anchored" data-anchor-id="étape-2.-vérification-sur-cas-connu" data-number="11.4.2"> Étape 2. Vérification sur cas connu</h3>
+<div class="cell" data-execution_count="3" id="759658a0">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>RESERVE_REFERENCE <span class="op">=</span> <span class="dv">18_680_856</span>   <span class="co"># réserve totale Chain-Ladder (Mack 1993 ; ChainLadder, GenIns)</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>ULTIME_REFERENCE <span class="op">=</span> <span class="dv">53_038_946</span>    <span class="co"># ultime total, même jeu</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>ecart_reserve <span class="op">=</span> result[<span class="st">"total_reserve"</span>] <span class="op">-</span> RESERVE_REFERENCE</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>ecart_ultime <span class="op">=</span> result[<span class="st">"total_ultimate"</span>] <span class="op">-</span> ULTIME_REFERENCE</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve : </span><span class="sc">{</span>result[<span class="st">'total_reserve'</span>]<span class="sc">:,.2f}</span><span class="ss"> contre </span><span class="sc">{</span>RESERVE_REFERENCE<span class="sc">:,}</span><span class="ss">, écart </span><span class="sc">{</span>ecart_reserve<span class="sc">:+.2f}</span><span class="ss">"</span>)</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ultime  : </span><span class="sc">{</span>result[<span class="st">'total_ultimate'</span>]<span class="sc">:,.2f}</span><span class="ss"> contre </span><span class="sc">{</span>ULTIME_REFERENCE<span class="sc">:,}</span><span class="ss">, écart </span><span class="sc">{</span>ecart_ultime<span class="sc">:+.2f}</span><span class="ss">"</span>)</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a><span class="cf">if</span> <span class="bu">abs</span>(ecart_reserve) <span class="op">&lt;=</span> <span class="dv">1</span> <span class="kw">and</span> <span class="bu">abs</span>(ecart_ultime) <span class="op">&lt;=</span> <span class="dv">1</span>:</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Vérification OK."</span>)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Écart anormal, vérifier l'implémentation."</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Réserve : 18,680,855.61 contre 18,680,856, écart -0.39
+Ultime  : 53,038,945.61 contre 53,038,946, écart -0.39
+Vérification OK.</code></pre>
+</div>
+</div>
+<p>Les deux grandeurs tombent à 0,39 unité de leur référence, publiée à l’unité : l’implémentation est cohérente avec Taylor-Ashe. Chaque grandeur est comparée à sa propre référence.</p>
+</section>
+<section class="level3" data-number="11.4.3" id="étape-3.-bootstrap-odp-avec-graine-fixe">
+<h3 class="anchored" data-anchor-id="étape-3.-bootstrap-odp-avec-graine-fixe" data-number="11.4.3"> Étape 3. Bootstrap ODP avec graine fixe</h3>
+<p>Le bootstrap d’England et Verrall, en quatre temps :</p>
+<ol type="1">
+<li><p><strong>Résidus de Pearson</strong> sur les montants incrémentaux connus :</p>
+<p><span class="math display">\[
+r = \frac{X - m}{\sqrt{m}},
+\]</span></p>
+<p>où <span class="math inline">\(m\)</span> est l’incrément ajusté par le Chain-Ladder (étape 1).</p></li>
+<li><p><strong>Dispersion et ajustement.</strong></p>
+<p><span class="math display">\[
+\varphi = \frac{\sum r^2}{n - p},
+\]</span></p>
+<p>avec <span class="math inline">\(n = 55\)</span> cellules connues et <span class="math inline">\(p = 19\)</span> paramètres (10 lignes + 10 colonnes − 1). Les résidus sont multipliés par <span class="math inline">\(\sqrt{n/(n - p)}\)</span> pour corriger le biais de rééchantillonnage.</p></li>
+<li><p><strong>Pseudo-triangles.</strong> Pour chaque simulation, on tire 55 résidus avec remise, on reconstruit <span class="math inline">\(X^* = m + r^* \sqrt{m}\)</span>, on recalcule les facteurs Chain-Ladder sur le pseudo-triangle cumulé et on projette les incréments futurs : c’est l’<strong>erreur d’estimation</strong>.</p></li>
+<li><p><strong>Erreur de processus.</strong> Chaque incrément futur projeté <span class="math inline">\(\mu\)</span> est remplacé par un tirage Gamma de moyenne <span class="math inline">\(\mu\)</span> et de variance <span class="math inline">\(\varphi\,\mu\)</span>.</p></li>
+</ol>
+<p>Tout est vectorisé sur les simulations : un tableau de forme (simulations, 10, 10), et aucune boucle Python.</p>
+<div class="cell" data-execution_count="4" id="11867c8c">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a><span class="kw">def</span> bootstrap_odp(triangle: np.ndarray, n_simulations: <span class="bu">int</span> <span class="op">=</span> <span class="dv">10_000</span>, seed: <span class="bu">int</span> <span class="op">=</span> <span class="dv">42</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>    <span class="co">"""Bootstrap ODP d'England et Verrall (2002), vectorisé sur les simulations.</span></span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a></span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a><span class="co">        dict avec 'reserves' (n_simulations, n) : réserve simulée par année</span></span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a><span class="co">        d'origine, erreur de processus comprise ; 'reserves_moyennes'</span></span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a><span class="co">        (n_simulations, n) : réserve projetée sur chaque pseudo-triangle, avant</span></span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a><span class="co">        erreur de processus ; 'part_negatifs' : part des incréments futurs</span></span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a><span class="co">        projetés négatifs ; 'phi', 'n_obs', 'n_param', 'residus'.</span></span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>    n <span class="op">=</span> triangle.shape[<span class="dv">0</span>]</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>    derniere_col <span class="op">=</span> connu.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a></span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>    <span class="co"># 1. Incréments observés et ajustés, résidus de Pearson</span></span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>    cl <span class="op">=</span> chain_ladder(triangle)</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a>    incr_obs <span class="op">=</span> np.diff(np.where(connu, triangle, <span class="fl">0.0</span>), axis<span class="op">=</span><span class="dv">1</span>, prepend<span class="op">=</span><span class="fl">0.0</span>)</span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a>    incr_ajuste <span class="op">=</span> np.diff(cl[<span class="st">"cumul_modele"</span>], axis<span class="op">=</span><span class="dv">1</span>, prepend<span class="op">=</span><span class="fl">0.0</span>)</span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>    m <span class="op">=</span> incr_ajuste[connu]</span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a>    r <span class="op">=</span> (incr_obs[connu] <span class="op">-</span> m) <span class="op">/</span> np.sqrt(m)</span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a></span>
+<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a>    <span class="co"># 2. Dispersion et ajustement de biais</span></span>
+<span id="cb7-27"><a aria-hidden="true" href="#cb7-27" tabindex="-1"></a>    n_obs, n_param <span class="op">=</span> connu.<span class="bu">sum</span>(), <span class="dv">2</span> <span class="op">*</span> n <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb7-28"><a aria-hidden="true" href="#cb7-28" tabindex="-1"></a>    phi <span class="op">=</span> (r <span class="op">**</span> <span class="dv">2</span>).<span class="bu">sum</span>() <span class="op">/</span> (n_obs <span class="op">-</span> n_param)</span>
+<span id="cb7-29"><a aria-hidden="true" href="#cb7-29" tabindex="-1"></a>    r_adj <span class="op">=</span> r <span class="op">*</span> np.sqrt(n_obs <span class="op">/</span> (n_obs <span class="op">-</span> n_param))</span>
+<span id="cb7-30"><a aria-hidden="true" href="#cb7-30" tabindex="-1"></a></span>
+<span id="cb7-31"><a aria-hidden="true" href="#cb7-31" tabindex="-1"></a>    <span class="co"># 3. Pseudo-triangles : tirage des résidus, reconstruction, Chain-Ladder vectorisé</span></span>
+<span id="cb7-32"><a aria-hidden="true" href="#cb7-32" tabindex="-1"></a>    r_star <span class="op">=</span> r_adj[rng.integers(<span class="dv">0</span>, r_adj.size, size<span class="op">=</span>(n_simulations, r_adj.size))]</span>
+<span id="cb7-33"><a aria-hidden="true" href="#cb7-33" tabindex="-1"></a>    incr_star <span class="op">=</span> np.zeros((n_simulations, n, n))</span>
+<span id="cb7-34"><a aria-hidden="true" href="#cb7-34" tabindex="-1"></a>    incr_star[:, connu] <span class="op">=</span> m <span class="op">+</span> r_star <span class="op">*</span> np.sqrt(m)</span>
+<span id="cb7-35"><a aria-hidden="true" href="#cb7-35" tabindex="-1"></a>    cumul_star <span class="op">=</span> np.cumsum(incr_star, axis<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-36"><a aria-hidden="true" href="#cb7-36" tabindex="-1"></a>    f_star <span class="op">=</span> ((cumul_star[:, :, <span class="dv">1</span>:] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-37"><a aria-hidden="true" href="#cb7-37" tabindex="-1"></a>              <span class="op">/</span> (cumul_star[:, :, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>))           <span class="co"># (simulations, n-1)</span></span>
+<span id="cb7-38"><a aria-hidden="true" href="#cb7-38" tabindex="-1"></a>    F_star <span class="op">=</span> np.concatenate([np.ones((n_simulations, <span class="dv">1</span>)), np.cumprod(f_star, axis<span class="op">=</span><span class="dv">1</span>)], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-39"><a aria-hidden="true" href="#cb7-39" tabindex="-1"></a>    dernier_star <span class="op">=</span> cumul_star[:, np.arange(n), derniere_col]           <span class="co"># (simulations, n)</span></span>
+<span id="cb7-40"><a aria-hidden="true" href="#cb7-40" tabindex="-1"></a>    proj_star <span class="op">=</span> dernier_star[:, :, <span class="va">None</span>] <span class="op">*</span> F_star[:, <span class="va">None</span>, :] <span class="op">/</span> F_star[:, derniere_col][:, :, <span class="va">None</span>]</span>
+<span id="cb7-41"><a aria-hidden="true" href="#cb7-41" tabindex="-1"></a>    mu <span class="op">=</span> np.diff(proj_star, axis<span class="op">=</span><span class="dv">2</span>, prepend<span class="op">=</span><span class="fl">0.0</span>)[:, <span class="op">~</span>connu]            <span class="co"># incréments futurs (simulations, 45)</span></span>
+<span id="cb7-42"><a aria-hidden="true" href="#cb7-42" tabindex="-1"></a></span>
+<span id="cb7-43"><a aria-hidden="true" href="#cb7-43" tabindex="-1"></a>    <span class="co"># 4. Erreur de processus Gamma : moyenne |mu|, variance phi × |mu|, signe de mu remis ensuite</span></span>
+<span id="cb7-44"><a aria-hidden="true" href="#cb7-44" tabindex="-1"></a>    <span class="co">#    (un pseudo-triangle peut donner un facteur &lt; 1, donc un incrément futur négatif)</span></span>
+<span id="cb7-45"><a aria-hidden="true" href="#cb7-45" tabindex="-1"></a>    futur_simule <span class="op">=</span> np.sign(mu) <span class="op">*</span> rng.gamma(shape<span class="op">=</span>np.<span class="bu">abs</span>(mu) <span class="op">/</span> phi, scale<span class="op">=</span>phi)</span>
+<span id="cb7-46"><a aria-hidden="true" href="#cb7-46" tabindex="-1"></a></span>
+<span id="cb7-47"><a aria-hidden="true" href="#cb7-47" tabindex="-1"></a>    <span class="co"># Réserves par année d'origine : somme des cellules futures de chaque ligne</span></span>
+<span id="cb7-48"><a aria-hidden="true" href="#cb7-48" tabindex="-1"></a>    ligne_futur <span class="op">=</span> np.nonzero(<span class="op">~</span>connu)[<span class="dv">0</span>]                                <span class="co"># ligne de chaque cellule future</span></span>
+<span id="cb7-49"><a aria-hidden="true" href="#cb7-49" tabindex="-1"></a>    agreger <span class="op">=</span> (ligne_futur[:, <span class="va">None</span>] <span class="op">==</span> np.arange(n)[<span class="va">None</span>, :]).astype(<span class="bu">float</span>)   <span class="co"># (45, n)</span></span>
+<span id="cb7-50"><a aria-hidden="true" href="#cb7-50" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb7-51"><a aria-hidden="true" href="#cb7-51" tabindex="-1"></a>        <span class="st">"reserves"</span>: futur_simule <span class="op">@</span> agreger,</span>
+<span id="cb7-52"><a aria-hidden="true" href="#cb7-52" tabindex="-1"></a>        <span class="st">"reserves_moyennes"</span>: mu <span class="op">@</span> agreger,</span>
+<span id="cb7-53"><a aria-hidden="true" href="#cb7-53" tabindex="-1"></a>        <span class="st">"part_negatifs"</span>: (mu <span class="op">&lt;</span> <span class="dv">0</span>).mean(),</span>
+<span id="cb7-54"><a aria-hidden="true" href="#cb7-54" tabindex="-1"></a>        <span class="st">"phi"</span>: phi, <span class="st">"n_obs"</span>: <span class="bu">int</span>(n_obs), <span class="st">"n_param"</span>: n_param, <span class="st">"residus"</span>: r_adj,</span>
+<span id="cb7-55"><a aria-hidden="true" href="#cb7-55" tabindex="-1"></a>    }</span>
+<span id="cb7-56"><a aria-hidden="true" href="#cb7-56" tabindex="-1"></a></span>
+<span id="cb7-57"><a aria-hidden="true" href="#cb7-57" tabindex="-1"></a>debut <span class="op">=</span> time.perf_counter()</span>
+<span id="cb7-58"><a aria-hidden="true" href="#cb7-58" tabindex="-1"></a>boot <span class="op">=</span> bootstrap_odp(TAYLOR_ASHE, n_simulations<span class="op">=</span><span class="dv">10_000</span>, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb7-59"><a aria-hidden="true" href="#cb7-59" tabindex="-1"></a>duree <span class="op">=</span> time.perf_counter() <span class="op">-</span> debut</span>
+<span id="cb7-60"><a aria-hidden="true" href="#cb7-60" tabindex="-1"></a>reserves_totales <span class="op">=</span> boot[<span class="st">"reserves"</span>].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-61"><a aria-hidden="true" href="#cb7-61" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"n = </span><span class="sc">{</span>boot[<span class="st">'n_obs'</span>]<span class="sc">}</span><span class="ss">, p = </span><span class="sc">{</span>boot[<span class="st">'n_param'</span>]<span class="sc">}</span><span class="ss">, phi = </span><span class="sc">{</span>boot[<span class="st">'phi'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb7-62"><a aria-hidden="true" href="#cb7-62" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ajustement des résidus : sqrt(n/(n-p)) = </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(boot[<span class="st">'n_obs'</span>] <span class="op">/</span> (boot[<span class="st">'n_obs'</span>] <span class="op">-</span> boot[<span class="st">'n_param'</span>]))<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb7-63"><a aria-hidden="true" href="#cb7-63" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Résidus nuls (coins du triangle) : </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(np.isclose(boot[<span class="st">'residus'</span>], <span class="dv">0</span>))<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-64"><a aria-hidden="true" href="#cb7-64" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Résidus ajustés : de </span><span class="sc">{</span>boot[<span class="st">'residus'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:,.0f}</span><span class="ss"> à </span><span class="sc">{</span>boot[<span class="st">'residus'</span>]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb7-65"><a aria-hidden="true" href="#cb7-65" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Incréments futurs projetés négatifs : </span><span class="sc">{</span>boot[<span class="st">'part_negatifs'</span>]<span class="sc">:.2%}</span><span class="ss"> des cellules simulées"</span>)</span>
+<span id="cb7-66"><a aria-hidden="true" href="#cb7-66" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Simulations effectuées : </span><span class="sc">{</span><span class="bu">len</span>(reserves_totales)<span class="sc">:,}</span><span class="ss">, en </span><span class="sc">{</span>duree<span class="sc">:.1f}</span><span class="ss"> s"</span>)</span>
+<span id="cb7-67"><a aria-hidden="true" href="#cb7-67" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cinq premières réserves totales simulées : </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">round</span>(reserves_totales[:<span class="dv">5</span>], <span class="dv">0</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n = 55, p = 19, phi = 52,601
+Ajustement des résidus : sqrt(n/(n-p)) = 1.2360
+Résidus nuls (coins du triangle) : 2
+Résidus ajustés : de -499 à 659
+Incréments futurs projetés négatifs : 1.89% des cellules simulées
+Simulations effectuées : 10,000, en 0.1 s
+Cinq premières réserves totales simulées : [21888195. 17292011. 19299706. 17245141. 21224191.]</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(\varphi\)</span> vaut 52 601 et les résidus ajustés vont de −499 à 659 : les résidus de Pearson ne sont pas réduits, leur écart-type est de l’ordre de <span class="math inline">\(\sqrt{\varphi}\)</span>, environ 229. Les deux résidus nuls sont ceux des coins du triangle (année 1 en colonne 10, année 10 en colonne 1) : une seule observation y détermine un paramètre, l’ajustement y est exact. Ils restent dans l’échantillon rééchantillonné.</p>
+<p>Sur les dernières colonnes, où l’incrément ajusté est petit, un résidu négatif peut faire passer le pseudo-incrément sous zéro, donc un facteur sous 1 et un incrément futur projeté négatif : c’est le cas de 1,89 % des cellules simulées. La loi Gamma n’est pas définie pour une moyenne négative ; le code la tire sur la valeur absolue et remet le signe. C’est une convention, à écrire dans la note méthodologique. Les 10 000 simulations prennent quelques secondes : la durée affichée dépend du poste.</p>
+<div class="cell" data-execution_count="5" id="dddf23a9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="co"># Sauvegarde en parquet pour audit-trail : une ligne par simulation, une colonne par année d'origine</span></span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>simulations_df <span class="op">=</span> pd.DataFrame(boot[<span class="st">"reserves"</span>], columns<span class="op">=</span>[<span class="ss">f"reserve_origine_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)])</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>simulations_df.insert(<span class="dv">0</span>, <span class="st">"simulation"</span>, np.arange(<span class="dv">1</span>, <span class="bu">len</span>(simulations_df) <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>dossier <span class="op">=</span> Path(tempfile.gettempdir()) <span class="op">/</span> <span class="st">"formation_ia_actuariat"</span></span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>dossier.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>output_path <span class="op">=</span> dossier <span class="op">/</span> <span class="st">"R4_bootstrap_odp_seed42_10000.parquet"</span></span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>simulations_df.to_parquet(output_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Simulations sauvegardées : </span><span class="sc">{</span>output_path<span class="sc">.</span>name<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>simulations_df<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> lignes × </span><span class="sc">{</span>simulations_df<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> colonnes"</span>)</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a>relu <span class="op">=</span> pd.read_parquet(output_path)</span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Relu identique à l'écrit : </span><span class="sc">{</span>np<span class="sc">.</span>array_equal(relu.drop(columns<span class="op">=</span><span class="st">'simulation'</span>).to_numpy(), boot[<span class="st">'reserves'</span>])<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulations sauvegardées : R4_bootstrap_odp_seed42_10000.parquet, 10,000 lignes × 11 colonnes
+Relu identique à l'écrit : True</code></pre>
+</div>
+</div>
+<p>Les simulations sont maintenant rejouables : un auditeur (ou vous dans 6 mois) peut recharger le fichier et refaire tous les calculs dérivés sans relancer le bootstrap. Le nom du fichier porte la graine et le nombre de simulations. Ici il est écrit dans le dossier temporaire du système, pour que le rendu de la fiche ne dépose pas 10 000 lignes dans le dépôt ; dans un projet, il va dans le dossier des résultats de la clôture, avec le code et la graine qui l’ont produit.</p>
+</section>
+<section class="level3" data-number="11.4.4" id="étape-4.-statistiques-de-la-distribution">
+<h3 class="anchored" data-anchor-id="étape-4.-statistiques-de-la-distribution" data-number="11.4.4"> Étape 4. Statistiques de la distribution</h3>
+<div class="cell" data-execution_count="6" id="78c1c642">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="kw">def</span> summary_stats(values: np.ndarray) <span class="op">-&gt;</span> pd.Series:</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>    <span class="cf">return</span> pd.Series({</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>        <span class="st">"n_simulations"</span>: <span class="bu">len</span>(values),</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>        <span class="st">"moyenne"</span>: values.mean(),</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>        <span class="st">"ecart_type"</span>: values.std(ddof<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>        <span class="st">"q01"</span>: np.percentile(values, <span class="dv">1</span>),</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>        <span class="st">"q05"</span>: np.percentile(values, <span class="dv">5</span>),</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>        <span class="st">"q50"</span>: np.percentile(values, <span class="dv">50</span>),</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>        <span class="st">"q95"</span>: np.percentile(values, <span class="dv">95</span>),</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>        <span class="st">"q99"</span>: np.percentile(values, <span class="dv">99</span>),</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>        <span class="st">"q995"</span>: np.percentile(values, <span class="fl">99.5</span>),</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>    }).<span class="bu">round</span>(<span class="dv">0</span>)</span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a></span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>stats <span class="op">=</span> summary_stats(reserves_totales)</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a><span class="bu">print</span>(stats.to_string())</span>
+<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a></span>
+<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a>MACK_ERREUR <span class="op">=</span> <span class="dv">2_447_095</span>   <span class="co"># erreur de Mack (racine de la MSEP) sur la réserve totale, Mack (1993), fiche R3</span></span>
+<span id="cb11-18"><a aria-hidden="true" href="#cb11-18" tabindex="-1"></a>ecart_type_estimation <span class="op">=</span> boot[<span class="st">"reserves_moyennes"</span>].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).std(ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb11-19"><a aria-hidden="true" href="#cb11-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">CV sur la réserve                    : </span><span class="sc">{</span>stats[<span class="st">'ecart_type'</span>] <span class="op">/</span> stats[<span class="st">'moyenne'</span>]<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb11-20"><a aria-hidden="true" href="#cb11-20" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Moyenne bootstrap / réserve CL        : </span><span class="sc">{</span>stats[<span class="st">'moyenne'</span>] <span class="op">/</span> result[<span class="st">'total_reserve'</span>] <span class="op">-</span> <span class="dv">1</span><span class="sc">:+.2%}</span><span class="ss">"</span>)</span>
+<span id="cb11-21"><a aria-hidden="true" href="#cb11-21" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Erreur Monte Carlo sur la moyenne     : </span><span class="sc">{</span>stats[<span class="st">'ecart_type'</span>] <span class="op">/</span> np<span class="sc">.</span>sqrt(stats[<span class="st">'n_simulations'</span>])<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb11-22"><a aria-hidden="true" href="#cb11-22" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart-type bootstrap / erreur de Mack : </span><span class="sc">{</span>stats[<span class="st">'ecart_type'</span>] <span class="op">/</span> MACK_ERREUR <span class="op">-</span> <span class="dv">1</span><span class="sc">:+.1%}</span><span class="ss">"</span>)</span>
+<span id="cb11-23"><a aria-hidden="true" href="#cb11-23" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart-type sans erreur de processus   : </span><span class="sc">{</span>ecart_type_estimation<span class="sc">:,.0f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n_simulations       10000.0
+moyenne          18837744.0
+ecart_type        2993182.0
+q01              12593705.0
+q05              14325945.0
+q50              18617564.0
+q95              24107482.0
+q99              26860951.0
+q995             27766189.0
+
+CV sur la réserve                    : 15.9%
+Moyenne bootstrap / réserve CL        : +0.84%
+Erreur Monte Carlo sur la moyenne     : 29,932
+Écart-type bootstrap / erreur de Mack : +22.3%
+Écart-type sans erreur de processus   : 2,822,393</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="7" id="cell-fig-bootstrap-distribution">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a>ax.hist(reserves_totales <span class="op">/</span> <span class="fl">1e6</span>, bins<span class="op">=</span><span class="dv">60</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolor<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a>ax.axvline(stats[<span class="st">"moyenne"</span>] <span class="op">/</span> <span class="fl">1e6</span>, color<span class="op">=</span><span class="st">"#0f172a"</span>, linestyle<span class="op">=</span><span class="st">"-"</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Moyenne : </span><span class="sc">{</span>stats[<span class="st">'moyenne'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a>ax.axvline(stats[<span class="st">"q05"</span>] <span class="op">/</span> <span class="fl">1e6</span>, color<span class="op">=</span><span class="st">"#b45309"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>,</span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Quantile 5 % : </span><span class="sc">{</span>stats[<span class="st">'q05'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a>ax.axvline(stats[<span class="st">"q95"</span>] <span class="op">/</span> <span class="fl">1e6</span>, color<span class="op">=</span><span class="st">"#b45309"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>,</span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Quantile 95 % : </span><span class="sc">{</span>stats[<span class="st">'q95'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a>ax.axvline(stats[<span class="st">"q995"</span>] <span class="op">/</span> <span class="fl">1e6</span>, color<span class="op">=</span><span class="st">"#dc2626"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Quantile 99,5 % : </span><span class="sc">{</span>stats[<span class="st">'q995'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Réserve totale (millions d'unités non monétaires)"</span>)</span>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Nombre de simulations"</span>)</span>
+<span id="cb13-13"><a aria-hidden="true" href="#cb13-13" tabindex="-1"></a>ax.set_title(<span class="st">"Bootstrap ODP de la réserve Chain-Ladder, 10 000 simulations"</span>)</span>
+<span id="cb13-14"><a aria-hidden="true" href="#cb13-14" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
+<span id="cb13-15"><a aria-hidden="true" href="#cb13-15" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb13-16"><a aria-hidden="true" href="#cb13-16" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-17"><a aria-hidden="true" href="#cb13-17" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-bootstrap-distribution">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bootstrap-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-bootstrap-distribution-output-1_2b40a62d.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bootstrap-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 11.1: Distribution bootstrap ODP de la réserve totale : moyenne, quantiles 5 % et 95 % (orange), quantile 99,5 % (rouge)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Ce que la sortie montre :</p>
+<ul>
+<li><strong>La moyenne</strong> des réserves simulées, 18 837 744, dépasse la réserve Chain-Ladder de 0,84 %. L’écart (environ 157 000) vaut cinq fois l’erreur Monte Carlo sur la moyenne (29 932) : ce n’est pas du bruit de simulation. Le Chain-Ladder est un produit de rapports, non linéaire dans les données, et la moyenne des réserves recalculées sur les pseudo-triangles n’est pas exactement la réserve du triangle observé.</li>
+<li><strong>L’écart-type</strong> vaut 2 993 182, soit un CV de 15,9 % sur la réserve : l’ordre de grandeur de référence du bootstrap ODP sur ce triangle (environ 3,0 millions, England et Verrall 2002).</li>
+<li><strong>La distribution est asymétrique</strong> à droite, ce qui se lit à niveaux symétriques : le quantile à 95 % (24 107 482) est à 5,3 millions au-dessus de la moyenne, le quantile à 5 % (14 325 945) à 4,5 millions en dessous. Le quantile à 99,5 % (27 766 189) est à 8,9 millions au-dessus.</li>
+</ul>
+<p><strong>L’écart avec Mack.</strong> L’erreur de Mack sur la même réserve vaut 2 447 095 (fiche R3) ; le bootstrap donne 22,3 % de plus avec la graine 42, et 23,7 % avec la graine 43 (étape 5). Ce n’est pas une erreur de l’une des deux méthodes : elles partagent l’estimation centrale du Chain-Ladder, pas le modèle de variance. Mack estime une variance par colonne de développement (<span class="math inline">\(\sigma_j\)</span>) sur les montants cumulés ; l’ODP impose un seul <span class="math inline">\(\varphi\)</span> à toutes les cellules incrémentales, avec une variance proportionnelle à la moyenne, et l’ajustement <span class="math inline">\(\sqrt{n/(n - p)}\)</span> multiplie les résidus rééchantillonnés par <span class="math inline">\(\sqrt{55/36} = 1{,}236\)</span>. Sans l’erreur de processus, l’écart-type bootstrap vaut déjà 2,82 millions, plus que l’erreur de Mack tout compris : sur ce triangle, l’ODP attribue l’essentiel de l’incertitude à l’estimation des facteurs, là où Mack la partage entre processus et estimation (R3, étape 2). Le choix entre les deux se discute sur l’adéquation des hypothèses (résidus de R3, structure de dispersion par colonne), et se documente.</p>
+<p><strong>Ce que le quantile n’est pas.</strong> Le quantile à 99,5 % de la réserve décrit l’incertitude jusqu’à l’extinction des sinistres, sous le modèle ODP. Ce n’est pas la marge de risque Solvabilité II, qui est un coût du capital (articles 37 à 39 du Règlement délégué 2015/35). Ce n’est pas non plus le SCR de réserve, défini à horizon un an : l’approche de Merz et Wüthrich (2008) mesure l’incertitude du résultat de liquidation de l’année suivante, pas celle de la réserve jusqu’à son terme.</p>
+</section>
+<section class="level3" data-number="11.4.5" id="étape-5.-reproductibilité-bit-à-bit">
+<h3 class="anchored" data-anchor-id="étape-5.-reproductibilité-bit-à-bit" data-number="11.4.5"> Étape 5. Reproductibilité bit à bit</h3>
+<div class="cell" data-execution_count="8" id="7c1bc5c4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>boot_bis <span class="op">=</span> bootstrap_odp(TAYLOR_ASHE, n_simulations<span class="op">=</span><span class="dv">10_000</span>, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>boot_autre <span class="op">=</span> bootstrap_odp(TAYLOR_ASHE, n_simulations<span class="op">=</span><span class="dv">10_000</span>, seed<span class="op">=</span><span class="dv">43</span>)</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>identique <span class="op">=</span> np.array_equal(boot[<span class="st">"reserves"</span>], boot_bis[<span class="st">"reserves"</span>])</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Même graine, simulations identiques bit à bit  : </span><span class="sc">{</span>identique<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Autre graine, simulations identiques           : </span><span class="sc">{</span>np<span class="sc">.</span>array_equal(boot[<span class="st">'reserves'</span>], boot_autre[<span class="st">'reserves'</span>])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Valeurs distinctes parmi les réserves totales   : </span><span class="sc">{</span>np<span class="sc">.</span>unique(reserves_totales)<span class="sc">.</span>size<span class="sc">:,}</span><span class="ss"> sur </span><span class="sc">{</span>reserves_totales<span class="sc">.</span>size<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart-type avec la graine 43                    : </span><span class="sc">{</span>boot_autre[<span class="st">'reserves'</span>]<span class="sc">.</span><span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)<span class="sc">.</span>std(ddof<span class="op">=</span><span class="dv">1</span>)<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a><span class="cf">if</span> identique:</span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Reproductibilité validée. Un auditeur peut rejouer le calcul."</span>)</span>
+<span id="cb14-10"><a aria-hidden="true" href="#cb14-10" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb14-11"><a aria-hidden="true" href="#cb14-11" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Différence détectée. Audit-trail invalide, à corriger avant production."</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Même graine, simulations identiques bit à bit  : True
+Autre graine, simulations identiques           : False
+Valeurs distinctes parmi les réserves totales   : 10,000 sur 10,000
+Écart-type avec la graine 43                    : 3,026,714
+Reproductibilité validée. Un auditeur peut rejouer le calcul.</code></pre>
+</div>
+</div>
+<p>Avec une graine fixe et un générateur explicite (<code>np.random.default_rng(seed)</code>), le bootstrap est reproductible bit à bit : <code>np.array_equal</code> exige l’égalité exacte, là où <code>np.allclose</code> tolérerait un écart. Le test porte sur un résultat qui varie (10 000 valeurs distinctes) et une autre graine donne d’autres simulations : un test de reproductibilité qui passerait aussi sur une constante ne prouverait rien. L’écart-type passe de 2 993 182 à 3 026 714 avec la graine 43, soit 1,1 % : c’est l’ordre de l’erreur Monte Carlo sur cette statistique avec 10 000 simulations, à garder en tête avant de commenter un écart d’un pour cent. C’est la condition non négociable pour un calcul réglementaire. La reproductibilité vaut à versions de NumPy égales : le générateur peut changer d’une version majeure à l’autre, d’où l’environnement figé (<code>requirements.txt</code>) à côté du code.</p>
+</section>
+</section>
+<section class="level2" data-number="11.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="11.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Une première version de cette fiche calculait les résidus de Pearson ainsi, puis lançait 2 000 simulations :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>incremental <span class="op">=</span> np.diff(triangle, axis<span class="op">=</span><span class="dv">1</span>, prepend<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a>proj_incremental <span class="op">=</span> np.diff(cl[<span class="st">"projected"</span>], axis<span class="op">=</span><span class="dv">1</span>, prepend<span class="op">=</span><span class="dv">0</span>)   <span class="co"># cl["projected"] : triangle complété</span></span>
+<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a>residuals <span class="op">=</span> (incremental <span class="op">-</span> proj_incremental) <span class="op">/</span> np.sqrt(np.<span class="bu">abs</span>(proj_incremental))</span></code></pre></div></div>
+<p>Le test de reproductibilité affichait « Trajectoires identiques bit à bit : True » et la fiche concluait à un bootstrap validé, avec un histogramme et un quantile à 99,5 % présenté comme « marge réglementaire ». Que valaient les 2 000 simulations, et pourquoi le test de reproductibilité ne l’a-t-il pas révélé ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Elles valaient toutes 53 038 946, l’ultime Chain-Ladder : écart-type nul, histogramme réduit à une barre.</p>
+<p><code>cl["projected"]</code> est le triangle <strong>complété</strong> : sur la partie connue, il contient les données observées elles-mêmes, pas des valeurs ajustées. Les résidus <span class="math inline">\((\text{observé} - \text{observé}) / \sqrt{\text{observé}}\)</span> sont donc tous nuls, chaque pseudo-triangle est le triangle d’origine, et chaque simulation redonne la même réserve. Le bootstrap ODP compare l’observé aux valeurs <strong>ajustées par le modèle</strong>, obtenues par récurrence arrière depuis la diagonale (étape 1) ; il ajoute ensuite l’erreur de processus, absente de cette version.</p>
+<p>Le test de reproductibilité passait parce qu’une constante est parfaitement reproductible. C’est pourquoi l’étape 5 vérifie aussi que le résultat varie (nombre de valeurs distinctes, autre graine). Et la prose aurait dû le voir : la sortie affichait un écart-type de 0, impossible pour une réserve incertaine.</p>
+<p>Enfin, le quantile à 99,5 % d’une réserve à l’ultime n’est pas une « marge réglementaire » : voir la fin de l’étape 4.</p>
+</details>
+</section>
+<section class="level2" data-number="11.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="11.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Ne pas fixer la graine.</strong> Sans graine fixée, chaque relance produit une distribution légèrement différente. Inutilisable en audit. Toujours fixer la graine et la documenter, jusque dans le nom du fichier sauvegardé.</li>
+<li><strong>Utiliser <code>np.random.seed()</code> global.</strong> Cette approche ancienne partage l’état entre toutes les fonctions du programme. Ajouter un tirage ailleurs décale toute la suite. Préférer <code>rng = np.random.default_rng(seed)</code> créé dans la fonction ou passé en argument.</li>
+<li><strong>Oublier de sauvegarder les simulations.</strong> Sur un triangle de cabinet avec plusieurs branches, relancer le bootstrap à chaque consultation coûte du temps et expose à un résultat qui change avec une version de bibliothèque. Sauvegarder en parquet, recharger pour les analyses dérivées.</li>
+<li><strong>Trop peu de simulations.</strong> Avec 1 000 simulations, le quantile à 99,5 % repose sur les 5 valeurs les plus hautes ; avec 10 000, sur 50. Mesurer la stabilité du quantile en relançant avec deux ou trois graines avant de le publier.</li>
+<li><strong>Croire que le bootstrap est sans hypothèses.</strong> Il rééchantillonne les résidus d’un modèle (ici l’ODP) et hérite de ses hypothèses : incréments indépendants, variance proportionnelle à la moyenne, un seul <span class="math inline">\(\varphi\)</span>. Les résidus de Pearson par colonne et par année calendaire se tracent comme ceux de Mack en R3.</li>
+<li><strong>Ne pas valider l’implémentation.</strong> L’étape 2 (vérification contre Taylor-Ashe) n’est pas optionnelle, et elle ne suffit pas pour la partie stochastique : vérifier aussi que l’écart-type est non nul et du bon ordre de grandeur.</li>
+</ul>
+</section>
+<section class="level2" data-number="11.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="11.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>R1 Chain-Ladder déterministe</strong> : version sans bootstrap, utile pour le warm-up.</li>
+<li><strong>R2 Bornhuetter-Ferguson</strong> : alternative quand on a une opinion a priori sur les ultimes (Loss Ratio cible).</li>
+<li><strong>R3 Mack stochastique</strong> : erreur de prédiction par formule analytique, sous un autre modèle de variance. Les deux se comparent sur le même triangle.</li>
+<li><strong>I2 Vectorisation Monte Carlo</strong> : le même principe de vectorisation, avec la mesure du gain.</li>
+<li><strong>I3 Tests pytest</strong> : ce module mérite des tests pytest complets (triangle plat, triangle Taylor-Ashe, cas dégénéré, reproductibilité de la graine).</li>
+</ul>
+</section>
+<section class="level2" data-number="11.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="11.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>En vrai, sur un triangle de cabinet : remplacer le bloc <code>TAYLOR_ASHE</code> par <code>pd.read_csv("triangle_branche_X.csv").pivot(...)</code>.</li>
+<li>En IFRS 17, si l’ajustement pour risque non financier est déterminé à partir d’un quantile, l’entité publie le niveau de confiance retenu (IFRS 17, paragraphe 119). Une distribution bootstrap peut y servir, à condition de documenter l’horizon, la diversification entre portefeuilles et le modèle sous-jacent.</li>
+<li>Pour les triangles très bruités (branches longues comme la RC), le bootstrap peut donner des résultats instables, et les incréments négatifs, observés ou projetés, obligent à une convention (ici, la loi Gamma tirée sur la valeur absolue, signe remis ensuite). Discuter avec Claude des alternatives (dispersion par colonne, GLM Tweedie sur les incréments), puis vérifier chaque proposition dans une source.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/R3/index.html"><small>&larr; Précédent</small>R3. Mack stochastique</a><a class="next" href="../../bibliotheque/V1/index.html"><small>Suivant &rarr;</small>V1. Charger et lisser une table de mortalité</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

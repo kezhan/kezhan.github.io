@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piloter l'IA · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn active" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 1 · 1.2 S'en servir</div>
+      <h1 style="max-width:28ch">Piloter l'IA</h1>
+      <p class="lede">Avec un assistant rapide, la tentation est de tout déléguer et de tout accepter. C'est le plus sûr moyen de produire un résultat que personne ne pourra défendre. Ce chapitre pose les gestes qui gardent l'actuaire aux commandes : dire l'intention plutôt que le code, avancer par petits pas, écrire une fois pour toutes ce que l'IA doit savoir du cabinet.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#intention">Dire le quoi, pas le comment</a><a href="#pas-a-pas">Avancer par petits pas</a><a href="#posture">La posture : diriger, pas se faire aider</a><a href="#memoire">La mémoire projet</a><a href="#personnalisation">Quand une mémoire ne suffit plus</a><a href="#critique">Demander la critique, à chaque décision qui compte</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « Piloter l'IA », partie 03.
+     Conversion de 04_pilotage_ia.qmd (ticket 018) : le prompting d'intention,
+     l'approche bottom-up, la posture, la mémoire projet, les mémoires
+     partagées et personnelles, les mécanismes de personnalisation, la
+     critique demandée. Le schéma Explore, Plan, Code, Commit était un PNG, il
+     est refait en SVG ici. Le tableau des mécanismes remplace son PNG.
+     Couvre du programme officiel : « bonnes pratiques pour interagir
+     efficacement : cadrage précis des demandes, contrôle qualité et
+     validation systématique ». -->
+
+<h2 id="intention">Dire le quoi, pas le comment</h2>
+<p>L'erreur de départ est de prescrire l'implémentation. L'assistant exécute fidèlement la prescription, et vous obtenez exactement le code que vous avez demandé, c'est-à-dire moins bon que celui qu'il aurait écrit seul.</p>
+<div class="ba">
+<div class="before">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> On prescrit le comment</div>
+<div class="ba-body">
+<p class="prompt">Écris une boucle qui parcourt le tableau des polices et calcule la moyenne pondérée par l'exposition.</p>
+<p>Vous récupérez une boucle là où une opération vectorielle suffisait, sans contrôle, sans ventilation, et sans la question qui aurait été utile.</p>
+</div>
+</div>
+<div class="after">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg> On décrit le quoi</div>
+<div class="ba-body">
+<p class="prompt">Pour ce portefeuille, je veux la prime moyenne pondérée par l'exposition, ventilée par segment de risque.</p>
+<p>Il reconnaît une moyenne pondérée, l'écrit vectorisée, ajoute la ventilation, vérifie que les poids ne sont pas nuls dans un segment, et demande si vous voulez aussi la dispersion.</p>
+</div>
+</div>
+</div>
+<p>L'intention métier mène à l'implémentation idiomatique. Le comment prescrit mène à un code fidèle à votre prescription, et c'est bien le problème.</p>
+<h2 id="pas-a-pas">Avancer par petits pas</h2>
+<p>Le deuxième piège est le prompt qui demande tout d'un coup : prépare les données, sélectionne les variables, ajuste, valide, et sors le rapport. Vous recevez quatre cents lignes, vous ne les lisez pas toutes, et personne ne pourra défendre le détail.</p>
+<p>La façon qui tient, c'est une demande par étape, validée avant la suivante, et enregistrée quand elle marche.</p>
+<ol class="steps">
+<li><strong>Lis le jeu de données, décris les colonnes, identifie la cible</strong><p>Vous validez la description. C'est là que se repèrent les malentendus de grain et d'unité.</p></li>
+<li><strong>Sors l'analyse univariée des variables candidates</strong><p>Vous validez les distributions, et vous voyez les valeurs aberrantes avant qu'elles entrent dans le modèle.</p></li>
+<li><strong>Découpe l'ancienneté du véhicule en bandes défendables</strong><p>Vous validez le découpage. C'est une décision d'actuaire, elle ne se délègue pas.</p></li>
+<li><strong>Ajuste un GLM Poisson avec l'exposition en décalage, teste la surdispersion</strong><p>Vous validez le modèle, et le test dit s'il faut passer à autre chose.</p></li>
+<li><strong>Sors les diagnostics</strong><p>Vous validez la qualité : résidus, déviance, courbe de lift.</p></li>
+</ol>
+<p>Chaque étape coûte peu côté machine et un temps de relecture côté actuaire. Le total dépasse celui du prompt unique, et c'est le prix d'un résultat défendable ligne à ligne. Si l'étape quatre part de travers, on revient à la trois sans rien perdre.</p>
+<figure class="figure-frame">
+<svg aria-label="Quatre phases enchaînées : explorer, proposer un plan, coder, enregistrer, avec une boucle de retour en arrière." role="img" viewbox="0 0 880 210">
+<defs>
+<marker id="pf" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"></path></marker>
+<marker id="pr" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#BA1C3A"></path></marker>
+</defs>
+<g font-family="Manrope, Segoe UI, sans-serif" text-anchor="middle">
+<g>
+<rect fill="#fdf3e2" height="86" rx="14" stroke="#f0dfbe" width="180" x="35" y="26"></rect>
+<rect fill="#eef2f7" height="86" rx="14" stroke="#dbe3ed" width="180" x="245" y="26"></rect>
+<rect fill="#13264A" height="86" rx="14" width="180" x="455" y="26"></rect>
+<rect fill="#e8f3f2" height="86" rx="14" stroke="#cfe6e4" width="180" x="665" y="26"></rect>
+</g>
+<g font-size="16" font-weight="800">
+<text fill="#9A6B1E" x="125" y="58">Il explore</text>
+<text fill="#3B547D" x="335" y="58">Il propose</text>
+<text fill="#ffffff" x="545" y="58">Il écrit</text>
+<text fill="#1F6F6B" x="755" y="58">On enregistre</text>
+</g>
+<g fill="#4a5567" font-size="12.5">
+<text x="125" y="80">il lit le code, les données,</text><text x="125" y="97">les références, sans toucher</text>
+<text x="335" y="80">un plan, et il attend</text><text x="335" y="97">que vous le validiez</text>
+<text fill="#c6d1e2" x="545" y="80">il modifie, exécute,</text><text fill="#c6d1e2" x="545" y="97">montre ce qui change</text>
+<text x="755" y="80">l'étape validée est figée,</text><text x="755" y="97">avec son intention</text>
+</g>
+</g>
+<g fill="none" marker-end="url(#pf)" stroke="#7D92AC" stroke-width="2">
+<path d="M215 69 H237"></path><path d="M425 69 H447"></path><path d="M635 69 H657"></path>
+</g>
+<path d="M755 112 V 150 H 125 V 122" fill="none" marker-end="url(#pr)" stroke="#BA1C3A" stroke-dasharray="6 5" stroke-width="2"></path>
+<text fill="#BA1C3A" font-family="Manrope, Segoe UI, sans-serif" font-size="12" font-weight="800" letter-spacing="0.5" text-anchor="middle" x="440" y="172">ON REVIENT EN ARRIÈRE, ET CE N'EST PAS UNE EXCEPTION</text>
+</svg>
+<figcaption>Quatre phases, et la règle qui va avec : à chaque étape validée, on enregistre tout de suite. Ce qui n'est pas enregistré reste sur le disque, mais sans point de retour.</figcaption>
+</figure>
+<h2 id="posture">La posture : diriger, pas se faire aider</h2>
+<p>Quatre gestes structurent le rôle, et ils ne sont pas interchangeables.</p>
+<div class="feat">
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18"/></svg></div><div><strong>Briefer</strong><p>Dire l'intention, le contexte métier, le livrable attendu. Un brief court épargne de longues boucles.</p></div></div>
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div><strong>Valider</strong><p>Pas lire : vérifier. Recalculer un chiffre, ouvrir le fichier produit, lancer un test indépendant.</p></div></div>
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0 5 5l-9 9-2-2 9-9a4 4 0 0 0-3-3z"/><path d="M3 21l6-6"/></svg></div><div><strong>Corriger</strong><p>Pas « corrige », il ne sait pas quoi. « L'échelle est linéaire alors que la mortalité se lit en logarithme, et les valeurs extrêmes masquent la zone utile. »</p></div></div>
+<div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><div><strong>Archiver</strong><p>Enregistrer souvent, tenir la mémoire projet à jour, écrire les choix faits. C'est ce qui permet la reprise dans six mois.</p></div></div>
+</div>
+<div class="grid grid-2">
+<div class="card">
+<h4>Ce qui se délègue</h4>
+<ul class="clean">
+<li>La syntaxe exacte, en Python comme en R</li>
+<li>Le code de plomberie : imports, gestion d'erreurs, mise en forme</li>
+<li>Les tests unitaires</li>
+<li>L'exploration rapide d'un jeu de données</li>
+<li>La documentation, et la traduction d'un code R en Python</li>
+</ul>
+</div>
+<div class="card accent">
+<h4>Ce qui ne se délègue pas</h4>
+<ul class="clean">
+<li>Le jugement professionnel</li>
+<li>La validation d'une formule</li>
+<li>Le choix de la méthode, Chain-Ladder contre Bornhuetter-Ferguson, et l'incertitude par Mack ou par bootstrap</li>
+<li>La responsabilité réglementaire</li>
+<li>La signature</li>
+</ul>
+</div>
+</div>
+<h2 id="memoire">La mémoire projet</h2>
+<p>Sans fichier de projet, l'assistant ne sait de votre projet que ce qu'il a noté lui-même, et vous ne savez pas ce qu'il a noté. Il redécouvre le reste à chaque démarrage : conventions de nommage, structure des dossiers, vocabulaire du cabinet. Vous redites tout, à chaque fois.</p>
+<p>Un fichier à la racine du projet règle cela : il est lu automatiquement au démarrage, et il porte ce que l'IA doit savoir une fois pour toutes.</p>
+<ul class="clean">
+<li>Les commandes qui lancent les calculs du projet.</li>
+<li>Les conventions de données, et c'est ici que le dictionnaire et l'ontologie entrent : les expositions sont en années, jamais en mois.</li>
+<li>Les formules à respecter pour ne pas les voir réinventées.</li>
+<li>Les fichiers de référence à consulter avant de coder, une spécification réglementaire par exemple.</li>
+<li>Les interdits : ne jamais modifier la donnée brute, ne jamais envoyer sur le serveur partagé sans demander. Les données nominatives, elles, ne sont pas dans le dossier de travail : un interdit écrit ne les protège pas.</li>
+</ul>
+<p>Le fichier reste court : la documentation de l'assistant de l'annexe Installation vise moins de 200 lignes par fichier. Au delà, le fichier devient trop long pour rester utile, et ce qui dépasse se range ailleurs, dans des mémoires attachées à un dossier ou dans des compétences chargées à la demande.</p>
+<div class="callout assurance">
+<span class="label">Partagé ou personnel</span>
+<p>Ce qui est une règle du cabinet vit dans le projet et se partage avec l'équipe : les conventions, le vocabulaire, les formules. Ce qui est une préférence vit sur votre machine, dans un fichier qui ne se partage pas : la langue dans laquelle vous travaillez, la forme sous laquelle vous aimez voir les résultats. Mélanger les deux pollue le dépôt et agace vos collègues.</p>
+</div>
+<h2 id="personnalisation">Quand une mémoire ne suffit plus</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Mécanisme</th><th>Quand</th><th>Ce que ça coûte</th><th>Exemple actuariel</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">La mémoire projet</td><td>Toujours chargée, pour les règles permanentes</td><td>De la place dans chaque session, d'où la limite de longueur</td><td>Conventions de nommage, formules clés</td></tr>
+<tr><td class="rowhead">Une compétence</td><td>Appelée par son nom, ou chargée seule quand le sujet apparaît</td><td>De la place, mais seulement quand elle sert</td><td>Ouvrir une section précise d'une spécification ; un assistant IFRS 17 avec ses formules et ses contrôles</td></tr>
+<tr><td class="rowhead">Un sous-agent</td><td>Pour déléguer dans un contexte à part</td><td>Peu, le contexte est séparé</td><td>Un spécialiste Solvabilité II qui charge la spécification</td></tr>
+</tbody>
+</table>
+</div>
+<p>Pour démarrer, la mémoire projet seule. Les autres mécanismes se découvrent le jour où le besoin se précise, pas avant.</p>
+<h2 id="critique">Demander la critique, à chaque décision qui compte</h2>
+<p>Le chapitre sur le moteur l'a posé : il ne contredit pas spontanément. Le pilotage rigoureux ajoute donc une étape, explicite, après chaque décision structurante.</p>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt de revue</span>
+<p>« Avant que je valide cette analyse, joue le rôle d'un actuaire senior en revue. Cherche les hypothèses implicites qui ne sont pas vérifiées. Liste les cas où mon approche tombe en défaut. Sois sévère. »</p>
+<p>Il en sort des points à examiner un par un. Vous corrigez, ou vous justifiez de garder : c'est votre choix professionnel, et il est maintenant éclairé.</p>
+</div>
+<p>Pour une décision lourde, la variante qui marche bien : ouvrir une deuxième session, lui soumettre la solution de la première sans dire d'où elle vient, et demander la critique. Les contradictions qui sortent sont souvent les bonnes questions. La synthèse, elle, reste votre travail.</p>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>On décrit l'intention métier ; prescrire l'implémentation donne un code fidèle et médiocre.</li>
+<li>Une demande par étape, validée avant la suivante, enregistrée quand elle marche.</li>
+<li>Valider veut dire vérifier, pas lire.</li>
+<li>Ce que l'IA doit savoir du cabinet s'écrit une fois, dans la mémoire projet, et se partage.</li>
+<li>La critique ne vient pas toute seule : elle se demande, à chaque décision qui compte.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../introduction/brancher/index.html"><small>&larr; Précédent</small>Le brancher sans lui ouvrir les données</a><a class="next" href="../../introduction/atelier-premier-echange/index.html"><small>Suivant &rarr;</small>Atelier : un premier échange cadré</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

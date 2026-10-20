@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I1. Migration d’un calcul Excel-VBA en module Python · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">I1. Migration d’un calcul Excel-VBA en module Python</h1>
+      <p class="lede">Cette fiche illustre la démarche E sur une migration Excel vers Python. Ce que vous apprenez n’est pas le calcul de PM, mais le pattern de migration : diagnostiquer, découpler moteur et interface, valider ligne à ligne contre le classeur, basculer progressivement. Il s’applique à tout classeur hérité.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : E, industrialiser un calcul
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Automatisation et industrialisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="26.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="26.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Dans beaucoup de cabinets et de compagnies, des <strong>calculs importants vivent dans Excel-VBA</strong> : provisions mathématiques, prime pure, projection ALM, calcul SCR. Ces classeurs ont souvent des années, des formules dispersées sur de nombreux onglets, une partie en VBA, une partie en formules de cellules. Leur concepteur est parti. Plus personne n’ose y toucher.</p>
+<p>L’objectif de la migration n’est pas de <strong>supprimer</strong> Excel. Excel reste l’interface naturelle des utilisateurs métier (gestionnaires, commerciaux, audit). L’objectif est de <strong>séparer le moteur de calcul</strong>, qui passe en Python testé, <strong>de l’interface</strong>, qui reste Excel via xlwings. Les utilisateurs métier gardent leur écran ; les actuaires gagnent un moteur testé, versionné et défendable.</p>
+<p>Ce cas illustre <strong>l’organisation des données</strong> (entrées extraites du tableur, isolées du moteur), <strong>l’optimisation du code</strong> (vectorisation NumPy au passage en Python), <strong>l’interface de présentation</strong> (xlwings : l’utilisateur Excel ne voit pas le Python derrière), <strong>la gouvernance</strong> (validation contre l’existant avant toute bascule) et <strong>le pilotage IA</strong> (5 prompts pour diagnostiquer, transcrire, valider, exposer).</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Le classeur réel contient des contrats
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tout ce que Claude lit ou affiche part chez le fournisseur du modèle, et les permissions de Claude Code évitent des accidents, elles ne protègent pas des données. Pour une migration, Claude a besoin des <strong>formules</strong>, pas des assurés : travaillez sur une copie du classeur dont les lignes de contrats sont remplacées par des données synthétiques ou pseudonymisées, et gardez le fichier de production hors du dossier de travail. Avec une offre grand public (Pro, Max), le fournisseur n’est pas votre sous-traitant au sens du RGPD ; il ne l’est qu’avec une offre entreprise (Team, Enterprise, API avec contrat).</p>
+</div>
+</div>
+</section>
+<section class="level2" data-number="26.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="26.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le classeur <code>calcul_PM_epargne_2025.xlsx</code> calcule la provision mathématique au 31 décembre 2025 d’un portefeuille de contrats d’épargne en euros. Par police, <strong>cinq colonnes saisies</strong> : l’identifiant, l’épargne acquise au 31 décembre 2024 (reprise à l’euro de l’inventaire précédent), le taux minimum garanti de la génération du contrat (0 %, 0,5 % ou 1 %), le versement de l’année et son mois. Un <strong>paramètre global</strong> : le taux de frais sur versement, 2 %. Puis <strong>trois colonnes de calcul</strong> (frais, versement net, PM avant arrondi) et la <strong>PM arrondie à l’euro</strong>.</p>
+<p>La formule du classeur est le noyau d’une PM d’épargne : l’épargne acquise est capitalisée au taux garanti sur l’année, le versement net de frais l’est au prorata des mois restants (versement le 1er du mois).</p>
+<p><span class="math display">\[
+\mathrm{PM}_{2025} = E_{2024}\,(1 + \mathrm{TMG}) + (V - \text{frais})\,(1 + \mathrm{TMG})^{(13 - m)/12}
+\]</span></p>
+<p>Participation aux bénéfices, frais sur encours, rachats et décès sont laissés de côté : l’exemple garde le noyau du calcul, pas un inventaire complet.</p>
+<p>Le bloc ci-dessous joue le rôle du classeur. Dans un vrai projet, vous n’auriez que le fichier <code>.xlsx</code> : ses colonnes, ses formules de cellules, sa fonction <code>ARRONDI</code>. Son code est replié, car c’est la boîte noire que la migration doit reproduire.</p>
+<div class="cell" data-execution_count="1" id="4c3e3071">
+<details class="code-fold">
+<summary>Reconstitution du classeur (à déplier)</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">500</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a><span class="kw">def</span> ARRONDI(x, n<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    <span class="co">"""La fonction ARRONDI du classeur, telle qu'Excel la calcule."""</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    facteur <span class="op">=</span> <span class="fl">10.0</span> <span class="op">**</span> n</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    <span class="cf">return</span> np.sign(x) <span class="op">*</span> np.floor(np.<span class="bu">abs</span>(x) <span class="op">*</span> facteur <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">/</span> facteur</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="co"># Onglet "parametres"</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>TAUX_FRAIS_VERSEMENT <span class="op">=</span> <span class="fl">0.02</span>          <span class="co"># cellule au format %, Excel stocke 0,02</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a><span class="co"># Onglet "inputs" : cinq colonnes saisies par police</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>a_verse <span class="op">=</span> rng.random(N) <span class="op">&lt;</span> <span class="fl">0.7</span></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>classeur <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>    <span class="st">"police_id"</span>: [<span class="ss">f"POL_</span><span class="sc">{</span>i<span class="sc">:04d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(N)],</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>    <span class="st">"epargne_acquise"</span>: rng.integers(<span class="dv">5_000</span>, <span class="dv">250_001</span>, size<span class="op">=</span>N).astype(<span class="bu">float</span>),</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    <span class="st">"tmg"</span>: rng.choice([<span class="fl">0.0</span>, <span class="fl">0.005</span>, <span class="fl">0.01</span>], size<span class="op">=</span>N, p<span class="op">=</span>[<span class="fl">0.4</span>, <span class="fl">0.35</span>, <span class="fl">0.25</span>]),</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>    <span class="st">"versement"</span>: np.where(a_verse, rng.integers(<span class="dv">1</span>, <span class="dv">201</span>, size<span class="op">=</span>N) <span class="op">*</span> <span class="fl">25.0</span>, <span class="fl">0.0</span>),</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>    <span class="st">"mois_versement"</span>: rng.integers(<span class="dv">1</span>, <span class="dv">13</span>, size<span class="op">=</span>N),</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>})</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="co"># Onglet "formules" : une colonne par formule de cellule</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>classeur[<span class="st">"frais"</span>] <span class="op">=</span> classeur[<span class="st">"versement"</span>] <span class="op">*</span> TAUX_FRAIS_VERSEMENT</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>classeur[<span class="st">"versement_net"</span>] <span class="op">=</span> classeur[<span class="st">"versement"</span>] <span class="op">-</span> classeur[<span class="st">"frais"</span>]</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>classeur[<span class="st">"pm_avant_arrondi"</span>] <span class="op">=</span> (</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>    classeur[<span class="st">"epargne_acquise"</span>] <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> classeur[<span class="st">"tmg"</span>])</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>    <span class="op">+</span> classeur[<span class="st">"versement_net"</span>] <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> classeur[<span class="st">"tmg"</span>]) <span class="op">**</span> ((<span class="dv">13</span> <span class="op">-</span> classeur[<span class="st">"mois_versement"</span>]) <span class="op">/</span> <span class="dv">12</span>)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>)</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a><span class="co"># Onglet "output"</span></span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>classeur[<span class="st">"pm_excel"</span>] <span class="op">=</span> ARRONDI(classeur[<span class="st">"pm_avant_arrondi"</span>], <span class="dv">0</span>)</span></code></pre></div></div>
+</details>
+</div>
+<p>Avant de migrer quoi que ce soit, on regarde ce que le classeur produit, et on vérifie qu’il est cohérent : une PM d’épargne est positive, et au moins égale à l’épargne acquise augmentée des versements nets quand le taux garanti est positif ou nul.</p>
+<div class="cell" data-execution_count="2" id="e22d7581">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Portefeuille : </span><span class="sc">{</span>N<span class="sc">}</span><span class="ss"> polices"</span>)</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Épargne acquise au 31/12/2024 : </span><span class="sc">{</span>classeur[<span class="st">'epargne_acquise'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;14,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Versements nets 2025          : </span><span class="sc">{</span>classeur[<span class="st">'versement_net'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;14,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PM au 31/12/2025 (classeur)   : </span><span class="sc">{</span>classeur[<span class="st">'pm_excel'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;14,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>socle <span class="op">=</span> classeur[<span class="st">"epargne_acquise"</span>] <span class="op">+</span> classeur[<span class="st">"versement_net"</span>]</span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PM minimale                    : </span><span class="sc">{</span>classeur[<span class="st">'pm_excel'</span>]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices où PM &lt; épargne + versement net - 1 EUR : "</span></span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>(classeur[<span class="st">'pm_excel'</span>] <span class="op">&lt;</span> socle <span class="op">-</span> <span class="dv">1</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Extrait des 5 premières polices :"</span>)</span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a><span class="bu">print</span>(classeur[[<span class="st">"police_id"</span>, <span class="st">"epargne_acquise"</span>, <span class="st">"tmg"</span>, <span class="st">"versement"</span>,</span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>                <span class="st">"mois_versement"</span>, <span class="st">"pm_excel"</span>]].head().to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Portefeuille : 500 polices
+Épargne acquise au 31/12/2024 :     64,752,813 EUR
+Versements nets 2025          :        879,624 EUR
+PM au 31/12/2025 (classeur)   :     65,913,791 EUR
+
+PM minimale                    : 5,753 EUR
+Polices où PM &lt; épargne + versement net - 1 EUR : 0
+
+Extrait des 5 premières polices :
+police_id  epargne_acquise   tmg  versement  mois_versement  pm_excel
+ POL_0000         203034.0 0.000        0.0              10  203034.0
+ POL_0001         185493.0 0.000      500.0               9  185983.0
+ POL_0002         141788.0 0.000        0.0              12  141788.0
+ POL_0003         222169.0 0.005      550.0              12  223819.0
+ POL_0004          36425.0 0.005      275.0               9   36877.0</code></pre>
+</div>
+</div>
+<p>La sortie donne l’ordre de grandeur : une PM totale de 65,9 millions d’euros, un peu au-dessus de l’épargne acquise plus les versements nets (65,6 millions), l’écart correspondant aux intérêts garantis. La PM minimale est positive, et aucune police n’est sous son socle. Le classeur est cohérent : c’est lui qui fait référence pour la migration.</p>
+</section>
+<section class="level2" data-number="26.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="26.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Diagnostiquer le fichier Excel.</strong> <em>“Voici une copie du classeur <code>calcul_PM_epargne_2025.xlsx</code> dont les lignes de contrats sont synthétiques, avec 5 onglets : inputs, parametres, formules, output, audit. Lis-le et fais-moi un inventaire : quels onglets, quelles formules clés, quelles fonctions Excel (arrondis, recherches, dates), quelles dépendances entre onglets, quels risques (formules dispersées, valeurs en dur, références circulaires).”</em></p></li>
+<li><p><strong>Identifier le moteur de calcul.</strong> <em>“À partir de l’inventaire, sépare le moteur actuariel pur (les formules de PM) de l’interface (chargement, mise en forme, export). Le moteur passe en Python ; l’interface reste Excel.”</em></p></li>
+<li><p><strong>Écrire le module Python du moteur.</strong> <em>“Écris un module Python <code>pm_epargne.py</code> qui implémente le moteur : <code>compute_pm_unitaire(epargne, tmg, versement, mois, taux_frais)</code> et <code>compute_pm_portefeuille(df, taux_frais)</code> vectorisée. Taux en décimal, comme Excel les stocke. Type hints, docstrings, pas d’I/O.”</em></p></li>
+<li><p><strong>Tester contre l’Excel.</strong> <em>“Compare ligne par ligne la PM du module et la PM de l’onglet output, sur toutes les polices. Tolérance fixée à l’avance : 0,01 EUR. Liste chaque police en écart avec ses entrées, et ne change pas la tolérance pour faire disparaître un écart : trouve sa cause.”</em></p></li>
+<li><p><strong>Exposer via xlwings.</strong> <em>“Écris la fonction xlwings qui lit l’onglet inputs et le paramètre de frais, appelle <code>compute_pm_portefeuille</code>, et écrit les résultats dans l’onglet output. L’utilisateur clique sur un bouton dans Excel et obtient le résultat.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="26.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="26.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="26.4.1" id="étape-1.-diagnostic-du-classeur">
+<h3 class="anchored" data-anchor-id="étape-1.-diagnostic-du-classeur" data-number="26.4.1"> Étape 1. Diagnostic du classeur</h3>
+<div class="cell" data-execution_count="3" id="525ed82f">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a>diagnostic <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    {<span class="st">"onglet"</span>: <span class="st">"inputs"</span>,     <span class="st">"role"</span>: <span class="st">"Saisie par police (5 colonnes)"</span>,</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>     <span class="st">"complexite"</span>: <span class="st">"Faible"</span>, <span class="st">"risque"</span>: <span class="st">"Saisie manuelle, formats"</span>},</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a>    {<span class="st">"onglet"</span>: <span class="st">"parametres"</span>, <span class="st">"role"</span>: <span class="st">"Taux de frais sur versement"</span>,</span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>     <span class="st">"complexite"</span>: <span class="st">"Faible"</span>, <span class="st">"risque"</span>: <span class="st">"Valeur en dur, format %"</span>},</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>    {<span class="st">"onglet"</span>: <span class="st">"formules"</span>,   <span class="st">"role"</span>: <span class="st">"Calculs cellule par cellule"</span>,</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>     <span class="st">"complexite"</span>: <span class="st">"Élevée"</span>, <span class="st">"risque"</span>: <span class="st">"Formules dispersées, références fragiles"</span>},</span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a>    {<span class="st">"onglet"</span>: <span class="st">"output"</span>,     <span class="st">"role"</span>: <span class="st">"PM par police, arrondie à l'euro"</span>,</span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a>     <span class="st">"complexite"</span>: <span class="st">"Faible"</span>, <span class="st">"risque"</span>: <span class="st">"Règle d'arrondi implicite"</span>},</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>    {<span class="st">"onglet"</span>: <span class="st">"audit"</span>,      <span class="st">"role"</span>: <span class="st">"Traçabilité"</span>,</span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a>     <span class="st">"complexite"</span>: <span class="st">"Variable"</span>, <span class="st">"risque"</span>: <span class="st">"Incomplet, souvent manuel"</span>},</span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>])</span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a><span class="bu">print</span>(diagnostic.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    onglet                             role complexite                                   risque
+    inputs   Saisie par police (5 colonnes)     Faible                 Saisie manuelle, formats
+parametres      Taux de frais sur versement     Faible                  Valeur en dur, format %
+  formules      Calculs cellule par cellule     Élevée Formules dispersées, références fragiles
+    output PM par police, arrondie à l'euro     Faible                Règle d'arrondi implicite
+     audit                      Traçabilité   Variable                Incomplet, souvent manuel</code></pre>
+</div>
+</div>
+<p>Ce diagnostic est le point de départ obligatoire. Sans inventaire, on migre dans le brouillard.</p>
+</section>
+<section class="level3" data-number="26.4.2" id="étape-2.-délimiter-le-moteur-et-linterface">
+<h3 class="anchored" data-anchor-id="étape-2.-délimiter-le-moteur-et-linterface" data-number="26.4.2"> Étape 2. Délimiter le moteur et l’interface</h3>
+<p><strong>Le moteur (à migrer en Python)</strong> :</p>
+<ul>
+<li>Les frais sur versement et le versement net.</li>
+<li>La capitalisation de l’épargne acquise au taux garanti.</li>
+<li>La capitalisation du versement net au prorata des mois restants.</li>
+<li>L’arrondi de la PM à l’euro.</li>
+</ul>
+<p>Aucune de ces opérations ne dépend de l’interface Excel. Elles prennent des entrées et rendent une sortie.</p>
+<p><strong>L’interface (reste en Excel)</strong> :</p>
+<ul>
+<li>La saisie dans l’onglet <code>inputs</code>.</li>
+<li>L’affichage formaté dans <code>output</code>.</li>
+<li>Les boutons de commande.</li>
+<li>La charte du cabinet.</li>
+</ul>
+<p>L’utilisateur final ne sait pas si le calcul se fait par une formule Excel ou par du Python. Il voit son interface habituelle.</p>
+</section>
+<section class="level3" data-number="26.4.3" id="étape-3.-module-python-du-moteur">
+<h3 class="anchored" data-anchor-id="étape-3.-module-python-du-moteur" data-number="26.4.3"> Étape 3. Module Python du moteur</h3>
+<p>Première transcription, écrite à partir de l’inventaire : les formules sont celles du classeur, l’arrondi à l’euro est confié à NumPy.</p>
+<div class="cell" data-execution_count="4" id="111ac647">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="kw">def</span> compute_pm_unitaire(epargne: <span class="bu">float</span>, tmg: <span class="bu">float</span>, versement: <span class="bu">float</span>,</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>                        mois: <span class="bu">int</span>, taux_frais: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.02</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>    <span class="co">"""PM au 31/12 d'une police d'épargne en euros.</span></span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a><span class="co">        epargne: épargne acquise au 31/12 précédent (EUR).</span></span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a><span class="co">        tmg: taux minimum garanti de la génération, en décimal (0.005 pour 0,5 %).</span></span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a><span class="co">        versement: versement de l'année (EUR, 0 si aucun).</span></span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a><span class="co">        mois: mois du versement (1 à 12), versement le 1er du mois.</span></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a><span class="co">        taux_frais: taux de frais sur versement, en décimal.</span></span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a><span class="co">        PM en EUR, arrondie à l'euro.</span></span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a>    versement_net <span class="op">=</span> versement <span class="op">-</span> versement <span class="op">*</span> taux_frais</span>
+<span id="cb6-16"><a aria-hidden="true" href="#cb6-16" tabindex="-1"></a>    pm <span class="op">=</span> epargne <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> tmg) <span class="op">+</span> versement_net <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> tmg) <span class="op">**</span> ((<span class="dv">13</span> <span class="op">-</span> mois) <span class="op">/</span> <span class="dv">12</span>)</span>
+<span id="cb6-17"><a aria-hidden="true" href="#cb6-17" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(np.<span class="bu">round</span>(pm))</span>
+<span id="cb6-18"><a aria-hidden="true" href="#cb6-18" tabindex="-1"></a></span>
+<span id="cb6-19"><a aria-hidden="true" href="#cb6-19" tabindex="-1"></a></span>
+<span id="cb6-20"><a aria-hidden="true" href="#cb6-20" tabindex="-1"></a><span class="kw">def</span> compute_pm_portefeuille(df: pd.DataFrame, taux_frais: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.02</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb6-21"><a aria-hidden="true" href="#cb6-21" tabindex="-1"></a>    <span class="co">"""Version vectorisée NumPy pour un portefeuille complet."""</span></span>
+<span id="cb6-22"><a aria-hidden="true" href="#cb6-22" tabindex="-1"></a>    tmg <span class="op">=</span> df[<span class="st">"tmg"</span>].to_numpy()</span>
+<span id="cb6-23"><a aria-hidden="true" href="#cb6-23" tabindex="-1"></a>    versement <span class="op">=</span> df[<span class="st">"versement"</span>].to_numpy()</span>
+<span id="cb6-24"><a aria-hidden="true" href="#cb6-24" tabindex="-1"></a>    versement_net <span class="op">=</span> versement <span class="op">-</span> versement <span class="op">*</span> taux_frais</span>
+<span id="cb6-25"><a aria-hidden="true" href="#cb6-25" tabindex="-1"></a>    pm <span class="op">=</span> (df[<span class="st">"epargne_acquise"</span>].to_numpy() <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> tmg)</span>
+<span id="cb6-26"><a aria-hidden="true" href="#cb6-26" tabindex="-1"></a>          <span class="op">+</span> versement_net <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> tmg) <span class="op">**</span> ((<span class="dv">13</span> <span class="op">-</span> df[<span class="st">"mois_versement"</span>].to_numpy()) <span class="op">/</span> <span class="dv">12</span>))</span>
+<span id="cb6-27"><a aria-hidden="true" href="#cb6-27" tabindex="-1"></a>    out <span class="op">=</span> df[[<span class="st">"police_id"</span>]].copy()</span>
+<span id="cb6-28"><a aria-hidden="true" href="#cb6-28" tabindex="-1"></a>    out[<span class="st">"pm_python"</span>] <span class="op">=</span> np.<span class="bu">round</span>(pm)</span>
+<span id="cb6-29"><a aria-hidden="true" href="#cb6-29" tabindex="-1"></a>    <span class="cf">return</span> out</span>
+<span id="cb6-30"><a aria-hidden="true" href="#cb6-30" tabindex="-1"></a></span>
+<span id="cb6-31"><a aria-hidden="true" href="#cb6-31" tabindex="-1"></a></span>
+<span id="cb6-32"><a aria-hidden="true" href="#cb6-32" tabindex="-1"></a>result_python <span class="op">=</span> compute_pm_portefeuille(classeur, TAUX_FRAIS_VERSEMENT)</span>
+<span id="cb6-33"><a aria-hidden="true" href="#cb6-33" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PM totale Python    : </span><span class="sc">{</span>result_python[<span class="st">'pm_python'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb6-34"><a aria-hidden="true" href="#cb6-34" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PM totale classeur  : </span><span class="sc">{</span>classeur[<span class="st">'pm_excel'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>PM totale Python    : 65,913,756 EUR
+PM totale classeur  : 65,913,791 EUR</code></pre>
+</div>
+</div>
+<p>Les totaux sont proches, mais un total ne valide rien : des écarts de signes opposés se compensent. La validation se fait police par police.</p>
+</section>
+<section class="level3" data-number="26.4.4" id="étape-4.-validation-contre-le-classeur">
+<h3 class="anchored" data-anchor-id="étape-4.-validation-contre-le-classeur" data-number="26.4.4"> Étape 4. Validation contre le classeur</h3>
+<p>La comparaison porte sur toutes les polices, avec une tolérance fixée <strong>avant</strong> de regarder le résultat : 0,01 EUR. Exiger une égalité « bit à bit » avec Excel n’a pas de sens, car deux logiciels qui font les mêmes opérations en virgule flottante peuvent différer au dernier chiffre. Mais une tolérance sert à absorber ce bruit, pas à cacher un écart qu’on ne sait pas expliquer.</p>
+<div class="cell" data-execution_count="5" id="4736bad8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>TOLERANCE_EUR <span class="op">=</span> <span class="fl">0.01</span></span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>comparaison <span class="op">=</span> classeur.merge(result_python, on<span class="op">=</span><span class="st">"police_id"</span>)</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>comparaison[<span class="st">"ecart"</span>] <span class="op">=</span> comparaison[<span class="st">"pm_python"</span>] <span class="op">-</span> comparaison[<span class="st">"pm_excel"</span>]</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>en_ecart <span class="op">=</span> comparaison[comparaison[<span class="st">"ecart"</span>].<span class="bu">abs</span>() <span class="op">&gt;</span> TOLERANCE_EUR]</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices comparées             : </span><span class="sc">{</span><span class="bu">len</span>(comparaison)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices au-delà de la tolérance : </span><span class="sc">{</span><span class="bu">len</span>(en_ecart)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écarts observés (EUR) et effectifs :"</span>)</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a><span class="bu">print</span>(en_ecart[<span class="st">"ecart"</span>].value_counts().to_string())</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Polices en écart (10 premières) :"</span>)</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a><span class="bu">print</span>(en_ecart[[<span class="st">"police_id"</span>, <span class="st">"epargne_acquise"</span>, <span class="st">"tmg"</span>, <span class="st">"versement"</span>, <span class="st">"mois_versement"</span>,</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>                <span class="st">"pm_excel"</span>, <span class="st">"pm_python"</span>]].head(<span class="dv">10</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Polices comparées             : 500
+Polices au-delà de la tolérance : 35
+Écarts observés (EUR) et effectifs :
+ecart
+-1.0    35
+
+Polices en écart (10 premières) :
+police_id  epargne_acquise  tmg  versement  mois_versement  pm_excel  pm_python
+ POL_0043          96204.0  0.0     1925.0               7   98091.0    98090.0
+ POL_0047         152206.0  0.0     2925.0              10  155073.0   155072.0
+ POL_0077          45647.0  0.0     2275.0              10   47877.0    47876.0
+ POL_0090         128211.0  0.0      375.0               5  128579.0   128578.0
+ POL_0101         119985.0  0.0     1075.0               2  121039.0   121038.0
+ POL_0123          64698.0  0.0     4625.0               8   69231.0    69230.0
+ POL_0174           7093.0  0.0     4675.0              12   11675.0    11674.0
+ POL_0175          88019.0  0.0     2975.0               7   90935.0    90934.0
+ POL_0185          80346.0  0.0     2425.0              12   82723.0    82722.0
+ POL_0189           6792.0  0.0     4925.0              11   11619.0    11618.0</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="6" id="cell-fig-validation-pm">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>ok <span class="op">=</span> comparaison[<span class="st">"ecart"</span>].<span class="bu">abs</span>() <span class="op">&lt;=</span> TOLERANCE_EUR</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>ax.scatter(comparaison.loc[ok, <span class="st">"pm_excel"</span>], comparaison.loc[ok, <span class="st">"ecart"</span>],</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>           color<span class="op">=</span><span class="st">"#1d4ed8"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, s<span class="op">=</span><span class="dv">16</span>, label<span class="op">=</span><span class="st">"dans la tolérance"</span>)</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>ax.scatter(comparaison.loc[<span class="op">~</span>ok, <span class="st">"pm_excel"</span>], comparaison.loc[<span class="op">~</span>ok, <span class="st">"ecart"</span>],</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>           color<span class="op">=</span><span class="st">"#b45309"</span>, s<span class="op">=</span><span class="dv">28</span>, label<span class="op">=</span><span class="st">"au-delà de la tolérance"</span>)</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"#94a3b8"</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>ax.set_xlabel(<span class="st">"PM calculée par le classeur (EUR)"</span>)</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>ax.set_ylabel(<span class="st">"PM Python moins PM Excel (EUR)"</span>)</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>ax.set_title(<span class="st">"Validation du moteur Python contre le classeur"</span>)</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"center right"</span>)</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-validation-pm">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-validation-pm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="423" src="img/fig-validation-pm-output-1_09ef9e54.png" width="758"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-validation-pm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 26.1: Écart PM Python moins PM Excel, police par police. Un nuage Excel contre Python sur la diagonale aurait caché ces écarts : 1 EUR sur des PM de quelques milliers à 250 000 EUR environ.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La validation fait son travail : elle trouve des écarts. 35 polices sur 500 sont hors tolérance, toutes d’exactement 1 EUR, toujours dans le même sens (Python en dessous) ; les 465 autres tombent à zéro. Un écart aussi régulier a une cause précise. Tant qu’elle n’est pas trouvée et corrigée, le module ne remplace pas le classeur. Relever la tolérance à 1 EUR « parce que c’est de l’arrondi » serait la mauvaise réponse.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : trouvez la cause de l’écart
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Regardez les polices en écart dans la sortie ci-dessus : leur taux garanti, leur versement. Pourquoi ces polices-là, et pourquoi exactement 1 EUR ? Que faut-il corriger dans le module, et comment vérifier que la correction suffit ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Les polices en écart ont toutes un taux garanti de 0 % et un versement multiple impair de 25 EUR. Avec des frais de 2 %, leur versement net tombe sur un demi-euro (375 − 7,5 = 367,5 pour la police POL_0090), et avec un taux nul la capitalisation vaut exactement 1 : la PM avant arrondi se termine par ,5 exactement (128 211 + 367,5 = 128 578,5).</p>
+<p>C’est là que les deux arrondis divergent. La fonction <code>ARRONDI</code> d’Excel arrondit les demis au plus loin de zéro : 2,5 donne 3 ; les exemples de sa <a href="https://support.microsoft.com/fr-fr/office/arrondi-arrondi-fonction-c018c5d8-40fb-4053-90b1-b3e7f61a213c">documentation</a> le montrent (2,15 arrondi à un chiffre donne 2,2, et −1,475 à deux chiffres donne −1,48). <code>np.round</code>, comme le <code>round</code> de Python, arrondit les demis au pair le plus proche, l’« arrondi bancaire » : 2,5 donne 2 (la <a href="https://numpy.org/doc/stable/reference/generated/numpy.round.html">documentation de <code>numpy.round</code></a> : « 1.5 and 2.5 round to 2.0 »). Quand l’entier sous le demi est pair, NumPy arrondit vers le bas et Excel vers le haut : 1 EUR d’écart. Quand il est impair, les deux montent et s’accordent. Le bloc ci-dessous le vérifie : seule une partie des polices à demi-euro sort en écart.</p>
+<p>La correction consiste à reproduire la règle du classeur dans le module, puis à relancer la même validation, avec la même tolérance :</p>
+<div class="cell" data-execution_count="7" id="43469f10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="kw">def</span> arrondi_excel(x, n<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>    <span class="co">"""Arrondi des demis au plus loin de zéro, comme ARRONDI d'Excel."""</span></span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>    facteur <span class="op">=</span> <span class="fl">10.0</span> <span class="op">**</span> n</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>    <span class="cf">return</span> np.sign(x) <span class="op">*</span> np.floor(np.<span class="bu">abs</span>(x) <span class="op">*</span> facteur <span class="op">+</span> <span class="fl">0.5</span>) <span class="op">/</span> facteur</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a></span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a><span class="kw">def</span> compute_pm_portefeuille(df: pd.DataFrame, taux_frais: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.02</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>    <span class="co">"""Version vectorisée, arrondi aligné sur le classeur."""</span></span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>    tmg <span class="op">=</span> df[<span class="st">"tmg"</span>].to_numpy()</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>    versement <span class="op">=</span> df[<span class="st">"versement"</span>].to_numpy()</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>    versement_net <span class="op">=</span> versement <span class="op">-</span> versement <span class="op">*</span> taux_frais</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>    pm <span class="op">=</span> (df[<span class="st">"epargne_acquise"</span>].to_numpy() <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> tmg)</span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>          <span class="op">+</span> versement_net <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> tmg) <span class="op">**</span> ((<span class="dv">13</span> <span class="op">-</span> df[<span class="st">"mois_versement"</span>].to_numpy()) <span class="op">/</span> <span class="dv">12</span>))</span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>    out <span class="op">=</span> df[[<span class="st">"police_id"</span>]].copy()</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a>    out[<span class="st">"pm_avant_arrondi"</span>] <span class="op">=</span> pm</span>
+<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a>    out[<span class="st">"pm_python"</span>] <span class="op">=</span> arrondi_excel(pm, <span class="dv">0</span>)</span>
+<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a>    <span class="cf">return</span> out</span>
+<span id="cb11-18"><a aria-hidden="true" href="#cb11-18" tabindex="-1"></a></span>
+<span id="cb11-19"><a aria-hidden="true" href="#cb11-19" tabindex="-1"></a></span>
+<span id="cb11-20"><a aria-hidden="true" href="#cb11-20" tabindex="-1"></a>demi <span class="op">=</span> classeur[<span class="st">"pm_avant_arrondi"</span>] <span class="op">%</span> <span class="dv">1</span> <span class="op">==</span> <span class="fl">0.5</span></span>
+<span id="cb11-21"><a aria-hidden="true" href="#cb11-21" tabindex="-1"></a>plancher_pair <span class="op">=</span> np.floor(classeur[<span class="st">"pm_avant_arrondi"</span>]) <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb11-22"><a aria-hidden="true" href="#cb11-22" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices dont la PM avant arrondi finit par ,5  : </span><span class="sc">{</span>demi<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-23"><a aria-hidden="true" href="#cb11-23" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  dont entier inférieur pair (écart attendu)    : </span><span class="sc">{</span>(demi <span class="op">&amp;</span> plancher_pair)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-24"><a aria-hidden="true" href="#cb11-24" tabindex="-1"></a></span>
+<span id="cb11-25"><a aria-hidden="true" href="#cb11-25" tabindex="-1"></a>result_python <span class="op">=</span> compute_pm_portefeuille(classeur, TAUX_FRAIS_VERSEMENT)</span>
+<span id="cb11-26"><a aria-hidden="true" href="#cb11-26" tabindex="-1"></a>comparaison <span class="op">=</span> classeur.merge(result_python, on<span class="op">=</span><span class="st">"police_id"</span>, suffixes<span class="op">=</span>(<span class="st">"_excel"</span>, <span class="st">"_python"</span>))</span>
+<span id="cb11-27"><a aria-hidden="true" href="#cb11-27" tabindex="-1"></a>ecart_final <span class="op">=</span> (comparaison[<span class="st">"pm_python"</span>] <span class="op">-</span> comparaison[<span class="st">"pm_excel"</span>]).<span class="bu">abs</span>()</span>
+<span id="cb11-28"><a aria-hidden="true" href="#cb11-28" tabindex="-1"></a>ecart_brut <span class="op">=</span> (comparaison[<span class="st">"pm_avant_arrondi_python"</span>] <span class="op">-</span> comparaison[<span class="st">"pm_avant_arrondi_excel"</span>]).<span class="bu">abs</span>()</span>
+<span id="cb11-29"><a aria-hidden="true" href="#cb11-29" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices au-delà de 0,01 EUR sur la PM arrondie    : </span><span class="sc">{</span>(ecart_final <span class="op">&gt;</span> TOLERANCE_EUR)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-30"><a aria-hidden="true" href="#cb11-30" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart maximal sur la PM avant arrondi             : </span><span class="sc">{</span>ecart_brut<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.2e}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Polices dont la PM avant arrondi finit par ,5  : 68
+  dont entier inférieur pair (écart attendu)    : 35
+Polices au-delà de 0,01 EUR sur la PM arrondie    : 0
+Écart maximal sur la PM avant arrondi             : 0.00e+00 EUR</code></pre>
+</div>
+</div>
+<p>Sur les 68 polices à demi-euro, 35 ont un entier inférieur pair : ce sont exactement les 35 écarts. Après correction, plus aucune police n’est hors tolérance, et la PM avant arrondi coïncide (exactement ici, puisque le classeur est reconstitué en Python ; face au vrai Excel, au dernier chiffre près) : la seule divergence était la règle d’arrondi. Il faut aussi <code>compute_pm_unitaire</code> corrigée de la même façon, et un test pytest qui fige le cas (fiche I3) : une police à 0 % avec un versement de 1 225 EUR doit sortir à l’euro supérieur.</p>
+<p>Quelle règle est « la bonne » ? Aucune n’est fausse en soi. Mais pendant la migration, la référence est le classeur qui a produit les clôtures passées : on reproduit sa règle, et si le cabinet veut en changer, c’est une décision documentée, prise après la bascule, pas un effet de bord de la réécriture.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="level3" data-number="26.4.5" id="étape-5.-interface-xlwings">
+<h3 class="anchored" data-anchor-id="étape-5.-interface-xlwings" data-number="26.4.5"> Étape 5. Interface xlwings</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Bloc non exécuté au rendu
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ce bloc n’est pas exécuté dans ce support : xlwings ne figure pas dans <code>requirements.txt</code>, et il pilote un Excel installé sur le poste (Windows ou macOS). Pour l’essayer : <code>pip install xlwings</code>, puis <code>xlwings addin install</code>, et un classeur prenant en charge les macros (<code>.xlsm</code>) dont le bouton appelle la fonction.</p>
+</div>
+</div>
+<div class="cell" data-execution_count="8" id="23fcda51">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a><span class="co"># Fichier tools/xlwings_interface.py : le bouton Excel appelle cette fonction.</span></span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a><span class="im">import</span> xlwings <span class="im">as</span> xw</span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a><span class="im">from</span> pm_epargne <span class="im">import</span> compute_pm_portefeuille</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>COLONNES <span class="op">=</span> [<span class="st">"police_id"</span>, <span class="st">"epargne_acquise"</span>, <span class="st">"tmg"</span>, <span class="st">"versement"</span>, <span class="st">"mois_versement"</span>]</span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a></span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a><span class="kw">def</span> calcul_pm_depuis_excel():</span>
+<span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>    <span class="co">"""Lit les entrées dans Excel, calcule en Python, écrit les résultats."""</span></span>
+<span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a>    wb <span class="op">=</span> xw.Book.caller()</span>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a>    <span class="co"># Onglet inputs : en-têtes en ligne 1, une police par ligne à partir de A2.</span></span>
+<span id="cb13-13"><a aria-hidden="true" href="#cb13-13" tabindex="-1"></a>    df <span class="op">=</span> (wb.sheets[<span class="st">"inputs"</span>].<span class="bu">range</span>(<span class="st">"A1"</span>).expand(<span class="st">"table"</span>)</span>
+<span id="cb13-14"><a aria-hidden="true" href="#cb13-14" tabindex="-1"></a>          .options(pd.DataFrame, header<span class="op">=</span><span class="dv">1</span>, index<span class="op">=</span><span class="va">False</span>).value)</span>
+<span id="cb13-15"><a aria-hidden="true" href="#cb13-15" tabindex="-1"></a>    df <span class="op">=</span> df[COLONNES]</span>
+<span id="cb13-16"><a aria-hidden="true" href="#cb13-16" tabindex="-1"></a>    <span class="co"># Les cellules au format % sont lues en décimal : 0,5 % arrive comme 0.005.</span></span>
+<span id="cb13-17"><a aria-hidden="true" href="#cb13-17" tabindex="-1"></a>    <span class="co"># La colonne tmg de chaque police est donc utilisée telle quelle.</span></span>
+<span id="cb13-18"><a aria-hidden="true" href="#cb13-18" tabindex="-1"></a>    taux_frais <span class="op">=</span> wb.sheets[<span class="st">"parametres"</span>].<span class="bu">range</span>(<span class="st">"B2"</span>).value   <span class="co"># 2 % lu comme 0.02</span></span>
+<span id="cb13-19"><a aria-hidden="true" href="#cb13-19" tabindex="-1"></a>    result <span class="op">=</span> compute_pm_portefeuille(df, taux_frais<span class="op">=</span>taux_frais)</span>
+<span id="cb13-20"><a aria-hidden="true" href="#cb13-20" tabindex="-1"></a>    out <span class="op">=</span> wb.sheets[<span class="st">"output"</span>]</span>
+<span id="cb13-21"><a aria-hidden="true" href="#cb13-21" tabindex="-1"></a>    out.<span class="bu">range</span>(<span class="st">"A1"</span>).value <span class="op">=</span> [<span class="st">"police_id"</span>, <span class="st">"pm"</span>]</span>
+<span id="cb13-22"><a aria-hidden="true" href="#cb13-22" tabindex="-1"></a>    out.<span class="bu">range</span>(<span class="st">"A2"</span>).value <span class="op">=</span> result[[<span class="st">"police_id"</span>, <span class="st">"pm_python"</span>]].values</span>
+<span id="cb13-23"><a aria-hidden="true" href="#cb13-23" tabindex="-1"></a>    wb.app.status_bar <span class="op">=</span> (<span class="ss">f"Calcul Python terminé : </span><span class="sc">{</span><span class="bu">len</span>(result)<span class="sc">}</span><span class="ss"> polices, "</span></span>
+<span id="cb13-24"><a aria-hidden="true" href="#cb13-24" tabindex="-1"></a>                         <span class="ss">f"total = </span><span class="sc">{</span>result[<span class="st">'pm_python'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+</div>
+<p>L’utilisateur Excel garde son interface habituelle. En coulisses, le calcul tourne dans le module Python validé.</p>
+</section>
+</section>
+<section class="level2" data-number="26.5" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="26.5" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Migrer sans inventaire complet.</strong> Si vous manquez une formule (une condition <code>SI</code> cachée dans une cellule isolée, une fonction <code>ARRONDI</code> en sortie), le Python ne reproduira pas Excel. <strong>L’étape de diagnostic</strong> ne se saute pas.</li>
+<li><strong>Valider par les totaux ou par un nuage sur la diagonale.</strong> Des écarts de signes opposés se compensent dans un total, et un écart de 1 EUR sur une PM de 100 000 EUR est invisible sur un nuage Excel contre Python. Comparez police par police, tracez la <strong>différence</strong>, et listez chaque écart.</li>
+<li><strong>Une validation qui ne peut pas échouer.</strong> Comparer le module à une colonne « Excel » que l’on a recalculée soi-même avec le même code ne prouve rien. La référence est la sortie du classeur, lue dans le fichier.</li>
+<li><strong>Exiger le « bit à bit », ou à l’inverse élargir la tolérance.</strong> Fixez une tolérance avant de regarder (le centime pour une PM à l’euro) et expliquez chaque écart au-delà. Relever la tolérance jusqu’à ce que le test passe cache justement ce que la validation devait trouver.</li>
+<li><strong>Oublier les conventions d’Excel.</strong> Arrondi des demis, taux au format % stockés en décimal, dates en numéros de série, fonctions financières aux conventions propres : chacune se vérifie dans la documentation, pas de mémoire.</li>
+<li><strong>Migrer en une fois.</strong> Sur un classeur de plusieurs milliers de lignes de VBA, une bascule d’un bloc est risquée. <strong>Migrer par module</strong> : d’abord la PM épargne, la faire tourner en parallèle du classeur sur plusieurs clôtures, puis basculer ; ensuite la PM prévoyance.</li>
+<li><strong>Oublier xlwings dans le déploiement.</strong> xlwings doit être installé sur le poste de chaque utilisateur, avec son complément Excel. <strong>Fournir</strong> un <code>requirements.txt</code> et une procédure d’installation, sinon le déploiement échoue.</li>
+<li><strong>Pas de version sur le calcul Python.</strong> Si vous corrigez le module en mars 2026, les calculs de janvier 2026 doivent rester reproductibles. <strong>Taguer chaque version livrée</strong> dans Git (<code>v2026-q1</code>), en sachant qu’un tag ne fige ni les données exclues par le <code>.gitignore</code> ni l’environnement : conservez aussi les entrées de la clôture et les versions des paquets.</li>
+</ul>
+</section>
+<section class="level2" data-number="26.6" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="26.6" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>I2 Vectorisation Monte Carlo non-vie</strong> : autre cas d’optimisation, sur un Monte Carlo.</li>
+<li><strong>I3 Tests pytest sur module de provisionnement</strong> : la stratégie de tests d’un module, montrée sur un Chain-Ladder ; le cas du demi-euro trouvé ici y ferait un bon cas limite.</li>
+<li><strong>V3 PM épargne sur table prospective</strong> : un calcul de PM plus riche, qui pourrait succéder à celui-ci une fois la migration stable.</li>
+<li><strong>L’atelier de la demi-journée « Automatisation et industrialisation »</strong> : du carnet au module, le découplage moteur / interface pratiqué en direct.</li>
+</ul>
+</section>
+<section class="level2" data-number="26.7" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="26.7" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Migration progressive</strong> : faire tourner Excel et Python en parallèle, comparer les résultats police par police à chaque clôture. Quand aucune divergence inexpliquée n’apparaît sur plusieurs clôtures consécutives (le nombre se fixe dans la politique de validation), Python devient le calcul officiel et Excel l’interface.</li>
+<li><strong>Tests pytest dès la migration</strong> : voir I3. Écrire les tests avant de basculer, pour figer le comportement attendu, y compris les cas limites comme le demi-euro.</li>
+<li><strong>Packaging et déploiement</strong> : packager le module (<code>pip install</code> d’un paquet interne) avec une procédure d’installation côté utilisateur. xlwings peut pointer vers le module installé.</li>
+<li><strong>Streamlit ou Lovable comme interface alternative</strong> : pour d’autres utilisateurs (équipes commerciales, gestionnaires), une interface web peut remplacer Excel. Le moteur Python est commun, l’interface change. Voir C1.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/C3/index.html"><small>&larr; Précédent</small>C3. Présentation board en cinq slides</a><a class="next" href="../../bibliotheque/I2/index.html"><small>Suivant &rarr;</small>I2. Vectorisation d’un Monte Carlo non-vie naïf</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

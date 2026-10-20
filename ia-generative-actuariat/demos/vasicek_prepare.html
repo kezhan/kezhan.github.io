@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volatilité de Vasicek, résultats préparés</title>
+<style>
+:root{--ink:#14263B;--soft:#33455C;--muted:#67768E;--line:#D9E1EE;--bg2:#EAEEF6;--primary:#2957C8;--ko:#A32C30}
+*{box-sizing:border-box}
+body{margin:0 auto;max-width:960px;padding:26px 24px 40px;font:15px/1.55 system-ui,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:#fff}
+h1{font-size:24px;margin:0 0 6px}
+.faits{color:var(--soft);font-size:13.5px;margin:0 0 16px}
+.choix{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 14px;background:var(--bg2);border-radius:10px}
+select{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+th{background:var(--bg2);font-weight:600;color:var(--soft)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+figure{margin:0;border:1px solid var(--line);border-radius:10px;padding:12px}
+figcaption{font-size:13px;color:var(--soft);margin-top:6px}
+svg{display:block;width:100%;height:auto}
+.note{font-size:13px;color:var(--muted);margin-top:16px}
+</style></head><body>
+<h1>Fonds propres à 10 ans selon la volatilité du taux court</h1>
+<p class="faits">ALM d'un portefeuille d'épargne en euros, données fictives · calcul R2, taux court de Vasicek (M2 v1, Challenger 2025, volatilité livrée 0,8 %) · 1 000 trajectoires · graine 2025 · calculé le 20/10/2026</p>
+<div class="choix"><label for="sigma"><b>Volatilité du taux court</b></label>
+<select id="sigma"><option value="0">0,5 %</option><option value="1" selected>1,0 %</option><option value="2">1,5 %</option><option value="3">2,0 %</option><option value="4">3,0 %</option></select>
+<span>Seules ces valeurs ont été préparées.</span></div>
+<table><thead><tr><th>Fonds propres actualisés à l'horizon</th><th class="num">M€</th></tr></thead><tbody id="chiffres"></tbody></table>
+<figure><svg id="histo" viewBox="0 0 880 260" role="img" aria-label="Histogramme des fonds propres actualisés"></svg>
+<figcaption>La distribution des fonds propres actualisés à l'horizon, sur les 1 000 trajectoires ; mêmes classes pour toutes les volatilités. La barre rouge : le quantile à 0,5 %.</figcaption></figure>
+<p class="note">Aucun Monte-Carlo ne tourne dans cette page : elle montre des résultats préparés à l'avance, une fois, par le moteur de l'ALM de Vision (le même modèle, la même graine). Une autre volatilité demande un nouveau calcul, avec un ordinateur qui fait tourner le Monte-Carlo. Fait par ia_gen_actuaires/demos/_outils/vasicek_prepare.py.</p>
+<script>
+const D = {"sorties":[{"sigma":0.5,"n":1000,"moyenne":221.0251554204032,"ecart":133.05899180204528,"q005":53.41556012741263,"q05":77.02788835268582,"mediane":188.88109975440815,"q95":487.88503416408395,"var995":108.31479775612989,"ruine":0,"depart":161.73035788354252,"histo":[0,0,0,0,0,0,0,0,0,0,0,175,356,229,115,53,32,15,13,8,2,1,0,1]},{"sigma":1,"n":1000,"moyenne":206.4751155340836,"ecart":132.64204741502002,"q005":36.14477733223379,"q05":63.73255203324883,"mediane":174.51405999454138,"q95":470.31370081749566,"var995":119.2283383641007,"ruine":0.001,"depart":155.37311569633448,"histo":[0,0,0,0,0,0,0,0,0,0,3,231,365,193,95,50,24,16,12,7,2,1,0,1]},{"sigma":1.5,"n":1000,"moyenne":187.65333503865702,"ecart":133.46588679046656,"q005":-23.820977234905797,"q05":42.94551402247621,"mediane":156.07493331993408,"q95":456.4003226556135,"var995":167.98215662217257,"ruine":0.013,"depart":144.16117938726677,"histo":[0,0,0,0,0,0,0,0,0,2,35,277,334,170,85,39,22,16,13,5,0,1,1,0]},{"sigma":2,"n":1000,"moyenne":164.38131623321942,"ecart":137.02541404615417,"q005":-136.6908400861832,"q05":7.433396040582329,"mediane":135.7085097681663,"q95":439.04851445745317,"var995":263.7627568108816,"ruine":0.04,"depart":127.07191672469844,"histo":[0,0,0,0,0,0,0,2,4,10,83,322,269,152,73,34,23,12,11,3,1,1,0,0]},{"sigma":3,"n":1000,"moyenne":100.28918349232676,"ecart":170.18022870023393,"q005":-591.8905112772842,"q05":-145.92952006298586,"mediane":88.34666847175302,"q95":388.5498747413334,"var995":659.647618868038,"ruine":0.181,"depart":67.75710759075378,"histo":[2,1,1,3,3,2,8,14,23,48,170,311,200,97,52,34,11,13,6,0,1,0,0,0]}],"bornes":[-860.9024810823641,81.23217622162406]};
+const f = (v, k) => v.toLocaleString('fr-FR', { minimumFractionDigits: k, maximumFractionDigits: k });
+function montrer(i) {
+  const s = D.sorties[i];
+  const L = [["Moyenne", s.moyenne], ["Écart-type", s.ecart], ["Quantile 0,5 %", s.q005], ["Quantile 5 %", s.q05], ["Médiane", s.mediane],
+    ["Quantile 95 %", s.q95], ["VaR à 99,5 % (départ moins quantile 0,5 %)", s.var995]];
+  document.getElementById('chiffres').innerHTML = L.map(([n, v]) => `<tr><td>${n}</td><td class="num">${f(v, 1)}</td></tr>`).join('')
+    + `<tr><td>Probabilité de ruine</td><td class="num">${f(s.ruine * 100, 2)} %</td></tr>`;
+  const W = 880, H = 260, g = 40, b = 30, max = Math.max(...D.sorties.flatMap((x) => x.histo)), n = s.histo.length, l = (W - 2 * g) / n;
+  const [bas, pas] = D.bornes, x = (v) => g + (v - bas) / pas * l;
+  let svg = `<line x1="${g}" y1="${H - b}" x2="${W - g}" y2="${H - b}" stroke="#67768E"/>`;
+  s.histo.forEach((c, k) => { const h = c / max * (H - b - 20); svg += `<rect x="${g + k * l + 1}" y="${H - b - h}" width="${l - 2}" height="${h}" fill="#2957C8" opacity=".85"><title>${c} trajectoires</title></rect>`; });
+  for (let k = 0; k <= n; k += 4) svg += `<text x="${g + k * l}" y="${H - 10}" font-size="11" fill="#33455C" text-anchor="middle">${f(bas + k * pas, 0)}</text>`;
+  svg += `<line x1="${x(s.q005)}" y1="12" x2="${x(s.q005)}" y2="${H - b}" stroke="#A32C30" stroke-width="2" stroke-dasharray="5 4"/>`;
+  document.getElementById('histo').innerHTML = svg;
+}
+document.getElementById('sigma').addEventListener('change', (e) => montrer(+e.target.value));
+montrer(+document.getElementById('sigma').value);
+</script>
+</body></html>

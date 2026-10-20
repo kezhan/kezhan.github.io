@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe G. Cadre réglementaire pour l’IA en assurance · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe G. Cadre réglementaire pour l’IA en assurance</h1>
+      <p class="lede">Les textes à connaître quand on utilise l’IA générative dans un travail actuariel : le règlement européen sur l’IA (AI Act), les publications de l’ACPR et de l’EIOPA, le RGPD, les règles d’externalisation et DORA, la déontologie de l’Institut des Actuaires. Cette annexe donne chaque référence avec sa date, dans l’état au 29 septembre 2026 ; le texte officiel fait foi. Aucun de ces textes n’interdit l’usage de l’IA. Tous demandent de savoir ce qui a été fait, par qui, avec quoi, et de pouvoir le montrer.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#ai-act-règlement-ue-20241689">AI Act (règlement (UE) 2024/1689)</a><a href="#acpr-autorité-de-contrôle-prudentiel-et-de-résolution">ACPR (Autorité de contrôle prudentiel et de résolution)</a><a href="#eiopa-autorité-européenne-des-assurances-et-des-pensions-professionnelles">EIOPA (Autorité européenne des assurances et des pensions professionnelles)</a><a href="#rgpd-et-données-personnelles">RGPD et données personnelles</a><a href="#externalisation-et-dora">Externalisation et DORA</a><a href="#institut-des-actuaires">Institut des Actuaires</a><a href="#recommandations-pratiques-pour-le-cabinet">Recommandations pratiques pour le cabinet</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<section class="level2" data-number="36.1" id="ai-act-règlement-ue-20241689">
+<h2 class="anchored" data-anchor-id="ai-act-règlement-ue-20241689" data-number="36.1" id="ai-act-règlement-ue-20241689"> AI Act (règlement (UE) 2024/1689)</h2>
+<section class="level3" data-number="36.1.1" id="le-calendrier">
+<h3 class="anchored" data-anchor-id="le-calendrier" data-number="36.1.1"> Le calendrier</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%"/>
+<col style="width: 50%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Date</th>
+<th>Ce qui s’applique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1er août 2024</td>
+<td>Entrée en vigueur</td>
+</tr>
+<tr class="even">
+<td>2 février 2025</td>
+<td>Pratiques interdites ; maîtrise de l’IA (article 4)</td>
+</tr>
+<tr class="odd">
+<td>2 août 2025</td>
+<td>Modèles d’IA à usage général</td>
+</tr>
+<tr class="even">
+<td>2 août 2026</td>
+<td>Application générale du règlement</td>
+</tr>
+<tr class="odd">
+<td>2 décembre 2027</td>
+<td>Systèmes à haut risque de l’annexe III, dont l’assurance vie et maladie</td>
+</tr>
+<tr class="even">
+<td>2 août 2028</td>
+<td>Systèmes à haut risque de l’annexe I</td>
+</tr>
+</tbody>
+</table>
+<p>Les deux dernières dates viennent du Digital Omnibus, le règlement (UE) 2026/1744 du 8 juillet 2026, publié au Journal officiel le 24 juillet et en vigueur depuis le 27 juillet 2026, qui a reporté l’application des règles sur le haut risque et réécrit l’article 4. Dire que l’AI Act « s’applique depuis 2025 » à la tarification est donc faux deux fois : la date et le périmètre.</p>
+</section>
+<section class="level3" data-number="36.1.2" id="ce-qui-est-à-haut-risque-en-assurance">
+<h3 class="anchored" data-anchor-id="ce-qui-est-à-haut-risque-en-assurance" data-number="36.1.2"> Ce qui est à haut risque en assurance</h3>
+<p>L’annexe III, point 5 c), vise les « systèmes d’IA destinés à être utilisés pour l’évaluation des risques et la tarification en ce qui concerne les personnes physiques en matière d’assurance-vie et d’assurance maladie ». La tarification automobile n’y figure pas. Un système à haut risque porte des obligations de gestion des risques, de qualité des données, de documentation, de contrôle humain et de transparence, applicables à partir du 2 décembre 2027.</p>
+</section>
+<section class="level3" data-number="36.1.3" id="les-autres-catégories">
+<h3 class="anchored" data-anchor-id="les-autres-catégories" data-number="36.1.3"> Les autres catégories</h3>
+<ul>
+<li><strong>Pratiques interdites</strong> : notation sociale, manipulation, et les autres pratiques que le règlement énumère. Elles ne concernent pas le travail actuariel courant.</li>
+<li><strong>Obligations de transparence</strong> (ce qu’on appelle parfois le risque limité) : un système qui échange avec des personnes doit leur dire qu’elles parlent à une IA, par exemple un assistant conversationnel qui répond aux assurés.</li>
+<li><strong>Risque minimal</strong> : la plupart des usages, sans obligation propre au-delà du cadre général.</li>
+</ul>
+<p><strong>L’article 4 s’applique à tous.</strong> Depuis le 2 février 2025, il fait obligation aux fournisseurs et aux déployeurs de systèmes d’IA en matière de maîtrise de l’IA. Le Digital Omnibus l’a réécrit : depuis le 27 juillet 2026, ils « prennent des mesures pour favoriser le développement de la maîtrise de l’IA par leur personnel » et par les autres personnes qui utilisent les systèmes pour leur compte, et « cette obligation ne contraint pas les fournisseurs ou les déployeurs à garantir un niveau spécifique de maîtrise de l’IA par un individu ». La version d’origine, qui visait un niveau suffisant, n’est plus en vigueur. Un usage « à risque minimal » n’en est pas dispensé ; la formation des équipes en est le moyen le plus direct.</p>
+</section>
+<section class="level3" data-number="36.1.4" id="qualifier-un-usage">
+<h3 class="anchored" data-anchor-id="qualifier-un-usage" data-number="36.1.4"> Qualifier un usage</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Usage</th>
+<th>Qualification</th>
+<th>Ce qui s’applique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Claude Code utilisé par l’actuaire pour écrire et vérifier ses calculs</td>
+<td>Pas de haut risque</td>
+<td>Article 4 ; avis de l’EIOPA de 2025 ; RGPD dès qu’une donnée personnelle passe par l’outil</td>
+</tr>
+<tr class="even">
+<td>Outil qui prépare la tarification individuelle d’un contrat vie ou santé, même validée ensuite par un actuaire</td>
+<td>À qualifier : l’annexe III, point 5 c), vise cet usage</td>
+<td>Obligations du haut risque à partir du 2 décembre 2027 ; qualification avec le juriste</td>
+</tr>
+<tr class="odd">
+<td>Outil de tarification automobile individuelle</td>
+<td>Hors de l’annexe III, point 5 c)</td>
+<td>Article 4 ; avis de l’EIOPA ; RGPD, dont l’article 22 si la décision est entièrement automatisée</td>
+</tr>
+<tr class="even">
+<td>Assistant conversationnel qui répond aux assurés</td>
+<td>Obligations de transparence</td>
+<td>Informer la personne qu’elle échange avec une IA</td>
+</tr>
+</tbody>
+</table>
+<p>La qualification se fait au démarrage du projet, avec la direction juridique et le délégué à la protection des données.</p>
+</section>
+</section>
+<section class="level2" data-number="36.2" id="acpr-autorité-de-contrôle-prudentiel-et-de-résolution">
+<h2 class="anchored" data-anchor-id="acpr-autorité-de-contrôle-prudentiel-et-de-résolution" data-number="36.2" id="acpr-autorité-de-contrôle-prudentiel-et-de-résolution"> ACPR (Autorité de contrôle prudentiel et de résolution)</h2>
+<p>L’ACPR contrôle les banques et les assurances. Pour l’AI Act, elle est l’autorité de surveillance du marché pour les systèmes à haut risque du secteur financier. Ses publications sur l’IA :</p>
+<ul>
+<li><strong>« Intelligence artificielle : enjeux pour le secteur financier »</strong> (décembre 2018), un document de réflexion.</li>
+<li><strong>« Gouvernance des algorithmes d’intelligence artificielle dans le secteur financier »</strong> (juin 2020). Il retient quatre critères d’évaluation d’un algorithme :
+<ul>
+<li><strong>la gestion des données</strong> : la qualité et la pertinence des données qui entraînent et alimentent l’algorithme, biais compris ;</li>
+<li><strong>la performance</strong> : l’algorithme fait ce qu’on attend de lui, mesuré par des indicateurs adaptés à l’usage ;</li>
+<li><strong>la stabilité</strong> : son comportement reste cohérent dans le temps et quand les données évoluent ;</li>
+<li><strong>l’explicabilité</strong> : ses résultats s’expliquent, à un niveau adapté à qui pose la question (utilisateur, contrôleur, client).</li>
+</ul></li>
+<li><strong>Les réunions de place sur le règlement IA</strong> (17 septembre 2025, 1er juillet 2026).</li>
+<li><strong>« L’équité algorithmique dans le secteur financier »</strong>, document soumis à consultation du 1er juillet au 30 septembre 2026.</li>
+</ul>
+<p>La <strong>recommandation 2024-R-03 du 21 novembre 2024</strong> porte sur le recueil des informations relatives au client pour l’exercice du devoir de conseil et la fourniture d’un service de recommandation personnalisée en assurance. Elle ne traite pas de l’IA. Elle sert d’exemple dans la formation : un numéro qui existe, auquel un modèle de langue peut prêter un contenu qu’il n’a pas.</p>
+<p>La journalisation des sessions qui servent un livrable réglementaire est une bonne pratique de cabinet (voir les recommandations plus bas). Ne la présentez pas comme une exigence de l’ACPR sans un texte à l’appui.</p>
+</section>
+<section class="level2" data-number="36.3" id="eiopa-autorité-européenne-des-assurances-et-des-pensions-professionnelles">
+<h2 class="anchored" data-anchor-id="eiopa-autorité-européenne-des-assurances-et-des-pensions-professionnelles" data-number="36.3" id="eiopa-autorité-européenne-des-assurances-et-des-pensions-professionnelles"> EIOPA (Autorité européenne des assurances et des pensions professionnelles)</h2>
+<ul>
+<li><strong>« Opinion on Artificial Intelligence governance and risk management »</strong> (EIOPA-BoS-25-360, 6 août 2025). L’avis décrit les attentes de gouvernance et de gestion des risques pour les systèmes d’IA utilisés par les organismes d’assurance qui ne sont ni interdits ni à haut risque au sens de l’AI Act. Un usage interne comme celui de Claude Code par l’actuaire relève de ce périmètre.</li>
+<li><strong>L’enquête sur l’IA générative</strong> publiée le 2 février 2026 : 347 entreprises de 25 pays, dont près des deux tiers utilisent déjà l’IA générative.</li>
+</ul>
+</section>
+<section class="level2" data-number="36.4" id="rgpd-et-données-personnelles">
+<h2 class="anchored" data-anchor-id="rgpd-et-données-personnelles" data-number="36.4" id="rgpd-et-données-personnelles"> RGPD et données personnelles</h2>
+<ul>
+<li><strong>Minimisation</strong> (article 5) : ne traiter que les données nécessaires. Pour écrire un code, Claude a besoin du schéma et d’exemples fabriqués, pas du portefeuille.</li>
+<li><strong>Sous-traitance</strong> (article 28) : le fournisseur du modèle n’est un sous-traitant de votre organisme que sous une <strong>offre entreprise</strong> : Team, Enterprise, ou l’API avec un contrat de traitement des données. Sous une <strong>offre grand public</strong> (Pro, Max), ce sont les conditions grand public qui s’appliquent : le fournisseur ne traite pas les données pour le compte de votre organisme, et les données personnelles de vos assurés n’ont rien à y faire.</li>
+<li><strong>Pseudonymisation</strong> : une donnée pseudonymisée reste une donnée personnelle. Elle réduit le risque, elle ne fait pas sortir du RGPD.</li>
+<li><strong>Catégories particulières</strong> (article 9) : les données de santé, présentes en prévoyance, en santé et dans certains dossiers sinistres, ne se traitent que dans les cas que le texte prévoit, avec des précautions renforcées.</li>
+<li><strong>Décision individuelle automatisée</strong> (article 22) : une personne a le droit de ne pas faire l’objet d’une décision fondée exclusivement sur un traitement automatisé qui l’affecte de manière significative, sauf exceptions encadrées, assorties de garanties comme le droit d’obtenir une intervention humaine. Un refus de contrat sans intervention humaine en relève.</li>
+<li><strong>Analyse d’impact</strong> (article 35) : obligatoire quand le traitement présente un risque élevé pour les personnes.</li>
+</ul>
+<p><strong>Bonne pratique</strong> : faire valider toute mise en service d’un outil fondé sur un modèle de langue par le délégué à la protection des données, avec une analyse d’impact si nécessaire.</p>
+</section>
+<section class="level2" data-number="36.5" id="externalisation-et-dora">
+<h2 class="anchored" data-anchor-id="externalisation-et-dora" data-number="36.5" id="externalisation-et-dora"> Externalisation et DORA</h2>
+<p>Un fournisseur de modèle utilisé dans les processus de l’organisme est un prestataire de services informatiques tiers. Le règlement DORA (règlement (UE) 2022/2554 sur la résilience opérationnelle numérique du secteur financier, applicable depuis le 17 janvier 2025) encadre ce recours : gestion du risque lié aux prestataires, clauses contractuelles, registre d’information des contrats, stratégie de sortie.</p>
+<p>Si l’outil sert une fonction ou une activité importante ou critique, les règles d’externalisation de Solvabilité II s’y ajoutent : l’article 49 de la directive 2009/138/CE, et les orientations de l’EIOPA sur le recours à des prestataires de services en nuage.</p>
+<p>En pratique, le choix d’un outil et de son offre passe par la DSI, la gestion des risques et la conformité, pas seulement par l’équipe actuarielle.</p>
+</section>
+<section class="level2" data-number="36.6" id="institut-des-actuaires">
+<h2 class="anchored" data-anchor-id="institut-des-actuaires" data-number="36.6" id="institut-des-actuaires"> Institut des Actuaires</h2>
+<p>Le <strong>Code de déontologie</strong>, adopté par l’assemblée générale du 20 juin 2014, s’applique à toute prestation actuarielle, et son article 3.6 traite de l’utilisation de nouvelles techniques. Ses exigences qui s’appliquent le plus directement à l’IA générative :</p>
+<ul>
+<li><strong>La compétence et le soin.</strong> L’usage d’un outil d’IA n’allège pas la responsabilité : l’actuaire répond de l’exactitude et de la pertinence du résultat, même si une partie du travail a été assistée.</li>
+<li><strong>L’indépendance de jugement.</strong> L’actuaire ne se laisse pas dicter une conclusion par un outil. La complaisance du modèle, qui abonde dans le sens de l’utilisateur, rend la critique explicite d’autant plus nécessaire (chapitre « Piloter l’IA », partie 1).</li>
+<li><strong>La confidentialité.</strong> Les informations confiées par les clients ne vont pas dans une session dont l’offre ne fait pas du fournisseur un sous-traitant. On travaille sur des données synthétiques ou pseudonymisées (chapitre « Comprendre une donnée nouvelle », partie 2).</li>
+</ul>
+<p>La <strong>NPA 5</strong> (norme de pratique actuarielle sur les données massives, personnelles et de santé, 16 novembre 2017) s’applique aux données qu’on utiliserait avec ces outils. Il n’existe pas de norme de l’Institut sur l’IA générative ; un groupe de travail a publié le rapport « Les actuaires face à l’IA et l’IA générative : Quels impacts ? Quelles actions à mener ? » (février 2025).</p>
+</section>
+<section class="level2" data-number="36.7" id="recommandations-pratiques-pour-le-cabinet">
+<h2 class="anchored" data-anchor-id="recommandations-pratiques-pour-le-cabinet" data-number="36.7" id="recommandations-pratiques-pour-le-cabinet"> Recommandations pratiques pour le cabinet</h2>
+<p>Pour cadrer l’usage de l’IA dans une équipe actuarielle :</p>
+<ol type="1">
+<li><strong>Une politique IA écrite.</strong> Un document court qui dit quels outils et quelles offres sont autorisés, quelles données sont interdites dans une session, quelles validations humaines sont requises avant un livrable, quelle traçabilité est attendue.</li>
+<li><strong>Une qualification AI Act par projet</strong>, quand le projet touche une décision individuelle (tarification, acceptation, gestion de sinistres).</li>
+<li><strong>Une revue annuelle</strong> des outils utilisés, de leurs offres, de leurs évolutions et des incidents.</li>
+<li><strong>La formation des équipes</strong>, la mesure la plus directe au titre de l’article 4 de l’AI Act, entretenue par une veille.</li>
+<li><strong>Une traçabilité des sessions</strong> qui servent un livrable réglementaire : date, outil, modèle, prompts, validation humaine.</li>
+<li><strong>Une politique de signature</strong> : qui peut signer un livrable préparé avec l’IA, et après quelles vérifications.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : vrai ou faux ?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Claude écrit, dans un projet de note : <em>« Conformément à la recommandation ACPR 2024-R-03, toute utilisation de l’IA générative dans le calcul des provisions doit être journalisée. »</em> La référence est-elle bonne ?</li>
+<li>Un outil qui calcule le tarif auto individuel d’un client est un système à haut risque au sens de l’AI Act.</li>
+<li>Votre cabinet utilise des comptes Claude Pro. Vous y travaillez sur des données d’assurés pseudonymisées : le fournisseur est votre sous-traitant au sens du RGPD, donc c’est permis.</li>
+<li>Un usage à risque minimal de l’AI Act n’entraîne aucune obligation pour le cabinet.</li>
+</ol>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li>Faux, et c’est le piège le plus difficile à voir : le numéro existe. La recommandation 2024-R-03 du 21 novembre 2024 porte sur le recueil des informations client pour le devoir de conseil ; elle ne dit rien de l’IA. Une référence se vérifie dans le texte, pas sur sa vraisemblance.</li>
+<li>Faux. L’annexe III, point 5 c), vise l’évaluation des risques et la tarification des personnes physiques en assurance vie et maladie, à partir du 2 décembre 2027. L’auto n’y figure pas ; restent l’article 4, l’avis de l’EIOPA et le RGPD.</li>
+<li>Faux deux fois. Sous une offre grand public, le fournisseur n’est pas votre sous-traitant : il faut une offre entreprise (Team, Enterprise, API avec contrat). Et une donnée pseudonymisée reste une donnée personnelle.</li>
+<li>Faux. L’article 4, maîtrise de l’IA, s’applique depuis le 2 février 2025 à tous les fournisseurs et déployeurs. Depuis le 27 juillet 2026, il leur demande de prendre des mesures pour favoriser la maîtrise de l’IA par leur personnel, sans avoir à garantir un niveau donné.</li>
+</ol>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="36.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="36.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>AI Act, annexe III : ai-act-service-desk.ec.europa.eu/fr/ai-act/annex-3 ; article 4 dans sa version en vigueur : ai-act-service-desk.ec.europa.eu/fr/ai-act/article-4 ; Digital Omnibus : eur-lex.europa.eu/eli/reg/2026/1744/oj.</li>
+<li>ACPR, gouvernance des algorithmes : acpr.banque-france.fr/gouvernance-des-algorithmes-dintelligence-artificielle-dans-le-secteur-financier.</li>
+<li>EIOPA, avis du 6 août 2025 : eiopa.europa.eu/publications/opinion-artificial-intelligence-governance-and-risk-management_en.</li>
+<li>Institut des Actuaires, rapport de février 2025 et Code de déontologie : institutdesactuaires.com.</li>
+<li>RGPD appliqué à l’IA : les ressources de la CNIL sur cnil.fr.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/F/index.html"><small>&larr; Précédent</small>Annexe F. Liste des pièges fréquents</a><a class="next" href="../../annexes/H/index.html"><small>Suivant &rarr;</small>Annexe H. Comparaison des outils IA pour le développement</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

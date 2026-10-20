@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P5. Comparaison GLM contre gradient boosting · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">P5. Comparaison GLM contre gradient boosting</h1>
+      <p class="lede">Cette fiche illustre la démarche B (construire un modèle) avec un challenger ML. Ce que vous apprenez n’est pas le gradient boosting, mais comment cadrer un benchmark défendable (split train/test, métrique commune) et comment résister au biais du LLM qui privilégie spontanément le ML pour la performance brute au détriment de la défendabilité réglementaire.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle (avec arbitrage méthodologique)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="7.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="7.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le pricing utilise de plus en plus des modèles de <em>gradient boosting</em> (XGBoost, LightGBM) en challenger des GLM. La question récurrente : <strong>lequel choisir, dans quel contexte ?</strong></p>
+<p>La réponse n’est pas que de la performance prédictive. Trois axes structurent le choix : qualité prédictive hors échantillon, interprétabilité, défendabilité en revue tarifaire. Le GLM l’emporte en général sur les deux derniers ; sur le premier, l’écart se mesure, il ne se présume pas, et il dépend de ce que le GLM a oublié. La décision finale dépend aussi de la culture de l’organisme et de qui validera le tarif.</p>
+<p>Ce cas fait le benchmark, montre comment lire l’écart, et propose un cadre de décision argumenté.</p>
+</section>
+<section class="level2" data-number="7.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="7.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On reprend le portefeuille commun aux fiches P1 à P5 (50 000 polices, même simulation, même graine) et le découpage de P2. La simulation contient un effet que le GLM de P2 ne déclare pas : une fréquence plus forte pour un conducteur de 25 ans ou moins au volant d’un véhicule puissant. On le sait parce qu’on a écrit la simulation ; sur un vrai portefeuille, on ne le saurait pas, et c’est tout l’intérêt du challenger.</p>
+<div class="cell" data-execution_count="1" id="0844be02">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">50_000</span>  <span class="co"># le vrai freMTPL2freq compte 678 013 lignes</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>age <span class="op">=</span> rng.integers(<span class="dv">18</span>, <span class="dv">86</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>puissance <span class="op">=</span> rng.integers(<span class="dv">4</span>, <span class="dv">12</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>zone <span class="op">=</span> rng.choice(<span class="bu">list</span>(<span class="st">"ABCDEF"</span>), size<span class="op">=</span>N, p<span class="op">=</span>[<span class="fl">0.12</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.20</span>, <span class="fl">0.10</span>])  <span class="co"># A rural, F urbain dense</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="co"># 60 % des contrats présents toute l'année, les autres entrés ou sortis en cours d'année</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>exposure <span class="op">=</span> np.where(rng.random(N) <span class="op">&lt;</span> <span class="fl">0.6</span>, <span class="fl">1.0</span>, rng.uniform(<span class="fl">0.05</span>, <span class="fl">1.0</span>, size<span class="op">=</span>N)).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="co"># Risque propre au conducteur, que le tarif ne voit pas (moyenne 1). Il fait les</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="co"># sinistres passés, donc le bonus-malus, et les sinistres de l'année : c'est par lui</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="co"># que le bonus-malus prédit la fréquence.</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>risque_cache <span class="op">=</span> rng.gamma(shape<span class="op">=</span><span class="fl">2.0</span>, scale<span class="op">=</span><span class="fl">0.5</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>sinistres_passes <span class="op">=</span> rng.poisson(<span class="fl">0.25</span> <span class="op">*</span> risque_cache)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="co"># Bonus-malus à la française (clause type de l'article A121-1 du Code des assurances) :</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="co"># 100 au permis, 0,95 par an sans sinistre responsable, plancher 50, 1,25 par</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="co"># sinistre responsable, plafond 350.</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>plancher <span class="op">=</span> np.maximum(<span class="dv">50</span>, <span class="dv">100</span> <span class="op">*</span> <span class="fl">0.95</span> <span class="op">**</span> (age <span class="op">-</span> <span class="dv">18</span>))</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>bonus_malus <span class="op">=</span> np.minimum(<span class="dv">350</span>, np.<span class="bu">round</span>(plancher <span class="op">*</span> <span class="fl">1.25</span> <span class="op">**</span> sinistres_passes)).astype(<span class="bu">int</span>)</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a><span class="co"># Fréquence annuelle : en U selon l'âge (jeunes conducteurs les plus risqués, remontée</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="co"># après 70 ans), croissante avec la densité, un peu avec la puissance, et plus forte</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="co"># pour un conducteur de 25 ans ou moins au volant d'un véhicule puissant.</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>effet_zone <span class="op">=</span> pd.Series(zone).<span class="bu">map</span>({<span class="st">"A"</span>: <span class="op">-</span><span class="fl">0.30</span>, <span class="st">"B"</span>: <span class="op">-</span><span class="fl">0.15</span>, <span class="st">"C"</span>: <span class="fl">0.0</span>,</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>                                  <span class="st">"D"</span>: <span class="fl">0.10</span>, <span class="st">"E"</span>: <span class="fl">0.25</span>, <span class="st">"F"</span>: <span class="fl">0.40</span>}).to_numpy()</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>log_freq <span class="op">=</span> (np.log(<span class="fl">0.07</span>)</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">1.1</span> <span class="op">*</span> np.exp(<span class="op">-</span>(age <span class="op">-</span> <span class="dv">18</span>) <span class="op">/</span> <span class="dv">6</span>)</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> np.maximum(age <span class="op">-</span> <span class="dv">70</span>, <span class="dv">0</span>)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> (puissance <span class="op">-</span> <span class="dv">6</span>)</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> ((age <span class="op">&lt;=</span> <span class="dv">25</span>) <span class="op">&amp;</span> (puissance <span class="op">&gt;=</span> <span class="dv">9</span>))</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>            <span class="op">+</span> effet_zone</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>            <span class="op">+</span> np.log(risque_cache))</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>nb_sinistres <span class="op">=</span> rng.poisson(np.exp(log_freq) <span class="op">*</span> exposure)</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a></span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>polices <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>    <span class="st">"age"</span>: age,</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    <span class="st">"bonus_malus"</span>: bonus_malus,</span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>    <span class="st">"puissance"</span>: puissance,</span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>    <span class="st">"zone"</span>: zone,</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>    <span class="st">"exposure"</span>: exposure,</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>    <span class="st">"nb_sinistres"</span>: nb_sinistres,</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>})</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices : </span><span class="sc">{</span><span class="bu">len</span>(polices)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sinistres : </span><span class="sc">{</span>polices[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Fréquence moyenne : </span><span class="sc">{</span>polices[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> polices[<span class="st">'exposure'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Polices : 50,000
+Sinistres : 4,014
+Fréquence moyenne : 0.0989</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="7.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="7.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Préparer le découpage.</strong> <em>“Reprends le découpage de P2 : 30 % des polices mises de côté, tirées avec la graine 2026, qui ne serviront qu’à la comparaison finale. Vérifie que les deux parts se ressemblent.”</em></p></li>
+<li><p><strong>Ajuster la référence.</strong> <em>“Sur les 70 %, ajuste le GLM Poisson de P2 (mêmes bandes, offset log(exposure)). Calcule sa déviance de Poisson et son Gini sur les 30 %.”</em></p></li>
+<li><p><strong>Ajuster le challenger.</strong> <em>“Sur les mêmes 70 %, ajuste un gradient boosting à perte de Poisson qui tient compte de l’exposition. Règle le nombre d’arbres par arrêt anticipé sur une validation tirée des 70 %, jamais sur le test. Calcule les mêmes métriques sur les 30 %.”</em></p></li>
+<li><p><strong>Lire l’écart.</strong> <em>“Compare les deux modèles sur le test (déviance, Gini, courbes de Lorenz). Puis dis-moi où leurs prédictions divergent le plus, segment par segment. Si une interaction manque au GLM, ajoute-la et mesure ce qu’elle rapporte.”</em></p></li>
+<li><p><strong>Décider en revue tarifaire.</strong> <em>“Au vu des chiffres, et des contraintes (interprétabilité, explicabilité devant la fonction actuarielle et en cas de contrôle, stabilité, lissage commercial), recommande-moi un modèle pour la production. Joue le rôle d’un actuaire en chef qui doit défendre le choix.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="7.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="7.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="7.4.1" id="étape-1.-préparer-le-découpage">
+<h3 class="anchored" data-anchor-id="étape-1.-préparer-le-découpage" data-number="7.4.1"> Étape 1. Préparer le découpage</h3>
+<div class="cell" data-execution_count="2" id="1332b684">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>BANDES_AGE <span class="op">=</span> [<span class="dv">17</span>, <span class="dv">21</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">85</span>]</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>LIBELLES_AGE <span class="op">=</span> [<span class="st">"18-21"</span>, <span class="st">"22-25"</span>, <span class="st">"26-30"</span>, <span class="st">"31-45"</span>, <span class="st">"46-60"</span>, <span class="st">"61-70"</span>, <span class="st">"71-85"</span>]</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>BANDES_BM <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">80</span>, <span class="dv">100</span>, <span class="dv">350</span>]</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>LIBELLES_BM <span class="op">=</span> [<span class="st">"50"</span>, <span class="st">"51-60"</span>, <span class="st">"61-80"</span>, <span class="st">"81-100"</span>, <span class="st">"101+"</span>]</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>polices[<span class="st">"age_bande"</span>] <span class="op">=</span> pd.cut(polices[<span class="st">"age"</span>], bins<span class="op">=</span>BANDES_AGE, labels<span class="op">=</span>LIBELLES_AGE)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>polices[<span class="st">"bm_bande"</span>] <span class="op">=</span> pd.cut(polices[<span class="st">"bonus_malus"</span>], bins<span class="op">=</span>BANDES_BM, labels<span class="op">=</span>LIBELLES_BM)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>test <span class="op">=</span> np.random.default_rng(<span class="dv">2026</span>).random(N) <span class="op">&lt;</span> <span class="fl">0.30</span>   <span class="co"># le découpage de P2</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>app, tst <span class="op">=</span> polices[<span class="op">~</span>test].copy(), polices[test].copy()</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Apprentissage : </span><span class="sc">{</span><span class="bu">len</span>(app)<span class="sc">:,}</span><span class="ss"> polices, </span><span class="sc">{</span>app[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> sinistres"</span>)</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Test          : </span><span class="sc">{</span><span class="bu">len</span>(tst)<span class="sc">:,}</span><span class="ss"> polices, </span><span class="sc">{</span>tst[<span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> sinistres"</span>)</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>    <span class="st">"fréquence"</span>: [app[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>() <span class="op">/</span> app[<span class="st">"exposure"</span>].<span class="bu">sum</span>(),</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>                  tst[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>() <span class="op">/</span> tst[<span class="st">"exposure"</span>].<span class="bu">sum</span>()],</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>    <span class="st">"âge moyen"</span>: [app[<span class="st">"age"</span>].mean(), tst[<span class="st">"age"</span>].mean()],</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>    <span class="st">"part zone F (%)"</span>: [<span class="dv">100</span> <span class="op">*</span> (app[<span class="st">"zone"</span>] <span class="op">==</span> <span class="st">"F"</span>).mean(), <span class="dv">100</span> <span class="op">*</span> (tst[<span class="st">"zone"</span>] <span class="op">==</span> <span class="st">"F"</span>).mean()],</span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>}, index<span class="op">=</span>[<span class="st">"apprentissage"</span>, <span class="st">"test"</span>]).<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Apprentissage : 34,872 polices, 2,805 sinistres
+Test          : 15,128 polices, 1,209 sinistres
+
+               fréquence  âge moyen  part zone F (%)
+apprentissage      0.099     51.508           10.140
+test               0.099     51.356           10.034</code></pre>
+</div>
+</div>
+<p>Le découpage est celui de P2 : 34 872 polices (2 805 sinistres) en apprentissage, 15 128 polices (1 209 sinistres) en test. Les deux parts se ressemblent : même fréquence (0,099), même âge moyen (51,5 et 51,4 ans), même part de zone F (10,1 % et 10,0 %). Un tirage au hasard suffit à cette taille ; une stratification par zone n’apporterait rien de visible.</p>
+</section>
+<section class="level3" data-number="7.4.2" id="étape-2.-la-référence-le-glm-poisson-de-p2">
+<h3 class="anchored" data-anchor-id="étape-2.-la-référence-le-glm-poisson-de-p2" data-number="7.4.2"> Étape 2. La référence : le GLM Poisson de P2</h3>
+<div class="cell" data-execution_count="3" id="8698e749">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>formule <span class="op">=</span> (<span class="st">"nb_sinistres ~ C(age_bande, Treatment('31-45')) + C(bm_bande, Treatment('50'))"</span></span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>           <span class="st">" + puissance + C(zone)"</span>)</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>glm <span class="op">=</span> smf.glm(formule, data<span class="op">=</span>app, family<span class="op">=</span>sm.families.Poisson(),</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>              offset<span class="op">=</span>np.log(app[<span class="st">"exposure"</span>])).fit()</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> (app, tst):</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    d[<span class="st">"freq_glm"</span>] <span class="op">=</span> glm.predict(d, offset<span class="op">=</span>np.zeros(<span class="bu">len</span>(d)))</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a><span class="kw">def</span> contributions(y, mu):</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>    <span class="co">"""Déviance de Poisson police par police ; mu = nombre de sinistres attendu."""</span></span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">2</span> <span class="op">*</span> (np.where(y <span class="op">&gt;</span> <span class="dv">0</span>, y <span class="op">*</span> np.log(np.where(y <span class="op">&gt;</span> <span class="dv">0</span>, y, <span class="dv">1</span>) <span class="op">/</span> mu), <span class="dv">0</span>) <span class="op">-</span> (y <span class="op">-</span> mu))</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a></span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a><span class="kw">def</span> deviance_poisson(y, mu):</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>    <span class="cf">return</span> contributions(y, mu).<span class="bu">sum</span>()</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a></span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a><span class="kw">def</span> gini(d, col):</span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>    d <span class="op">=</span> d.sort_values(col)</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    x <span class="op">=</span> np.r_[<span class="dv">0</span>, d[<span class="st">"exposure"</span>].cumsum() <span class="op">/</span> d[<span class="st">"exposure"</span>].<span class="bu">sum</span>()]</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>    z <span class="op">=</span> np.r_[<span class="dv">0</span>, d[<span class="st">"nb_sinistres"</span>].cumsum() <span class="op">/</span> d[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>()]</span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> np.<span class="bu">sum</span>(np.diff(x) <span class="op">*</span> (z[<span class="dv">1</span>:] <span class="op">+</span> z[:<span class="op">-</span><span class="dv">1</span>]) <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a></span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>y_tst, e_tst <span class="op">=</span> tst[<span class="st">"nb_sinistres"</span>].to_numpy(), tst[<span class="st">"exposure"</span>].to_numpy()</span>
+<span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a>freq_app <span class="op">=</span> app[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>() <span class="op">/</span> app[<span class="st">"exposure"</span>].<span class="bu">sum</span>()</span>
+<span id="cb5-26"><a aria-hidden="true" href="#cb5-26" tabindex="-1"></a>dev_uniforme <span class="op">=</span> deviance_poisson(y_tst, freq_app <span class="op">*</span> e_tst)</span>
+<span id="cb5-27"><a aria-hidden="true" href="#cb5-27" tabindex="-1"></a>dev_glm <span class="op">=</span> deviance_poisson(y_tst, tst[<span class="st">"freq_glm"</span>].to_numpy() <span class="op">*</span> e_tst)</span>
+<span id="cb5-28"><a aria-hidden="true" href="#cb5-28" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Déviance de test : tarif uniforme </span><span class="sc">{</span>dev_uniforme<span class="sc">:,.1f}</span><span class="ss">, GLM </span><span class="sc">{</span>dev_glm<span class="sc">:,.1f}</span><span class="ss">"</span>)</span>
+<span id="cb5-29"><a aria-hidden="true" href="#cb5-29" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gini de test du GLM : </span><span class="sc">{</span>gini(tst, <span class="st">'freq_glm'</span>)<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Déviance de test : tarif uniforme 6,187.5, GLM 5,929.2
+Gini de test du GLM : 0.239</code></pre>
+</div>
+</div>
+<p>Le GLM de P2 ramène la déviance de test de 6 187,5 (tarif uniforme) à 5 929,2, avec un Gini de 0,239 : les chiffres de P2, puisque c’est le même modèle sur le même découpage. La déviance est finie : avec un lien log, un GLM ne prédit jamais une fréquence nulle.</p>
+</section>
+<section class="level3" data-number="7.4.3" id="étape-3.-le-challenger-un-gradient-boosting-à-perte-de-poisson">
+<h3 class="anchored" data-anchor-id="étape-3.-le-challenger-un-gradient-boosting-à-perte-de-poisson" data-number="7.4.3"> Étape 3. Le challenger : un gradient boosting à perte de Poisson</h3>
+<p><code>xgboost</code> ne fait pas partie des dépendances de la formation (<code>requirements.txt</code>). Le corrigé exécuté utilise donc <code>HistGradientBoostingRegressor</code> de scikit-learn, un gradient boosting sur histogrammes de la même famille, avec une perte de Poisson. Il ne prend pas d’offset : on lui donne la fréquence (sinistres / exposition) en cible et l’exposition en poids, l’écriture équivalente pour un Poisson (fiche P2, exercice). Le nombre d’arbres est réglé par arrêt anticipé, sur 20 % de l’apprentissage tirés à part : le test n’intervient pas.</p>
+<div class="cell" data-execution_count="4" id="c8beb6ce">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> HistGradientBoostingRegressor</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>CODES_ZONE <span class="op">=</span> {z: i <span class="cf">for</span> i, z <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="st">"ABCDEF"</span>)}</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a><span class="kw">def</span> variables(d):</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>    <span class="cf">return</span> np.column_stack([d[<span class="st">"age"</span>], d[<span class="st">"bonus_malus"</span>], d[<span class="st">"puissance"</span>], d[<span class="st">"zone"</span>].<span class="bu">map</span>(CODES_ZONE)])</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>gbm <span class="op">=</span> HistGradientBoostingRegressor(</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>    loss<span class="op">=</span><span class="st">"poisson"</span>,</span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>    max_leaf_nodes<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span><span class="dv">200</span>,       <span class="co"># au moins 200 polices par feuille : pas de feuille sur un cas isolé</span></span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>    l2_regularization<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>    early_stopping<span class="op">=</span><span class="va">True</span>,        <span class="co"># arrêt anticipé sur une validation tirée de l'apprentissage</span></span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>    validation_fraction<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>    n_iter_no_change<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a>    categorical_features<span class="op">=</span>[<span class="dv">3</span>],   <span class="co"># la zone, en catégorie</span></span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>)</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a>gbm.fit(variables(app), app[<span class="st">"nb_sinistres"</span>] <span class="op">/</span> app[<span class="st">"exposure"</span>], sample_weight<span class="op">=</span>app[<span class="st">"exposure"</span>])</span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> (app, tst):</span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>    d[<span class="st">"freq_gbm"</span>] <span class="op">=</span> gbm.predict(variables(d))</span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a></span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a>dev_gbm <span class="op">=</span> deviance_poisson(y_tst, tst[<span class="st">"freq_gbm"</span>].to_numpy() <span class="op">*</span> e_tst)</span>
+<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a>meilleur <span class="op">=</span> <span class="bu">int</span>(np.argmax(gbm.validation_score_))   <span class="co"># validation_score_[0] : le modèle constant</span></span>
+<span id="cb7-27"><a aria-hidden="true" href="#cb7-27" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Arbres ajustés avant l'arrêt anticipé : </span><span class="sc">{</span>gbm<span class="sc">.</span>n_iter_<span class="sc">}</span><span class="ss"> (meilleure perte de validation "</span></span>
+<span id="cb7-28"><a aria-hidden="true" href="#cb7-28" tabindex="-1"></a>      <span class="ss">f"après </span><span class="sc">{</span>meilleur<span class="sc">}</span><span class="ss"> arbres, puis </span><span class="sc">{</span>gbm<span class="sc">.</span>n_iter_no_change<span class="sc">}</span><span class="ss"> sans progrès)"</span>)</span>
+<span id="cb7-29"><a aria-hidden="true" href="#cb7-29" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Déviance de test : GLM </span><span class="sc">{</span>dev_glm<span class="sc">:,.1f}</span><span class="ss">, boosting </span><span class="sc">{</span>dev_gbm<span class="sc">:,.1f}</span><span class="ss">"</span>)</span>
+<span id="cb7-30"><a aria-hidden="true" href="#cb7-30" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Déviance du boosting par rapport au GLM : </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> (dev_gbm <span class="op">/</span> dev_glm <span class="op">-</span> <span class="dv">1</span>)<span class="sc">:+.2f}</span><span class="ss"> %"</span>)</span>
+<span id="cb7-31"><a aria-hidden="true" href="#cb7-31" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Gini de test : GLM </span><span class="sc">{</span>gini(tst, <span class="st">'freq_glm'</span>)<span class="sc">:.3f}</span><span class="ss">, boosting </span><span class="sc">{</span>gini(tst, <span class="st">'freq_gbm'</span>)<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb7-32"><a aria-hidden="true" href="#cb7-32" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sinistres du test : </span><span class="sc">{</span>y_tst<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> observés, GLM </span><span class="sc">{</span>(tst[<span class="st">'freq_glm'</span>] <span class="op">*</span> e_tst)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1f}</span><span class="ss">, "</span></span>
+<span id="cb7-33"><a aria-hidden="true" href="#cb7-33" tabindex="-1"></a>      <span class="ss">f"boosting </span><span class="sc">{</span>(tst[<span class="st">'freq_gbm'</span>] <span class="op">*</span> e_tst)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
+<span id="cb7-34"><a aria-hidden="true" href="#cb7-34" tabindex="-1"></a></span>
+<span id="cb7-35"><a aria-hidden="true" href="#cb7-35" tabindex="-1"></a><span class="co"># Le même réglage, avec trois autres tirages de la validation interne</span></span>
+<span id="cb7-36"><a aria-hidden="true" href="#cb7-36" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Déviance de test du boosting selon le tirage de la validation interne :"</span>)</span>
+<span id="cb7-37"><a aria-hidden="true" href="#cb7-37" tabindex="-1"></a><span class="cf">for</span> graine <span class="kw">in</span> (<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>):</span>
+<span id="cb7-38"><a aria-hidden="true" href="#cb7-38" tabindex="-1"></a>    autre <span class="op">=</span> HistGradientBoostingRegressor(<span class="op">**</span>{<span class="op">**</span>gbm.get_params(), <span class="st">"random_state"</span>: graine})</span>
+<span id="cb7-39"><a aria-hidden="true" href="#cb7-39" tabindex="-1"></a>    autre.fit(variables(app), app[<span class="st">"nb_sinistres"</span>] <span class="op">/</span> app[<span class="st">"exposure"</span>], sample_weight<span class="op">=</span>app[<span class="st">"exposure"</span>])</span>
+<span id="cb7-40"><a aria-hidden="true" href="#cb7-40" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  graine </span><span class="sc">{</span>graine<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>autre<span class="sc">.</span>n_iter_<span class="sc">}</span><span class="ss"> arbres, déviance "</span></span>
+<span id="cb7-41"><a aria-hidden="true" href="#cb7-41" tabindex="-1"></a>          <span class="ss">f"</span><span class="sc">{</span>deviance_poisson(y_tst, autre.predict(variables(tst)) <span class="op">*</span> e_tst)<span class="sc">:,.1f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Arbres ajustés avant l'arrêt anticipé : 91 (meilleure perte de validation après 61 arbres, puis 30 sans progrès)
+Déviance de test : GLM 5,929.2, boosting 5,946.3
+Déviance du boosting par rapport au GLM : +0.29 %
+Gini de test : GLM 0.239, boosting 0.229
+Sinistres du test : 1209 observés, GLM 1211.3, boosting 1209.3
+
+Déviance de test du boosting selon le tirage de la validation interne :
+  graine 0 : 82 arbres, déviance 5,942.1
+  graine 1 : 88 arbres, déviance 5,942.8
+  graine 2 : 72 arbres, déviance 5,948.9</code></pre>
+</div>
+</div>
+<p>L’arrêt anticipé coupe l’ajustement à 91 arbres : la perte de validation ne baisse plus depuis le 61e, et les 30 suivants sont la patience demandée (<code>n_iter_no_change=30</code>). scikit-learn garde ces 91 arbres pour prédire, sans revenir au meilleur ; XGBoost, plus bas, prédit avec la meilleure itération. Sur le test, le boosting fait un peu moins bien que le GLM : déviance de 5 946,3 contre 5 929,2 (0,29 % de plus), Gini de 0,229 contre 0,239. Il est aussi bien calibré au total (1 209,3 sinistres prédits pour 1 209 observés). Avec trois autres tirages de la validation interne, sa déviance va de 5 942,1 à 5 948,9 : toujours au-dessus du GLM. Le challenger ne gagne pas d’office. Sur 35 000 polices et quatre variables, la structure du GLM (des bandes, des effets multiplicatifs) est déjà une bonne approximation, et le boosting paie en variance ce qu’il gagne en souplesse.</p>
+<p>Avec <code>xgboost</code> installé, le même challenger s’écrit ainsi. XGBoost prend l’exposition en offset par <code>base_margin</code>, l’arrêt anticipé se règle sur une validation interne tirée de l’apprentissage, et la prédiction s’arrête à la meilleure itération.</p>
+<div class="cell" data-execution_count="5" id="ec330d98">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a><span class="kw">def</span> variables_xgb(d):</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>    <span class="cf">return</span> pd.get_dummies(d[[<span class="st">"age"</span>, <span class="st">"bonus_malus"</span>, <span class="st">"puissance"</span>, <span class="st">"zone"</span>]], columns<span class="op">=</span>[<span class="st">"zone"</span>], dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>interne <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>).random(<span class="bu">len</span>(app)) <span class="op">&lt;</span> <span class="fl">0.2</span>     <span class="co"># validation interne, jamais le test</span></span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>X_app, X_tst <span class="op">=</span> variables_xgb(app), variables_xgb(tst)</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>d_fit <span class="op">=</span> xgb.DMatrix(X_app[<span class="op">~</span>interne], label<span class="op">=</span>app[<span class="st">"nb_sinistres"</span>][<span class="op">~</span>interne],</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>                    base_margin<span class="op">=</span>np.log(app[<span class="st">"exposure"</span>][<span class="op">~</span>interne]))</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>d_val <span class="op">=</span> xgb.DMatrix(X_app[interne], label<span class="op">=</span>app[<span class="st">"nb_sinistres"</span>][interne],</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>                    base_margin<span class="op">=</span>np.log(app[<span class="st">"exposure"</span>][interne]))</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>d_tst <span class="op">=</span> xgb.DMatrix(X_tst[X_app.columns], base_margin<span class="op">=</span>np.log(tst[<span class="st">"exposure"</span>]))</span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a>params <span class="op">=</span> {<span class="st">"objective"</span>: <span class="st">"count:poisson"</span>, <span class="st">"eta"</span>: <span class="fl">0.05</span>, <span class="st">"max_depth"</span>: <span class="dv">4</span>, <span class="st">"min_child_weight"</span>: <span class="dv">50</span>,</span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>          <span class="st">"subsample"</span>: <span class="fl">0.8</span>, <span class="st">"lambda"</span>: <span class="fl">1.0</span>, <span class="st">"tree_method"</span>: <span class="st">"hist"</span>, <span class="st">"seed"</span>: <span class="dv">42</span>}</span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>booster <span class="op">=</span> xgb.train(params, d_fit, num_boost_round<span class="op">=</span><span class="dv">2000</span>, evals<span class="op">=</span>[(d_val, <span class="st">"validation"</span>)],</span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>                    early_stopping_rounds<span class="op">=</span><span class="dv">50</span>, verbose_eval<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a><span class="co"># Avec base_margin, la prédiction est le nombre de sinistres attendu de la police</span></span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a>mu_xgb <span class="op">=</span> booster.predict(d_tst, iteration_range<span class="op">=</span>(<span class="dv">0</span>, booster.best_iteration <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Arbres retenus : </span><span class="sc">{</span>booster<span class="sc">.</span>best_iteration <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Déviance de test : GLM </span><span class="sc">{</span>dev_glm<span class="sc">:,.1f}</span><span class="ss">, XGBoost </span><span class="sc">{</span>deviance_poisson(y_tst, mu_xgb)<span class="sc">:,.1f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+</div>
+</section>
+<section class="level3" data-number="7.4.4" id="étape-4.-lire-lécart">
+<h3 class="anchored" data-anchor-id="étape-4.-lire-lécart" data-number="7.4.4"> Étape 4. Lire l’écart</h3>
+<div class="cell" data-execution_count="6" id="cell-fig-lift-comparison">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="kw">def</span> lorenz(d, col):</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>    d <span class="op">=</span> d.sort_values(col)</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>    <span class="cf">return</span> (np.r_[<span class="dv">0</span>, d[<span class="st">"exposure"</span>].cumsum() <span class="op">/</span> d[<span class="st">"exposure"</span>].<span class="bu">sum</span>()],</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>            np.r_[<span class="dv">0</span>, d[<span class="st">"nb_sinistres"</span>].cumsum() <span class="op">/</span> d[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>()])</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>ax.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], <span class="st">":"</span>, color<span class="op">=</span><span class="st">"#9ca3af"</span>, label<span class="op">=</span><span class="st">"tarif uniforme"</span>)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a><span class="cf">for</span> col, nom, couleur <span class="kw">in</span> [(<span class="st">"freq_glm"</span>, <span class="st">"GLM"</span>, <span class="st">"#1d4ed8"</span>), (<span class="st">"freq_gbm"</span>, <span class="st">"boosting"</span>, <span class="st">"#b45309"</span>)]:</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>    x, z <span class="op">=</span> lorenz(tst, col)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>    ax.plot(x, z, color<span class="op">=</span>couleur, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>nom<span class="sc">}</span><span class="ss">, Gini </span><span class="sc">{</span>gini(tst, col)<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Part cumulée de l'exposition (du moins au plus risqué prédit)"</span>)</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Part cumulée des sinistres"</span>)</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a>ax.set_title(<span class="st">"Courbes de Lorenz sur le test"</span>)</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">"upper left"</span>)</span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-lift-comparison">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lift-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="567" src="img/fig-lift-comparison-output-1_022c37dd.png" width="758"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lift-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 7.1: Courbes de Lorenz sur le test : polices triées par fréquence prédite croissante, exposition cumulée en abscisse
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Deux courbes presque confondues ne disent pas où les modèles diffèrent. On regarde donc où leurs prédictions divergent, segment par segment. Le calcul ne porte que sur les prédictions des polices d’apprentissage : il ne touche pas aux sinistres du test.</p>
+<div class="cell" data-execution_count="7" id="a87663db">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>app[<span class="st">"puissant"</span>] <span class="op">=</span> np.where(app[<span class="st">"puissance"</span>] <span class="op">&gt;=</span> <span class="dv">9</span>, <span class="st">"9 à 11"</span>, <span class="st">"4 à 8"</span>)</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>divergence <span class="op">=</span> app.assign(e_glm<span class="op">=</span>app[<span class="st">"freq_glm"</span>] <span class="op">*</span> app[<span class="st">"exposure"</span>],</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>                        e_gbm<span class="op">=</span>app[<span class="st">"freq_gbm"</span>] <span class="op">*</span> app[<span class="st">"exposure"</span>]).groupby(</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>    [<span class="st">"age_bande"</span>, <span class="st">"puissant"</span>], observed<span class="op">=</span><span class="va">True</span>)[[<span class="st">"e_gbm"</span>, <span class="st">"e_glm"</span>]].<span class="bu">sum</span>()</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Boosting / GLM, sinistres attendus par âge et puissance (apprentissage) :"</span>)</span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a><span class="bu">print</span>((divergence[<span class="st">"e_gbm"</span>] <span class="op">/</span> divergence[<span class="st">"e_glm"</span>]).unstack().<span class="bu">round</span>(<span class="dv">2</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Boosting / GLM, sinistres attendus par âge et puissance (apprentissage) :
+puissant   4 à 8  9 à 11
+age_bande               
+18-21       0.91    1.10
+22-25       0.87    1.20
+26-30       0.99    1.14
+31-45       0.96    1.00
+46-60       1.04    1.00
+61-70       0.99    0.97
+71-85       1.03    0.97</code></pre>
+</div>
+</div>
+<p>Le boosting prédit plus que le GLM pour les conducteurs de 25 ans ou moins au volant d’un véhicule de puissance 9 à 11 (1,10 chez les 18-21 ans, 1,20 chez les 22-25 ans), et moins pour les mêmes âges avec un véhicule moins puissant (0,91 et 0,87). Ailleurs, les deux modèles s’accordent à 5 % près, sauf les 26-30 ans aux véhicules puissants (1,14). C’est la signature d’une interaction que le GLM n’a pas : l’effet de la puissance n’est pas le même chez les jeunes conducteurs. On l’ajoute au GLM sous la forme la plus simple, une variable « 25 ans ou moins et puissance 9 ou plus ». Sur un vrai portefeuille, on essaierait aussi la frontière de 30 ans que suggère la ligne 26-30.</p>
+<div class="cell" data-execution_count="8" id="3583f2e0">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> (app, tst):</span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a>    d[<span class="st">"jeune_puissant"</span>] <span class="op">=</span> ((d[<span class="st">"age"</span>] <span class="op">&lt;=</span> <span class="dv">25</span>) <span class="op">&amp;</span> (d[<span class="st">"puissance"</span>] <span class="op">&gt;=</span> <span class="dv">9</span>)).astype(<span class="bu">int</span>)</span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a>glm_inter <span class="op">=</span> smf.glm(formule <span class="op">+</span> <span class="st">" + jeune_puissant"</span>, data<span class="op">=</span>app, family<span class="op">=</span>sm.families.Poisson(),</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a>                    offset<span class="op">=</span>np.log(app[<span class="st">"exposure"</span>])).fit()</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a>tst[<span class="st">"freq_glm_inter"</span>] <span class="op">=</span> glm_inter.predict(tst, offset<span class="op">=</span>np.zeros(<span class="bu">len</span>(tst)))</span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a>dev_inter <span class="op">=</span> deviance_poisson(y_tst, tst[<span class="st">"freq_glm_inter"</span>].to_numpy() <span class="op">*</span> e_tst)</span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a></span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a>cellule <span class="op">=</span> app[<span class="st">"jeune_puissant"</span>] <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Case jeune conducteur × véhicule puissant (apprentissage) : </span><span class="sc">{</span>cellule<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> polices, "</span></span>
+<span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>app<span class="sc">.</span>loc[cellule, <span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> sinistres"</span>)</span>
+<span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a></span>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Relativité jeune conducteur × véhicule puissant : </span><span class="sc">{</span>np<span class="sc">.</span>exp(glm_inter.params[<span class="st">'jeune_puissant'</span>])<span class="sc">:.2f}</span><span class="ss"> "</span></span>
+<span id="cb13-13"><a aria-hidden="true" href="#cb13-13" tabindex="-1"></a>      <span class="ss">f"(IC 95 % </span><span class="sc">{</span>np<span class="sc">.</span>exp(glm_inter.conf_int().loc[<span class="st">'jeune_puissant'</span>, <span class="dv">0</span>])<span class="sc">:.2f}</span><span class="ss"> à "</span></span>
+<span id="cb13-14"><a aria-hidden="true" href="#cb13-14" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>exp(glm_inter.conf_int().loc[<span class="st">'jeune_puissant'</span>, <span class="dv">1</span>])<span class="sc">:.2f}</span><span class="ss">)"</span>)</span>
+<span id="cb13-15"><a aria-hidden="true" href="#cb13-15" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb13-16"><a aria-hidden="true" href="#cb13-16" tabindex="-1"></a><span class="co"># Écart de déviance au GLM de P2, avec son écart-type : la somme de 15 128 écarts</span></span>
+<span id="cb13-17"><a aria-hidden="true" href="#cb13-17" tabindex="-1"></a><span class="co"># police par police, dont l'écart-type vaut racine(n) × écart-type d'un écart.</span></span>
+<span id="cb13-18"><a aria-hidden="true" href="#cb13-18" tabindex="-1"></a>reference <span class="op">=</span> contributions(y_tst, tst[<span class="st">"freq_glm"</span>].to_numpy() <span class="op">*</span> e_tst)</span>
+<span id="cb13-19"><a aria-hidden="true" href="#cb13-19" tabindex="-1"></a>modeles <span class="op">=</span> {<span class="st">"tarif uniforme"</span>: (freq_app <span class="op">*</span> e_tst, <span class="st">"1 paramètre"</span>),</span>
+<span id="cb13-20"><a aria-hidden="true" href="#cb13-20" tabindex="-1"></a>           <span class="st">"GLM de P2"</span>: (tst[<span class="st">"freq_glm"</span>].to_numpy() <span class="op">*</span> e_tst, <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(glm.params)<span class="sc">}</span><span class="ss"> paramètres"</span>),</span>
+<span id="cb13-21"><a aria-hidden="true" href="#cb13-21" tabindex="-1"></a>           <span class="st">"GLM + interaction"</span>: (tst[<span class="st">"freq_glm_inter"</span>].to_numpy() <span class="op">*</span> e_tst, <span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(glm_inter.params)<span class="sc">}</span><span class="ss"> paramètres"</span>),</span>
+<span id="cb13-22"><a aria-hidden="true" href="#cb13-22" tabindex="-1"></a>           <span class="st">"boosting"</span>: (tst[<span class="st">"freq_gbm"</span>].to_numpy() <span class="op">*</span> e_tst, <span class="ss">f"</span><span class="sc">{</span>gbm<span class="sc">.</span>n_iter_<span class="sc">}</span><span class="ss"> arbres"</span>)}</span>
+<span id="cb13-23"><a aria-hidden="true" href="#cb13-23" tabindex="-1"></a>lignes <span class="op">=</span> {}</span>
+<span id="cb13-24"><a aria-hidden="true" href="#cb13-24" tabindex="-1"></a><span class="cf">for</span> nom, (mu, taille) <span class="kw">in</span> modeles.items():</span>
+<span id="cb13-25"><a aria-hidden="true" href="#cb13-25" tabindex="-1"></a>    ecarts <span class="op">=</span> contributions(y_tst, mu) <span class="op">-</span> reference</span>
+<span id="cb13-26"><a aria-hidden="true" href="#cb13-26" tabindex="-1"></a>    lignes[nom] <span class="op">=</span> {<span class="st">"taille"</span>: taille, <span class="st">"déviance de test"</span>: ecarts.<span class="bu">sum</span>() <span class="op">+</span> reference.<span class="bu">sum</span>(),</span>
+<span id="cb13-27"><a aria-hidden="true" href="#cb13-27" tabindex="-1"></a>                   <span class="st">"écart au GLM de P2"</span>: ecarts.<span class="bu">sum</span>(),</span>
+<span id="cb13-28"><a aria-hidden="true" href="#cb13-28" tabindex="-1"></a>                   <span class="st">"écart-type de l'écart"</span>: np.sqrt(<span class="bu">len</span>(ecarts)) <span class="op">*</span> ecarts.std(),</span>
+<span id="cb13-29"><a aria-hidden="true" href="#cb13-29" tabindex="-1"></a>                   <span class="st">"Gini de test"</span>: gini(tst.assign(m<span class="op">=</span>mu <span class="op">/</span> e_tst), <span class="st">"m"</span>) <span class="cf">if</span> np.ptp(mu <span class="op">/</span> e_tst) <span class="op">&gt;</span> <span class="fl">1e-9</span> <span class="cf">else</span> <span class="fl">0.0</span>}</span>
+<span id="cb13-30"><a aria-hidden="true" href="#cb13-30" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame.from_dict(lignes, orient<span class="op">=</span><span class="st">"index"</span>).to_string(float_format<span class="op">=</span><span class="kw">lambda</span> v: <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:,.3f}</span><span class="ss">"</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Case jeune conducteur × véhicule puissant (apprentissage) : 1,472 polices, 295 sinistres
+Relativité jeune conducteur × véhicule puissant : 1.37 (IC 95 % 1.15 à 1.62)
+
+                          taille  déviance de test  écart au GLM de P2  écart-type de l'écart  Gini de test
+tarif uniforme       1 paramètre         6,187.535             258.354                 36.497         0.000
+GLM de P2          17 paramètres         5,929.181               0.000                  0.000         0.239
+GLM + interaction  18 paramètres         5,916.097             -13.083                  5.120         0.241
+boosting               91 arbres         5,946.313              17.133                 15.976         0.229</code></pre>
+</div>
+</div>
+<p>La relativité de l’interaction vaut 1,37 (IC 95 % de 1,15 à 1,62). La simulation avait mis <span class="math inline">\(e^{0{,}5} = 1{,}65\)</span>, juste au-dessus de l’intervalle. Les bandes n’y sont pour rien : la frontière de 25 ans du GLM est celle de la simulation. C’est l’aléa d’une case qui ne porte que 295 sinistres en apprentissage, et un intervalle à 95 % laisse la vraie valeur dehors une fois sur vingt. Sur un vrai portefeuille, la vraie valeur est inconnue : on retient l’intervalle, pas le point.</p>
+<p>Le tableau tranche. Le GLM avec interaction est le meilleur des quatre (déviance de 5 916,1, Gini de 0,241), et son écart au GLM de P2 (-13,1) vaut 2,6 fois son écart-type (5,1) : il tient. L’écart du boosting (+17,1, pour un écart-type de 16,0) ne se distingue pas du bruit : le boosting n’est ni meilleur ni nettement moins bon que le GLM de P2. Son apport est ailleurs : il a montré où chercher. Un paramètre de plus, écrit et justifiable, fait mieux que 91 arbres.</p>
+</section>
+<section class="level3" data-number="7.4.5" id="étape-5.-décider-en-revue-tarifaire">
+<h3 class="anchored" data-anchor-id="étape-5.-décider-en-revue-tarifaire" data-number="7.4.5"> Étape 5. Décider en revue tarifaire</h3>
+<p>Matrice de décision à partager avec l’équipe. La première ligne vient de la sortie ci-dessus ; les autres sont des propriétés des méthodes, à rediscuter sur chaque portefeuille.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+<col style="width: 25%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Critère</th>
+<th>GLM (+ interaction)</th>
+<th>Boosting</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Performance hors échantillon (ce portefeuille)</strong></td>
+<td>Déviance de test 5 916,1 avec l’interaction, 5 929,2 sans</td>
+<td>5 946,3, pas mieux que le GLM de P2 à l’écart-type près</td>
+<td>GLM + interaction, trouvée grâce au boosting</td>
+</tr>
+<tr class="even">
+<td><strong>Interprétabilité</strong></td>
+<td>Une relativité par modalité, lisible dans la note</td>
+<td>Effets à reconstituer (dépendances partielles, SHAP)</td>
+<td>GLM</td>
+</tr>
+<tr class="odd">
+<td><strong>Explicabilité devant la fonction actuarielle et en cas de contrôle</strong></td>
+<td>Chaque coefficient se justifie</td>
+<td>Demande un dossier d’explicabilité</td>
+<td>GLM</td>
+</tr>
+<tr class="even">
+<td><strong>Stabilité d’une année sur l’autre</strong></td>
+<td>Coefficients qui bougent peu à structure égale</td>
+<td>Arbres qui peuvent changer à chaque réajustement</td>
+<td>GLM</td>
+</tr>
+<tr class="odd">
+<td><strong>Lissage commercial entre profils voisins</strong></td>
+<td>Naturel, par bandes</td>
+<td>Des sauts possibles entre profils voisins</td>
+<td>GLM</td>
+</tr>
+<tr class="even">
+<td><strong>Interactions non déclarées</strong></td>
+<td>À ajouter à la main</td>
+<td>Trouvées sans les déclarer</td>
+<td>Boosting</td>
+</tr>
+<tr class="odd">
+<td><strong>Coût de mise en place</strong></td>
+<td>Modéré</td>
+<td>Réglages, validation, documentation</td>
+<td>GLM</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommandation type en revue tarifaire</strong> : garder le <strong>GLM en référence</strong>, et utiliser le <strong>boosting en détecteur</strong> : il montre les interactions que le GLM a oubliées, qu’on ajoute ensuite explicitement à la formule si elles ont un sens métier. On cumule ainsi l’essentiel de la performance et la défendabilité d’une structure à relativités. Les tarifs auto sont libres : l’ACPR ne les homologue pas, elle contrôle a posteriori, et le règlement européen sur l’IA ne classe pas la tarification auto parmi les systèmes à haut risque (l’annexe III, point 5 c, vise l’assurance vie et maladie). La défendabilité se joue donc devant la revue interne et la fonction actuarielle, et dans le dossier que l’on produit en cas de contrôle.</p>
+<p><strong>Cas où le boosting peut gagner sa place en production</strong> : des portefeuilles très grands, avec beaucoup de variables et des interactions nombreuses qu’on ne peut pas toutes écrire à la main, quand l’organisme accepte d’outiller l’explicabilité et le suivi dans le temps.</p>
+</section>
+</section>
+<section class="level2" data-number="7.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="7.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>La première version de cette fiche n’ajustait pas de GLM : la « référence » était la fréquence moyenne de chaque segment âge × bonus-malus × zone de l’apprentissage, appliquée au test. La sortie affichait :</p>
+<blockquote class="blockquote">
+<p><em>“Déviance Poisson hors échantillon (baseline) : inf”</em></p>
+</blockquote>
+<p>et la prose concluait au gain du challenger. D’où vient ce <code>inf</code>, et qu’en conclure ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Un segment sans sinistre en apprentissage reçoit une fréquence prédite nulle. Si une police de ce segment a un sinistre dans le test, la déviance de Poisson contient <span class="math inline">\(y \log(y / 0)\)</span> : elle est infinie, et tout « gain » calculé contre elle n’a pas de sens. Le bloc ci-dessous le mesure sur ce portefeuille.</p>
+<div class="cell" data-execution_count="9" id="212c177c">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>segments <span class="op">=</span> app.groupby([<span class="st">"age_bande"</span>, <span class="st">"bm_bande"</span>, <span class="st">"zone"</span>], observed<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>    sinistres<span class="op">=</span>(<span class="st">"nb_sinistres"</span>, <span class="st">"sum"</span>), exposition<span class="op">=</span>(<span class="st">"exposure"</span>, <span class="st">"sum"</span>))</span>
+<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a>segments[<span class="st">"freq_segment"</span>] <span class="op">=</span> segments[<span class="st">"sinistres"</span>] <span class="op">/</span> segments[<span class="st">"exposition"</span>]</span>
+<span id="cb15-4"><a aria-hidden="true" href="#cb15-4" tabindex="-1"></a>t <span class="op">=</span> tst.join(segments[<span class="st">"freq_segment"</span>], on<span class="op">=</span>[<span class="st">"age_bande"</span>, <span class="st">"bm_bande"</span>, <span class="st">"zone"</span>])</span>
+<span id="cb15-5"><a aria-hidden="true" href="#cb15-5" tabindex="-1"></a>t[<span class="st">"freq_segment"</span>] <span class="op">=</span> t[<span class="st">"freq_segment"</span>].fillna(freq_app)    <span class="co"># segment absent de l'apprentissage</span></span>
+<span id="cb15-6"><a aria-hidden="true" href="#cb15-6" tabindex="-1"></a>nuls <span class="op">=</span> t[<span class="st">"freq_segment"</span>] <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb15-7"><a aria-hidden="true" href="#cb15-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Segments : </span><span class="sc">{</span><span class="bu">len</span>(segments)<span class="sc">}</span><span class="ss">, dont </span><span class="sc">{</span>(segments[<span class="st">'sinistres'</span>] <span class="op">==</span> <span class="dv">0</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> sans aucun sinistre en apprentissage"</span>)</span>
+<span id="cb15-8"><a aria-hidden="true" href="#cb15-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices du test dans ces segments : </span><span class="sc">{</span>nuls<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">, sinistres du test qu'elles portent : </span><span class="sc">{</span>t<span class="sc">.</span>loc[nuls, <span class="st">'nb_sinistres'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-9"><a aria-hidden="true" href="#cb15-9" tabindex="-1"></a><span class="cf">with</span> np.errstate(divide<span class="op">=</span><span class="st">"ignore"</span>, invalid<span class="op">=</span><span class="st">"ignore"</span>):</span>
+<span id="cb15-10"><a aria-hidden="true" href="#cb15-10" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Déviance de test de la moyenne par segment : </span><span class="sc">{</span>deviance_poisson(y_tst, t[<span class="st">'freq_segment'</span>].to_numpy() <span class="op">*</span> e_tst)<span class="sc">:,.1f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Segments : 142, dont 26 sans aucun sinistre en apprentissage
+Polices du test dans ces segments : 49, sinistres du test qu'elles portent : 7
+Déviance de test de la moyenne par segment : inf</code></pre>
+</div>
+</div>
+<p>142 segments, dont 26 sans aucun sinistre en apprentissage. 49 polices du test tombent dans ces segments et portent 7 sinistres : leur fréquence prédite est nulle, et la déviance de test est infinie. Un seul sinistre dans un segment prédit à zéro suffit. Il n’y a rien à conclure contre une telle référence, et surtout pas le gain du challenger : la sortie disait <code>inf</code>, la prose aurait dû s’arrêter là. La bonne référence est un vrai GLM (étape 2), ou une moyenne par segment lissée vers la moyenne du portefeuille (crédibilité).</p>
+</details>
+</section>
+<section class="level2" data-number="7.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="7.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Comparer sans échantillon de test.</strong> Évalué sur les données d’apprentissage, le modèle le plus souple paraît le meilleur, parce qu’il a pu apprendre le bruit. <strong>Toujours évaluer hors échantillon</strong>, sur des polices mises de côté avant tout réglage, et régler les hyperparamètres sur une validation interne ou par validation croisée.</li>
+<li><strong>Ne pas régulariser le boosting.</strong> Taille minimale des feuilles, pénalité, nombre d’arbres réglé par arrêt anticipé : sans eux, il apprend le bruit.</li>
+<li><strong>Oublier l’exposition dans le boosting.</strong> XGBoost la prend en offset par <code>base_margin = log(exposure)</code> ; scikit-learn par la fréquence en cible et l’exposition en poids. Sans, le modèle ajuste des nombres de sinistres par ligne.</li>
+<li><strong>Prendre une moyenne par segment pour un GLM.</strong> Un segment sans sinistre prédit une fréquence nulle et la déviance de test devient infinie (exercice ci-dessus). Un vrai GLM, ou un lissage vers la moyenne, donne une référence qui se compare.</li>
+<li><strong>Confondre interprétabilité et SHAP.</strong> SHAP donne une décomposition de chaque prédiction, pas une relativité globale défendable comme un coefficient de GLM. En revue, c’est un complément, pas un substitut.</li>
+<li><strong>Recommander le boosting parce qu’il gagne en métrique.</strong> La défendabilité commerciale et réglementaire compte autant que la performance. Le LLM aura tendance à privilégier le modèle le plus performant ; il faut lui rappeler les contraintes métier.</li>
+</ul>
+</section>
+<section class="level2" data-number="7.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="7.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>P2 GLM Poisson</strong> : la référence comparée ici, sur le même découpage.</li>
+<li><strong>P4 Prime pure Tweedie</strong> : l’autre comparaison de méthodes de la famille pricing, sur la prime pure.</li>
+<li><strong>Atelier « Exploration et modélisation »</strong> : l’étape « comparer à plus simple, puis à plus complexe » de la démarche B.</li>
+</ul>
+</section>
+<section class="level2" data-number="7.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="7.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>LightGBM</strong> : alternative à XGBoost, de la même famille que l’estimateur de scikit-learn utilisé ici. Comparer sur votre portefeuille, avec la même discipline de découpage.</li>
+<li><strong>SHAP</strong> pour l’explicabilité locale : <code>pip install shap</code>. Il produit une explication par police, utile en service client, à documenter en complément de la méthodologie globale.</li>
+<li><strong>Double lift</strong> : trier les polices du test par le rapport boosting / GLM, et comparer, par décile de ce rapport, l’observé à chacun des deux modèles. C’est la vue qui dit lequel a raison là où ils divergent.</li>
+<li><strong>Modèles hybrides GLM-ML</strong> : un GLM dont l’offset est la prédiction d’un boosting, ou un boosting sur les résidus du GLM. Demander à Claude : <em>“propose des architectures hybrides GLM et boosting pour ce portefeuille, et ce que chacune coûte en explicabilité”</em>.</li>
+<li><strong>En vrai sur freMTPL2freq</strong> : chargement et renommage des colonnes dans la fiche P1 ; Noll, Salzmann et Wüthrich (2018) y comparent GLM, arbres, boosting et réseaux de neurones sur la même métrique de déviance hors échantillon.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/P4/index.html"><small>&larr; Précédent</small>P4. Prime pure Tweedie et bandes commerciales</a><a class="next" href="../../bibliotheque/P6/index.html"><small>Suivant &rarr;</small>P6. Une loi de sévérité sur des sinistres tronqués et censurés</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

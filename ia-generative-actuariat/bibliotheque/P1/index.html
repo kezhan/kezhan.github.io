@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P1. Analyse univariée d’un portefeuille auto · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">P1. Analyse univariée d’un portefeuille auto</h1>
+      <p class="lede">Cette fiche illustre la démarche A (explorer une donnée nouvelle) sur le cas d’un portefeuille auto. Ce que vous apprenez ici n’est pas l’analyse univariée actuarielle (vous savez), mais comment organiser la donnée pour le LLM, comment prompter pour les premières vues, et comment éviter le piège classique du dataset entier collé dans le chat.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : A, explorer une donnée nouvelle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="3.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="3.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Toute mission de pricing auto commence par la même étape : ouvrir le fichier, comprendre la structure, vérifier la qualité, sortir les premières vues de la sinistralité par variable explicative. Cette étape conditionne la suite : sans bonne univariée, le GLM qui vient après part dans le brouillard.</p>
+<p>Ce cas est volontairement <strong>débutant</strong>. Pas de modèle, pas de calibration, juste l’exploration. C’est le cas idéal pour un premier atelier libre le premier jour, après l’installation et le premier dialogue.</p>
+</section>
+<section class="level2" data-number="3.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="3.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le jeu public de référence est <strong>freMTPL2freq</strong> (package R <code>CASdatasets</code>, aussi publié sur OpenML sous l’identifiant 41214) : 678 013 contrats de responsabilité civile auto français, avec le nombre de sinistres (<code>ClaimNb</code>), l’exposition (<code>Exposure</code>), l’âge du conducteur (<code>DrivAge</code>), le coefficient bonus-malus (<code>BonusMalus</code>), la puissance (<code>VehPower</code>), la zone de densité (<code>Area</code>, de A à F) et d’autres variables. Pour que la fiche tourne sans téléchargement, on simule un portefeuille de même structure.</p>
+<p>La simulation est commune aux fiches P1 à P5 : même code, même graine, mêmes polices. Elle suit ce qu’on attend d’un portefeuille auto : une fréquence en U selon l’âge, les jeunes conducteurs les plus risqués ; une fréquence croissante avec la densité de la zone ; un bonus-malus qui prédit la fréquence parce qu’il résume des sinistres passés, eux-mêmes tirés d’un risque propre au conducteur que le tarif ne voit pas. Les fiches P3 et P4 y ajoutent le coût de chaque sinistre.</p>
+<div class="cell" data-execution_count="1" id="fb45abbe">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">50_000</span>  <span class="co"># le vrai freMTPL2freq compte 678 013 lignes</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>age <span class="op">=</span> rng.integers(<span class="dv">18</span>, <span class="dv">86</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>puissance <span class="op">=</span> rng.integers(<span class="dv">4</span>, <span class="dv">12</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>zone <span class="op">=</span> rng.choice(<span class="bu">list</span>(<span class="st">"ABCDEF"</span>), size<span class="op">=</span>N, p<span class="op">=</span>[<span class="fl">0.12</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.20</span>, <span class="fl">0.10</span>])  <span class="co"># A rural, F urbain dense</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="co"># 60 % des contrats présents toute l'année, les autres entrés ou sortis en cours d'année</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>exposure <span class="op">=</span> np.where(rng.random(N) <span class="op">&lt;</span> <span class="fl">0.6</span>, <span class="fl">1.0</span>, rng.uniform(<span class="fl">0.05</span>, <span class="fl">1.0</span>, size<span class="op">=</span>N)).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="co"># Risque propre au conducteur, que le tarif ne voit pas (moyenne 1). Il fait les</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="co"># sinistres passés, donc le bonus-malus, et les sinistres de l'année : c'est par lui</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="co"># que le bonus-malus prédit la fréquence.</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>risque_cache <span class="op">=</span> rng.gamma(shape<span class="op">=</span><span class="fl">2.0</span>, scale<span class="op">=</span><span class="fl">0.5</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>sinistres_passes <span class="op">=</span> rng.poisson(<span class="fl">0.25</span> <span class="op">*</span> risque_cache)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="co"># Bonus-malus à la française (clause type de l'article A121-1 du Code des assurances) :</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="co"># 100 au permis, 0,95 par an sans sinistre responsable, plancher 50, 1,25 par</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="co"># sinistre responsable, plafond 350.</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>plancher <span class="op">=</span> np.maximum(<span class="dv">50</span>, <span class="dv">100</span> <span class="op">*</span> <span class="fl">0.95</span> <span class="op">**</span> (age <span class="op">-</span> <span class="dv">18</span>))</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>bonus_malus <span class="op">=</span> np.minimum(<span class="dv">350</span>, np.<span class="bu">round</span>(plancher <span class="op">*</span> <span class="fl">1.25</span> <span class="op">**</span> sinistres_passes)).astype(<span class="bu">int</span>)</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a><span class="co"># Fréquence annuelle : en U selon l'âge (jeunes conducteurs les plus risqués, remontée</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="co"># après 70 ans), croissante avec la densité, un peu avec la puissance, et plus forte</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="co"># pour un conducteur de 25 ans ou moins au volant d'un véhicule puissant.</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>effet_zone <span class="op">=</span> pd.Series(zone).<span class="bu">map</span>({<span class="st">"A"</span>: <span class="op">-</span><span class="fl">0.30</span>, <span class="st">"B"</span>: <span class="op">-</span><span class="fl">0.15</span>, <span class="st">"C"</span>: <span class="fl">0.0</span>,</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>                                  <span class="st">"D"</span>: <span class="fl">0.10</span>, <span class="st">"E"</span>: <span class="fl">0.25</span>, <span class="st">"F"</span>: <span class="fl">0.40</span>}).to_numpy()</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>log_freq <span class="op">=</span> (np.log(<span class="fl">0.07</span>)</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">1.1</span> <span class="op">*</span> np.exp(<span class="op">-</span>(age <span class="op">-</span> <span class="dv">18</span>) <span class="op">/</span> <span class="dv">6</span>)</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> np.maximum(age <span class="op">-</span> <span class="dv">70</span>, <span class="dv">0</span>)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> (puissance <span class="op">-</span> <span class="dv">6</span>)</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> ((age <span class="op">&lt;=</span> <span class="dv">25</span>) <span class="op">&amp;</span> (puissance <span class="op">&gt;=</span> <span class="dv">9</span>))</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>            <span class="op">+</span> effet_zone</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>            <span class="op">+</span> np.log(risque_cache))</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>nb_sinistres <span class="op">=</span> rng.poisson(np.exp(log_freq) <span class="op">*</span> exposure)</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a></span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>polices <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>    <span class="st">"age"</span>: age,</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    <span class="st">"bonus_malus"</span>: bonus_malus,</span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>    <span class="st">"puissance"</span>: puissance,</span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>    <span class="st">"zone"</span>: zone,</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>    <span class="st">"exposure"</span>: exposure,</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>    <span class="st">"nb_sinistres"</span>: nb_sinistres,</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>})</span></code></pre></div></div>
+</div>
+</section>
+<section class="level2" data-number="3.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="3.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention, en bottom-up
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Décrire.</strong> <em>“Lis le DataFrame <code>polices</code>. Décris la structure : combien de polices, quelles colonnes, quelles plages, quelles valeurs typiques. Identifie la cible et l’exposition.”</em></p></li>
+<li><p><strong>Vérifier la qualité.</strong> <em>“Y a-t-il des valeurs manquantes ? Des doublons ? Des valeurs incohérentes (âge hors plage, exposure nulle ou supérieure à 1, nb_sinistres irréalistes) ? Rapporte par colonne.”</em></p></li>
+<li><p><strong>Tableau de bord global.</strong> <em>“Sors-moi un tableau avec : nombre total de polices, total des sinistres, exposition totale, fréquence moyenne (sinistres/exposure), répartition de l’exposition par zone. Format synthétique.”</em></p></li>
+<li><p><strong>Sinistralité par variable.</strong> <em>“Pour chaque variable explicative (<code>age</code>, <code>bonus_malus</code>, <code>puissance</code>, <code>zone</code>), trace la fréquence observée (sinistres/exposure) par classe, avec l’exposition de chaque classe. Grille 2x2 de graphiques.”</em></p></li>
+<li><p><strong>Premier diagnostic.</strong> <em>“En regardant ces graphiques, qu’est-ce qui ressort ? Quelle variable semble la plus discriminante ? Y a-t-il des effets non monotones, ou des variables liées entre elles, qui mériteraient de creuser ?”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="3.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="3.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="3.4.1" id="étape-1.-décrire-le-dataset">
+<h3 class="anchored" data-anchor-id="étape-1.-décrire-le-dataset" data-number="3.4.1"> Étape 1. Décrire le dataset</h3>
+<div class="cell" data-execution_count="2" id="16dccb36">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Nombre de polices : </span><span class="sc">{</span><span class="bu">len</span>(polices)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Colonnes : </span><span class="sc">{</span><span class="bu">list</span>(polices.columns)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a><span class="bu">print</span>(polices.dtypes)</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>polices.head()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nombre de polices : 50,000
+Colonnes : ['age', 'bonus_malus', 'puissance', 'zone', 'exposure', 'nb_sinistres']
+
+age               int64
+bonus_malus       int64
+puissance         int64
+zone             object
+exposure        float64
+nb_sinistres      int64
+dtype: object
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">bonus_malus</th>
+<th data-quarto-table-cell-role="th">puissance</th>
+<th data-quarto-table-cell-role="th">zone</th>
+<th data-quarto-table-cell-role="th">exposure</th>
+<th data-quarto-table-cell-role="th">nb_sinistres</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>24</td>
+<td>74</td>
+<td>4</td>
+<td>E</td>
+<td>0.851</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>70</td>
+<td>50</td>
+<td>11</td>
+<td>C</td>
+<td>0.766</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>62</td>
+<td>50</td>
+<td>8</td>
+<td>D</td>
+<td>1.000</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>47</td>
+<td>62</td>
+<td>11</td>
+<td>B</td>
+<td>1.000</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>47</td>
+<td>50</td>
+<td>7</td>
+<td>D</td>
+<td>0.747</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="3" id="02f91d85">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="bu">print</span>(polices.describe().<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             age  bonus_malus  puissance   exposure  nb_sinistres
+count  50000.000    50000.000  50000.000  50000.000     50000.000
+mean      51.462       58.306      7.503      0.812         0.080
+std       19.644       14.882      2.291      0.289         0.296
+min       18.000       50.000      4.000      0.050         0.000
+25%       34.000       50.000      6.000      0.646         0.000
+50%       52.000       50.000      8.000      1.000         0.000
+75%       68.000       62.000      9.000      1.000         0.000
+max       85.000      249.000     11.000      1.000         4.000</code></pre>
+</div>
+</div>
+<p>Une ligne par police, six colonnes. La cible est <code>nb_sinistres</code>, l’exposition <code>exposure</code> (en années). Le coefficient bonus-malus est à 50 pour plus de la moitié du portefeuille (médiane 50) : c’est la forme attendue, la plupart des conducteurs expérimentés sont au plancher. Le nombre de sinistres va de 0 à 4, l’exposition de 0,05 à 1 an.</p>
+</section>
+<section class="level3" data-number="3.4.2" id="étape-2.-vérifier-la-qualité">
+<h3 class="anchored" data-anchor-id="étape-2.-vérifier-la-qualité" data-number="3.4.2"> Étape 2. Vérifier la qualité</h3>
+<div class="cell" data-execution_count="4" id="f070f619">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Valeurs manquantes par colonne :"</span>)</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a><span class="bu">print</span>(polices.isnull().<span class="bu">sum</span>())</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Lignes identiques sur toutes les colonnes : </span><span class="sc">{</span>polices<span class="sc">.</span>duplicated()<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Plages des variables numériques :"</span>)</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> [<span class="st">"age"</span>, <span class="st">"bonus_malus"</span>, <span class="st">"puissance"</span>, <span class="st">"exposure"</span>, <span class="st">"nb_sinistres"</span>]:</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>col<span class="sc">:15}</span><span class="ss"> : min=</span><span class="sc">{</span>polices[col]<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss">, max=</span><span class="sc">{</span>polices[col]<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Cohérence métier :"</span>)</span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  age dans [18, 100]      : </span><span class="sc">{</span>polices[<span class="st">'age'</span>]<span class="sc">.</span>between(<span class="dv">18</span>, <span class="dv">100</span>)<span class="sc">.</span><span class="bu">all</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  exposure dans (0, 1]    : </span><span class="sc">{</span>polices[<span class="st">'exposure'</span>]<span class="sc">.</span>between(<span class="dv">0</span>, <span class="dv">1</span>, inclusive<span class="op">=</span><span class="st">'right'</span>)<span class="sc">.</span><span class="bu">all</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  bonus_malus dans [50, 350] : </span><span class="sc">{</span>polices[<span class="st">'bonus_malus'</span>]<span class="sc">.</span>between(<span class="dv">50</span>, <span class="dv">350</span>)<span class="sc">.</span><span class="bu">all</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  nb_sinistres &gt;= 0       : </span><span class="sc">{</span>(polices[<span class="st">'nb_sinistres'</span>] <span class="op">&gt;=</span> <span class="dv">0</span>)<span class="sc">.</span><span class="bu">all</span>()<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Valeurs manquantes par colonne :
+age             0
+bonus_malus     0
+puissance       0
+zone            0
+exposure        0
+nb_sinistres    0
+dtype: int64
+
+Lignes identiques sur toutes les colonnes : 21487
+
+Plages des variables numériques :
+  age             : min=18, max=85
+  bonus_malus     : min=50, max=249
+  puissance       : min=4, max=11
+  exposure        : min=0.05, max=1.0
+  nb_sinistres    : min=0, max=4
+
+Cohérence métier :
+  age dans [18, 100]      : True
+  exposure dans (0, 1]    : True
+  bonus_malus dans [50, 350] : True
+  nb_sinistres &gt;= 0       : True</code></pre>
+</div>
+</div>
+<p>Pas de valeur manquante, plages cohérentes. La sortie compte en revanche 21 487 lignes identiques sur toutes les colonnes, plus de quatre sur dix. Ce n’est pas une anomalie ici : sans identifiant de police, deux conducteurs de même âge, même coefficient, même puissance, même zone, présents toute l’année et sans sinistre produisent la même ligne, et c’est le cas le plus courant. Un doublon se juge au grain de la table : ici une ligne par police, donc on contrôle l’unicité de l’identifiant de police, et c’est un doublon d’identifiant qui doit alerter. Le dataset est exploitable, on passe à l’exploration.</p>
+</section>
+<section class="level3" data-number="3.4.3" id="étape-3.-tableau-de-bord-global">
+<h3 class="anchored" data-anchor-id="étape-3.-tableau-de-bord-global" data-number="3.4.3"> Étape 3. Tableau de bord global</h3>
+<div class="cell" data-execution_count="5" id="d76cd235">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>total_polices <span class="op">=</span> <span class="bu">len</span>(polices)</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>total_sinistres <span class="op">=</span> polices[<span class="st">"nb_sinistres"</span>].<span class="bu">sum</span>()</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>total_exposure <span class="op">=</span> polices[<span class="st">"exposure"</span>].<span class="bu">sum</span>()</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>freq_moyenne <span class="op">=</span> total_sinistres <span class="op">/</span> total_exposure</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a></span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Tableau de bord global ==="</span>)</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Polices              : </span><span class="sc">{</span>total_polices<span class="sc">:&gt;10,}</span><span class="ss">"</span>)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sinistres            : </span><span class="sc">{</span>total_sinistres<span class="sc">:&gt;10,}</span><span class="ss">"</span>)</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exposure (années)    : </span><span class="sc">{</span>total_exposure<span class="sc">:&gt;10,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Fréquence moyenne    : </span><span class="sc">{</span>freq_moyenne<span class="sc">:&gt;10.4f}</span><span class="ss">"</span>)</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Répartition de l'exposition par zone (%) :"</span>)</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a><span class="bu">print</span>((<span class="dv">100</span> <span class="op">*</span> polices.groupby(<span class="st">"zone"</span>)[<span class="st">"exposure"</span>].<span class="bu">sum</span>() <span class="op">/</span> total_exposure).<span class="bu">round</span>(<span class="dv">1</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Tableau de bord global ===
+Polices              :     50,000
+Sinistres            :      4,014
+Exposure (années)    :     40,575
+Fréquence moyenne    :     0.0989
+
+Répartition de l'exposition par zone (%) :
+zone
+A    11.9
+B    12.0
+C    22.1
+D    24.3
+E    19.7
+F    10.1
+Name: exposure, dtype: float64</code></pre>
+</div>
+</div>
+<p>50 000 polices, 4 014 sinistres, 40 575 années d’exposition : la fréquence moyenne est de 0,0989 sinistre par an. La zone D porte le quart de l’exposition, les zones A et F un peu plus d’un dixième chacune.</p>
+</section>
+<section class="level3" data-number="3.4.4" id="étape-4.-sinistralité-par-variable">
+<h3 class="anchored" data-anchor-id="étape-4.-sinistralité-par-variable" data-number="3.4.4"> Étape 4. Sinistralité par variable</h3>
+<div class="cell" data-execution_count="6" id="cell-fig-univariate-p1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="kw">def</span> frequency_by(df, col, bins<span class="op">=</span><span class="va">None</span>, labels<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>    <span class="cf">if</span> bins <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>        cle <span class="op">=</span> pd.cut(df[col], bins<span class="op">=</span>bins, labels<span class="op">=</span>labels)</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>        cle <span class="op">=</span> df[col]</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>    g <span class="op">=</span> df.groupby(cle, observed<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>        sinistres<span class="op">=</span>(<span class="st">"nb_sinistres"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>        exposure<span class="op">=</span>(<span class="st">"exposure"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>    )</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a>    g[<span class="st">"freq"</span>] <span class="op">=</span> g[<span class="st">"sinistres"</span>] <span class="op">/</span> g[<span class="st">"exposure"</span>]</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>    <span class="cf">return</span> g</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a>vues <span class="op">=</span> {</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>    <span class="st">"Âge du conducteur"</span>: frequency_by(polices, <span class="st">"age"</span>, bins<span class="op">=</span>[<span class="dv">17</span>, <span class="dv">21</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">85</span>],</span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>                                      labels<span class="op">=</span>[<span class="st">"18-21"</span>, <span class="st">"22-25"</span>, <span class="st">"26-30"</span>, <span class="st">"31-45"</span>, <span class="st">"46-60"</span>, <span class="st">"61-70"</span>, <span class="st">"71-85"</span>]),</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>    <span class="st">"Coefficient bonus-malus"</span>: frequency_by(polices, <span class="st">"bonus_malus"</span>, bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">80</span>, <span class="dv">100</span>, <span class="dv">350</span>],</span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a>                                            labels<span class="op">=</span>[<span class="st">"50"</span>, <span class="st">"51-60"</span>, <span class="st">"61-80"</span>, <span class="st">"81-100"</span>, <span class="st">"plus de 100"</span>]),</span>
+<span id="cb10-18"><a aria-hidden="true" href="#cb10-18" tabindex="-1"></a>    <span class="st">"Puissance du véhicule"</span>: frequency_by(polices, <span class="st">"puissance"</span>),</span>
+<span id="cb10-19"><a aria-hidden="true" href="#cb10-19" tabindex="-1"></a>    <span class="st">"Zone (A rural, F urbain dense)"</span>: frequency_by(polices, <span class="st">"zone"</span>),</span>
+<span id="cb10-20"><a aria-hidden="true" href="#cb10-20" tabindex="-1"></a>}</span>
+<span id="cb10-21"><a aria-hidden="true" href="#cb10-21" tabindex="-1"></a></span>
+<span id="cb10-22"><a aria-hidden="true" href="#cb10-22" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb10-23"><a aria-hidden="true" href="#cb10-23" tabindex="-1"></a><span class="cf">for</span> ax, (titre, g) <span class="kw">in</span> <span class="bu">zip</span>(axes.flat, vues.items()):</span>
+<span id="cb10-24"><a aria-hidden="true" href="#cb10-24" tabindex="-1"></a>    x <span class="op">=</span> <span class="bu">range</span>(<span class="bu">len</span>(g))</span>
+<span id="cb10-25"><a aria-hidden="true" href="#cb10-25" tabindex="-1"></a>    ax.bar(x, g[<span class="st">"freq"</span>], color<span class="op">=</span><span class="st">"#1d4ed8"</span>)</span>
+<span id="cb10-26"><a aria-hidden="true" href="#cb10-26" tabindex="-1"></a>    <span class="cf">for</span> xi, (f, e) <span class="kw">in</span> <span class="bu">zip</span>(x, <span class="bu">zip</span>(g[<span class="st">"freq"</span>], g[<span class="st">"exposure"</span>])):</span>
+<span id="cb10-27"><a aria-hidden="true" href="#cb10-27" tabindex="-1"></a>        ax.text(xi, f, <span class="ss">f"</span><span class="sc">{</span>e<span class="sc">:,.0f}</span><span class="ss">"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>), ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"bottom"</span>, fontsize<span class="op">=</span><span class="dv">8</span>, color<span class="op">=</span><span class="st">"#475569"</span>)</span>
+<span id="cb10-28"><a aria-hidden="true" href="#cb10-28" tabindex="-1"></a>    ax.set_xticks(<span class="bu">list</span>(x))</span>
+<span id="cb10-29"><a aria-hidden="true" href="#cb10-29" tabindex="-1"></a>    ax.set_xticklabels([<span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> g.index])</span>
+<span id="cb10-30"><a aria-hidden="true" href="#cb10-30" tabindex="-1"></a>    ax.set_title(titre)</span>
+<span id="cb10-31"><a aria-hidden="true" href="#cb10-31" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Sinistres / exposition"</span>)</span>
+<span id="cb10-32"><a aria-hidden="true" href="#cb10-32" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-33"><a aria-hidden="true" href="#cb10-33" tabindex="-1"></a>plt.show()</span>
+<span id="cb10-34"><a aria-hidden="true" href="#cb10-34" tabindex="-1"></a></span>
+<span id="cb10-35"><a aria-hidden="true" href="#cb10-35" tabindex="-1"></a><span class="cf">for</span> titre, g <span class="kw">in</span> vues.items():</span>
+<span id="cb10-36"><a aria-hidden="true" href="#cb10-36" tabindex="-1"></a>    <span class="bu">print</span>(titre)</span>
+<span id="cb10-37"><a aria-hidden="true" href="#cb10-37" tabindex="-1"></a>    <span class="bu">print</span>(g.<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb10-38"><a aria-hidden="true" href="#cb10-38" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-univariate-p1">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-univariate-p1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="758" src="img/fig-univariate-p1-output-1_39bb461c.png" width="1142"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-univariate-p1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 3.1: Fréquence observée (sinistres / exposition) par classe de chaque variable explicative. Le chiffre au-dessus de chaque barre est l’exposition de la classe, en années.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Âge du conducteur
+       sinistres  exposure   freq
+age                              
+18-21        569  2416.626  0.235
+22-25        358  2364.838  0.151
+26-30        279  2992.831  0.093
+31-45        735  8945.214  0.082
+46-60        690  8909.951  0.077
+61-70        454  6016.598  0.075
+71-85        929  8928.961  0.104
+
+Coefficient bonus-malus
+             sinistres   exposure   freq
+bonus_malus                             
+50                1957  25464.852  0.077
+51-60              178   1906.234  0.093
+61-80             1059   9434.130  0.112
+81-100             599   2977.777  0.201
+plus de 100        221    792.026  0.279
+
+Puissance du véhicule
+           sinistres  exposure   freq
+puissance                            
+4                437  5080.253  0.086
+5                458  5050.839  0.091
+6                489  5150.988  0.095
+7                450  5028.650  0.089
+8                488  4999.057  0.098
+9                585  5132.668  0.114
+10               573  5073.036  0.113
+11               534  5059.528  0.106
+
+Zone (A rural, F urbain dense)
+      sinistres  exposure   freq
+zone                            
+A           294  4815.244  0.061
+B           377  4862.266  0.078
+C           874  8965.958  0.097
+D           981  9844.711  0.100
+E           939  7983.182  0.118
+F           549  4103.658  0.134
+</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="3.4.5" id="étape-5.-premier-diagnostic">
+<h3 class="anchored" data-anchor-id="étape-5.-premier-diagnostic" data-number="3.4.5"> Étape 5. Premier diagnostic</h3>
+<p>Lecture des quatre vues, chiffres lus dans les tableaux ci-dessus.</p>
+<ul>
+<li><strong>Âge</strong> : un profil en U. 0,235 sinistre par an chez les 18-21 ans, 0,151 chez les 22-25 ans, un creux à 0,075 entre 61 et 70 ans, puis une remontée à 0,104 après 70 ans. Les plus jeunes sinistrent environ trois fois plus que les 46-70 ans.</li>
+<li><strong>Bonus-malus</strong> : croissant, de 0,077 au plancher de 50 à 0,201 entre 81 et 100, et 0,279 au-delà de 100. La dernière classe ne pèse que 792 années d’exposition : son niveau est le moins sûr des cinq.</li>
+<li><strong>Puissance</strong> : un effet faible et pas régulier. Entre 0,086 et 0,098 de 4 à 8, puis une marche à 0,114 et 0,113 pour les puissances 9 et 10 (0,106 en 11). Une marche plutôt qu’une pente pose une question : qui conduit ces véhicules ? Un croisement de l’âge et de la puissance y répondrait (la fiche P5 y revient).</li>
+<li><strong>Zone</strong> : monotone, de 0,061 en zone A (rurale) à 0,134 en zone F (urbaine dense), un rapport de 2,2.</li>
+</ul>
+<p>Le prompt 5 demande aussi si des variables sont liées entre elles. C’est le cas ici, et le mécanisme du bonus-malus l’impose : un conducteur de 20 ans ne peut pas être au plancher de 50.</p>
+<div class="cell" data-execution_count="7" id="b0d7211e">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>bandes_age <span class="op">=</span> pd.cut(polices[<span class="st">"age"</span>], bins<span class="op">=</span>[<span class="dv">17</span>, <span class="dv">21</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">85</span>],</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>                    labels<span class="op">=</span>[<span class="st">"18-21"</span>, <span class="st">"22-25"</span>, <span class="st">"26-30"</span>, <span class="st">"31-45"</span>, <span class="st">"46-60"</span>, <span class="st">"61-70"</span>, <span class="st">"71-85"</span>])</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Coefficient bonus-malus moyen par bande d'âge :"</span>)</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a><span class="bu">print</span>(polices.groupby(bandes_age, observed<span class="op">=</span><span class="va">True</span>)[<span class="st">"bonus_malus"</span>].mean().<span class="bu">round</span>(<span class="dv">1</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coefficient bonus-malus moyen par bande d'âge :
+age
+18-21    98.9
+22-25    80.5
+26-30    64.1
+31-45    53.2
+46-60    53.1
+61-70    53.1
+71-85    53.2</code></pre>
+</div>
+</div>
+<p>Le coefficient moyen passe de 98,9 chez les 18-21 ans à 80,5 chez les 22-25 ans, et se stabilise vers 53 après 30 ans. L’âge et le bonus-malus sont les deux variables les plus discriminantes à l’œil (un rapport de 3 à 3,6 entre leurs classes extrêmes), et elles se recouvrent : une partie de l’effet de l’âge passe par le bonus-malus. Seul un modèle multivarié (le GLM de la fiche P2) sépare les deux effets.</p>
+</section>
+</section>
+<section class="level2" data-number="3.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="3.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Un collègue a lancé les mêmes prompts sur ce portefeuille. Claude lui a rendu ce résumé :</p>
+<blockquote class="blockquote">
+<p><em>“Le dataset est propre : aucun doublon, aucune valeur manquante. La fréquence moyenne est de 0,080 sinistre par police. Les jeunes conducteurs sont nettement plus risqués : le tarif devra porter un fort coefficient d’âge, égal au rapport des fréquences observées entre les 18-21 ans et les 31-45 ans.”</em></p>
+</blockquote>
+<p>Qu’est-ce qui ne va pas ? Appuyez-vous sur les sorties des étapes 1 à 5.</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Les trois phrases sont fausses ou trompeuses.</p>
+<ol type="1">
+<li>« Aucun doublon » : la sortie de l’étape 2 en compte 21 487. Ils sont légitimes sans identifiant de police, mais un résumé qui dit le contraire de la sortie n’a pas lu la sortie.</li>
+<li>0,080 est la moyenne de <code>nb_sinistres</code> par ligne (ligne <code>mean</code> de l’étape 1), pas une fréquence. Les polices n’ont pas toutes été exposées un an (40 575 années pour 50 000 polices) : la fréquence est le nombre de sinistres divisé par l’exposition, 0,0989 à l’étape 3.</li>
+<li>Le rapport des fréquences univariées mélange l’âge et le bonus-malus : les 18-21 ans sont en moyenne à 98,9 de coefficient, les 31-45 ans à 53,2. Reprendre ce rapport comme coefficient d’âge dans un tarif qui applique aussi le bonus-malus ferait payer deux fois la même chose aux jeunes conducteurs. C’est au GLM (fiche P2) d’estimer l’effet propre de l’âge.</li>
+</ol>
+</details>
+</section>
+<section class="level2" data-number="3.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="3.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Calculer la fréquence sur les comptages bruts</strong> sans diviser par l’exposition. Un assuré présent six mois avec un sinistre n’a pas la même fréquence qu’un assuré présent toute l’année avec un sinistre. <strong>Toujours rapporter à l’exposition</strong> dans les calculs et dans les visualisations.</li>
+<li><strong>Croire que les comptes <code>value_counts()</code> suffisent.</strong> Un <code>value_counts()</code> dit combien de polices il y a dans chaque catégorie, pas leur sinistralité ni leur exposition.</li>
+<li><strong>Discrétiser à l’aveugle.</strong> Couper l’âge en quintiles arbitraires produit des bandes ininterprétables. Choisir des seuils métier (permis récent, 25 ans, entrée dans le grand âge) défendables en revue tarifaire, et vérifier l’exposition de chaque bande.</li>
+<li><strong>S’arrêter à l’univariée.</strong> L’univariée montre des signaux marginaux, qui mélangent les effets des variables liées entre elles (âge et bonus-malus ici). Les effets propres et les interactions (âge et puissance, zone et bonus-malus) demandent un modèle multivarié.</li>
+<li><strong>Coller le fichier dans le chat, ou le croire protégé par les permissions.</strong> Tout ce que Claude lit ou affiche (un <code>head()</code>, un <code>describe()</code>, un message d’erreur qui cite des lignes) part chez le fournisseur. Les permissions de Claude Code évitent les accidents, elles ne protègent pas des données : un script Python autorisé lit le fichier qu’un refus de lecture devait garder. Les données nominatives restent hors du dossier de travail ; on travaille en synthétique, comme ici, ou sur un extrait pseudonymisé.</li>
+</ul>
+</section>
+<section class="level2" data-number="3.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="3.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>P2 GLM Poisson de fréquence</strong> : suite directe de P1, sur exactement le même portefeuille. On reprend les mêmes variables, on les modélise.</li>
+<li><strong>P3 GLM Gamma de coût moyen</strong> : exploration de la sévérité, sur les sinistres du même portefeuille.</li>
+<li><strong>C1 Dashboard sinistralité auto avec Lovable</strong> : équivalent visuel interactif de cette exploration, pour partager avec un comité.</li>
+</ul>
+</section>
+<section class="level2" data-number="3.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="3.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><p>En vrai sur freMTPL2freq : remplacer le bloc <em>“Donnée d’entrée”</em> par le chargement du fichier, puis renommer les colonnes pour que le reste du code tourne. Le jeu réel contient des expositions supérieures à 1 (jusqu’à un peu plus de 2) et des nombres de sinistres jusqu’à 16 : Noll, Salzmann et Wüthrich (2018, <em>Case Study: French Motor Third-Party Liability Claims</em>) les plafonnent à 1 et à 4 avant de modéliser. C’est exactement ce que l’étape 2 doit faire apparaître.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>polices <span class="op">=</span> (pd.read_csv(<span class="st">"freMTPL2freq.csv"</span>)</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>           .rename(columns<span class="op">=</span>{<span class="st">"ClaimNb"</span>: <span class="st">"nb_sinistres"</span>, <span class="st">"Exposure"</span>: <span class="st">"exposure"</span>,</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>                            <span class="st">"DrivAge"</span>: <span class="st">"age"</span>, <span class="st">"BonusMalus"</span>: <span class="st">"bonus_malus"</span>,</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>                            <span class="st">"VehPower"</span>: <span class="st">"puissance"</span>, <span class="st">"Area"</span>: <span class="st">"zone"</span>})</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a>           [[<span class="st">"age"</span>, <span class="st">"bonus_malus"</span>, <span class="st">"puissance"</span>, <span class="st">"zone"</span>, <span class="st">"exposure"</span>, <span class="st">"nb_sinistres"</span>]])</span></code></pre></div></div></li>
+<li><p>Pour la bivariée systématique, le package <code>seaborn</code> propose <code>heatmap</code>, adapté à une fréquence croisée par deux variables. Demander à Claude : <em>“propose-moi une bivariée graphique entre l’âge bandé et la puissance, fréquence en couleur et exposition en annotation”</em>. C’est la vue qui dira d’où vient la marche de la puissance.</p></li>
+<li><p>Pour aller plus loin sur la qualité des données, le package <code>pandera</code> permet de poser des contraintes typées et de les vérifier automatiquement (utile en production).</p></li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../industrialisation/atelier-module/index.html"><small>&larr; Précédent</small>Atelier : du carnet à l'outil</a><a class="next" href="../../bibliotheque/P2/index.html"><small>Suivant &rarr;</small>P2. GLM Poisson de fréquence</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

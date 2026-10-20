@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V2. Projection longévité Lee-Carter · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">V2. Projection longévité Lee-Carter</h1>
+      <p class="lede">Cette fiche illustre la démarche B avec une dimension projective. Ce que vous apprenez n’est pas Lee-Carter, mais comment décomposer un signal temporel (SVD vectorisée), comment projeter avec seed reproductible, et comment documenter les limites d’une projection longue (rupture COVID, sensibilité à la fenêtre).</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle (avec projection)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="13.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="13.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Pour les contrats vie de long terme (rentes viagères, prévoyance, dépendance), il ne suffit pas de connaître la mortalité d’aujourd’hui. Il faut <strong>projeter son évolution</strong>, parce que la prime ou la provision dépend de la mortalité dans 30 ou 50 ans. Le modèle de <strong>Lee et Carter</strong> (1992) est la référence de ces projections, en recherche comme en pratique.</p>
+<p>L’idée : décomposer le logarithme du taux central de mortalité <span class="math inline">\(m_x\)</span> (les décès rapportés à l’exposition, le <code>Mx_1x1</code> de la Human Mortality Database) en un profil moyen par âge, une intensité temporelle commune modulée par âge, et un bruit :</p>
+<p><span class="math display">\[
+\ln m_{x,t} = a_x + b_x\,k_t + \varepsilon_{x,t}.
+\]</span></p>
+<p>La projection extrapole <span class="math inline">\(k_t\)</span>, le plus souvent par une marche aléatoire avec dérive. On ne passe aux probabilités de décès <span class="math inline">\(q_x\)</span> qu’à la fin.</p>
+<p>Ce cas illustre <strong>l’organisation des données</strong> (décès et expositions au format long, matrice âge × année, table prospective persistée en parquet avec ses métadonnées), <strong>l’optimisation du code</strong> (SVD vectorisée, trajectoires tirées en bloc), <strong>la gouvernance</strong> (raccord, fermeture aux grands âges, sensibilité à la fenêtre, tout documenté) et <strong>le pilotage IA</strong> (5 prompts, dont un de critique des hypothèses).</p>
+</section>
+<section class="level2" data-number="13.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="13.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Dans la formation réelle, on charge les décès et les expositions par âge et par année de la Human Mortality Database (<code>mortality.org</code>, fichiers <code>Deaths_1x1</code> et <code>Exposures_1x1</code>). Pour cette fiche, on les simule : 66 âges (30 à 95 ans) sur 60 années (1960 à 2019), une mortalité de la forme d’une mortalité masculine, qui baisse de 1 à 2 % par an, plus vite après 1990 autour de 75 ans. Cette accélération est un second facteur, que Lee-Carter, qui n’en a qu’un, ne pourra pas reproduire entièrement : c’est voulu, les vraies données ont elles aussi des gains de mortalité qui se déplacent d’un âge à l’autre. La série s’arrête en 2019, avant la surmortalité de 2020.</p>
+<div class="cell" data-execution_count="1" id="72d9d37d">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>AGES <span class="op">=</span> np.arange(<span class="dv">30</span>, <span class="dv">96</span>)        <span class="co"># âges 30 à 95</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>ANNEES <span class="op">=</span> np.arange(<span class="dv">1960</span>, <span class="dv">2020</span>)  <span class="co"># historique 1960-2019</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>t <span class="op">=</span> ANNEES[<span class="va">None</span>, :]</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a><span class="co"># Taux central de mortalité en 1990 : une loi de Makeham, de la forme d'une mortalité masculine</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>m_1990 <span class="op">=</span> <span class="fl">0.0004</span> <span class="op">+</span> <span class="fl">4.0e-5</span> <span class="op">*</span> np.exp(<span class="fl">0.095</span> <span class="op">*</span> AGES)</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="co"># Baisse annuelle des taux, plus forte entre 50 et 75 ans</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>baisse <span class="op">=</span> <span class="fl">0.004</span> <span class="op">+</span> <span class="fl">0.012</span> <span class="op">*</span> np.exp(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> ((AGES <span class="op">-</span> <span class="dv">60</span>) <span class="op">/</span> <span class="dv">22</span>) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="co"># Accélération après 1990 autour de 75 ans : un second facteur, que Lee-Carter n'a pas</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>acceleration <span class="op">=</span> <span class="fl">0.006</span> <span class="op">*</span> np.exp(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> ((AGES <span class="op">-</span> <span class="dv">75</span>) <span class="op">/</span> <span class="dv">8</span>) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>log_m_vrai <span class="op">=</span> (np.log(m_1990)[:, <span class="va">None</span>] <span class="op">-</span> baisse[:, <span class="va">None</span>] <span class="op">*</span> (t <span class="op">-</span> <span class="dv">1990</span>)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>              <span class="op">-</span> acceleration[:, <span class="va">None</span>] <span class="op">*</span> np.maximum(t <span class="op">-</span> <span class="dv">1990</span>, <span class="dv">0</span>))</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="co"># Population exposée : 350 000 personnes à 30 ans, puis les survivants ; décès de Poisson</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>expo_par_age <span class="op">=</span> <span class="dv">350_000</span> <span class="op">*</span> np.exp(<span class="op">-</span>np.concatenate([[<span class="fl">0.0</span>], np.cumsum(m_1990[:<span class="op">-</span><span class="dv">1</span>])]))</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>exposition <span class="op">=</span> np.repeat(expo_par_age[:, <span class="va">None</span>], <span class="bu">len</span>(ANNEES), axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>()</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>deces <span class="op">=</span> rng.poisson(exposition <span class="op">*</span> np.exp(log_m_vrai))</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="co"># Format long, comme les fichiers de la Human Mortality Database : une ligne par âge et par année</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>donnees <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>    <span class="st">"annee"</span>: np.tile(ANNEES, <span class="bu">len</span>(AGES)),</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>    <span class="st">"age"</span>: np.repeat(AGES, <span class="bu">len</span>(ANNEES)),</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>    <span class="st">"exposition"</span>: exposition.ravel().astype(<span class="bu">int</span>),</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>    <span class="st">"deces"</span>: deces.ravel(),</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>})</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(donnees)<span class="sc">}</span><span class="ss"> lignes : </span><span class="sc">{</span><span class="bu">len</span>(AGES)<span class="sc">}</span><span class="ss"> âges x </span><span class="sc">{</span><span class="bu">len</span>(ANNEES)<span class="sc">}</span><span class="ss"> années"</span>)</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a><span class="bu">print</span>(donnees.head(<span class="dv">3</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3960 lignes : 66 âges x 60 années
+ annee  age  exposition  deces
+  1960   30      350000    515
+  1961   30      350000    519
+  1962   30      350000    506</code></pre>
+</div>
+</div>
+<p>Le grain est écrit dans le code : une ligne par âge et par année, l’exposition en années-personnes, les décès en nombre. C’est le format des fichiers de la HMD, et celui qu’on garde tant qu’on n’a pas besoin d’une matrice.</p>
+</section>
+<section class="level2" data-number="13.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="13.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Explorer la matrice.</strong> <em>“Voici les décès et expositions <code>donnees</code>, une ligne par âge et par année (30-95 ans, 1960-2019). Calcule le taux central m_x = décès / exposition, mets-le en matrice âge × année, et trace log m_x à 65, 75 et 85 ans. Donne la baisse annuelle moyenne avant et après 1990.”</em></p></li>
+<li><p><strong>Ajuster Lee-Carter par SVD.</strong> <em>“Ajuste Lee-Carter sur log m_x : log m_{x,t} = a_x + b_x k_t + ε. Vectorisé NumPy, contraintes Σb_x = 1 et Σk_t = 0. Donne la part de variance captée par le premier facteur.”</em></p></li>
+<li><p><strong>Projeter k_t.</strong> <em>“Projette k_t jusqu’en 2100 par une marche aléatoire avec dérive : la trajectoire centrale pour la table, et 1 000 trajectoires (graine 42) pour l’incertitude, tirées en bloc.”</em></p></li>
+<li><p><strong>Construire et valider.</strong> <em>“Construis la table prospective des q_x. Mesure l’écart entre l’observé et l’ajusté en 2019, compare-le au bruit d’une année, et fais partir la projection de l’observé. Prolonge au-delà de 95 ans par Kannisto jusqu’à 120 ans. Calcule e65 du moment (colonne) et e65 de génération (diagonale) en 2019 et en 2030.”</em></p></li>
+<li><p><strong>Persister et critiquer.</strong> <em>“Persiste la table en parquet, format long, avec ses métadonnées et une empreinte MD5, sans rien réécrire si rien n’a changé. Teste la fenêtre 1990-2019. Puis joue le rôle d’un actuaire senior en revue : hypothèses, limites (rupture COVID, gains qui se déplacent d’un âge à l’autre), sensibilité à la fenêtre, et ce qu’il faut documenter dans la note méthodologique.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="13.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="13.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="13.4.1" id="étape-1.-explorer-la-matrice">
+<h3 class="anchored" data-anchor-id="étape-1.-explorer-la-matrice" data-number="13.4.1"> Étape 1. Explorer la matrice</h3>
+<div class="cell" data-execution_count="2" id="4820eda6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>donnees[<span class="st">"mx"</span>] <span class="op">=</span> donnees[<span class="st">"deces"</span>] <span class="op">/</span> donnees[<span class="st">"exposition"</span>]</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>mx <span class="op">=</span> donnees.pivot(index<span class="op">=</span><span class="st">"age"</span>, columns<span class="op">=</span><span class="st">"annee"</span>, values<span class="op">=</span><span class="st">"mx"</span>)  <span class="co"># matrice âge x année</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>qx_obs <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>mx)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a><span class="cf">for</span> age <span class="kw">in</span> (<span class="dv">65</span>, <span class="dv">75</span>, <span class="dv">85</span>):</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    b1 <span class="op">=</span> np.log(mx.loc[age, <span class="dv">1989</span>] <span class="op">/</span> mx.loc[age, <span class="dv">1960</span>]) <span class="op">/</span> <span class="dv">29</span></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    b2 <span class="op">=</span> np.log(mx.loc[age, <span class="dv">2019</span>] <span class="op">/</span> mx.loc[age, <span class="dv">1990</span>]) <span class="op">/</span> <span class="dv">29</span></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Âge </span><span class="sc">{</span>age<span class="sc">}</span><span class="ss"> : q 1960 = </span><span class="sc">{</span>qx_obs<span class="sc">.</span>loc[age, <span class="dv">1960</span>]<span class="sc">:.4f}</span><span class="ss">, q 2019 = </span><span class="sc">{</span>qx_obs<span class="sc">.</span>loc[age, <span class="dv">2019</span>]<span class="sc">:.4f}</span><span class="ss"> | "</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>          <span class="ss">f"baisse annuelle de m 1960-1989 : </span><span class="sc">{</span><span class="op">-</span><span class="dv">100</span> <span class="op">*</span> b1<span class="sc">:.2f}</span><span class="ss"> %, 1990-2019 : </span><span class="sc">{</span><span class="op">-</span><span class="dv">100</span> <span class="op">*</span> b2<span class="sc">:.2f}</span><span class="ss"> %"</span>)</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Décès à 95 ans en 2019 : </span><span class="sc">{</span>donnees<span class="sc">.</span>query(<span class="st">'age == 95 and annee == 2019'</span>)[<span class="st">'deces'</span>]<span class="sc">.</span>item()<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Âge 65 : q 1960 = 0.0308, q 2019 = 0.0116 | baisse annuelle de m 1960-1989 : 1.51 %, 1990-2019 : 1.72 %
+Âge 75 : q 1960 = 0.0720, q 2019 = 0.0273 | baisse annuelle de m 1960-1989 : 1.42 %, 1990-2019 : 2.08 %
+Âge 85 : q 1960 = 0.1627, q 2019 = 0.0846 | baisse annuelle de m 1960-1989 : 1.05 %, 1990-2019 : 1.28 %
+Décès à 95 ans en 2019 : 3259</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="3" id="cell-fig-lc-tendance">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="cf">for</span> age, couleur <span class="kw">in</span> [(<span class="dv">65</span>, <span class="st">"#1d4ed8"</span>), (<span class="dv">75</span>, <span class="st">"#047857"</span>), (<span class="dv">85</span>, <span class="st">"#b45309"</span>)]:</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>    ax.semilogy(ANNEES, mx.loc[age], <span class="st">"o-"</span>, color<span class="op">=</span>couleur, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>age<span class="sc">}</span><span class="ss"> ans"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, markersize<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Année"</span>)</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>ax.set_ylabel(<span class="st">"m_x (échelle log)"</span>)</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>ax.set_title(<span class="st">"Mortalité par âge dans le temps"</span>)</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>ax.legend()</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>, which<span class="op">=</span><span class="st">"both"</span>)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-lc-tendance">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lc-tendance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-lc-tendance-output-1_3ea6674e.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lc-tendance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 13.1: Taux central de mortalité observé à 65, 75 et 85 ans, échelle log
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Les taux baissent presque en ligne droite, en échelle log, aux trois âges. À 65 ans, <span class="math inline">\(q\)</span> passe de 3,08 % en 1960 à 1,16 % en 2019. La baisse annuelle s’accélère après 1990, surtout à 75 ans : de 1,42 % à 2,08 % par an, contre 1,51 % à 1,72 % à 65 ans et 1,05 % à 1,28 % à 85 ans. Même à 95 ans, on compte 3 259 décès en 2019 : les données restent fiables jusqu’au bout de la plage, ce qui ne dispense pas de fermer la table au-delà.</p>
+</section>
+<section class="level3" data-number="13.4.2" id="étape-2.-ajuster-lee-carter-par-svd">
+<h3 class="anchored" data-anchor-id="étape-2.-ajuster-lee-carter-par-svd" data-number="13.4.2"> Étape 2. Ajuster Lee-Carter par SVD</h3>
+<div class="cell" data-execution_count="4" id="15a66b67">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="kw">def</span> lee_carter_fit(log_m: np.ndarray) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>    <span class="co">"""Ajuste log m_{x,t} = a_x + b_x * k_t + epsilon par SVD.</span></span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a><span class="co">    Contraintes d'identification : somme(b_x) = 1, somme(k_t) = 0.</span></span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a><span class="co">    log_m : tableau (n_ages, n_annees) du logarithme des taux centraux.</span></span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>    ax <span class="op">=</span> log_m.mean(axis<span class="op">=</span><span class="dv">1</span>)                    <span class="co"># profil moyen par âge</span></span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>    centre <span class="op">=</span> log_m <span class="op">-</span> ax[:, <span class="va">None</span>]</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a>    U, S, Vt <span class="op">=</span> np.linalg.svd(centre, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>    bx, kt <span class="op">=</span> U[:, <span class="dv">0</span>], S[<span class="dv">0</span>] <span class="op">*</span> Vt[<span class="dv">0</span>, :]          <span class="co"># premier facteur</span></span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a>    kt <span class="op">=</span> kt <span class="op">*</span> bx.<span class="bu">sum</span>()                         <span class="co"># normalisation : somme(b_x) = 1</span></span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>    bx <span class="op">=</span> bx <span class="op">/</span> bx.<span class="bu">sum</span>()                         <span class="co"># (le produit b_x * k_t est inchangé)</span></span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a>    kt <span class="op">=</span> kt <span class="op">-</span> kt.mean()                        <span class="co"># déjà nul à l'arrondi près, centrage explicite</span></span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"ax"</span>: ax, <span class="st">"bx"</span>: bx, <span class="st">"kt"</span>: kt, <span class="st">"part_variance"</span>: S[<span class="dv">0</span>] <span class="op">**</span> <span class="dv">2</span> <span class="op">/</span> (S <span class="op">**</span> <span class="dv">2</span>).<span class="bu">sum</span>()}</span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a aria-hidden="true" href="#cb6-16" tabindex="-1"></a>log_m_obs <span class="op">=</span> np.log(mx.to_numpy())</span>
+<span id="cb6-17"><a aria-hidden="true" href="#cb6-17" tabindex="-1"></a>lc <span class="op">=</span> lee_carter_fit(log_m_obs)</span>
+<span id="cb6-18"><a aria-hidden="true" href="#cb6-18" tabindex="-1"></a>i <span class="op">=</span> {age: k <span class="cf">for</span> k, age <span class="kw">in</span> <span class="bu">enumerate</span>(AGES)}</span>
+<span id="cb6-19"><a aria-hidden="true" href="#cb6-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Somme des b_x : </span><span class="sc">{</span>lc[<span class="st">'bx'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.6f}</span><span class="ss"> | somme des k_t : </span><span class="sc">{</span>lc[<span class="st">'kt'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.2e}</span><span class="ss">"</span>)</span>
+<span id="cb6-20"><a aria-hidden="true" href="#cb6-20" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Part de la variance captée par le premier facteur : </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> lc[<span class="st">'part_variance'</span>]<span class="sc">:.1f}</span><span class="ss"> %"</span>)</span>
+<span id="cb6-21"><a aria-hidden="true" href="#cb6-21" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"a_x : 30 ans </span><span class="sc">{</span>lc[<span class="st">'ax'</span>][i[<span class="dv">30</span>]]<span class="sc">:.3f}</span><span class="ss">, 65 ans </span><span class="sc">{</span>lc[<span class="st">'ax'</span>][i[<span class="dv">65</span>]]<span class="sc">:.3f}</span><span class="ss">, 95 ans </span><span class="sc">{</span>lc[<span class="st">'ax'</span>][i[<span class="dv">95</span>]]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb6-22"><a aria-hidden="true" href="#cb6-22" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"b_x : 30 ans </span><span class="sc">{</span>lc[<span class="st">'bx'</span>][i[<span class="dv">30</span>]]<span class="sc">:.4f}</span><span class="ss">, 65 ans </span><span class="sc">{</span>lc[<span class="st">'bx'</span>][i[<span class="dv">65</span>]]<span class="sc">:.4f}</span><span class="ss">, 75 ans </span><span class="sc">{</span>lc[<span class="st">'bx'</span>][i[<span class="dv">75</span>]]<span class="sc">:.4f}</span><span class="ss">, 95 ans </span><span class="sc">{</span>lc[<span class="st">'bx'</span>][i[<span class="dv">95</span>]]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb6-23"><a aria-hidden="true" href="#cb6-23" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"k_t : 1960 </span><span class="sc">{</span>lc[<span class="st">'kt'</span>][<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, 1990 </span><span class="sc">{</span>lc[<span class="st">'kt'</span>][<span class="dv">30</span>]<span class="sc">:.2f}</span><span class="ss">, 2019 </span><span class="sc">{</span>lc[<span class="st">'kt'</span>][<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Somme des b_x : 1.000000 | somme des k_t : 3.55e-15
+Part de la variance captée par le premier facteur : 98.9 %
+a_x : 30 ans -6.823, 65 ans -3.946, 95 ans -1.099
+b_x : 30 ans 0.0104, 65 ans 0.0190, 75 ans 0.0184, 95 ans 0.0082
+k_t : 1960 25.62, 1990 0.37, 2019 -27.25</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="5" id="cell-fig-lc-decomposition">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">4</span>))</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a><span class="cf">for</span> axe, x, y, titre <span class="kw">in</span> [(axes[<span class="dv">0</span>], AGES, lc[<span class="st">"ax"</span>], <span class="st">"a_x : profil moyen par âge"</span>),</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>                         (axes[<span class="dv">1</span>], AGES, lc[<span class="st">"bx"</span>], <span class="st">"b_x : sensibilité au temps"</span>),</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>                         (axes[<span class="dv">2</span>], ANNEES, lc[<span class="st">"kt"</span>], <span class="st">"k_t : intensité temporelle"</span>)]:</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>    axe.plot(x, y, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>    axe.set_title(titre)</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>    axe.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Âge"</span>)<span class="op">;</span> axes[<span class="dv">1</span>].set_xlabel(<span class="st">"Âge"</span>)<span class="op">;</span> axes[<span class="dv">2</span>].set_xlabel(<span class="st">"Année"</span>)</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-lc-decomposition">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lc-decomposition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="375" src="img/fig-lc-decomposition-output-1_e9ac62fa.png" width="1427"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lc-decomposition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 13.2: Décomposition Lee-Carter : a_x (profil par âge), b_x (sensibilité), k_t (tendance temporelle)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Les contraintes tiennent : <span class="math inline">\(\sum_x b_x = 1\)</span> et <span class="math inline">\(\sum_t k_t = 0\)</span> à l’arrondi près. Le premier facteur capte 98,9 % de la variance du <span class="math inline">\(\ln m_x\)</span> centré. C’est la condition pour qu’un modèle à un facteur ait un sens, pas la preuve qu’il suffit : l’étape 4 montre ce qui lui échappe. <span class="math inline">\(a_x\)</span> croît presque en ligne droite avec l’âge, la droite de Gompertz. <span class="math inline">\(b_x\)</span> culmine autour de 70 ans (0,0190 à 65 ans, 0,0184 à 75 ans) et tombe à 0,0082 à 95 ans : les gains se concentrent sur les jeunes retraités. Il est irrégulier avant 50 ans, où l’on compte moins de décès. <span class="math inline">\(k_t\)</span> descend presque en ligne droite, de 25,62 en 1960 à −27,25 en 2019.</p>
+</section>
+<section class="level3" data-number="13.4.3" id="étape-3.-projeter-k_t-par-une-marche-aléatoire-avec-dérive">
+<h3 class="anchored" data-anchor-id="étape-3.-projeter-k_t-par-une-marche-aléatoire-avec-dérive" data-number="13.4.3"> Étape 3. Projeter k_t par une marche aléatoire avec dérive</h3>
+<div class="cell" data-execution_count="6" id="d4119f40">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="kw">def</span> projeter_kt(kt: np.ndarray, n_annees: <span class="bu">int</span>, n_trajectoires: <span class="bu">int</span> <span class="op">=</span> <span class="dv">1000</span>, seed: <span class="bu">int</span> <span class="op">=</span> <span class="dv">42</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>    <span class="co">"""Marche aléatoire avec dérive : k_{t+1} = k_t + mu + epsilon, epsilon ~ N(0, sigma^2).</span></span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a><span class="co">    Trajectoire centrale (l'espérance) et trajectoires simulées, tirées en bloc.</span></span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>    dk <span class="op">=</span> np.diff(kt)</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>    mu, sigma <span class="op">=</span> dk.mean(), dk.std(ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>    h <span class="op">=</span> np.arange(<span class="dv">1</span>, n_annees <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>    central <span class="op">=</span> kt[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> mu <span class="op">*</span> h</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>    rng_traj <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>    trajectoires <span class="op">=</span> kt[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> np.cumsum(rng_traj.normal(mu, sigma, size<span class="op">=</span>(n_trajectoires, n_annees)), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"mu"</span>: mu, <span class="st">"sigma"</span>: sigma, <span class="st">"central"</span>: central, <span class="st">"trajectoires"</span>: trajectoires}</span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a>ANNEES_FUTUR <span class="op">=</span> np.arange(<span class="dv">2020</span>, <span class="dv">2101</span>)</span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>projection <span class="op">=</span> projeter_kt(lc[<span class="st">"kt"</span>], <span class="bu">len</span>(ANNEES_FUTUR))</span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>bande <span class="op">=</span> np.percentile(projection[<span class="st">"trajectoires"</span>], [<span class="dv">5</span>, <span class="dv">95</span>], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>j <span class="op">=</span> {a: k <span class="cf">for</span> k, a <span class="kw">in</span> <span class="bu">enumerate</span>(ANNEES_FUTUR)}</span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Dérive mu : </span><span class="sc">{</span>projection[<span class="st">'mu'</span>]<span class="sc">:.3f}</span><span class="ss"> par an | écart-type des accroissements sigma : </span><span class="sc">{</span>projection[<span class="st">'sigma'</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a><span class="cf">for</span> a <span class="kw">in</span> (<span class="dv">2030</span>, <span class="dv">2050</span>, <span class="dv">2100</span>):</span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"k_</span><span class="sc">{</span>a<span class="sc">}</span><span class="ss"> : central </span><span class="sc">{</span>projection[<span class="st">'central'</span>][j[a]]<span class="sc">:7.2f}</span><span class="ss"> | bande 5 %-95 % [</span><span class="sc">{</span>bande[<span class="dv">0</span>, j[a]]<span class="sc">:7.2f}</span><span class="ss"> ; </span><span class="sc">{</span>bande[<span class="dv">1</span>, j[a]]<span class="sc">:7.2f}</span><span class="ss">]"</span>)</span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Baisse annuelle projetée de m_x (-b_x * mu) :"</span>,</span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a>      <span class="st">", "</span>.join(<span class="ss">f"</span><span class="sc">{</span>a<span class="sc">}</span><span class="ss"> ans </span><span class="sc">{</span><span class="op">-</span><span class="dv">100</span> <span class="op">*</span> lc[<span class="st">'bx'</span>][i[a]] <span class="op">*</span> projection[<span class="st">'mu'</span>]<span class="sc">:.2f}</span><span class="ss"> %"</span> <span class="cf">for</span> a <span class="kw">in</span> (<span class="dv">65</span>, <span class="dv">75</span>, <span class="dv">85</span>, <span class="dv">95</span>)))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Dérive mu : -0.896 par an | écart-type des accroissements sigma : 0.220
+k_2030 : central  -37.11 | bande 5 %-95 % [ -38.32 ;  -35.89]
+k_2050 : central  -55.03 | bande 5 %-95 % [ -57.10 ;  -53.06]
+k_2100 : central  -99.84 | bande 5 %-95 % [-103.30 ;  -96.54]
+Baisse annuelle projetée de m_x (-b_x * mu) : 65 ans 1.70 %, 75 ans 1.65 %, 85 ans 1.17 %, 95 ans 0.74 %</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="7" id="cell-fig-lc-kt">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.5</span>))</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>ax.plot(ANNEES, lc[<span class="st">"kt"</span>], color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"k_t ajusté (1960-2019)"</span>)</span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>ax.plot(ANNEES_FUTUR, projection[<span class="st">"central"</span>], <span class="st">"--"</span>, color<span class="op">=</span><span class="st">"#047857"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"Projection centrale"</span>)</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>ax.fill_between(ANNEES_FUTUR, bande[<span class="dv">0</span>], bande[<span class="dv">1</span>], color<span class="op">=</span><span class="st">"#a7f3d0"</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, label<span class="op">=</span><span class="st">"Bande 5 %-95 %"</span>)</span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Année"</span>)</span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>ax.set_ylabel(<span class="st">"k_t"</span>)</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a>ax.set_title(<span class="st">"Projection de l'intensité temporelle"</span>)</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>ax.legend()</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-lc-kt">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lc-kt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="422" src="img/fig-lc-kt-output-1_0af41e5d.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lc-kt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 13.3: k_t ajusté, projection centrale et bande à 90 % des 1 000 trajectoires simulées
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La dérive vaut −0,896 par an, l’écart-type des accroissements 0,220. Multipliée par <span class="math inline">\(b_x\)</span>, la dérive donne la baisse annuelle projetée de <span class="math inline">\(m_x\)</span> : 1,70 % à 65 ans, 1,65 % à 75 ans, 1,17 % à 85 ans, 0,74 % à 95 ans. À 75 ans, c’est moins que les 2,08 % observés depuis 1990 : la projection prolonge la moyenne de 1960-2019, pas le rythme récent.</p>
+<p>Les 1 000 trajectoires (graine 42) donnent une bande à 90 % étroite, de −38,32 à −35,89 en 2030 et de −103,30 à −96,54 en 2100. Elle ne mesure que le bruit de la marche aléatoire : ni l’incertitude sur la dérive, ni le risque de modèle. La table persistée à l’étape 5 est la projection centrale, que la graine des trajectoires n’influence pas.</p>
+</section>
+<section class="level3" data-number="13.4.4" id="étape-4.-construire-la-table-prospective-et-la-valider">
+<h3 class="anchored" data-anchor-id="étape-4.-construire-la-table-prospective-et-la-valider" data-number="13.4.4"> Étape 4. Construire la table prospective et la valider</h3>
+<div class="cell" data-execution_count="8" id="23149bd6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="kw">def</span> etendre_kannisto(m: pd.DataFrame, ages_ajust<span class="op">=</span>(<span class="dv">80</span>, <span class="dv">95</span>), age_max<span class="op">=</span><span class="dv">120</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>    <span class="co">"""Prolonge chaque colonne au-delà de 95 ans par Kannisto : logit(m_x) = log(a) + b * x.</span></span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a><span class="co">    Ajusté sur 80-95 ans, colonne par colonne en un seul appel (np.polyfit accepte une matrice).</span></span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>    zone <span class="op">=</span> m.loc[ages_ajust[<span class="dv">0</span>]:ages_ajust[<span class="dv">1</span>]]</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>    pente, origine <span class="op">=</span> np.polyfit(zone.index.to_numpy(), np.log(zone <span class="op">/</span> (<span class="dv">1</span> <span class="op">-</span> zone)).to_numpy(), <span class="dv">1</span>)</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>    ages_sup <span class="op">=</span> np.arange(m.index.<span class="bu">max</span>() <span class="op">+</span> <span class="dv">1</span>, age_max <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>    z <span class="op">=</span> np.exp(origine[<span class="va">None</span>, :] <span class="op">+</span> pente[<span class="va">None</span>, :] <span class="op">*</span> ages_sup[:, <span class="va">None</span>])</span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a>    haut <span class="op">=</span> pd.DataFrame(z <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> z), index<span class="op">=</span>ages_sup, columns<span class="op">=</span>m.columns)</span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>    <span class="cf">return</span> pd.concat([m, haut]).rename_axis(index<span class="op">=</span><span class="st">"age"</span>, columns<span class="op">=</span><span class="st">"annee"</span>)</span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a></span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a><span class="kw">def</span> vers_qx(m: pd.DataFrame) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a>    <span class="co">"""q_x = 1 - exp(-m_x) (force constante dans l'année), table fermée à 120 ans."""</span></span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a>    q <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>m)</span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a>    q.loc[<span class="dv">120</span>] <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a>    <span class="cf">return</span> q</span>
+<span id="cb12-18"><a aria-hidden="true" href="#cb12-18" tabindex="-1"></a></span>
+<span id="cb12-19"><a aria-hidden="true" href="#cb12-19" tabindex="-1"></a><span class="kw">def</span> construire_table(lc: <span class="bu">dict</span>, k_futur: np.ndarray, log_m_obs: np.ndarray, annees_futur) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb12-20"><a aria-hidden="true" href="#cb12-20" tabindex="-1"></a>    <span class="co">"""Raccord dans l'esprit de Lee et Miller (2001) : la projection part des taux observés (moyenne des trois</span></span>
+<span id="cb12-21"><a aria-hidden="true" href="#cb12-21" tabindex="-1"></a><span class="co">    dernières années), et non des taux ajustés, puis suit b_x * (k_t - k_depart)."""</span></span>
+<span id="cb12-22"><a aria-hidden="true" href="#cb12-22" tabindex="-1"></a>    depart_log_m <span class="op">=</span> log_m_obs[:, <span class="op">-</span><span class="dv">3</span>:].mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb12-23"><a aria-hidden="true" href="#cb12-23" tabindex="-1"></a>    depart_k <span class="op">=</span> lc[<span class="st">"kt"</span>][<span class="op">-</span><span class="dv">3</span>:].mean()</span>
+<span id="cb12-24"><a aria-hidden="true" href="#cb12-24" tabindex="-1"></a>    log_m <span class="op">=</span> depart_log_m[:, <span class="va">None</span>] <span class="op">+</span> lc[<span class="st">"bx"</span>][:, <span class="va">None</span>] <span class="op">*</span> (k_futur[<span class="va">None</span>, :] <span class="op">-</span> depart_k)</span>
+<span id="cb12-25"><a aria-hidden="true" href="#cb12-25" tabindex="-1"></a>    m <span class="op">=</span> pd.DataFrame(np.exp(log_m), index<span class="op">=</span>AGES, columns<span class="op">=</span>annees_futur)</span>
+<span id="cb12-26"><a aria-hidden="true" href="#cb12-26" tabindex="-1"></a>    <span class="cf">return</span> vers_qx(etendre_kannisto(m))</span>
+<span id="cb12-27"><a aria-hidden="true" href="#cb12-27" tabindex="-1"></a></span>
+<span id="cb12-28"><a aria-hidden="true" href="#cb12-28" tabindex="-1"></a><span class="co"># Le raccord : écart, en 2019, entre le taux observé et le taux ajusté par Lee-Carter</span></span>
+<span id="cb12-29"><a aria-hidden="true" href="#cb12-29" tabindex="-1"></a>log_m_ajuste <span class="op">=</span> lc[<span class="st">"ax"</span>][:, <span class="va">None</span>] <span class="op">+</span> lc[<span class="st">"bx"</span>][:, <span class="va">None</span>] <span class="op">*</span> lc[<span class="st">"kt"</span>][<span class="va">None</span>, :]</span>
+<span id="cb12-30"><a aria-hidden="true" href="#cb12-30" tabindex="-1"></a>ecart_2019 <span class="op">=</span> np.exp(log_m_obs[:, <span class="op">-</span><span class="dv">1</span>] <span class="op">-</span> log_m_ajuste[:, <span class="op">-</span><span class="dv">1</span>]) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb12-31"><a aria-hidden="true" href="#cb12-31" tabindex="-1"></a>deces_2019 <span class="op">=</span> donnees.query(<span class="st">"annee == 2019"</span>).set_index(<span class="st">"age"</span>)[<span class="st">"deces"</span>]</span>
+<span id="cb12-32"><a aria-hidden="true" href="#cb12-32" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Écart observé / ajusté en 2019        :"</span>,</span>
+<span id="cb12-33"><a aria-hidden="true" href="#cb12-33" tabindex="-1"></a>      <span class="st">", "</span>.join(<span class="ss">f"</span><span class="sc">{</span>a<span class="sc">}</span><span class="ss"> ans </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> ecart_2019[i[a]]<span class="sc">:+.1f}</span><span class="ss"> %"</span> <span class="cf">for</span> a <span class="kw">in</span> (<span class="dv">40</span>, <span class="dv">65</span>, <span class="dv">75</span>, <span class="dv">85</span>, <span class="dv">95</span>)))</span>
+<span id="cb12-34"><a aria-hidden="true" href="#cb12-34" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Bruit d'une année (1/racine des décès) :"</span>,</span>
+<span id="cb12-35"><a aria-hidden="true" href="#cb12-35" tabindex="-1"></a>      <span class="st">", "</span>.join(<span class="ss">f"</span><span class="sc">{</span>a<span class="sc">}</span><span class="ss"> ans </span><span class="sc">{</span><span class="dv">100</span> <span class="op">/</span> np<span class="sc">.</span>sqrt(deces_2019[a])<span class="sc">:.1f}</span><span class="ss"> %"</span> <span class="cf">for</span> a <span class="kw">in</span> (<span class="dv">40</span>, <span class="dv">65</span>, <span class="dv">75</span>, <span class="dv">85</span>, <span class="dv">95</span>)))</span>
+<span id="cb12-36"><a aria-hidden="true" href="#cb12-36" tabindex="-1"></a></span>
+<span id="cb12-37"><a aria-hidden="true" href="#cb12-37" tabindex="-1"></a>table_q <span class="op">=</span> construire_table(lc, projection[<span class="st">"central"</span>], log_m_obs, ANNEES_FUTUR)</span>
+<span id="cb12-38"><a aria-hidden="true" href="#cb12-38" tabindex="-1"></a>table_q_obs <span class="op">=</span> vers_qx(etendre_kannisto(mx))           <span class="co"># l'observé, prolongé de la même façon</span></span>
+<span id="cb12-39"><a aria-hidden="true" href="#cb12-39" tabindex="-1"></a>table_complete <span class="op">=</span> pd.concat([table_q_obs, table_q], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb12-40"><a aria-hidden="true" href="#cb12-40" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Table prospective : </span><span class="sc">{</span>table_q<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> âges (</span><span class="sc">{</span>table_q<span class="sc">.</span>index<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>table_q<span class="sc">.</span>index<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">) "</span></span>
+<span id="cb12-41"><a aria-hidden="true" href="#cb12-41" tabindex="-1"></a>      <span class="ss">f"x </span><span class="sc">{</span>table_q<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> années (</span><span class="sc">{</span>table_q<span class="sc">.</span>columns<span class="sc">.</span><span class="bu">min</span>()<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>table_q<span class="sc">.</span>columns<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb12-42"><a aria-hidden="true" href="#cb12-42" tabindex="-1"></a><span class="bu">print</span>(table_complete.loc[[<span class="dv">65</span>, <span class="dv">75</span>, <span class="dv">85</span>, <span class="dv">95</span>, <span class="dv">100</span>, <span class="dv">110</span>], [<span class="dv">2019</span>, <span class="dv">2020</span>, <span class="dv">2030</span>, <span class="dv">2050</span>, <span class="dv">2100</span>]].<span class="bu">round</span>(<span class="dv">4</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Écart observé / ajusté en 2019        : 40 ans -4.7 %, 65 ans +1.0 %, 75 ans -5.6 %, 85 ans -0.8 %, 95 ans -0.0 %
+Bruit d'une année (1/racine des décès) : 40 ans 4.5 %, 65 ans 1.7 %, 75 ans 1.3 %, 85 ans 1.1 %, 95 ans 1.8 %
+
+Table prospective : 91 âges (30-120) x 81 années (2020-2100)
+annee    2019    2020    2030    2050    2100
+age                                          
+65     0.0116  0.0112  0.0095  0.0068  0.0029
+75     0.0273  0.0275  0.0234  0.0169  0.0075
+85     0.0846  0.0831  0.0744  0.0594  0.0336
+95     0.2339  0.2352  0.2205  0.1934  0.1382
+100    0.3326  0.3330  0.3208  0.2975  0.2459
+110    0.5095  0.5109  0.5068  0.4993  0.4845</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="9" id="cell-fig-lc-projection">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a><span class="kw">def</span> q_de(log_m):</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>np.exp(log_m))</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a></span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">5</span>))</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a><span class="cf">for</span> age, couleur <span class="kw">in</span> [(<span class="dv">65</span>, <span class="st">"#1d4ed8"</span>), (<span class="dv">85</span>, <span class="st">"#b45309"</span>)]:</span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a>    ax1.semilogy(ANNEES, qx_obs.loc[age], <span class="st">"o"</span>, color<span class="op">=</span>couleur, markersize<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>age<span class="sc">}</span><span class="ss"> ans, observé"</span>)</span>
+<span id="cb14-7"><a aria-hidden="true" href="#cb14-7" tabindex="-1"></a>    ax1.semilogy(ANNEES_FUTUR, table_q.loc[age], <span class="st">"--"</span>, color<span class="op">=</span>couleur, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>age<span class="sc">}</span><span class="ss"> ans, projeté"</span>)</span>
+<span id="cb14-8"><a aria-hidden="true" href="#cb14-8" tabindex="-1"></a>ax1.set_title(<span class="st">"Observé 1960-2019, projeté 2020-2100"</span>)</span>
+<span id="cb14-9"><a aria-hidden="true" href="#cb14-9" tabindex="-1"></a></span>
+<span id="cb14-10"><a aria-hidden="true" href="#cb14-10" tabindex="-1"></a>sans_raccord <span class="op">=</span> q_de(lc[<span class="st">"ax"</span>][i[<span class="dv">75</span>]] <span class="op">+</span> lc[<span class="st">"bx"</span>][i[<span class="dv">75</span>]] <span class="op">*</span> projection[<span class="st">"central"</span>])</span>
+<span id="cb14-11"><a aria-hidden="true" href="#cb14-11" tabindex="-1"></a>ax2.plot(ANNEES, qx_obs.loc[<span class="dv">75</span>], <span class="st">"o"</span>, color<span class="op">=</span><span class="st">"#047857"</span>, markersize<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">"75 ans, observé"</span>)</span>
+<span id="cb14-12"><a aria-hidden="true" href="#cb14-12" tabindex="-1"></a>ax2.plot(ANNEES, q_de(log_m_ajuste[i[<span class="dv">75</span>]]), <span class="st">"-"</span>, color<span class="op">=</span><span class="st">"#047857"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="st">"75 ans, ajusté Lee-Carter"</span>)</span>
+<span id="cb14-13"><a aria-hidden="true" href="#cb14-13" tabindex="-1"></a>ax2.plot(ANNEES_FUTUR, sans_raccord, <span class="st">":"</span>, color<span class="op">=</span><span class="st">"#dc2626"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"Projeté depuis l'ajusté"</span>)</span>
+<span id="cb14-14"><a aria-hidden="true" href="#cb14-14" tabindex="-1"></a>ax2.plot(ANNEES_FUTUR, table_q.loc[<span class="dv">75</span>], <span class="st">"--"</span>, color<span class="op">=</span><span class="st">"#047857"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"Projeté depuis l'observé (retenu)"</span>)</span>
+<span id="cb14-15"><a aria-hidden="true" href="#cb14-15" tabindex="-1"></a>ax2.set_xlim(<span class="dv">2005</span>, <span class="dv">2035</span>)</span>
+<span id="cb14-16"><a aria-hidden="true" href="#cb14-16" tabindex="-1"></a>ax2.set_ylim(<span class="fl">0.018</span>, <span class="fl">0.042</span>)</span>
+<span id="cb14-17"><a aria-hidden="true" href="#cb14-17" tabindex="-1"></a>ax2.set_title(<span class="st">"Le raccord à 75 ans"</span>)</span>
+<span id="cb14-18"><a aria-hidden="true" href="#cb14-18" tabindex="-1"></a><span class="cf">for</span> axe <span class="kw">in</span> (ax1, ax2):</span>
+<span id="cb14-19"><a aria-hidden="true" href="#cb14-19" tabindex="-1"></a>    axe.set_xlabel(<span class="st">"Année"</span>)</span>
+<span id="cb14-20"><a aria-hidden="true" href="#cb14-20" tabindex="-1"></a>    axe.set_ylabel(<span class="st">"q_x"</span>)</span>
+<span id="cb14-21"><a aria-hidden="true" href="#cb14-21" tabindex="-1"></a>    axe.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb14-22"><a aria-hidden="true" href="#cb14-22" tabindex="-1"></a>    axe.grid(alpha<span class="op">=</span><span class="fl">0.3</span>, which<span class="op">=</span><span class="st">"both"</span>)</span>
+<span id="cb14-23"><a aria-hidden="true" href="#cb14-23" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb14-24"><a aria-hidden="true" href="#cb14-24" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-lc-projection">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lc-projection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-lc-projection-output-1_6bbeff3e.png" width="1333"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lc-projection-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 13.4: À gauche, q_x observé et projeté à 65 et 85 ans. À droite, le raccord à 75 ans : la projection qui part des taux ajustés décroche de l’observé, celle qui part de l’observé le prolonge
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>En 2019, l’ajustement ne passe pas exactement par l’observé, et l’écart se lit contre le bruit d’une année. À 40, 65, 85 et 95 ans, il reste de l’ordre de ce bruit (−4,7 % pour 4,5 % à 40 ans, +1,0 % pour 1,7 % à 65 ans). À 75 ans, il est systématique : −5,6 % pour 1,3 % de bruit, et la figure de droite montre l’observé sous l’ajusté depuis 2014 environ. C’est l’accélération après 1990, que le facteur unique ne suit pas. Partir des taux ajustés ferait démarrer la projection au-dessus de l’observé (courbe rouge). On part donc des taux observés, moyennés sur 2017-2019 pour ne pas figer le bruit d’une seule année : c’est une variante du raccord de Lee et Miller (2001), qui partent des taux observés de la seule dernière année.</p>
+<p>Au-delà de 95 ans, chaque année est prolongée par une loi de Kannisto ajustée sur 80-95 ans, jusqu’à 120 ans où la table est fermée (<span class="math inline">\(q = 1\)</span>). La table couvre 91 âges et 81 années, de 2020 à 2100. En 2020, premier an projeté, elle prolonge 2019 sans saut au-delà du bruit d’une année (<span class="math inline">\(q_{65}\)</span> 0,0112 après 0,0116, <span class="math inline">\(q_{75}\)</span> 0,0275 après 0,0273, <span class="math inline">\(q_{95}\)</span> 0,2352 après 0,2339). D’ici 2100, <span class="math inline">\(q_{65}\)</span> est divisé par 4 (de 0,0116 à 0,0029) ; <span class="math inline">\(q_{110}\)</span> bouge à peine (de 0,5095 à 0,4845), la fermeture héritant des faibles <span class="math inline">\(b_x\)</span> des grands âges.</p>
+<div class="cell" data-execution_count="10" id="04525e66">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a><span class="kw">def</span> esperance(q: np.ndarray) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>    <span class="co">"""e = 0,5 + somme des probabilités de survie, pour une suite de q jusqu'à la fermeture."""</span></span>
+<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">+</span> np.cumprod(<span class="dv">1</span> <span class="op">-</span> q).<span class="bu">sum</span>()</span>
+<span id="cb15-4"><a aria-hidden="true" href="#cb15-4" tabindex="-1"></a></span>
+<span id="cb15-5"><a aria-hidden="true" href="#cb15-5" tabindex="-1"></a><span class="kw">def</span> e_periode(table: pd.DataFrame, age: <span class="bu">int</span>, annee: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb15-6"><a aria-hidden="true" href="#cb15-6" tabindex="-1"></a>    <span class="co">"""Espérance du moment : la colonne de l'année, tous les âges la même année."""</span></span>
+<span id="cb15-7"><a aria-hidden="true" href="#cb15-7" tabindex="-1"></a>    <span class="cf">return</span> esperance(table.loc[age:, annee].to_numpy())</span>
+<span id="cb15-8"><a aria-hidden="true" href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a aria-hidden="true" href="#cb15-9" tabindex="-1"></a><span class="kw">def</span> e_cohorte(table: pd.DataFrame, age: <span class="bu">int</span>, annee: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
+<span id="cb15-10"><a aria-hidden="true" href="#cb15-10" tabindex="-1"></a>    <span class="co">"""Espérance de génération : la diagonale, un an de plus chaque année."""</span></span>
+<span id="cb15-11"><a aria-hidden="true" href="#cb15-11" tabindex="-1"></a>    pas <span class="op">=</span> np.arange(table.index.<span class="bu">max</span>() <span class="op">-</span> age <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb15-12"><a aria-hidden="true" href="#cb15-12" tabindex="-1"></a>    lignes <span class="op">=</span> table.index.get_indexer(age <span class="op">+</span> pas)</span>
+<span id="cb15-13"><a aria-hidden="true" href="#cb15-13" tabindex="-1"></a>    colonnes <span class="op">=</span> table.columns.get_indexer(annee <span class="op">+</span> pas)</span>
+<span id="cb15-14"><a aria-hidden="true" href="#cb15-14" tabindex="-1"></a>    <span class="cf">return</span> esperance(table.to_numpy()[lignes, colonnes])</span>
+<span id="cb15-15"><a aria-hidden="true" href="#cb15-15" tabindex="-1"></a></span>
+<span id="cb15-16"><a aria-hidden="true" href="#cb15-16" tabindex="-1"></a><span class="cf">for</span> annee <span class="kw">in</span> (<span class="dv">2019</span>, <span class="dv">2030</span>, <span class="dv">2045</span>):</span>
+<span id="cb15-17"><a aria-hidden="true" href="#cb15-17" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"e65 en </span><span class="sc">{</span>annee<span class="sc">}</span><span class="ss"> : du moment (colonne) </span><span class="sc">{</span>e_periode(table_complete, <span class="dv">65</span>, annee)<span class="sc">:5.2f}</span><span class="ss"> ans | "</span></span>
+<span id="cb15-18"><a aria-hidden="true" href="#cb15-18" tabindex="-1"></a>          <span class="ss">f"de génération (diagonale, née en </span><span class="sc">{</span>annee <span class="op">-</span> <span class="dv">65</span><span class="sc">}</span><span class="ss">) </span><span class="sc">{</span>e_cohorte(table_complete, <span class="dv">65</span>, annee)<span class="sc">:5.2f}</span><span class="ss"> ans"</span>)</span>
+<span id="cb15-19"><a aria-hidden="true" href="#cb15-19" tabindex="-1"></a></span>
+<span id="cb15-20"><a aria-hidden="true" href="#cb15-20" tabindex="-1"></a><span class="co"># Ce que vaut le raccord : la même projection, partie des taux ajustés</span></span>
+<span id="cb15-21"><a aria-hidden="true" href="#cb15-21" tabindex="-1"></a>m_sans_raccord <span class="op">=</span> pd.DataFrame(np.exp(lc[<span class="st">"ax"</span>][:, <span class="va">None</span>] <span class="op">+</span> lc[<span class="st">"bx"</span>][:, <span class="va">None</span>] <span class="op">*</span> projection[<span class="st">"central"</span>][<span class="va">None</span>, :]),</span>
+<span id="cb15-22"><a aria-hidden="true" href="#cb15-22" tabindex="-1"></a>                              index<span class="op">=</span>AGES, columns<span class="op">=</span>ANNEES_FUTUR)</span>
+<span id="cb15-23"><a aria-hidden="true" href="#cb15-23" tabindex="-1"></a>table_sans_raccord <span class="op">=</span> vers_qx(etendre_kannisto(m_sans_raccord))</span>
+<span id="cb15-24"><a aria-hidden="true" href="#cb15-24" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">e65 de génération en 2030 sans raccord (départ des taux ajustés) : "</span></span>
+<span id="cb15-25"><a aria-hidden="true" href="#cb15-25" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>e_cohorte(table_sans_raccord, <span class="dv">65</span>, <span class="dv">2030</span>)<span class="sc">:.2f}</span><span class="ss"> ans"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>e65 en 2019 : du moment (colonne) 19.53 ans | de génération (diagonale, née en 1954) 20.87 ans
+e65 en 2030 : du moment (colonne) 20.68 ans | de génération (diagonale, née en 1965) 22.04 ans
+e65 en 2045 : du moment (colonne) 22.16 ans | de génération (diagonale, née en 1980) 23.53 ans
+
+e65 de génération en 2030 sans raccord (départ des taux ajustés) : 21.94 ans</code></pre>
+</div>
+</div>
+<p>Deux espérances de vie, à ne pas confondre. L’espérance <strong>du moment</strong> de 2030 se lit dans la colonne 2030 : tous les âges, la même année. Elle vaut 20,68 ans. L’espérance <strong>de génération</strong> de la personne qui a 65 ans en 2030, née en 1965, se lit sur la diagonale : 65 ans en 2030, 66 ans en 2031, et ainsi de suite jusqu’à 120 ans en 2085. Elle vaut 22,04 ans, 1,35 an de plus, parce qu’elle profite des baisses de mortalité à venir. L’écart est déjà de 1,34 an en 2019 (19,53 contre 20,87 ans). Pour un assureur qui verse des rentes, c’est la diagonale qui compte : la colonne sous-estime la durée des paiements.</p>
+<p>Le raccord, lui, pèse 0,10 an sur l’espérance de génération en 2030 (22,04 ans contre 21,94 sans raccord). Peu de chose ici, parce que l’écart n’est systématique qu’autour de 75 ans ; sur des données réelles, avec une dernière année atypique, il peut peser bien davantage.</p>
+</section>
+<section class="level3" data-number="13.4.5" id="étape-5.-persister-tester-la-fenêtre-critiquer">
+<h3 class="anchored" data-anchor-id="étape-5.-persister-tester-la-fenêtre-critiquer" data-number="13.4.5"> Étape 5. Persister, tester la fenêtre, critiquer</h3>
+<div class="cell" data-execution_count="11" id="008c5da1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a><span class="im">import</span> hashlib</span>
+<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb17-3"><a aria-hidden="true" href="#cb17-3" tabindex="-1"></a></span>
+<span id="cb17-4"><a aria-hidden="true" href="#cb17-4" tabindex="-1"></a><span class="co"># Grain : une ligne par âge et par année projetée ; qx arrondi pour une empreinte stable</span></span>
+<span id="cb17-5"><a aria-hidden="true" href="#cb17-5" tabindex="-1"></a>table_longue <span class="op">=</span> (table_q.stack().rename(<span class="st">"qx"</span>).reset_index()</span>
+<span id="cb17-6"><a aria-hidden="true" href="#cb17-6" tabindex="-1"></a>                .astype({<span class="st">"age"</span>: <span class="st">"int64"</span>, <span class="st">"annee"</span>: <span class="st">"int64"</span>}).<span class="bu">round</span>({<span class="st">"qx"</span>: <span class="dv">10</span>}))</span>
+<span id="cb17-7"><a aria-hidden="true" href="#cb17-7" tabindex="-1"></a>empreinte <span class="op">=</span> hashlib.md5(table_longue.to_csv(index<span class="op">=</span><span class="va">False</span>).encode(<span class="st">"utf-8"</span>)).hexdigest()</span>
+<span id="cb17-8"><a aria-hidden="true" href="#cb17-8" tabindex="-1"></a></span>
+<span id="cb17-9"><a aria-hidden="true" href="#cb17-9" tabindex="-1"></a>metadonnees <span class="op">=</span> {</span>
+<span id="cb17-10"><a aria-hidden="true" href="#cb17-10" tabindex="-1"></a>    <span class="st">"fiche"</span>: <span class="st">"references/bibliotheque/V2_lee_carter.qmd"</span>,</span>
+<span id="cb17-11"><a aria-hidden="true" href="#cb17-11" tabindex="-1"></a>    <span class="st">"contenu"</span>: <span class="st">"qx prospectifs, une ligne par âge et par année"</span>,</span>
+<span id="cb17-12"><a aria-hidden="true" href="#cb17-12" tabindex="-1"></a>    <span class="st">"colonnes"</span>: {<span class="st">"age"</span>: <span class="st">"âge atteint (30 à 120)"</span>, <span class="st">"annee"</span>: <span class="st">"année calendaire (2020 à 2100)"</span>,</span>
+<span id="cb17-13"><a aria-hidden="true" href="#cb17-13" tabindex="-1"></a>                 <span class="st">"qx"</span>: <span class="st">"probabilité de décès entre age et age+1 dans l'année annee"</span>},</span>
+<span id="cb17-14"><a aria-hidden="true" href="#cb17-14" tabindex="-1"></a>    <span class="st">"donnees"</span>: <span class="st">"synthétiques (décès de Poisson, graine 42), âges 30-95, années 1960-2019"</span>,</span>
+<span id="cb17-15"><a aria-hidden="true" href="#cb17-15" tabindex="-1"></a>    <span class="st">"modele"</span>: <span class="st">"Lee-Carter sur log m_x par SVD, sum(b_x) = 1, sum(k_t) = 0"</span>,</span>
+<span id="cb17-16"><a aria-hidden="true" href="#cb17-16" tabindex="-1"></a>    <span class="st">"projection_kt"</span>: <span class="st">"marche aléatoire avec dérive, trajectoire centrale (la graine des trajectoires ne l'influence pas)"</span>,</span>
+<span id="cb17-17"><a aria-hidden="true" href="#cb17-17" tabindex="-1"></a>    <span class="st">"raccord"</span>: <span class="st">"Lee-Miller : départ des taux observés moyens 2017-2019"</span>,</span>
+<span id="cb17-18"><a aria-hidden="true" href="#cb17-18" tabindex="-1"></a>    <span class="st">"grands_ages"</span>: <span class="st">"Kannisto ajusté sur 80-95 ans, prolongé à 120 ans, q_120 = 1"</span>,</span>
+<span id="cb17-19"><a aria-hidden="true" href="#cb17-19" tabindex="-1"></a>    <span class="st">"derive_kt"</span>: <span class="bu">round</span>(<span class="bu">float</span>(projection[<span class="st">"mu"</span>]), <span class="dv">6</span>),</span>
+<span id="cb17-20"><a aria-hidden="true" href="#cb17-20" tabindex="-1"></a>    <span class="st">"ecart_type_accroissements_kt"</span>: <span class="bu">round</span>(<span class="bu">float</span>(projection[<span class="st">"sigma"</span>]), <span class="dv">6</span>),</span>
+<span id="cb17-21"><a aria-hidden="true" href="#cb17-21" tabindex="-1"></a>    <span class="st">"lignes"</span>: <span class="bu">len</span>(table_longue),</span>
+<span id="cb17-22"><a aria-hidden="true" href="#cb17-22" tabindex="-1"></a>    <span class="st">"md5_contenu"</span>: empreinte,</span>
+<span id="cb17-23"><a aria-hidden="true" href="#cb17-23" tabindex="-1"></a>}</span>
+<span id="cb17-24"><a aria-hidden="true" href="#cb17-24" tabindex="-1"></a></span>
+<span id="cb17-25"><a aria-hidden="true" href="#cb17-25" tabindex="-1"></a>DOSSIER <span class="op">=</span> Path(<span class="st">"_resources"</span>)</span>
+<span id="cb17-26"><a aria-hidden="true" href="#cb17-26" tabindex="-1"></a>DOSSIER.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-27"><a aria-hidden="true" href="#cb17-27" tabindex="-1"></a>chemin_table <span class="op">=</span> DOSSIER <span class="op">/</span> <span class="st">"lc_table_prospective_2026.parquet"</span></span>
+<span id="cb17-28"><a aria-hidden="true" href="#cb17-28" tabindex="-1"></a>chemin_meta <span class="op">=</span> DOSSIER <span class="op">/</span> <span class="st">"lc_table_prospective_2026.meta.json"</span></span>
+<span id="cb17-29"><a aria-hidden="true" href="#cb17-29" tabindex="-1"></a>deja <span class="op">=</span> json.loads(chemin_meta.read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>)) <span class="cf">if</span> chemin_meta.exists() <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb17-30"><a aria-hidden="true" href="#cb17-30" tabindex="-1"></a><span class="cf">if</span> deja <span class="op">==</span> metadonnees <span class="kw">and</span> chemin_table.exists():</span>
+<span id="cb17-31"><a aria-hidden="true" href="#cb17-31" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Table inchangée (md5 </span><span class="sc">{</span>empreinte<span class="sc">}</span><span class="ss">) : rien n'est réécrit"</span>)</span>
+<span id="cb17-32"><a aria-hidden="true" href="#cb17-32" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb17-33"><a aria-hidden="true" href="#cb17-33" tabindex="-1"></a>    table_longue.to_parquet(chemin_table, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb17-34"><a aria-hidden="true" href="#cb17-34" tabindex="-1"></a>    chemin_meta.write_text(json.dumps(metadonnees, ensure_ascii<span class="op">=</span><span class="va">False</span>, indent<span class="op">=</span><span class="dv">2</span>) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb17-35"><a aria-hidden="true" href="#cb17-35" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Table écrite : </span><span class="sc">{</span>chemin_table<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span><span class="bu">len</span>(table_longue)<span class="sc">}</span><span class="ss"> lignes, md5 </span><span class="sc">{</span>empreinte<span class="sc">}</span><span class="ss">)"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Table inchangée (md5 a0422ea1ff71df1ca7e6c920c66ffd50) : rien n'est réécrit</code></pre>
+</div>
+</div>
+<p>La table part au format long, une ligne par âge et par année (7 371 lignes), avec ses métadonnées : modèle, raccord, fermeture, dérive, empreinte MD5 du contenu. La persistance est idempotente : la cellule compare les métadonnées calculées à celles du fichier et ne réécrit rien quand elles sont identiques, ce qu’elle affiche (« Table inchangée ») dès la deuxième exécution. Relancer la fiche ne crée donc pas de faux changement dans Git, et V3 lit exactement cette table. Pas de date de calcul dans les métadonnées : elle changerait à chaque exécution, c’est le commit qui date.</p>
+<div class="cell" data-execution_count="12" id="122a9ea9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a aria-hidden="true" href="#cb19-1" tabindex="-1"></a><span class="co"># Sensibilité à la fenêtre d'estimation : même chaîne, ajustée sur 1990-2019 seulement</span></span>
+<span id="cb19-2"><a aria-hidden="true" href="#cb19-2" tabindex="-1"></a>debut <span class="op">=</span> <span class="bu">list</span>(ANNEES).index(<span class="dv">1990</span>)</span>
+<span id="cb19-3"><a aria-hidden="true" href="#cb19-3" tabindex="-1"></a>lc_court <span class="op">=</span> lee_carter_fit(log_m_obs[:, debut:])</span>
+<span id="cb19-4"><a aria-hidden="true" href="#cb19-4" tabindex="-1"></a>proj_court <span class="op">=</span> projeter_kt(lc_court[<span class="st">"kt"</span>], <span class="bu">len</span>(ANNEES_FUTUR))</span>
+<span id="cb19-5"><a aria-hidden="true" href="#cb19-5" tabindex="-1"></a>table_court <span class="op">=</span> construire_table(lc_court, proj_court[<span class="st">"central"</span>], log_m_obs[:, debut:], ANNEES_FUTUR)</span>
+<span id="cb19-6"><a aria-hidden="true" href="#cb19-6" tabindex="-1"></a><span class="cf">for</span> nom, l, p, tq <span class="kw">in</span> [(<span class="st">"1960-2019"</span>, lc, projection, table_q), (<span class="st">"1990-2019"</span>, lc_court, proj_court, table_court)]:</span>
+<span id="cb19-7"><a aria-hidden="true" href="#cb19-7" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Fenêtre </span><span class="sc">{</span>nom<span class="sc">}</span><span class="ss"> : dérive </span><span class="sc">{</span>p[<span class="st">'mu'</span>]<span class="sc">:.3f}</span><span class="ss">, b_75 = </span><span class="sc">{</span>l[<span class="st">'bx'</span>][i[<span class="dv">75</span>]]<span class="sc">:.4f}</span><span class="ss">, "</span></span>
+<span id="cb19-8"><a aria-hidden="true" href="#cb19-8" tabindex="-1"></a>          <span class="ss">f"q65 en 2050 = </span><span class="sc">{</span>tq<span class="sc">.</span>loc[<span class="dv">65</span>, <span class="dv">2050</span>]<span class="sc">:.4f}</span><span class="ss">, e65 de génération en 2030 = </span><span class="sc">{</span>e_cohorte(tq, <span class="dv">65</span>, <span class="dv">2030</span>)<span class="sc">:.2f}</span><span class="ss"> ans"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fenêtre 1960-2019 : dérive -0.896, b_75 = 0.0184, q65 en 2050 = 0.0068, e65 de génération en 2030 = 22.04 ans
+Fenêtre 1990-2019 : dérive -0.948, b_75 = 0.0203, q65 en 2050 = 0.0065, e65 de génération en 2030 = 22.31 ans</code></pre>
+</div>
+</div>
+<p>La fenêtre d’estimation change la projection. Sur 1990-2019, la dérive passe de −0,896 à −0,948 et <span class="math inline">\(b_{75}\)</span> de 0,0184 à 0,0203 : le modèle voit l’accélération récente. <span class="math inline">\(q_{65}\)</span> en 2050 tombe de 0,0068 à 0,0065, et l’espérance de génération à 65 ans en 2030 gagne 0,27 an (22,31 contre 22,04 ans). Aucune des deux fenêtres n’est « la bonne » : le choix se documente, avec l’écart qu’il produit.</p>
+<p><strong>Pattern de critique méthodologique</strong> à demander à Claude :</p>
+<blockquote class="blockquote">
+<p><em>“Voici mon ajustement Lee-Carter et la projection jusqu’en 2100 (paramètres, raccord, fermeture, table prospective, métadonnées). Joue le rôle d’un actuaire senior qui relit la note avant le responsable de la fonction actuarielle. Liste : (1) les hypothèses implicites, (2) les limites du modèle (rupture COVID, gains qui se déplacent d’un âge à l’autre), (3) la sensibilité à la fenêtre d’estimation, (4) les comparaisons à faire avec d’autres modèles (CBD, APC), (5) ce qu’il faudrait documenter dans la note. Appuie chaque point sur un chiffre de la sortie. Sois sévère.”</em></p>
+</blockquote>
+</section>
+</section>
+<section class="level2" data-number="13.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="13.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Une note de synthèse, rédigée à partir d’une première version de cette fiche, affirme :</p>
+<blockquote class="blockquote">
+<p>« Espérance de vie résiduelle à 65 ans en 2030 (cohorte 1965) : lue dans la colonne 2030 de la table prospective, sur les âges 65 à 95. Elle sert à estimer la durée moyenne de service des rentes de la génération 1965. »</p>
+</blockquote>
+<p>Relevez les deux erreurs, dites dans quel sens elles jouent pour un assureur qui verse des rentes, et chiffrez-les avec la table de cette fiche.</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li><strong>La colonne au lieu de la diagonale.</strong> La colonne 2030 donne l’espérance du moment : elle suppose que la personne de 65 ans en 2030 connaîtra à 80 ans la mortalité des 80 ans de 2030, alors qu’elle les aura en 2045, après quinze ans de baisse. L’espérance de la génération 1965 se lit sur la diagonale (65 ans en 2030, 66 ans en 2031…).</li>
+<li><strong>La troncature à 95 ans.</strong> Arrêter le calcul à 95 ans revient à faire mourir tous les survivants à cet âge. Une table de rentes doit aller jusqu’à sa fermeture.</li>
+</ol>
+<p>Les deux erreurs jouent dans le même sens : elles raccourcissent la durée de vie, donc celle des paiements, et conduisent à sous-provisionner les rentes. Le bloc ci-dessous les chiffre.</p>
+<div class="cell" data-execution_count="13" id="071fcd65">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a aria-hidden="true" href="#cb21-1" tabindex="-1"></a>colonne_tronquee <span class="op">=</span> table_q.loc[<span class="dv">65</span>:<span class="dv">95</span>, <span class="dv">2030</span>].to_numpy()</span>
+<span id="cb21-2"><a aria-hidden="true" href="#cb21-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Colonne 2030 arrêtée à 95 ans (la note)  : </span><span class="sc">{</span>esperance(colonne_tronquee)<span class="sc">:.2f}</span><span class="ss"> ans"</span>)</span>
+<span id="cb21-3"><a aria-hidden="true" href="#cb21-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Colonne 2030 complète (du moment)        : </span><span class="sc">{</span>e_periode(table_q, <span class="dv">65</span>, <span class="dv">2030</span>)<span class="sc">:.2f}</span><span class="ss"> ans"</span>)</span>
+<span id="cb21-4"><a aria-hidden="true" href="#cb21-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Diagonale, génération 1965 (la bonne)    : </span><span class="sc">{</span>e_cohorte(table_q, <span class="dv">65</span>, <span class="dv">2030</span>)<span class="sc">:.2f}</span><span class="ss"> ans"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Colonne 2030 arrêtée à 95 ans (la note)  : 20.40 ans
+Colonne 2030 complète (du moment)        : 20.68 ans
+Diagonale, génération 1965 (la bonne)    : 22.04 ans</code></pre>
+</div>
+</div>
+<p>La note annonce 20,40 ans. Fermer la table ajoute 0,28 an (20,68 ans), lire la diagonale 1,35 an de plus (22,04 ans) : la note sous-estime de 1,63 an, environ 7 %, la durée de vie qui fixe la durée des paiements.</p>
+</details>
+</section>
+<section class="level2" data-number="13.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="13.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Croire que Lee-Carter capte tout.</strong> Un seul facteur temporel : les gains qui se déplacent d’un âge à l’autre lui échappent en partie. Ici, l’accélération autour de 75 ans laisse un écart de −5,6 % en 2019, et la projection prolonge 1,65 % de baisse par an à 75 ans quand l’observé récent en montre 2,08 %. Pour ces effets, voir <strong>Cairns-Blake-Dowd (CBD)</strong> ou les modèles <strong>âge-période-cohorte (APC)</strong>.</li>
+<li><strong>Modéliser <span class="math inline">\(\ln q_x\)</span> au lieu de <span class="math inline">\(\ln m_x\)</span>.</strong> Lee-Carter porte sur le taux central <span class="math inline">\(m_x\)</span>, décès rapportés à l’exposition. On ne passe à <span class="math inline">\(q_x = 1 - e^{-m_x}\)</span> qu’à la fin, pour les calculs d’engagements.</li>
+<li><strong>Ne pas tester la fenêtre d’estimation.</strong> 1960-2019 et 1990-2019 ne donnent ni la même dérive ni les mêmes <span class="math inline">\(b_x\)</span>. Le choix de la fenêtre se documente, avec au moins une fenêtre alternative et l’écart qu’elle produit.</li>
+<li><strong>Ignorer le raccord.</strong> Le modèle ajusté ne passe pas par la dernière année observée. Mesurer l’écart, le comparer au bruit, et décider d’où part la projection, par écrit.</li>
+<li><strong>Oublier l’impact COVID.</strong> Les années 2020 à 2022 ont connu une surmortalité. Les inclure sans traitement gonfle <span class="math inline">\(\sigma\)</span>, déplace la dérive et, si l’une d’elles est la dernière année, fait partir la projection d’un point haut. À traiter explicitement : exclure, pondérer, ou modéliser le choc.</li>
+<li><strong>Arrêter la table à 95 ans.</strong> Une espérance de vie ou une rente calculée sur une table tronquée sous-estime l’engagement. La table se ferme (Kannisto, Coale-Kisker), et la méthode se documente.</li>
+<li><strong>Projection centrale seulement.</strong> L’espérance projetée ne dit rien de l’incertitude. Un modèle interne, ou un ajustement pour risque IFRS 17 fondé sur un niveau de confiance, demande des trajectoires simulées, avec l’incertitude sur la dérive en plus du bruit de la marche aléatoire.</li>
+<li><strong>Confondre table prospective et table réglementaire.</strong> En normes françaises, les rentes viagères se tarifent et se provisionnent avec les tables générationnelles TGH05 et TGF05, construites sur des portefeuilles de rentiers (arrêté du 1er août 2006), ou avec une table d’expérience certifiée par un actuaire indépendant agréé. Votre projection Lee-Carter est un outil d’analyse et de challenge. <strong>Toujours préciser</strong> laquelle des deux on manipule.</li>
+</ul>
+</section>
+<section class="level2" data-number="13.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="13.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>V1, lissage d’une table de mortalité</strong> : pour une table à une date donnée, l’échauffement de la famille.</li>
+<li><strong>V3, PM d’une rente viagère différée sur table prospective</strong> : lit la table persistée ici et en tire une provision mathématique, avec ses sensibilités et le choc de longévité.</li>
+<li><strong>R4, bootstrap Chain-Ladder</strong> : le même principe de simulation reproductible, sur un cas non-vie.</li>
+<li><strong>S3, IFRS 17 et CSM</strong> : S3 projette les flux probabilisés d’un contrat sur une loi de mortalité illustrative ; la table prospective de cette fiche pourrait la remplacer, et les flux d’exécution comme la CSM en dépendraient.</li>
+</ul>
+</section>
+<section class="level2" data-number="13.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="13.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>CBD (Cairns-Blake-Dowd)</strong> : un modèle alternatif, mieux ajusté aux grands âges. Demander à Claude <em>“compare Lee-Carter et CBD : quand utiliser l’un ou l’autre”</em>.</li>
+<li><strong>Modèles APC</strong> (âge-période-cohorte) : ils captent les effets de génération. Plus délicats à ajuster, mais plus justes quand une génération se distingue de ses voisines.</li>
+<li><strong>Stochastique sur plusieurs trajectoires</strong> : simuler les trajectoires de <span class="math inline">\(k_t\)</span> avec l’incertitude sur la dérive, et sortir des quantiles d’espérance de vie ou d’engagement. Demander à Claude <em>“étends ma projection Lee-Carter à 5 000 trajectoires, ajoute l’incertitude sur la dérive, sauve les quantiles de e65 en parquet”</em>.</li>
+<li><strong>Solvabilité II</strong> : le best estimate repose sur des hypothèses réalistes propres à l’organisme, pas sur des tables « fournies » par l’INSEE ou l’Institut des actuaires : une table d’expérience, ou une table de référence ajustée à la mortalité observée du portefeuille, que cette projection peut challenger. Le choc de longévité de la formule standard est une baisse de 20 % des taux de mortalité ; V3 l’applique à un contrat.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/V1/index.html"><small>&larr; Précédent</small>V1. Charger et lisser une table de mortalité</a><a class="next" href="../../bibliotheque/V3/index.html"><small>Suivant &rarr;</small>V3. PM d’une rente viagère différée sur table prospective</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

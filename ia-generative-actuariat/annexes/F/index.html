@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe F. Liste des pièges fréquents · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe F. Liste des pièges fréquents</h1>
+      <p class="lede">Les erreurs que la formation apprend à repérer, classées par famille : posture, prompting, données, validation, industrialisation. À relire avant de se lancer sur un cas réel.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#pièges-liés-à-la-posture">Pièges liés à la posture</a><a href="#pièges-liés-au-prompting">Pièges liés au prompting</a><a href="#pièges-liés-aux-données">Pièges liés aux données</a><a href="#pièges-liés-à-la-validation">Pièges liés à la validation</a><a href="#pièges-liés-à-lindustrialisation">Pièges liés à l’industrialisation</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<section class="level2" data-number="35.1" id="pièges-liés-à-la-posture">
+<h2 class="anchored" data-anchor-id="pièges-liés-à-la-posture" data-number="35.1" id="pièges-liés-à-la-posture"> Pièges liés à la posture</h2>
+<section class="level3" data-number="35.1.1" id="déléguer-le-jugement-professionnel">
+<h3 class="anchored" data-anchor-id="déléguer-le-jugement-professionnel" data-number="35.1.1"> Déléguer le jugement professionnel</h3>
+<p>L’erreur la plus grave. Accepter sans relecture un choix de méthode (Chain-Ladder ou Mack, Poisson ou binomiale négative, Makeham ou Heligman-Pollard) parce que Claude l’a proposé avec assurance. <strong>La signature actuarielle est la vôtre.</strong> Claude propose, vous décidez, vous justifiez en revue. La vitesse de l’outil ne dispense pas du jugement.</p>
+<p><strong>Symptôme</strong> : vous ne savez pas répondre à <em>« pourquoi cette méthode plutôt qu’une autre ? »</em>. Si vous ne savez pas, vous n’avez pas validé.</p>
+</section>
+<section class="level3" data-number="35.1.2" id="tomber-dans-la-fascination-ou-dans-le-rejet">
+<h3 class="anchored" data-anchor-id="tomber-dans-la-fascination-ou-dans-le-rejet" data-number="35.1.2"> Tomber dans la fascination, ou dans le rejet</h3>
+<p>Deux extrêmes symétriques, aussi improductifs l’un que l’autre.</p>
+<p>La fascination : <em>« l’IA va remplacer les actuaires, autant tout automatiser tout de suite »</em>. Conséquence : vous déléguez trop, vous perdez la main sur votre métier, vous fragilisez vos livrables.</p>
+<p>Le rejet : <em>« ce n’est qu’un perroquet stochastique, je ne fais rien avec »</em>. Conséquence : vous écrivez à la main le code, les tests et la documentation qu’un assistant bien dirigé aurait préparés pour votre relecture.</p>
+<p>La posture de la formation est ailleurs : amplifier l’actuaire, pas le remplacer. Le critère permanent : <em>est-ce que cela amplifie l’actuaire, ou est-ce que cela tente de le remplacer ?</em></p>
+</section>
+<section class="level3" data-number="35.1.3" id="accepter-par-fatigue">
+<h3 class="anchored" data-anchor-id="accepter-par-fatigue" data-number="35.1.3"> Accepter par fatigue</h3>
+<p>À la trentième demande d’autorisation de la matinée, on accepte sans lire. C’est exactement le moment où une action dangereuse passe. Réglez <code>.claude/settings.json</code> dès le départ (<a href="../../annexes/D/index.html">annexe D</a>) : ce qui est anodin passe sans demander, ce qui est risqué ne passe jamais, et chaque demande restante mérite d’être lue. Le mode <code>auto</code>, mode de départ par défaut, ne règle pas la question à votre place : un second modèle décide alors de ce qui passe, et ce sont vos règles <code>ask</code> et <code>deny</code> qui gardent le dernier mot.</p>
+</section>
+<section class="level3" data-number="35.1.4" id="travailler-sans-claude.md">
+<h3 class="anchored" data-anchor-id="travailler-sans-claude.md" data-number="35.1.4"> Travailler sans CLAUDE.md</h3>
+<p>Sans <code>CLAUDE.md</code>, Claude redécouvre votre projet à chaque session. Vous redites les conventions, les formules, les fichiers de référence, et Claude risque d’appliquer des conventions différentes d’une session à l’autre. <strong>Créez un <code>CLAUDE.md</code> dès la première session sur un projet</strong>, même court : quelques lignes suffisent pour commencer. Modèle en <a href="../../annexes/C/index.html">annexe C</a>.</p>
+</section>
+</section>
+<section class="level2" data-number="35.2" id="pièges-liés-au-prompting">
+<h2 class="anchored" data-anchor-id="pièges-liés-au-prompting" data-number="35.2" id="pièges-liés-au-prompting"> Pièges liés au prompting</h2>
+<section class="level3" data-number="35.2.1" id="prescrire-le-comment-au-lieu-du-quoi">
+<h3 class="anchored" data-anchor-id="prescrire-le-comment-au-lieu-du-quoi" data-number="35.2.1"> Prescrire le comment au lieu du quoi</h3>
+<blockquote class="blockquote">
+<p>Mauvais : <em>“Écris-moi une boucle for qui parcourt le DataFrame et calcule la fréquence de chaque tranche.”</em></p>
+<p>Bon : <em>“Je veux la fréquence observée par tranche de bonus-malus, rapport de la somme des sinistres à la somme des expositions.”</em></p>
+</blockquote>
+<p>La version mauvaise produit du mauvais code (une boucle là où il faut un calcul vectorisé). La bonne dit le résultat attendu et sa définition, et laisse Claude écrire un code idiomatique. Voir le chapitre « Piloter l’IA » (partie 1).</p>
+</section>
+<section class="level3" data-number="35.2.2" id="le-prompt-monolithique">
+<h3 class="anchored" data-anchor-id="le-prompt-monolithique" data-number="35.2.2"> Le prompt monolithique</h3>
+<p><em>“Construis-moi un modèle GLM complet avec préparation des données, sélection des variables, validation croisée et rapport Word.”</em></p>
+<p>Claude produit des centaines de lignes d’un coup. Vous acceptez sans tout lire, et personne ne peut défendre le résultat parce que personne ne peut le décomposer. <strong>Fragmentez</strong> en micro-prompts validés un par un : « Avancer par petits pas », dans le chapitre « Piloter l’IA » (partie 1).</p>
+</section>
+<section class="level3" data-number="35.2.3" id="pas-de-critique-demandée">
+<h3 class="anchored" data-anchor-id="pas-de-critique-demandée" data-number="35.2.3"> Pas de critique demandée</h3>
+<p>Le modèle ne contredit pas spontanément : il tend à abonder dans votre sens. Sans le prompt explicite <em>« avant que je valide, joue le rôle d’un actuaire senior en revue, sois sévère »</em>, vous passez à côté des points faibles de votre approche. Pour un livrable signable, la critique se demande à chaque décision qui compte.</p>
+</section>
+<section class="level3" data-number="35.2.4" id="ne-pas-demander-ce-quon-ne-comprend-pas">
+<h3 class="anchored" data-anchor-id="ne-pas-demander-ce-quon-ne-comprend-pas" data-number="35.2.4"> Ne pas demander ce qu’on ne comprend pas</h3>
+<p>Quand Claude lance une commande longue, ou propose une transformation qu’on ne saisit pas : <em>« reformule en français ce que tu viens de faire, et pourquoi »</em>. Par fatigue ou par fierté, on laisse passer. Cela ne coûte qu’un échange, et c’est ainsi qu’on apprend à lire ce que fait l’outil.</p>
+</section>
+</section>
+<section class="level2" data-number="35.3" id="pièges-liés-aux-données">
+<h2 class="anchored" data-anchor-id="pièges-liés-aux-données" data-number="35.3" id="pièges-liés-aux-données"> Pièges liés aux données</h2>
+<section class="level3" data-number="35.3.1" id="laisser-claude-lire-les-données-réelles">
+<h3 class="anchored" data-anchor-id="laisser-claude-lire-les-données-réelles" data-number="35.3.1"> Laisser Claude lire les données réelles</h3>
+<p>Dans Claude Code, on ne colle rien : Claude ouvre lui-même les fichiers du dossier. Tout ce qu’il lit ou affiche part chez le fournisseur du modèle : un fichier ouvert, un <code>df.head()</code>, la sortie d’un script. <strong>Le dossier de travail ne contient que des données synthétiques, publiques ou pseudonymisées.</strong> Claude reçoit le schéma, le dictionnaire des données, des lignes d’exemple fabriquées ; il écrit le code, qui tourne ensuite sur les vraies données hors de la session. Voir le chapitre « Comprendre une donnée nouvelle » (partie 2).</p>
+</section>
+<section class="level3" data-number="35.3.2" id="croire-que-les-permissions-protègent-les-données">
+<h3 class="anchored" data-anchor-id="croire-que-les-permissions-protègent-les-données" data-number="35.3.2"> Croire que les permissions protègent les données</h3>
+<p>Un deny <code>Read(./data/assures/**)</code> empêche l’outil de lecture de Claude d’ouvrir ce dossier. Il n’empêche pas un script Python autorisé de l’ouvrir et d’en afficher des lignes. Les permissions évitent les accidents, elles ne protègent pas des données. Seul le bac à sable arrête un script, et il n’existe pas sous Windows natif (<a href="../../annexes/D/index.html">annexe D</a>).</p>
+</section>
+<section class="level3" data-number="35.3.3" id="choisir-loffre-sans-regarder-les-données">
+<h3 class="anchored" data-anchor-id="choisir-loffre-sans-regarder-les-données" data-number="35.3.3"> Choisir l’offre sans regarder les données</h3>
+<p>Les offres grand public (Pro, Max) et les offres entreprise (Team, Enterprise, API avec contrat) ne se valent pas : seules les secondes font du fournisseur un sous-traitant au sens du RGPD. Une donnée personnelle, même pseudonymisée, ne passe par Claude Code qu’avec une offre entreprise, choisie avec la DSI et le délégué à la protection des données (<a href="../../annexes/G/index.html">annexe G</a>).</p>
+</section>
+<section class="level3" data-number="35.3.4" id="confondre-données-sensibles-et-données-publiques">
+<h3 class="anchored" data-anchor-id="confondre-données-sensibles-et-données-publiques" data-number="35.3.4"> Confondre données sensibles et données publiques</h3>
+<p>Le portefeuille auto avec les données réelles des assurés n’a rien à faire dans un tableau de bord hébergé chez un éditeur en ligne. Le contrat d’un client n’a rien à faire dans une session d’un compte personnel. <strong>On sépare strictement</strong> : pour la formation, l’exploration ou une démonstration, des données synthétiques ou publiques (freMTPL2, Taylor-Ashe) ; les vraies données restent dans le périmètre sécurisé du cabinet.</p>
+</section>
+</section>
+<section class="level2" data-number="35.4" id="pièges-liés-à-la-validation">
+<h2 class="anchored" data-anchor-id="pièges-liés-à-la-validation" data-number="35.4" id="pièges-liés-à-la-validation"> Pièges liés à la validation</h2>
+<section class="level3" data-number="35.4.1" id="accepter-un-chiffre-sans-recalcul">
+<h3 class="anchored" data-anchor-id="accepter-un-chiffre-sans-recalcul" data-number="35.4.1"> Accepter un chiffre sans recalcul</h3>
+<p>Tout chiffre cité dans une note ou une diapositive vient d’un code exécuté juste avant. Pas la version d’il y a deux semaines, pas celle d’un collègue, pas un chiffre écrit par Claude dans sa réponse. Si vous écrivez « le SCR de souscription s’élève à 142 M€ », c’est qu’un calcul de la session l’a produit et que vous l’avez lu dans sa sortie.</p>
+</section>
+<section class="level3" data-number="35.4.2" id="confondre-vraisemblance-et-exactitude">
+<h3 class="anchored" data-anchor-id="confondre-vraisemblance-et-exactitude" data-number="35.4.2"> Confondre vraisemblance et exactitude</h3>
+<p>Le modèle produit des chiffres et des références <strong>plausibles</strong>. Plausible n’est pas exact. Le cas le plus traître n’est pas la référence inventée, c’est la référence qui existe et à laquelle on prête un contenu qu’elle n’a pas : la recommandation de l’ACPR 2024-R-03 existe, et elle porte sur le recueil des informations relatives au client pour le devoir de conseil, pas sur l’IA. <strong>Vérifiez chaque référence et chaque chiffre cité</strong> dans le texte source.</p>
+</section>
+<section class="level3" data-number="35.4.3" id="ignorer-les-avertissements">
+<h3 class="anchored" data-anchor-id="ignorer-les-avertissements" data-number="35.4.3"> Ignorer les avertissements</h3>
+<p>Claude prévient parfois : <em>« je ne suis pas sûr de cette formule, vérifie-la dans la source »</em>, ou <em>« ce calcul suppose les sinistres indépendants, vérifie si c’est le cas »</em>. Ces avertissements sont l’information la plus utile de la réponse : <strong>lisez-les et traitez-les</strong>. Passés par fatigue, ils deviennent le piège.</p>
+</section>
+<section class="level3" data-number="35.4.4" id="confier-la-validation-à-claude">
+<h3 class="anchored" data-anchor-id="confier-la-validation-à-claude" data-number="35.4.4"> Confier la validation à Claude</h3>
+<p>Demander la critique stimule la revue ; cela ne remplace pas votre relecture. Claude peut critiquer son propre travail, avec un angle mort de structure : il ne voit pas ses propres inventions comme telles. <strong>Vous restez le valideur final.</strong></p>
+</section>
+<section class="level3" data-number="35.4.5" id="oublier-les-contrôles-de-vraisemblance-métier">
+<h3 class="anchored" data-anchor-id="oublier-les-contrôles-de-vraisemblance-métier" data-number="35.4.5"> Oublier les contrôles de vraisemblance métier</h3>
+<p>Vos coefficients de GLM ont-ils le signe attendu ? Vos provisions ont-elles bougé dans un ordre de grandeur cohérent avec l’an dernier ? Vos <span class="math inline">\(q_x\)</span> sont-ils croissants aux grands âges ? Comparez-vous une réserve à une réserve, et pas à un ultime ? Ces vérifications sont rapides et attrapent des erreurs grossières qu’aucun test automatique n’a prévues. <strong>Avant tout livrable, un contrôle de vraisemblance explicite.</strong></p>
+</section>
+</section>
+<section class="level2" data-number="35.5" id="pièges-liés-à-lindustrialisation">
+<h2 class="anchored" data-anchor-id="pièges-liés-à-lindustrialisation" data-number="35.5" id="pièges-liés-à-lindustrialisation"> Pièges liés à l’industrialisation</h2>
+<section class="level3" data-number="35.5.1" id="ne-pas-commiter-ne-pas-pousser">
+<h3 class="anchored" data-anchor-id="ne-pas-commiter-ne-pas-pousser" data-number="35.5.1"> Ne pas commiter, ne pas pousser</h3>
+<p>Une modification non commitée reste sur le disque, mais sans point de retour : la suivante l’écrase. Un commit non poussé n’existe que sur votre poste. Deux sessions Claude ouvertes dans le même dossier voient les mêmes fichiers et peuvent s’écraser l’une l’autre ; pour travailler en parallèle, un dossier par session (un <code>git worktree</code>). <strong>À chaque modification validée, un commit ; chaque jour, un push.</strong> Le pattern <em>« Claude, commite-le »</em> (<a href="../../annexes/E/index.html">annexe E</a>) en fait un réflexe.</p>
+</section>
+<section class="level3" data-number="35.5.2" id="oublier-la-graine-dun-calcul-stochastique">
+<h3 class="anchored" data-anchor-id="oublier-la-graine-dun-calcul-stochastique" data-number="35.5.2"> Oublier la graine d’un calcul stochastique</h3>
+<p><code>rng = np.random.default_rng(seed=42)</code> plutôt que des tirages non contrôlés. Sans graine, un Monte Carlo ne se reproduit pas, donc personne ne peut le vérifier. La graine ne suffit pas toujours : notez la version de NumPy, et donnez un générateur à chaque composant (<code>SeedSequence(42).spawn(k)</code>) pour qu’une modification n’en décale pas d’autres. Voir « Le hasard se pilote », dans le chapitre « Versionner les résultats » (partie 3).</p>
+</section>
+<section class="level3" data-number="35.5.3" id="vectoriser-à-laveugle">
+<h3 class="anchored" data-anchor-id="vectoriser-à-laveugle" data-number="35.5.3"> Vectoriser à l’aveugle</h3>
+<p>Le modèle peut proposer une vectorisation plus lente que la boucle (des tableaux énormes alloués pour rien, des copies cachées). <strong>Mesurez après chaque vectorisation.</strong> Si le temps ne baisse pas, demandez <em>« pourquoi cette version n’est-elle pas plus rapide ? »</em>.</p>
+</section>
+<section class="level3" data-number="35.5.4" id="tout-mettre-dans-un-seul-script">
+<h3 class="anchored" data-anchor-id="tout-mettre-dans-un-seul-script" data-number="35.5.4"> Tout mettre dans un seul script</h3>
+<p>Le script qui mélange chargement, calcul, export et tests devient ingérable en quelques mois. <strong>Séparez le moteur de l’interface dès le départ</strong> : le moteur en module Python pur, l’interface (Excel, tableau de bord, API) qui l’appelle. Voir le chapitre « Organiser les algorithmes » (partie 4).</p>
+</section>
+<section class="level3" data-number="35.5.5" id="ignorer-les-tests">
+<h3 class="anchored" data-anchor-id="ignorer-les-tests" data-number="35.5.5"> Ignorer les tests</h3>
+<p><em>« Je n’ai pas le temps d’écrire des tests. »</em> Le temps économisé se reperd en débogage, en revue, en retours en arrière. Le minimum, un test par fonction sur un cas connu calculé à la main, attrape déjà les régressions grossières, à petit coût. Voir le chapitre « Organiser les algorithmes » (partie 4).</p>
+</section>
+<section class="level3" data-number="35.5.6" id="un-test-qui-compare-la-mauvaise-grandeur">
+<h3 class="anchored" data-anchor-id="un-test-qui-compare-la-mauvaise-grandeur" data-number="35.5.6"> Un test qui compare la mauvaise grandeur</h3>
+<p>Un test du Chain-Ladder sur Taylor-Ashe qui compare la somme des ultimes à 18 680 856 échoue sur un module juste : 18 680 856 est la réserve totale, l’ultime total vaut 53 038 946. La tentation est alors de « corriger » le module. Avant de toucher au code, on relit ce que le test compare.</p>
+</section>
+<section class="level3" data-number="35.5.7" id="pousser-dans-main-sans-vérifier">
+<h3 class="anchored" data-anchor-id="pousser-dans-main-sans-vérifier" data-number="35.5.7"> Pousser dans <code>main</code> sans vérifier</h3>
+<p>Un <code>git push</code> sur la branche principale avant d’avoir vérifié que les tests passent et que le calcul tourne : vos collègues récupèrent une version cassée. <strong>Avant tout push : les tests, et un calcul de référence relancé.</strong></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : repérez les pièges
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Une collègue raconte sa matinée. Elle a copié l’extraction de sinistres de production dans le dossier du projet, « puisque le deny <code>Read</code> la protège ». Elle a demandé à Claude « un GLM complet, avec sélection des variables et rapport Word ». Elle a gardé le modèle parce que Claude a écrit que tous les coefficients étaient significatifs, et elle a reporté dans sa note le S/P annoncé par Claude dans sa réponse. Elle commitera ce soir. Combien de pièges comptez-vous ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li><strong>Les données réelles dans le dossier.</strong> Le deny <code>Read</code> ne protège pas d’un script Python, et tout ce que Claude lit ou affiche part chez le fournisseur. L’extraction n’a rien à faire là.</li>
+<li><strong>Le prompt monolithique.</strong> Un GLM complet en une demande ne se relit pas et ne se défend pas : on fragmente.</li>
+<li><strong>La validation déléguée.</strong> « Tous les coefficients sont significatifs » est une affirmation de Claude, pas une validation : elle demande la critique, les diagnostics et un contrôle de vraisemblance.</li>
+<li><strong>Le chiffre repris de la prose.</strong> Le S/P d’une note vient d’un code exécuté et lu dans sa sortie, sur primes acquises.</li>
+<li><strong>Le commit du soir.</strong> On commite à chaque étape validée, pas une fois par jour, et on pousse.</li>
+</ol>
+</details>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="35.6" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="35.6" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>Le chapitre « Un modèle qui écrit le mot suivant » (partie 1) : inventions et complaisance du modèle, d’où viennent beaucoup des pièges ci-dessus.</li>
+<li>La partie 4 (« Automatisation et industrialisation ») : moteur, tests, permissions, où se traitent les pièges de l’industrialisation.</li>
+<li>L’<a href="../../annexes/G/index.html">annexe G</a> : le cadre réglementaire, pour les pièges de gouvernance.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/E/index.html"><small>&larr; Précédent</small>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a class="next" href="../../annexes/G/index.html"><small>Suivant &rarr;</small>Annexe G. Cadre réglementaire pour l’IA en assurance</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

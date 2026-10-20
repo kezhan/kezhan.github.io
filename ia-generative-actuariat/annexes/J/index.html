@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe J. Formulaire pré-formation · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe J. Formulaire pré-formation</h1>
+      <p class="lede">Canevas du formulaire à envoyer aux participants <strong>deux à trois semaines avant</strong> la formation. Il sert deux objectifs : préparer l’environnement technique, pour que l’installation ne mange pas l’atelier de la première demi-journée, et recueillir les cas du quotidien que chacun veut traiter, auxquels les ateliers s’appliquent aussi bien qu’aux fiches de la bibliothèque. À adapter à l’outil de formulaire du cabinet (Google Forms, Tally, Microsoft Forms, papier).</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#format-conseillé">Format conseillé</a><a href="#le-formulaire-complet">Le formulaire complet</a><a href="#ce-que-le-formulaire-permet-à-lanimateur">Ce que le formulaire permet à l’animateur</a><a href="#le-mail-denvoi">Le mail d’envoi</a><a href="#variante-pour-une-formation-interne">Variante pour une formation interne</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<section class="level2" data-number="39.1" id="format-conseillé">
+<h2 class="anchored" data-anchor-id="format-conseillé" data-number="39.1" id="format-conseillé"> Format conseillé</h2>
+<ul>
+<li>Envoyer <strong>trois semaines avant</strong>, pour avoir le temps de relancer.</li>
+<li>Annoncer <strong>dix minutes</strong> de remplissage, et s’y tenir : un formulaire court est rempli, un long est abandonné.</li>
+<li>Préciser que les réponses servent à <strong>adapter la formation</strong> au groupe et ne sont partagées qu’avec l’animateur, sauf accord explicite.</li>
+<li>Prévoir un rappel à J-10 et à J-3.</li>
+</ul>
+</section>
+<section class="level2" data-number="39.2" id="le-formulaire-complet">
+<h2 class="anchored" data-anchor-id="le-formulaire-complet" data-number="39.2" id="le-formulaire-complet"> Le formulaire complet</h2>
+<section class="level3" data-number="39.2.1" id="section-1.-profil-professionnel">
+<h3 class="anchored" data-anchor-id="section-1.-profil-professionnel" data-number="39.2.1"> Section 1. Profil professionnel</h3>
+<ol type="1">
+<li><strong>Nom, prénom, fonction.</strong></li>
+<li><strong>Cabinet ou organisme employeur.</strong></li>
+<li><strong>Domaine actuariel principal</strong> (choix unique) :
+<ul>
+<li>Tarification non-vie</li>
+<li>Provisionnement non-vie</li>
+<li>Vie et prévoyance (provisions mathématiques, projection)</li>
+<li>Réglementaire (Solvabilité II, IFRS 17, ORSA)</li>
+<li>Gestion actif-passif et investissement</li>
+<li>Réassurance</li>
+<li>Autre (préciser)</li>
+</ul></li>
+<li><strong>Ancienneté actuarielle</strong> : moins de 3 ans / 3 à 7 ans / 7 à 15 ans / plus de 15 ans.</li>
+<li><strong>Membre de l’Institut des Actuaires</strong> : oui (préciser le statut) / non.</li>
+</ol>
+</section>
+<section class="level3" data-number="39.2.2" id="section-2.-environnement-technique-actuel">
+<h3 class="anchored" data-anchor-id="section-2.-environnement-technique-actuel" data-number="39.2.2"> Section 2. Environnement technique actuel</h3>
+<ol start="6" type="1">
+<li><strong>Outils utilisés au quotidien</strong> (choix multiple) :
+<ul>
+<li>Excel et VBA</li>
+<li>R</li>
+<li>Python</li>
+<li>SAS</li>
+<li>Prophet (FIS), Polysystems ou un autre logiciel actuariel</li>
+<li>SQL</li>
+<li>Autre</li>
+</ul></li>
+<li><strong>Aisance en Python</strong> :
+<ul>
+<li>Aucune notion</li>
+<li>Débutant (j’ai suivi un tutoriel, je sais lire un script simple)</li>
+<li>Intermédiaire (j’écris des scripts avec pandas pour mes analyses)</li>
+<li>Avancé (je structure mon code en fonctions et en modules)</li>
+</ul></li>
+<li><strong>Avez-vous déjà ouvert un terminal ?</strong> Oui / Non / Une fois ou deux, sans bien comprendre.</li>
+<li><strong>Utilisez-vous déjà l’IA générative au travail ?</strong> (choix multiple) :
+<ul>
+<li>ChatGPT</li>
+<li>Claude (claude.ai)</li>
+<li>Microsoft Copilot ou un autre assistant intégré à la bureautique</li>
+<li>GitHub Copilot pour le code</li>
+<li>Un autre assistant (préciser)</li>
+<li>Aucun</li>
+</ul></li>
+<li><strong>Si oui, à quelle fréquence</strong> : quotidienne / hebdomadaire / mensuelle / rare.</li>
+</ol>
+</section>
+<section class="level3" data-number="39.2.3" id="section-3.-préparation-du-poste">
+<h3 class="anchored" data-anchor-id="section-3.-préparation-du-poste" data-number="39.2.3"> Section 3. Préparation du poste</h3>
+<ol start="11" type="1">
+<li><strong>Votre poste pendant la formation sera</strong> : un poste professionnel / un poste personnel.</li>
+<li><strong>Aurez-vous les droits pour installer un logiciel ?</strong> Oui / Non / Je ne sais pas. Si non, demandez dès maintenant à votre DSI d’installer : Python 3.11 ou plus récent, VS Code, Git (Git for Windows sous Windows), l’extension Claude Code de VS Code (identifiant <code>anthropic.claude-code</code>) et, pour le terminal, Claude Code par son installeur natif. La liste et les commandes sont dans l’<a href="../../annexes/installation/index.html">annexe Installation</a>.</li>
+<li><strong>Votre organisme autorise-t-il Claude Code, et sous quelle offre ?</strong></li>
+</ol>
+<ul>
+<li>Oui, sous une offre entreprise (Team, Enterprise, ou l’API sous contrat)</li>
+<li>Oui, sous une offre individuelle (Pro, Max)</li>
+<li>Non, un autre assistant est autorisé (lequel ?)</li>
+<li>Je ne sais pas</li>
+</ul>
+<ol start="14" type="1">
+<li><strong>Avez-vous un compte Claude ?</strong> Pro / Max / Team / Enterprise / clé d’API / aucun. Un abonnement Pro suffit pour la formation, qui travaille sur des données publiques ou synthétiques.</li>
+</ol>
+</section>
+<section class="level3" data-number="39.2.4" id="section-4.-le-cas-du-quotidien-à-apporter">
+<h3 class="anchored" data-anchor-id="section-4.-le-cas-du-quotidien-à-apporter" data-number="39.2.4"> Section 4. Le cas du quotidien à apporter</h3>
+<p>Les ateliers de chaque demi-journée s’appliquent à votre cas aussi bien qu’aux fiches de la bibliothèque. Préparé en amont, c’est le cas que vous finirez chez vous la semaine suivante.</p>
+<ol start="15" type="1">
+<li><strong>Décrivez en cinq à dix lignes un problème actuariel récurrent de votre poste que vous aimeriez traiter avec Claude Code.</strong> Exemples :
+<ul>
+<li>Migrer un classeur Excel-VBA de calcul de provisions mathématiques en module Python.</li>
+<li>Construire un tableau de bord de suivi de la sinistralité.</li>
+<li>Rédiger la note méthodologique d’un calcul de SCR.</li>
+<li>Relire et tester le code Python d’un collègue.</li>
+<li>Accélérer un Monte Carlo trop lent.</li>
+</ul></li>
+<li><strong>Quelle donnée d’entrée utiliserez-vous ?</strong> Un jeu de données public, une donnée synthétique à générer, ou un fichier qui ne contient aucune donnée réelle.
+<ul>
+<li><strong>Important</strong> : aucune donnée réelle, même anonymisée ou pseudonymisée. Pas de données nominatives, pas d’extraction de production. Si votre cas demande des données réelles, apportez leur description (colonnes, types, unités, volumes) : on fabrique en séance, avec l’assistant, un jeu synthétique aux mêmes caractéristiques.</li>
+</ul></li>
+<li><strong>Quelle finalité attendez-vous ?</strong> Un module Python testé, une note rédigée, un tableau de bord qui fonctionne, une analyse aboutie.</li>
+</ol>
+</section>
+<section class="level3" data-number="39.2.5" id="section-5.-attentes">
+<h3 class="anchored" data-anchor-id="section-5.-attentes" data-number="39.2.5"> Section 5. Attentes</h3>
+<ol start="18" type="1">
+<li><strong>Quel résultat concret attendez-vous de ces deux jours ?</strong> Trois lignes au plus.</li>
+<li><strong>Un point sur lequel vous voulez insister ?</strong> Par exemple : la sécurité des données, le réglementaire, la tarification, l’industrialisation.</li>
+<li><strong>Des questions à poser à l’animateur avant la formation ?</strong></li>
+</ol>
+</section>
+</section>
+<section class="level2" data-number="39.3" id="ce-que-le-formulaire-permet-à-lanimateur">
+<h2 class="anchored" data-anchor-id="ce-que-le-formulaire-permet-à-lanimateur" data-number="39.3" id="ce-que-le-formulaire-permet-à-lanimateur"> Ce que le formulaire permet à l’animateur</h2>
+<p>À partir des réponses, l’animateur peut :</p>
+<ul>
+<li><strong>Adapter le niveau</strong> : un groupe surtout débutant en Python demande plus de temps sur les fondamentaux ; un groupe à l’aise permet d’accélérer.</li>
+<li><strong>Préparer les cas apportés</strong> : les classer par famille (tarification, provisionnement, vie, réglementaire) et les rapprocher des fiches de la bibliothèque.</li>
+<li><strong>Anticiper les blocages techniques</strong> : pour qui ne peut rien installer, prévoir un carnet Google Colab, comme le propose l’atelier de la partie 1 ; pour qui n’a droit qu’à un autre assistant, la même démarche avec cet assistant, sur la même donnée publique.</li>
+<li><strong>Composer les binômes</strong> : associer un participant débutant en Python à un participant plus à l’aise qui travaille sur un sujet voisin.</li>
+<li><strong>Repérer les attentes hors du périmètre</strong> : un cours complet d’apprentissage automatique, par exemple, se recadre en amont ; la formation traite le modèle d’apprentissage comme le challenger d’un GLM (partie 2).</li>
+</ul>
+</section>
+<section class="level2" data-number="39.4" id="le-mail-denvoi">
+<h2 class="anchored" data-anchor-id="le-mail-denvoi" data-number="39.4" id="le-mail-denvoi"> Le mail d’envoi</h2>
+<p>Il pose le cadre. Modèle :</p>
+<pre><code>Bonjour,
+
+En préparation de la formation « Maîtriser l'IA générative pour l'actuariat et l'analyse de données » des [dates], merci de prendre dix minutes pour remplir ce formulaire : [lien]
+
+Vos réponses me permettent d'adapter la formation à votre profil et à vos attentes, et de préparer le cas que vous apporterez : les ateliers s'y appliquent, et plus il est préparé, plus vous repartez avec un travail avancé.
+
+Trois consignes :
+1. Décrivez précisément votre cas du quotidien (question 15).
+2. N'apportez aucune donnée réelle, même anonymisée : ni données nominatives, ni extraction de production. Si votre cas en demande, décrivez les colonnes, leurs types et leurs unités : vous fabriquerez avec l'assistant des données synthétiques aux mêmes caractéristiques.
+3. Si vous n'avez pas les droits d'installation sur votre poste, demandez dès maintenant à votre DSI d'installer Python, VS Code, Git et Claude Code (liste dans l'annexe Installation du support). Sans cette installation, la première demi-journée sera difficile à suivre.
+
+À très bientôt,
+[Nom de l'animateur]</code></pre>
+</section>
+<section class="level2" data-number="39.5" id="variante-pour-une-formation-interne">
+<h2 class="anchored" data-anchor-id="variante-pour-une-formation-interne" data-number="39.5" id="variante-pour-une-formation-interne"> Variante pour une formation interne</h2>
+<p>Pour une formation dans un seul cabinet, on peut ajouter :</p>
+<ul>
+<li>La connaissance des outils internes (référentiels, bibliothèques maison, bases de données).</li>
+<li>Les projets en cours qui pourraient servir de cas.</li>
+<li>La connaissance de la politique IA du cabinet : outils et offres autorisés, données interdites, validations requises.</li>
+</ul>
+<p>Les cas pratiques collent alors au contexte réel du cabinet.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : relisez cette réponse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>À la question 16, un participant répond : <em>« J’apporterai un extrait de notre base sinistres 2025, 5 000 lignes, noms et adresses retirés. Je travaillerai avec mon abonnement Claude Pro. »</em> Que lui répondez-vous ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Ce sont toujours des données réelles. Noms et adresses retirés, chaque ligne reste rattachable à un assuré par les autres colonnes (dates, montants, codes) : ce sont des données pseudonymisées, donc personnelles au sens du RGPD, et une base sinistres peut contenir des données de santé. Tout ce que Claude en lirait partirait chez le fournisseur, et l’offre Pro, grand public, ne fait pas de lui un sous-traitant de son organisme. La consigne de la question 16 vaut sans exception : il décrit les colonnes, leurs types et leurs unités, et fabrique en séance un jeu synthétique aux mêmes caractéristiques.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="39.6" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="39.6" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>Les quatre parties du support, une par demi-journée, pour voir où chaque réponse du formulaire sert.</li>
+<li>La <a href="../../bibliotheque/index.html">bibliothèque de cas</a> : la liste des fiches peut inspirer un participant qui sèche sur la question 15.</li>
+<li>L’<a href="../../annexes/installation/index.html">annexe Installation</a>, à envoyer avec le formulaire.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/I/index.html"><small>&larr; Précédent</small>Annexe I. Pour aller plus loin</a><a class="next" href="../../annexes/K/index.html"><small>Suivant &rarr;</small>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

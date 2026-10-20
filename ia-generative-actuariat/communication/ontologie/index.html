@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nommer les objets du métier : l'ontologie, le self-BI · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn active" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 3 · 3.3 Documenter et nommer</div>
+      <h1 style="max-width:28ch">Nommer les objets du métier : l'ontologie, le self-BI</h1>
+      <p class="lede">Une documentation relue dit ce que fait un calcul. Reste le travail que personne ne fait : nommer les objets du métier, ce que chacun désigne, et comment ils se relient. C'est ce que l'IA lit avant de répondre, et c'est ce qui lui manque quand elle se trompe de variable.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#ontologie">Nommer les objets du métier : l'ontologie</a><a href="#trois-choses">Le même document fait trois choses</a><a href="#loi-frequence">Cinq mots suffisent : « crée une loi de fréquence »</a><a href="#construire">La construire avec l'IA, sans lui faire écrire n'importe quoi</a><a href="#self-bi">Le self-BI, et la définition qui ne se devine pas</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « Nommer les objets du métier : l'ontologie, le self-BI ». Coupé le 20-10 de
+     documenter.part.html (ticket 037), dont il reprend la seconde moitié sans rien changer au fond.
+     Kezhan, 11 octobre : « création la documentation aussi, ontologie, pour mieux manipuler les
+     données » ; sur l'exemple : les deux couches, la technique qui se reprend et la maison qui
+     manque. Le cabinet de l'exemple est fictif, comme ses codes produit. Le self-BI vient de la
+     formation du 19-10 (ticket 034). -->
+
+<h2 id="ontologie">Nommer les objets du métier : l'ontologie</h2>
+<p>Le mot fait savant, la chose est simple : la liste des objets dont on parle, ce que chacun désigne, et comment ils se relient. Dans un cabinet, elle existe, mais elle vit dans les conversations. Deux couches, et elles n'ont ni la même durée de vie ni la même valeur.</p>
+<h3>La couche technique, celle qui se reprend</h3>
+<p>Ce sont les objets du métier, les mêmes d'un assureur à l'autre : un contrat, ses garanties, son exposition sur une période ; un sinistre, rattaché à un contrat et à une garantie, avec sa date de survenance, sa date de déclaration, ses paiements successifs et sa provision ; un exercice de survenance et son développement. On ne la réinvente pas, on l'écrit une fois et elle sert partout.</p>
+<p>Ce qu'elle tranche, et ce n'est pas rien : qu'un sinistre « coûte » veut dire payé plus provision avant recours, que l'exposition se compte en années et pas en jours, qu'un contrat résilié puis rétabli reste le même contrat ou en devient un autre.</p>
+<h3>La couche maison, celle qui manque</h3>
+<p>Les produits et leurs noms de code, les rattachements, les exceptions héritées d'une migration de système. Celle-là ne s'achète pas, ne se devine pas, et c'est elle qui fait les erreurs. Un exemple, sur un cabinet fictif, pour montrer la forme :</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Code</th><th>Produit</th><th>Branche</th><th>Ce qu'il faut savoir</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">AUTO_PART_15</td><td>Auto particuliers, génération 2015</td><td>Automobile</td><td>Franchise exprimée en euros. Fermé à la souscription depuis 2019, encore en portefeuille.</td></tr>
+<tr><td class="rowhead">AUTO_PART_19</td><td>Auto particuliers, génération 2019</td><td>Automobile</td><td>Franchise en pourcentage. Les deux générations ne se comparent pas sans retraitement.</td></tr>
+<tr><td class="rowhead">MRH_CONFORT</td><td>Habitation, formule confort</td><td>Dommages aux biens</td><td>Porte la garantie dégât des eaux et la garantie bris de glace, deux codes de garantie distincts.</td></tr>
+<tr><td class="rowhead">RCPRO_ART</td><td>Responsabilité civile, artisans</td><td>Responsabilité civile</td><td>Survenance en base réclamation. Le triangle ne se lit pas comme les autres.</td></tr>
+</tbody>
+</table>
+</div>
+<p>Quatre lignes suffisent à montrer ce qui se joue : deux produits qui portent presque le même nom et ne se somment pas, une garantie qui existe sous deux codes, une branche dont le triangle obéit à une autre règle. Ce sont exactement les pièges sur lesquels un calcul se trompe, et ils ne sont écrits nulle part.</p>
+<div class="callout assurance">
+<span class="label">Ce que ça change une fois écrit</span>
+<p>Une jointure cesse d'être une devinette. Un prompt cesse d'être ambigu : « la charge auto » devient « la charge brute des deux générations auto, retraitée de la franchise ». Un nouvel arrivant lit une carte au lieu d'interroger trois personnes. Et l'IA cesse de choisir à votre place, puisqu'on lui donne la carte avec la question.</p>
+</div>
+<h2 id="trois-choses">Le même document fait trois choses</h2>
+<p>Ce qu'on appelle ontologie recouvre trois usages, et c'est en les nommant qu'on voit pourquoi l'effort se rentabilise si vite.</p>
+<h3>Le dictionnaire du jargon</h3>
+<p>Les mots du métier, avec leur définition. Cadence, ultime, base réclamation, écrêtement, provision pour sinistres à payer, charge brute : chacun a un sens précis, et chacun a une variante maison. C'est ce qu'un nouvel arrivant met des mois à attraper en réunion, et c'est ce qui manque à un modèle de langue qui connaît le mot général et pas votre usage.</p>
+<h3>Le graphe de connaissance</h3>
+<p>Les objets et leurs liens, dessinés. On le lit en suivant les flèches, et il répond aux questions de jointure avant qu'on les pose.</p>
+<figure class="figure-frame">
+<svg aria-label="Graphe des objets du métier : produit, contrat, garantie, sinistre, puis paiements, provision et exercice de survenance." role="img" viewbox="0 0 880 270">
+<defs>
+<marker id="fl" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"></path></marker>
+</defs>
+<g fill="#13264A" font-family="Manrope, Segoe UI, sans-serif" font-size="15" font-weight="800" text-anchor="middle">
+<g fill="#fff" stroke="#dcd8d4">
+<rect height="52" rx="12" width="140" x="70" y="34"></rect>
+<rect height="52" rx="12" width="140" x="260" y="34"></rect>
+<rect height="52" rx="12" width="140" x="450" y="34"></rect>
+<rect fill="#F7F4F2" height="52" rx="12" width="140" x="640" y="34"></rect>
+<rect height="52" rx="12" width="160" x="150" y="186"></rect>
+<rect height="52" rx="12" width="160" x="360" y="186"></rect>
+<rect height="52" rx="12" width="200" x="570" y="186"></rect>
+</g>
+<text x="140" y="66">Produit</text>
+<text x="330" y="66">Contrat</text>
+<text x="520" y="66">Garantie</text>
+<text x="710" y="66">Sinistre</text>
+<text x="230" y="218">Paiements</text>
+<text x="440" y="218">Provision</text>
+<text x="670" y="211">Exercice</text>
+<text fill="#4a5567" font-size="12.5" font-weight="600" x="670" y="229">de survenance</text>
+</g>
+<g fill="none" marker-end="url(#fl)" stroke="#7D92AC" stroke-width="2">
+<path d="M210 60 H252"></path>
+<path d="M400 60 H442"></path>
+<path d="M590 60 H632"></path>
+<path d="M690 92 C 660 140, 300 140, 240 180"></path>
+<path d="M706 92 C 690 140, 500 140, 445 180"></path>
+<path d="M722 92 V 180"></path>
+</g>
+<g fill="#BA1C3A" font-family="Manrope, Segoe UI, sans-serif" font-size="11.5" font-weight="800" letter-spacing="0.5" text-anchor="middle">
+<text x="231" y="50">PORTE</text>
+<text x="421" y="50">COUVRE</text>
+<text x="611" y="50">TOUCHÉE PAR</text>
+<text x="300" y="126">SE RÈGLE EN</text>
+<text x="505" y="172">RESTE À PAYER</text>
+<text x="770" y="140">DATÉ PAR</text>
+</g>
+</svg>
+<figcaption>Le graphe tient sur une image et répond aux questions de jointure : un paiement se rattache à un sinistre, pas à un contrat, et un exercice de survenance date le sinistre, pas la déclaration.</figcaption>
+</figure>
+<h3>La carte des compétences</h3>
+<p>Le troisième usage, celui auquel on ne pense pas : relier les méthodes aux objets, et les objets à ceux qui les tiennent. Ça oriente une question vers la bonne personne, ça montre où le cabinet repose sur une seule tête, et ça dit à un junior par quoi commencer.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Méthode</th><th>Sur quels objets</th><th>Ce qu'elle suppose acquis</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">Chain-Ladder</td><td>Sinistres agrégés par exercice de survenance et de développement</td><td>Le triangle, la cadence, la queue</td></tr>
+<tr><td class="rowhead">GLM fréquence et coût</td><td>Contrats, expositions, sinistres</td><td>Le grain police-année, l'offset d'exposition</td></tr>
+<tr><td class="rowhead">Lee-Carter</td><td>Tables de mortalité par âge et génération</td><td>Le lissage, la projection</td></tr>
+<tr><td class="rowhead">SCR non-vie</td><td>Primes, provisions, scénarios</td><td>Les modules de la formule standard</td></tr>
+</tbody>
+</table>
+</div>
+<p>Cette carte sert aussi à l'IA : elle lui dit quelle méthode s'applique à quel objet, donc elle lui évite de proposer un Chain-Ladder sur une table de polices.</p>
+<h2 id="loi-frequence">Cinq mots suffisent : « crée une loi de fréquence »</h2>
+<p>C'est la démonstration la plus parlante du chapitre, et elle tient en une demande de cinq mots. Lancée dans un projet sans dictionnaire ni ontologie, puis dans le même projet une fois les deux écrits, elle ne donne pas le même travail.</p>
+<div class="ba">
+<div class="before">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> Sans la carte</div>
+<div class="ba-body">
+<p class="prompt">crée une loi de fréquence</p>
+<p>Le modèle ne peut que deviner, et il devine en silence : il prend la table qui porte le mot sinistre, compte les lignes, divise par le nombre de contrats, et rend un code impeccable qui calcule autre chose que ce que vous vouliez. Ou bien il pose dix questions, et vous retapez pour la dixième fois le contexte de votre portefeuille.</p>
+</div>
+</div>
+<div class="after">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg> Avec la carte</div>
+<div class="ba-body">
+<p class="prompt">crée une loi de fréquence</p>
+<p>La même demande, et le modèle a déjà la réponse aux dix questions. Il écrit le comptage sur le bon grain, l'exposition en dénominateur, l'offset qui va avec, les deux générations auto séparées, et il ajoute le contrôle de cohérence parce que le dictionnaire dit quelles bornes sont admises.</p>
+</div>
+</div>
+</div>
+<p>Ce que l'ontologie et le dictionnaire ont tranché à votre place, sans que vous ayez à l'écrire dans la demande :</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>La question qu'il se pose</th><th>Ce que la carte répond</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">Fréquence de quoi, sur quoi ?</td><td>Nombre de sinistres rapporté à l'exposition, au grain police et année d'observation.</td></tr>
+<tr><td class="rowhead">L'exposition, en quoi ?</td><td>En années, entre 0 et 1. Pas en jours, pas en nombre de contrats.</td></tr>
+<tr><td class="rowhead">Quels sinistres compter ?</td><td>Ceux rattachés à une garantie du périmètre, date de survenance dans la période. Les sans suite ne comptent pas.</td></tr>
+<tr><td class="rowhead">Sur quel périmètre produit ?</td><td>Les deux générations auto, séparées : leurs franchises ne s'expriment pas pareil, elles ne se somment pas.</td></tr>
+<tr><td class="rowhead">Quelle forme de modèle ?</td><td>Un compte sur une durée d'exposition : Poisson, avec le logarithme de l'exposition en décalage.</td></tr>
+<tr><td class="rowhead">Comment vérifier ?</td><td>Les bornes du dictionnaire, et le total de sinistres de la période, qui doit se retrouver.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout warn">
+<span class="label">Ce qui reste à vous</span>
+<p>La carte répond aux questions de définition, pas aux questions de modélisation. La segmentation retenue, la période d'observation, le traitement des sinistres graves, le choix d'écrêter ou non : ce sont des décisions d'actuaire, elles se prennent et elles s'écrivent dans les hypothèses de l'exécution. Une carte bien faite ne décide pas à votre place, elle arrête de vous faire répéter ce qui ne se discute pas.</p>
+</div>
+<h2 id="construire">La construire avec l'IA, sans lui faire écrire n'importe quoi</h2>
+<ol class="steps">
+<li><strong>Partir de ce qui existe déjà</strong><p>Le schéma des tables, les valeurs distinctes des colonnes de code, les libellés du système de gestion, les en-têtes des états réglementaires. Pas d'un document blanc.</p></li>
+<li><strong>Faire proposer une première carte</strong><p>Les objets, leurs clés, leurs relations, et surtout la liste des questions que la machine se pose. Ce sont vos ambiguïtés, vues de l'extérieur.</p></li>
+<li><strong>Trancher les ambiguïtés avec ceux qui savent</strong><p>Le gestionnaire sait pourquoi deux codes coexistent. C'est une réunion, pas un projet.</p></li>
+<li><strong>Écrire le résultat à côté des données</strong><p>Un fichier texte versionné, lisible par un humain comme par une machine. Il se met à jour quand un produit naît, et cette mise à jour fait partie du lancement du produit.</p></li>
+<li><strong>S'en servir à chaque session</strong><p>L'ontologie et le dictionnaire sont les premiers documents donnés à l'IA, dans la mémoire projet. C'est ce qui remplace le contexte retapé à chaque fois.</p></li>
+</ol>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> À faire sur votre portefeuille</span>
+<p>Listez vos codes produit et, en face de chacun, la phrase qu'il faut connaître pour ne pas se tromper. Arrêtez-vous quand vous butez : la première ligne où vous hésitez est déjà le gain du chapitre.</p>
+<details class="answer"><summary>Ce qu'on trouve souvent</summary>
+<p>Deux produits qui se ressemblent et ne s'additionnent pas, une garantie éclatée en plusieurs codes depuis une migration, et une règle que tout le monde applique sans qu'elle soit écrite. Les trois se paient tôt ou tard dans un chiffre faux.</p>
+</details>
+</div>
+<h2 id="self-bi">Le self-BI, et la définition qui ne se devine pas</h2>
+<p>Dans beaucoup d'entreprises, des équipes de business intelligence répondent aux demandes d'extraction. La requête existe parfois depuis vingt ans ; on change deux ou trois paramètres, et l'extraction est faite. Ce qu'il faut savoir pour la lancer est rarement écrit : c'est dans la tête de ceux qui la lancent.</p>
+<p>Une fois la documentation écrite, l'IA fait ce travail mieux. On parle de self-BI : une barre de question au-dessus des données, où l'on demande en français.</p>
+<ul class="clean">
+<li>« Donne-moi les clients les plus performants. »</li>
+<li>« Calcule le S/P par segment. »</li>
+<li>« Dis-moi comment le S/P est défini », et même « change sa formule ».</li>
+</ul>
+<p>Derrière, c'est un agent SQL : l'IA écrit la requête, la lance sur la base et rend le résultat, le plus petit, le plus grand, une moyenne, un écart type. Les garde-fous qu'il demande sont au chapitre <a href="../../industrialisation/formes-appel/index.html#sql">Les formes d'appel</a>. Et plus l'ontologie est riche, plus l'IA relie les mots de la question aux bonnes tables.</p>
+<div class="callout warn">
+<span class="label">Le S/P n'est pas le même pour tout le monde</span>
+<p>Un nom de variable qui change, et une formule Excel ne marche plus : c'est la catastrophe qu'on connaît. Avec l'IA, c'est à double tranchant. Il suffit de le dire, mais si la compréhension est légèrement différente, elle prend la mauvaise variable, sans le signaler. Le S/P en est l'exemple : selon les actuaires, il ne se calcule pas pareil. Il n'y a pas de miracle pour contrôler : la définition écrite, dans le dictionnaire, que l'IA lit avant de calculer.</p>
+</div>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> À vous</span>
+<p>Un responsable demande à l'outil « le S/P de l'auto en 2025 ». Qu'est-ce que la définition doit trancher pour que la réponse soit celle de l'actuaire ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Le numérateur : la charge réglée seule, ou réglée plus provisions, avec ou sans frais de gestion des sinistres, graves écrêtés ou non. Le dénominateur : les primes émises ou acquises, brutes ou nettes de réassurance. La période : l'année de survenance ou l'exercice comptable, et la date d'arrêté. Le périmètre : quels produits sont « l'auto ». Chaque choix change le chiffre, et chacun s'écrit une fois, dans le dictionnaire.</p>
+</details>
+</div>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>L'ontologie technique se reprend d'un cabinet à l'autre ; la couche maison, les produits et leurs codes, est celle qui manque et celle qui fait les erreurs.</li>
+<li>Dictionnaire et ontologie sont les premiers documents qu'on donne à l'IA, pas les derniers.</li>
+<li>Le self-BI ne vaut que par ses définitions écrites : un S/P qui se devine se calcule faux, sans le dire.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../communication/documenter/index.html"><small>&larr; Précédent</small>Documenter : la machine écrit, vous relisez</a><a class="next" href="../../communication/atelier-restitution/index.html"><small>Suivant &rarr;</small>Atelier : de l'exécution au tableau de bord et à la note</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

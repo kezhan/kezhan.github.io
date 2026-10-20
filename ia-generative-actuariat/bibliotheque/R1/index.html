@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R1. Chain-Ladder déterministe · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">R1. Chain-Ladder déterministe</h1>
+      <p class="lede">Cette fiche illustre la démarche B (construire) et amorce la démarche E (industrialiser) : on écrit un Chain-Ladder vectorisé, on le valide contre une référence publiée (Taylor-Ashe), et on le persiste pour audit-trail (parquet + meta.json + hash MD5). Ce que vous apprenez n’est pas le Chain-Ladder, mais le pattern ‘implémenter / valider / persister’ applicable à tout calcul.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle, et E, industrialiser
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="8.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="8.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le Chain-Ladder déterministe est la méthode standard du provisionnement non-vie. Idée centrale : les montants futurs se projettent en appliquant des facteurs de développement estimés sur l’historique. Simple, défendable, codé en quelques dizaines de lignes Python vectorisé.</p>
+<p>Ce cas pose les bases : on charge un triangle, on implémente la méthode, on valide sur un cas publié. Il sert de fondation aux cas R2 (Bornhuetter-Ferguson), R3 (Mack stochastique) et R4 (bootstrap).</p>
+<p>Le cas illustre quatre principes de la formation : <strong>organisation des données</strong> (un triangle dont on écrit le grain, l’unité et la nature, persisté en parquet), <strong>optimisation du code</strong> (vectorisation NumPy sans boucle Python sur les cellules), <strong>gouvernance</strong> (validation contre une référence publique), <strong>pilotage IA</strong> (5 micro-prompts en bottom-up).</p>
+</section>
+<section class="level2" data-number="8.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="8.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le triangle de Taylor et Ashe (1983, <em>Journal of Econometrics</em> 23), repris par Mack (1993) et distribué comme jeu <code>GenIns</code> du package R ChainLadder : le classique de la littérature actuarielle, public. Avant de coder, on écrit ce qu’on sait de la donnée, et ce qu’on ne sait pas :</p>
+<ul>
+<li><strong>Grain</strong> : une cellule par année d’origine et année de développement, 10 × 10, partie supérieure connue, partie inférieure à projeter.</li>
+<li><strong>Années d’origine</strong> : numérotées de 1 à 10. La source ne les date pas ; les étiqueter 1981 à 1990 serait inventer.</li>
+<li><strong>Unité</strong> : aucune devise dans la source. Les montants sont en unités non monétaires, pas en euros.</li>
+<li><strong>Nature</strong> : montants de sinistres cumulés (« accumulated general insurance claims data », dit la documentation de <code>GenIns</code>). Cette documentation ne précise pas s’il s’agit de paiements ou de charges : on l’écrit tel quel dans la métadonnée, plutôt que de choisir.</li>
+</ul>
+<div class="cell" data-execution_count="1" id="fea2a418">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>TAYLOR_ASHE <span class="op">=</span> np.array([</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>    [<span class="dv">357848</span>, <span class="dv">1124788</span>, <span class="dv">1735330</span>, <span class="dv">2218270</span>, <span class="dv">2745596</span>, <span class="dv">3319994</span>, <span class="dv">3466336</span>, <span class="dv">3606286</span>, <span class="dv">3833515</span>, <span class="dv">3901463</span>],</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    [<span class="dv">352118</span>, <span class="dv">1236139</span>, <span class="dv">2170033</span>, <span class="dv">3353322</span>, <span class="dv">3799067</span>, <span class="dv">4120063</span>, <span class="dv">4647867</span>, <span class="dv">4914039</span>, <span class="dv">5339085</span>, np.nan],</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    [<span class="dv">290507</span>, <span class="dv">1292306</span>, <span class="dv">2218525</span>, <span class="dv">3235179</span>, <span class="dv">3985995</span>, <span class="dv">4132918</span>, <span class="dv">4628910</span>, <span class="dv">4909315</span>,      np.nan, np.nan],</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    [<span class="dv">310608</span>, <span class="dv">1418858</span>, <span class="dv">2195047</span>, <span class="dv">3757447</span>, <span class="dv">4029929</span>, <span class="dv">4381982</span>, <span class="dv">4588268</span>,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    [<span class="dv">443160</span>, <span class="dv">1136350</span>, <span class="dv">2128333</span>, <span class="dv">2897821</span>, <span class="dv">3402672</span>, <span class="dv">3873311</span>,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    [<span class="dv">396132</span>, <span class="dv">1333217</span>, <span class="dv">2180715</span>, <span class="dv">2985752</span>, <span class="dv">3691712</span>,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    [<span class="dv">440832</span>, <span class="dv">1288463</span>, <span class="dv">2419861</span>, <span class="dv">3483130</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    [<span class="dv">359480</span>, <span class="dv">1421128</span>, <span class="dv">2864498</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    [<span class="dv">376686</span>, <span class="dv">1363294</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    [<span class="dv">344014</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>])</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="co"># Organisation des données : index et colonnes nommés, années d'origine 1 à 10</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>n <span class="op">=</span> TAYLOR_ASHE.shape[<span class="dv">0</span>]</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>triangle_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    TAYLOR_ASHE,</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>    index<span class="op">=</span>pd.Index(<span class="bu">range</span>(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>), name<span class="op">=</span><span class="st">"annee_origine"</span>),</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>    columns<span class="op">=</span>pd.Index(<span class="bu">range</span>(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>), name<span class="op">=</span><span class="st">"developpement"</span>),</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>)</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Triangle Taylor-Ashe (montants cumulés, unités non monétaires) :"</span>)</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="bu">print</span>(triangle_df.to_string(float_format<span class="op">=</span><span class="kw">lambda</span> x: <span class="ss">f"</span><span class="sc">{</span>x<span class="sc">:,.0f}</span><span class="ss">"</span>, na_rep<span class="op">=</span><span class="st">"."</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Triangle Taylor-Ashe (montants cumulés, unités non monétaires) :
+developpement      1         2         3         4         5         6         7         8         9         10
+annee_origine                                                                                                  
+1             357,848 1,124,788 1,735,330 2,218,270 2,745,596 3,319,994 3,466,336 3,606,286 3,833,515 3,901,463
+2             352,118 1,236,139 2,170,033 3,353,322 3,799,067 4,120,063 4,647,867 4,914,039 5,339,085         .
+3             290,507 1,292,306 2,218,525 3,235,179 3,985,995 4,132,918 4,628,910 4,909,315         .         .
+4             310,608 1,418,858 2,195,047 3,757,447 4,029,929 4,381,982 4,588,268         .         .         .
+5             443,160 1,136,350 2,128,333 2,897,821 3,402,672 3,873,311         .         .         .         .
+6             396,132 1,333,217 2,180,715 2,985,752 3,691,712         .         .         .         .         .
+7             440,832 1,288,463 2,419,861 3,483,130         .         .         .         .         .         .
+8             359,480 1,421,128 2,864,498         .         .         .         .         .         .         .
+9             376,686 1,363,294         .         .         .         .         .         .         .         .
+10            344,014         .         .         .         .         .         .         .         .         .</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="8.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="8.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention, en bottom-up
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Décrire la structure.</strong> <em>“Voici un triangle de liquidation <code>triangle_df</code>. Décris sa structure : combien d’années d’origine, combien d’années de développement, combien de cellules connues, où sont les NaN. Trace une heatmap pour visualiser.”</em></p></li>
+<li><p><strong>Implémenter vectorisé.</strong> <em>“Implémente le Chain-Ladder déterministe vectorisé : pas de boucle Python sur les cellules. Calcule les facteurs age-to-age, projette les ultimes, retourne aussi le triangle complété.”</em></p></li>
+<li><p><strong>Calculer les ultimes et la réserve.</strong> <em>“À partir des résultats, sors-moi le tableau des ultimes par année d’origine et la réserve (ultime moins dernier montant connu de la ligne), avec les totaux.”</em></p></li>
+<li><p><strong>Valider sur cas publié.</strong> <em>“Pour Taylor-Ashe, les valeurs de référence (Mack 1993 ; package R ChainLadder) sont une réserve totale Chain-Ladder de 18 680 856 et un ultime total de 53 038 946, en unités non monétaires. Compare chaque grandeur à sa propre référence, à une unité près, et affiche les deux écarts.”</em></p></li>
+<li><p><strong>Persister pour audit-trail.</strong> <em>“Sauvegarde le triangle complété en parquet sous <code>_resources/cl_taylor_ashe_2026.parquet</code>, une ligne par cellule avec le statut observé ou projeté. Documente dans un <code>.meta.json</code> la source, l’unité, la nature des montants, les facteurs et un hash MD5 du contenu. Pas de date qui change à chaque exécution : n’écris les fichiers que si leur contenu a changé.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="8.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="8.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="8.4.1" id="étape-1.-décrire-la-structure">
+<h3 class="anchored" data-anchor-id="étape-1.-décrire-la-structure" data-number="8.4.1"> Étape 1. Décrire la structure</h3>
+<div class="cell" data-execution_count="2" id="dd08dc85">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Années d'origine : </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Années de développement : </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>n_connues <span class="op">=</span> <span class="bu">int</span>(np.<span class="bu">sum</span>(<span class="op">~</span>np.isnan(TAYLOR_ASHE)))</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cellules connues : </span><span class="sc">{</span>n_connues<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>n<span class="op">*</span>n<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cellules à projeter : </span><span class="sc">{</span>n<span class="op">*</span>n <span class="op">-</span> n_connues<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Années d'origine : 10
+Années de développement : 10
+Cellules connues : 55 / 100
+Cellules à projeter : 45</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="3" id="cell-fig-triangle-heatmap">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>masked <span class="op">=</span> np.ma.masked_where(np.isnan(TAYLOR_ASHE), TAYLOR_ASHE)</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>im <span class="op">=</span> ax.imshow(masked, cmap<span class="op">=</span><span class="st">"Blues"</span>, aspect<span class="op">=</span><span class="st">"auto"</span>)</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>ax.set_xticks(<span class="bu">range</span>(n))</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>ax.set_xticklabels(<span class="bu">range</span>(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>ax.set_yticks(<span class="bu">range</span>(n))</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>ax.set_yticklabels(<span class="bu">range</span>(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Année de développement"</span>)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Année d'origine"</span>)</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>plt.colorbar(im, ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">"Montants cumulés (unités non monétaires)"</span>)</span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>plt.title(<span class="st">"Triangle Taylor-Ashe"</span>)</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-triangle-heatmap">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-triangle-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="567" src="img/fig-triangle-heatmap-output-1_2d080ebf.png" width="716"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-triangle-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 8.1: Triangle de liquidation Taylor-Ashe en heatmap : partie supérieure connue, cellules à projeter en blanc
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>55 cellules connues, 45 à projeter. La couleur fonce de gauche à droite : les montants cumulés croissent avec le développement. La première ligne, seule complète, reste plus claire que les années 2 à 4 : ses montants sont plus faibles (3,9 millions d’unités à la dernière colonne, contre plus de 4,5 millions dès la septième colonne pour les années 2 à 4).</p>
+</section>
+<section class="level3" data-number="8.4.2" id="étape-2.-implémenter-vectorisé">
+<h3 class="anchored" data-anchor-id="étape-2.-implémenter-vectorisé" data-number="8.4.2"> Étape 2. Implémenter vectorisé</h3>
+<p>Deux opérations, sans boucle sur les cellules. Les facteurs sont des rapports de sommes de colonnes, prises sur les lignes où les colonnes <span class="math inline">\(j\)</span> et <span class="math inline">\(j+1\)</span> sont toutes deux connues. La projection d’une ligne multiplie son dernier montant connu par le produit des facteurs restants : on calcule une fois le produit cumulé des facteurs, et chaque cellule projetée vaut le dernier montant connu × le rapport de deux produits cumulés.</p>
+<p>On note <span class="math inline">\(C_{i,j}\)</span> le montant cumulé de l’année d’origine <span class="math inline">\(i\)</span> en développement <span class="math inline">\(j\)</span>, colonnes numérotées de 1 à <span class="math inline">\(n\)</span> (<span class="math inline">\(n = 10\)</span>) : la ligne <span class="math inline">\(i\)</span> est connue jusqu’à la colonne <span class="math inline">\(n - i + 1\)</span>. Le facteur de la colonne <span class="math inline">\(j\)</span> à la colonne <span class="math inline">\(j + 1\)</span>, et l’ultime de la ligne <span class="math inline">\(i\)</span> :</p>
+<p><span class="math display">\[
+\begin{aligned}
+f_j &amp;= \frac{\sum_{i=1}^{n-j} C_{i,j+1}}{\sum_{i=1}^{n-j} C_{i,j}}, \qquad j = 1, \dots, n-1, \\
+\widehat{C}_{i,n} &amp;= C_{i,\,n-i+1} \prod_{j=n-i+1}^{n-1} f_j .
+\end{aligned}
+\]</span></p>
+<div class="cell" data-execution_count="4" id="73c2b8aa">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="kw">def</span> chain_ladder(triangle: np.ndarray) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>    <span class="co">"""Chain-Ladder déterministe vectorisé.</span></span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a><span class="co">        triangle: array (n, n), montants cumulés, partie supérieure connue</span></span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a><span class="co">            (cellules connues contiguës depuis la colonne 0), NaN ailleurs.</span></span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a><span class="co">        dict avec 'factors' (n-1,), 'projected' (n, n), 'ultimates' (n,),</span></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a><span class="co">        'derniere_connue' (n,), 'reserves' (n,), 'total_ultimate', 'total_reserve'.</span></span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>    n <span class="op">=</span> triangle.shape[<span class="dv">0</span>]</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a>    C <span class="op">=</span> np.where(connu, triangle, <span class="fl">0.0</span>)</span>
+<span id="cb6-15"><a aria-hidden="true" href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a aria-hidden="true" href="#cb6-16" tabindex="-1"></a>    <span class="co"># Facteurs age-to-age : somme(col j+1) / somme(col j) sur les lignes où j et j+1 sont connus</span></span>
+<span id="cb6-17"><a aria-hidden="true" href="#cb6-17" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb6-18"><a aria-hidden="true" href="#cb6-18" tabindex="-1"></a>    factors <span class="op">=</span> (C[:, <span class="dv">1</span>:] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>) <span class="op">/</span> (C[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb6-19"><a aria-hidden="true" href="#cb6-19" tabindex="-1"></a></span>
+<span id="cb6-20"><a aria-hidden="true" href="#cb6-20" tabindex="-1"></a>    <span class="co"># Produits cumulés : F[j] = f_0 × ... × f_{j-1}, F[0] = 1</span></span>
+<span id="cb6-21"><a aria-hidden="true" href="#cb6-21" tabindex="-1"></a>    F <span class="op">=</span> np.concatenate([[<span class="fl">1.0</span>], np.cumprod(factors)])</span>
+<span id="cb6-22"><a aria-hidden="true" href="#cb6-22" tabindex="-1"></a>    derniere_col <span class="op">=</span> connu.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb6-23"><a aria-hidden="true" href="#cb6-23" tabindex="-1"></a>    derniere_connue <span class="op">=</span> C[np.arange(n), derniere_col]</span>
+<span id="cb6-24"><a aria-hidden="true" href="#cb6-24" tabindex="-1"></a></span>
+<span id="cb6-25"><a aria-hidden="true" href="#cb6-25" tabindex="-1"></a>    <span class="co"># Cellule projetée (i, j) = dernier montant connu de la ligne i × F[j] / F[dernière colonne de i]</span></span>
+<span id="cb6-26"><a aria-hidden="true" href="#cb6-26" tabindex="-1"></a>    projection <span class="op">=</span> derniere_connue[:, <span class="va">None</span>] <span class="op">*</span> F[<span class="va">None</span>, :] <span class="op">/</span> F[derniere_col][:, <span class="va">None</span>]</span>
+<span id="cb6-27"><a aria-hidden="true" href="#cb6-27" tabindex="-1"></a>    projected <span class="op">=</span> np.where(connu, triangle, projection)</span>
+<span id="cb6-28"><a aria-hidden="true" href="#cb6-28" tabindex="-1"></a></span>
+<span id="cb6-29"><a aria-hidden="true" href="#cb6-29" tabindex="-1"></a>    ultimates <span class="op">=</span> projected[:, <span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb6-30"><a aria-hidden="true" href="#cb6-30" tabindex="-1"></a>    reserves <span class="op">=</span> ultimates <span class="op">-</span> derniere_connue</span>
+<span id="cb6-31"><a aria-hidden="true" href="#cb6-31" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb6-32"><a aria-hidden="true" href="#cb6-32" tabindex="-1"></a>        <span class="st">"factors"</span>: factors,</span>
+<span id="cb6-33"><a aria-hidden="true" href="#cb6-33" tabindex="-1"></a>        <span class="st">"projected"</span>: projected,</span>
+<span id="cb6-34"><a aria-hidden="true" href="#cb6-34" tabindex="-1"></a>        <span class="st">"ultimates"</span>: ultimates,</span>
+<span id="cb6-35"><a aria-hidden="true" href="#cb6-35" tabindex="-1"></a>        <span class="st">"derniere_connue"</span>: derniere_connue,</span>
+<span id="cb6-36"><a aria-hidden="true" href="#cb6-36" tabindex="-1"></a>        <span class="st">"reserves"</span>: reserves,</span>
+<span id="cb6-37"><a aria-hidden="true" href="#cb6-37" tabindex="-1"></a>        <span class="st">"total_ultimate"</span>: ultimates.<span class="bu">sum</span>(),</span>
+<span id="cb6-38"><a aria-hidden="true" href="#cb6-38" tabindex="-1"></a>        <span class="st">"total_reserve"</span>: reserves.<span class="bu">sum</span>(),</span>
+<span id="cb6-39"><a aria-hidden="true" href="#cb6-39" tabindex="-1"></a>    }</span>
+<span id="cb6-40"><a aria-hidden="true" href="#cb6-40" tabindex="-1"></a></span>
+<span id="cb6-41"><a aria-hidden="true" href="#cb6-41" tabindex="-1"></a>result <span class="op">=</span> chain_ladder(TAYLOR_ASHE)</span>
+<span id="cb6-42"><a aria-hidden="true" href="#cb6-42" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Facteurs de développement (age-to-age) :"</span>)</span>
+<span id="cb6-43"><a aria-hidden="true" href="#cb6-43" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">round</span>(result[<span class="st">"factors"</span>], <span class="dv">4</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Facteurs de développement (age-to-age) :
+[3.4906 1.7473 1.4574 1.1739 1.1038 1.0863 1.0539 1.0766 1.0177]</code></pre>
+</div>
+</div>
+<p>Le premier facteur vaut 3,49 : les montants sont multipliés par trois et demi entre la première et la deuxième année de développement. Les facteurs décroissent ensuite vers 1, avec un ressaut : 1,054 de la colonne 7 à 8, calculé sur trois lignes, puis 1,077 de la colonne 8 à 9, calculé sur deux lignes seulement. Le dernier facteur, 1,018, repose sur la seule année 1.</p>
+</section>
+<section class="level3" data-number="8.4.3" id="étape-3.-ultimes-et-réserve">
+<h3 class="anchored" data-anchor-id="étape-3.-ultimes-et-réserve" data-number="8.4.3"> Étape 3. Ultimes et réserve</h3>
+<div class="cell" data-execution_count="5" id="e52b9607">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>resume <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    <span class="st">"annee_origine"</span>: <span class="bu">range</span>(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>),</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>    <span class="st">"dernier_montant_connu"</span>: result[<span class="st">"derniere_connue"</span>].<span class="bu">round</span>(<span class="dv">0</span>),</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>    <span class="st">"ultime_projete"</span>: result[<span class="st">"ultimates"</span>].<span class="bu">round</span>(<span class="dv">0</span>),</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>    <span class="st">"reserve"</span>: result[<span class="st">"reserves"</span>].<span class="bu">round</span>(<span class="dv">0</span>),</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>})</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>(resume.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total déjà connu (diagonale) : </span><span class="sc">{</span>result[<span class="st">'derniere_connue'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;12,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total réserve                : </span><span class="sc">{</span>result[<span class="st">'total_reserve'</span>]<span class="sc">:&gt;12,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Total ultime                 : </span><span class="sc">{</span>result[<span class="st">'total_ultimate'</span>]<span class="sc">:&gt;12,.0f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> annee_origine  dernier_montant_connu  ultime_projete   reserve
+             1              3901463.0       3901463.0       0.0
+             2              5339085.0       5433719.0   94634.0
+             3              4909315.0       5378826.0  469511.0
+             4              4588268.0       5297906.0  709638.0
+             5              3873311.0       4858200.0  984889.0
+             6              3691712.0       5111171.0 1419459.0
+             7              3483130.0       5660771.0 2177641.0
+             8              2864498.0       6784799.0 3920301.0
+             9              1363294.0       5642266.0 4278972.0
+            10               344014.0       4969825.0 4625811.0
+
+Total déjà connu (diagonale) :   34,358,090
+Total réserve                :   18,680,856
+Total ultime                 :   53,038,946</code></pre>
+</div>
+</div>
+<p>La relation à retenir : <strong>ultime = déjà connu + réserve</strong>, soit 34 358 090 + 18 680 856 = 53 038 946. La réserve de l’année 1 est nulle (ligne complète) ; les années 9 et 10, les moins développées, portent à elles deux 8,9 millions d’unités de réserve (4 278 972 + 4 625 811), près de la moitié du total.</p>
+</section>
+<section class="level3" data-number="8.4.4" id="étape-4.-validation-contre-la-référence">
+<h3 class="anchored" data-anchor-id="étape-4.-validation-contre-la-référence" data-number="8.4.4"> Étape 4. Validation contre la référence</h3>
+<div class="cell" data-execution_count="6" id="0819d7c2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>RESERVE_PUBLIEE <span class="op">=</span> <span class="dv">18_680_856</span>   <span class="co"># réserve totale Chain-Ladder (Mack 1993 ; ChainLadder, GenIns)</span></span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>ULTIME_PUBLIE <span class="op">=</span> <span class="dv">53_038_946</span>     <span class="co"># ultime total (ChainLadder, GenIns)</span></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>ecart_reserve <span class="op">=</span> result[<span class="st">"total_reserve"</span>] <span class="op">-</span> RESERVE_PUBLIEE</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>ecart_ultime <span class="op">=</span> result[<span class="st">"total_ultimate"</span>] <span class="op">-</span> ULTIME_PUBLIE</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve calculée : </span><span class="sc">{</span>result[<span class="st">'total_reserve'</span>]<span class="sc">:,.2f}</span><span class="ss">   publiée : </span><span class="sc">{</span>RESERVE_PUBLIEE<span class="sc">:,}</span><span class="ss">   écart : </span><span class="sc">{</span>ecart_reserve<span class="sc">:+.2f}</span><span class="ss">"</span>)</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ultime calculé   : </span><span class="sc">{</span>result[<span class="st">'total_ultimate'</span>]<span class="sc">:,.2f}</span><span class="ss">   publié  : </span><span class="sc">{</span>ULTIME_PUBLIE<span class="sc">:,}</span><span class="ss">   écart : </span><span class="sc">{</span>ecart_ultime<span class="sc">:+.2f}</span><span class="ss">"</span>)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a><span class="cf">if</span> <span class="bu">abs</span>(ecart_reserve) <span class="op">&lt;=</span> <span class="dv">1</span> <span class="kw">and</span> <span class="bu">abs</span>(ecart_ultime) <span class="op">&lt;=</span> <span class="dv">1</span>:</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Validation OK : réserve et ultime retrouvés à une unité près."</span>)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Écart anormal, vérifier l'implémentation."</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Réserve calculée : 18,680,855.61   publiée : 18,680,856   écart : -0.39
+Ultime calculé   : 53,038,945.61   publié  : 53,038,946   écart : -0.39
+Validation OK : réserve et ultime retrouvés à une unité près.</code></pre>
+</div>
+</div>
+<p>Les deux grandeurs tombent à 0,39 unité de leur valeur publiée, qui est arrondie à l’unité : la validation passe. Chaque grandeur est comparée à <strong>sa</strong> référence, et la tolérance est une unité parce que la référence est publiée à l’unité. <strong>Cette étape n’est pas optionnelle</strong> : sans elle, vous ne savez pas si votre code est correct.</p>
+</section>
+<section class="level3" data-number="8.4.5" id="étape-5.-persistance-pour-audit-trail">
+<h3 class="anchored" data-anchor-id="étape-5.-persistance-pour-audit-trail" data-number="8.4.5"> Étape 5. Persistance pour audit-trail</h3>
+<p>Le fichier persisté écrit son grain (une ligne par cellule) et distingue l’observé du projeté. La métadonnée porte ce que l’étape « Donnée d’entrée » a écrit : source, unité, nature des montants. Elle ne porte <strong>pas</strong> de date de calcul : la date est celle du commit Git. Et les fichiers ne sont réécrits que si leur contenu change, pour qu’un rendu de la fiche ne crée pas de modification à committer.</p>
+<div class="cell" data-execution_count="7" id="a4fbe6bc">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a><span class="im">import</span> hashlib</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>OUTPUT_DIR <span class="op">=</span> Path(<span class="st">"_resources"</span>)</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a>OUTPUT_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>PARQUET <span class="op">=</span> OUTPUT_DIR <span class="op">/</span> <span class="st">"cl_taylor_ashe_2026.parquet"</span></span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>META <span class="op">=</span> OUTPUT_DIR <span class="op">/</span> <span class="st">"cl_taylor_ashe_2026.meta.json"</span></span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a></span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a><span class="co"># Une ligne par cellule : le grain est explicite</span></span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a>i_idx, j_idx <span class="op">=</span> np.indices(result[<span class="st">"projected"</span>].shape)</span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>table <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a>    <span class="st">"annee_origine"</span>: i_idx.ravel() <span class="op">+</span> <span class="dv">1</span>,</span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a>    <span class="st">"developpement"</span>: j_idx.ravel() <span class="op">+</span> <span class="dv">1</span>,</span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a>    <span class="st">"montant_cumule"</span>: np.<span class="bu">round</span>(result[<span class="st">"projected"</span>].ravel(), <span class="dv">2</span>),</span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a>    <span class="st">"statut"</span>: np.where(np.isnan(TAYLOR_ASHE).ravel(), <span class="st">"projeté"</span>, <span class="st">"observé"</span>),</span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a>})</span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a></span>
+<span id="cb12-18"><a aria-hidden="true" href="#cb12-18" tabindex="-1"></a><span class="kw">def</span> md5_table(df: pd.DataFrame) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb12-19"><a aria-hidden="true" href="#cb12-19" tabindex="-1"></a>    <span class="co">"""MD5 du contenu, indépendant du format binaire du parquet et du système."""</span></span>
+<span id="cb12-20"><a aria-hidden="true" href="#cb12-20" tabindex="-1"></a>    <span class="cf">return</span> hashlib.md5(df.to_csv(index<span class="op">=</span><span class="va">False</span>, lineterminator<span class="op">=</span><span class="st">"</span><span class="ch">\n</span><span class="st">"</span>).encode(<span class="st">"utf-8"</span>)).hexdigest()</span>
+<span id="cb12-21"><a aria-hidden="true" href="#cb12-21" tabindex="-1"></a></span>
+<span id="cb12-22"><a aria-hidden="true" href="#cb12-22" tabindex="-1"></a>metadata <span class="op">=</span> {</span>
+<span id="cb12-23"><a aria-hidden="true" href="#cb12-23" tabindex="-1"></a>    <span class="st">"calcul"</span>: <span class="st">"Chain-Ladder déterministe, facteurs moyens pondérés par les montants"</span>,</span>
+<span id="cb12-24"><a aria-hidden="true" href="#cb12-24" tabindex="-1"></a>    <span class="st">"source"</span>: <span class="st">"Taylor et Ashe (1983), Journal of Econometrics 23 ; Mack (1993) ; jeu GenIns du package R ChainLadder"</span>,</span>
+<span id="cb12-25"><a aria-hidden="true" href="#cb12-25" tabindex="-1"></a>    <span class="st">"nature_montants"</span>: <span class="st">"montants de sinistres cumulés ; la documentation de GenIns ne précise pas paiements ou charges"</span>,</span>
+<span id="cb12-26"><a aria-hidden="true" href="#cb12-26" tabindex="-1"></a>    <span class="st">"unite"</span>: <span class="st">"unités non monétaires (aucune devise dans la source)"</span>,</span>
+<span id="cb12-27"><a aria-hidden="true" href="#cb12-27" tabindex="-1"></a>    <span class="st">"annees_origine"</span>: <span class="st">"1 à 10, non datées dans la source"</span>,</span>
+<span id="cb12-28"><a aria-hidden="true" href="#cb12-28" tabindex="-1"></a>    <span class="st">"grain"</span>: <span class="st">"une ligne par année d'origine et année de développement"</span>,</span>
+<span id="cb12-29"><a aria-hidden="true" href="#cb12-29" tabindex="-1"></a>    <span class="st">"colonnes"</span>: {</span>
+<span id="cb12-30"><a aria-hidden="true" href="#cb12-30" tabindex="-1"></a>        <span class="st">"annee_origine"</span>: <span class="st">"1 à 10"</span>,</span>
+<span id="cb12-31"><a aria-hidden="true" href="#cb12-31" tabindex="-1"></a>        <span class="st">"developpement"</span>: <span class="st">"1 à 10"</span>,</span>
+<span id="cb12-32"><a aria-hidden="true" href="#cb12-32" tabindex="-1"></a>        <span class="st">"montant_cumule"</span>: <span class="st">"montant cumulé, arrondi au centième"</span>,</span>
+<span id="cb12-33"><a aria-hidden="true" href="#cb12-33" tabindex="-1"></a>        <span class="st">"statut"</span>: <span class="st">"observé (donnée source) ou projeté (Chain-Ladder)"</span>,</span>
+<span id="cb12-34"><a aria-hidden="true" href="#cb12-34" tabindex="-1"></a>    },</span>
+<span id="cb12-35"><a aria-hidden="true" href="#cb12-35" tabindex="-1"></a>    <span class="st">"graine"</span>: <span class="va">None</span>,</span>
+<span id="cb12-36"><a aria-hidden="true" href="#cb12-36" tabindex="-1"></a>    <span class="st">"facteurs"</span>: [<span class="bu">round</span>(<span class="bu">float</span>(f), <span class="dv">6</span>) <span class="cf">for</span> f <span class="kw">in</span> result[<span class="st">"factors"</span>]],</span>
+<span id="cb12-37"><a aria-hidden="true" href="#cb12-37" tabindex="-1"></a>    <span class="st">"ultime_total"</span>: <span class="bu">round</span>(<span class="bu">float</span>(result[<span class="st">"total_ultimate"</span>]), <span class="dv">2</span>),</span>
+<span id="cb12-38"><a aria-hidden="true" href="#cb12-38" tabindex="-1"></a>    <span class="st">"reserve_totale"</span>: <span class="bu">round</span>(<span class="bu">float</span>(result[<span class="st">"total_reserve"</span>]), <span class="dv">2</span>),</span>
+<span id="cb12-39"><a aria-hidden="true" href="#cb12-39" tabindex="-1"></a>    <span class="st">"reference_publiee"</span>: {<span class="st">"reserve_totale"</span>: RESERVE_PUBLIEE, <span class="st">"ultime_total"</span>: ULTIME_PUBLIE},</span>
+<span id="cb12-40"><a aria-hidden="true" href="#cb12-40" tabindex="-1"></a>    <span class="st">"content_md5"</span>: md5_table(table),</span>
+<span id="cb12-41"><a aria-hidden="true" href="#cb12-41" tabindex="-1"></a>    <span class="st">"version_code"</span>: <span class="st">"R1_chain_ladder_v1.1"</span>,</span>
+<span id="cb12-42"><a aria-hidden="true" href="#cb12-42" tabindex="-1"></a>}</span>
+<span id="cb12-43"><a aria-hidden="true" href="#cb12-43" tabindex="-1"></a></span>
+<span id="cb12-44"><a aria-hidden="true" href="#cb12-44" tabindex="-1"></a><span class="co"># Idempotent : on ne réécrit que si le contenu ou la métadonnée ont changé</span></span>
+<span id="cb12-45"><a aria-hidden="true" href="#cb12-45" tabindex="-1"></a>deja_a_jour <span class="op">=</span> (</span>
+<span id="cb12-46"><a aria-hidden="true" href="#cb12-46" tabindex="-1"></a>    PARQUET.exists() <span class="kw">and</span> META.exists()</span>
+<span id="cb12-47"><a aria-hidden="true" href="#cb12-47" tabindex="-1"></a>    <span class="kw">and</span> md5_table(pd.read_parquet(PARQUET)) <span class="op">==</span> metadata[<span class="st">"content_md5"</span>]</span>
+<span id="cb12-48"><a aria-hidden="true" href="#cb12-48" tabindex="-1"></a>    <span class="kw">and</span> json.loads(META.read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>)) <span class="op">==</span> metadata</span>
+<span id="cb12-49"><a aria-hidden="true" href="#cb12-49" tabindex="-1"></a>)</span>
+<span id="cb12-50"><a aria-hidden="true" href="#cb12-50" tabindex="-1"></a><span class="cf">if</span> deja_a_jour:</span>
+<span id="cb12-51"><a aria-hidden="true" href="#cb12-51" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Fichiers déjà à jour : rien n'est réécrit."</span>)</span>
+<span id="cb12-52"><a aria-hidden="true" href="#cb12-52" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb12-53"><a aria-hidden="true" href="#cb12-53" tabindex="-1"></a>    table.to_parquet(PARQUET, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-54"><a aria-hidden="true" href="#cb12-54" tabindex="-1"></a>    META.write_text(json.dumps(metadata, indent<span class="op">=</span><span class="dv">2</span>, ensure_ascii<span class="op">=</span><span class="va">False</span>) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb12-55"><a aria-hidden="true" href="#cb12-55" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Fichiers écrits :"</span>)</span>
+<span id="cb12-56"><a aria-hidden="true" href="#cb12-56" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>PARQUET<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-57"><a aria-hidden="true" href="#cb12-57" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>META<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-58"><a aria-hidden="true" href="#cb12-58" tabindex="-1"></a></span>
+<span id="cb12-59"><a aria-hidden="true" href="#cb12-59" tabindex="-1"></a><span class="co"># Le contrôle de l'auditeur : relire le parquet, recalculer le MD5, comparer à la métadonnée</span></span>
+<span id="cb12-60"><a aria-hidden="true" href="#cb12-60" tabindex="-1"></a>relu <span class="op">=</span> pd.read_parquet(PARQUET)</span>
+<span id="cb12-61"><a aria-hidden="true" href="#cb12-61" tabindex="-1"></a>meta_relue <span class="op">=</span> json.loads(META.read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>))</span>
+<span id="cb12-62"><a aria-hidden="true" href="#cb12-62" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">MD5 recalculé sur le fichier relu : </span><span class="sc">{</span>md5_table(relu)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-63"><a aria-hidden="true" href="#cb12-63" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"MD5 inscrit dans la métadonnée    : </span><span class="sc">{</span>meta_relue[<span class="st">'content_md5'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-64"><a aria-hidden="true" href="#cb12-64" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Identiques : </span><span class="sc">{</span>md5_table(relu) <span class="op">==</span> meta_relue[<span class="st">'content_md5'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fichiers déjà à jour : rien n'est réécrit.
+  _resources\cl_taylor_ashe_2026.parquet
+  _resources\cl_taylor_ashe_2026.meta.json
+
+MD5 recalculé sur le fichier relu : e1ac8b10520121687ed065ea4583fe6b
+MD5 inscrit dans la métadonnée    : e1ac8b10520121687ed065ea4583fe6b
+Identiques : True</code></pre>
+</div>
+</div>
+<p>Une seconde exécution affiche « Fichiers déjà à jour » et Git ne voit aucune modification. Trois ans après, un auditeur peut recharger ces fichiers, recalculer le MD5, vérifier que le contenu n’a pas dérivé depuis l’écriture de la métadonnée, et reproduire le calcul. Le MD5 ne protège pas contre quelqu’un qui modifierait les deux fichiers ensemble : c’est l’historique Git qui garde cette trace.</p>
+</section>
+</section>
+<section class="level2" data-number="8.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="8.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Une première version de cette fiche donnait à Claude le prompt de validation suivant : <em>“L’ultime total publié pour Taylor-Ashe 1983 est environ 18 680 856 EUR. Compare ton résultat. Si l’écart est inférieur à 0.1 %, l’implémentation est validée.”</em> Claude a écrit le contrôle ci-dessous, avec la fonction <code>chain_ladder</code> de l’étape 2.</p>
+<div class="cell" data-execution_count="8" id="bc0c91e4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>ULTIME_PUBLIE_PROMPT <span class="op">=</span> <span class="dv">18_680_856</span></span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>delta <span class="op">=</span> <span class="bu">abs</span>(result[<span class="st">"total_ultimate"</span>] <span class="op">-</span> ULTIME_PUBLIE_PROMPT) <span class="op">/</span> ULTIME_PUBLIE_PROMPT</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ultime calculé : </span><span class="sc">{</span>result[<span class="st">'total_ultimate'</span>]<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ultime publié  : </span><span class="sc">{</span>ULTIME_PUBLIE_PROMPT<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart relatif  : </span><span class="sc">{</span>delta<span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb14-6"><a aria-hidden="true" href="#cb14-6" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Validation OK."</span> <span class="cf">if</span> delta <span class="op">&lt;</span> <span class="fl">0.001</span> <span class="cf">else</span> <span class="st">"Écart anormal, vérifier l'implémentation."</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ultime calculé : 53,038,946
+Ultime publié  : 18,680,856
+Écart relatif  : 183.92%
+Écart anormal, vérifier l'implémentation.</code></pre>
+</div>
+</div>
+<p>Le texte de cette première version, sous ce bloc, disait : « L’écart relatif inférieur à 0,1 % valide que l’implémentation est cohérente avec la référence académique. » Faut-il corriger <code>chain_ladder</code> ? Qu’est-ce qui ne va pas ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>La fonction est juste ; ce sont le prompt et le texte qui sont faux.</p>
+<ol type="1">
+<li><strong>Le prompt nomme mal la grandeur.</strong> 18 680 856 est la <strong>réserve</strong> totale publiée, pas l’ultime. L’ultime calculé (53 038 946) contient en plus les 34 358 090 déjà connus : 53 038 946 / 18 680 856 − 1 = 183,92 %, exactement l’écart affiché. Claude a codé fidèlement la comparaison demandée. Un prompt prescriptif transmet ses erreurs au code.</li>
+<li><strong>Le prompt ajoute une unité qui n’existe pas.</strong> Les montants de Taylor-Ashe ne sont pas en euros. Une unité inventée dans le prompt finit dans les libellés, puis dans les graphiques et la note.</li>
+<li><strong>Le texte ne lit pas la sortie.</strong> La sortie dit « Écart anormal » ; le texte dit « écart inférieur à 0,1 % ». C’est le défaut que la formation apprend à repérer : conclure sur ce qu’on attendait, pas sur ce que le calcul affiche.</li>
+</ol>
+<p>La correction est celle de l’étape 4 : une constante par grandeur, nommée par la grandeur (<code>RESERVE_PUBLIEE</code>, <code>ULTIME_PUBLIE</code>), chacune comparée à sa propre référence, et un texte écrit après lecture de la sortie.</p>
+</details>
+</section>
+<section class="level2" data-number="8.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="8.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Bouclage Python sur les cellules au lieu de vectoriser.</strong> La version avec deux boucles imbriquées donne le même résultat, et sur un triangle 10 × 10 la vitesse ne compte pas. La vectorisation compte quand le Chain-Ladder est appelé des milliers de fois, comme dans le bootstrap de R4 ; et elle écrit le calcul comme on l’écrit sur papier : une somme par colonne, un produit cumulé. C’est la <strong>règle d’optimisation du code</strong> de la formation.</li>
+<li><strong>Ne pas valider contre une référence connue.</strong> Implémenter sans valider, c’est livrer un code potentiellement faux. Taylor-Ashe est la référence canonique en non-vie pour tester une implémentation de Chain-Ladder : Mack (1993) en publie la réserve et l’erreur de prédiction, et le package R ChainLadder les reproduit.</li>
+<li><strong>Ne pas persister les résultats, ou les persister à chaque exécution.</strong> Sans fichier persisté, on recalcule et on risque la dérive si la fonction change entre deux exécutions. À l’inverse, réécrire un fichier versionné à chaque rendu, avec une date qui change, fait apparaître une modification dans Git à chaque fois : les vraies modifications se perdent dans le bruit.</li>
+<li><strong>Confondre paiements et charges.</strong> Le Chain-Ladder s’applique à des paiements cumulés ou à des charges (paiements plus provisions dossier par dossier). Sur des paiements, ultime − paiements connus est la provision totale. Sur des charges, ultime − charges connues n’est que l’IBNR (tardifs et insuffisance des provisions dossier par dossier) : la provision totale reste ultime − paiements connus. Les deux triangles ne donnent pas non plus le même ultime. <strong>Toujours écrire la nature dans la métadonnée</strong>, et écrire qu’elle est inconnue quand la source ne la donne pas, comme ici.</li>
+<li><strong>Oublier l’inflation et les évolutions juridiques.</strong> Le Chain-Ladder déterministe suppose que la cadence future ressemble à la cadence passée. Si l’environnement change (réforme juridique sur les corporels, nouveau type de sinistralité), les cadences historiques sont biaisées. À documenter en limite dans la note méthodologique.</li>
+</ul>
+</section>
+<section class="level2" data-number="8.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="8.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>R2 Bornhuetter-Ferguson</strong> : alternative quand on a une opinion a priori sur les ultimes (loss ratio cible). Plus stable que le Chain-Ladder sur les années récentes, au prix d’une dépendance à l’a priori.</li>
+<li><strong>R3 Mack stochastique</strong> : extension qui donne l’erreur de prédiction de la réserve, par formule analytique.</li>
+<li><strong>R4 Bootstrap ODP</strong> : une autre modélisation stochastique (Poisson surdispersé), qui reproduit la même réserve centrale et donne une distribution simulée, avec ses propres hypothèses.</li>
+<li><strong>I2 Vectorisation Monte Carlo</strong> : illustre le même principe d’optimisation du code sur un autre cas (Monte Carlo non-vie).</li>
+<li><strong>I3 Tests pytest sur un module de provisionnement</strong> : transformer ce code en module testé, avec Taylor-Ashe comme test de référence.</li>
+</ul>
+</section>
+<section class="level2" data-number="8.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="8.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Tests pytest</strong> : au minimum un triangle constant, le triangle Taylor-Ashe, un cas dégénéré. Voir I3.</li>
+<li><strong>Facteur de queue.</strong> Sur les branches longues, le triangle ne couvre pas tout le développement et le dernier facteur observé ne clôt pas la liquidation. Demander à Claude <em>“propose-moi les méthodes classiques d’estimation d’un facteur de queue pour un Chain-Ladder, avec leurs domaines d’application”</em>, puis vérifier chaque méthode citée dans une source.</li>
+<li><strong>En conditions réelles</strong> : le triangle vient d’une extraction SQL du système de gestion. Sourcer la requête dans la métadonnée, avec la date d’arrêté des données.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/P6/index.html"><small>&larr; Précédent</small>P6. Une loi de sévérité sur des sinistres tronqués et censurés</a><a class="next" href="../../bibliotheque/R2/index.html"><small>Suivant &rarr;</small>R2. Bornhuetter-Ferguson</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

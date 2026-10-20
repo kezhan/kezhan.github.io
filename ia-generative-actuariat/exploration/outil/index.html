@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Construire un outil actuariel : paquet, back-end, interface · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn active" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 2 · 2.1 Ranger la donnée et le calcul</div>
+      <h1 style="max-width:28ch">Construire un outil actuariel : paquet, back-end, interface</h1>
+      <p class="lede">Une application comme TCOR a été faite avec Electron, un outil qui fabrique des applications de bureau avec les techniques du web : chaque poste l'installe. Il est important de la refaire en plateforme SaaS, ouverte dans le navigateur, et de toujours séparer les couches. C'est le découpage du chapitre <a href="../../exploration/couches/index.html">Base de données, API, interface</a>, sur un vrai outil, avec pour chaque couche deux questions : qui la tient, et comment on la vérifie.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#couches">Trois couches, et qui les tient</a><a href="#paquet">Le paquet : un contrat, des cas de référence</a><a href="#base">Le back-end : le schéma rendu visible</a><a href="#interface">L'interface : voir ce qu'on doit voir</a><a href="#vision">Dans Vision</a><a href="#garants">L'IA, le développement, et l'actuaire garant</a><a href="#questions">Questions</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « Construire un outil actuariel : paquet, back-end, interface », après « Calculer dans le back,
+     stocker les résultats ».
+     Le segment du formateur du 20 octobre (_sources/transcriptions/2026-10-20_paquet_back_end_interface.md) :
+     TCOR, fait avec Electron, à refaire en plateforme SaaS en séparant les couches ; le paquet Python (la
+     calibration, « très actuariel, même une moyenne », tout ce qui est as-if se vérifie) ; le back-end (le
+     schéma rendu visible, les calculs et leurs résultats stockés, maîtrisé par les actuaires, programmé avec
+     un développeur) ; le front (« si on voit ce qu'on doit voir, ça suffit », le calcul se vérifie sans lui) ;
+     l'IA et le développement, les actuaires garants des résultats.
+     L'exemple : le dépôt tcor_electron (python/README.md, python/tcor_runner/, python/vendor/tcor/,
+     python/tests/golden/calibrate/normal-200.*.json, src/back/db/schema.sql, src/back/calc.js,
+     src/back/services/asif.js, src/front/js/screens/exploration.js, tests/e2e/reference-workbooks.spec.js).
+     Vision : modules/commun/calcul/ et controles/check_calcul.py, controles/check_cotation.py,
+     modules/mes_donnees/, l'onglet Schéma de la RC avocats.
+     Captures : demos/_outils/captures_vision_actuariat.py, scène outil_couches ; tcor_01_historique vient de
+     captures_vision_demos.py, scène tcor. -->
+
+<h2 id="couches">Trois couches, et qui les tient</h2>
+<figure class="figure-frame">
+<svg aria-label="Les trois couches d'un outil actuariel. Le paquet Python, tenu par l'actuaire, vérifié par ses entrées et ses sorties. Le back-end, tenu par l'actuaire avec un développeur, vérifié par le schéma et les résultats stockés. L'interface, tenue par un développeur front, vérifiée en la regardant." role="img" viewbox="0 0 880 356">
+<defs><marker id="ot-f" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"></path></marker></defs>
+<g font-family="Manrope, Segoe UI, sans-serif">
+<g fill="#78828f" font-size="11" font-weight="800" letter-spacing="0.6">
+<text x="300" y="20">QUI LA TIENT</text><text x="590" y="20">COMMENT ON LA VÉRIFIE</text>
+</g>
+<!-- 1. le paquet -->
+<rect fill="#fff" height="78" rx="12" stroke="#dcd8d4" width="860" x="10" y="30"></rect>
+<rect fill="#e8f3f2" height="78" rx="12" width="270" x="10" y="30"></rect><rect fill="#e8f3f2" height="78" width="18" x="262" y="30"></rect>
+<text fill="#13264A" font-size="15" font-weight="800" x="26" y="58">1. Le paquet Python</text>
+<text fill="#1f2733" font-size="12" x="26" y="78">la calibration, l'as-if, la simulation</text>
+<text fill="#78828f" font-family="Consolas, monospace" font-size="11" x="26" y="96">TCOR : python/vendor/tcor/</text>
+<text fill="#13264A" font-size="13.5" font-weight="800" x="300" y="58">L'actuaire</text>
+<text fill="#1f2733" font-size="12" x="300" y="78">il choisit les paquets,</text>
+<text fill="#1f2733" font-size="12" x="300" y="96">écrit parfois la fonction</text>
+<text fill="#13264A" font-size="13.5" font-weight="800" x="590" y="58">Par ses entrées et ses sorties</text>
+<text fill="#1f2733" font-size="12" x="590" y="78">des cas de référence,</text>
+<text fill="#1f2733" font-size="12" x="590" y="96">rejoués à chaque changement</text>
+<!-- 2. le back-end -->
+<rect fill="#fff" height="78" rx="12" stroke="#dcd8d4" width="860" x="10" y="150"></rect>
+<rect fill="#fff8e6" height="78" rx="12" width="270" x="10" y="150"></rect><rect fill="#fff8e6" height="78" width="18" x="262" y="150"></rect>
+<text fill="#13264A" font-size="15" font-weight="800" x="26" y="178">2. Le back-end</text>
+<text fill="#1f2733" font-size="12" x="26" y="198">le schéma, les calculs, les résultats</text>
+<text fill="#78828f" font-family="Consolas, monospace" font-size="11" x="26" y="216">TCOR : src/back/, SQLite</text>
+<text fill="#13264A" font-size="13.5" font-weight="800" x="300" y="178">L'actuaire, avec un développeur</text>
+<text fill="#1f2733" font-size="12" x="300" y="198">l'actuaire le maîtrise,</text>
+<text fill="#1f2733" font-size="12" x="300" y="216">le développeur le programme</text>
+<text fill="#13264A" font-size="13.5" font-weight="800" x="590" y="178">Par le schéma, rendu visible</text>
+<text fill="#1f2733" font-size="12" x="590" y="198">et les résultats stockés,</text>
+<text fill="#1f2733" font-size="12" x="590" y="216">relus avec leurs entrées</text>
+<!-- 3. l'interface -->
+<rect fill="#fff" height="78" rx="12" stroke="#dcd8d4" width="860" x="10" y="270"></rect>
+<rect fill="#eef4ff" height="78" rx="12" width="270" x="10" y="270"></rect><rect fill="#eef4ff" height="78" width="18" x="262" y="270"></rect>
+<text fill="#13264A" font-size="15" font-weight="800" x="26" y="298">3. L'interface</text>
+<text fill="#1f2733" font-size="12" x="26" y="318">les écrans : voir ce qu'on doit voir</text>
+<text fill="#78828f" font-family="Consolas, monospace" font-size="11" x="26" y="336">TCOR : src/front/</text>
+<text fill="#13264A" font-size="13.5" font-weight="800" x="300" y="298">Un développeur front</text>
+<text fill="#1f2733" font-size="12" x="300" y="318">l'actuaire dit ce qu'il doit voir</text>
+<text fill="#13264A" font-size="13.5" font-weight="800" x="590" y="298">En la regardant</text>
+<text fill="#1f2733" font-size="12" x="590" y="318">le calcul se vérifie sans elle</text>
+<g stroke="#ece9e5" stroke-width="1.5"><path d="M290 42 V 98 M580 42 V 98 M290 162 V 218 M580 162 V 218 M290 282 V 338 M580 282 V 338"></path></g>
+<g fill="none" marker-end="url(#ot-f)" stroke="#7D92AC" stroke-width="2">
+<path d="M120 148 V 113"></path><path d="M150 110 V 145"></path><path d="M120 268 V 233"></path><path d="M150 230 V 265"></path>
+</g>
+<g fill="#BA1C3A" font-size="11.5" font-weight="800">
+<text x="168" y="134">un JSON d'entrée, un JSON de sortie</text>
+<text x="168" y="254">une demande, un résultat stocké</text>
+</g>
+</g>
+</svg>
+<figcaption>Ce que porte chaque couche, qui la tient, comment on la vérifie. Le calcul se vérifie dans le paquet, sans passer par l'interface.</figcaption>
+</figure>
+<ol class="steps">
+<li><strong>Le paquet Python</strong><p>Une calibration, c'est du Python classique. C'est à la portée des actuaires, et c'est même leur métier : vérifier, choisir les paquets pour la calibration, parfois écrire la fonction soi-même. C'est très actuariel, même une moyenne. Tout ce qui est as-if doit être vérifié. Le paquet est adapté à l'entreprise, avec ses entrées.</p></li>
+<li><strong>Le back-end</strong><p>D'abord l'organisation des données : le schéma, qu'il faut rendre visible. Comment les sinistres, l'inflation et l'exposition se relient, comment ils sont stockés, quelles informations on garde, comment on s'en sert. Puis les calculs : comment on obtient les résultats, et comment on les stocke en base. Le back-end doit être maîtrisé par les actuaires ; pour le programmer, mieux vaut travailler avec un développeur.</p></li>
+<li><strong>L'interface</strong><p>Si on voit ce qu'on doit voir, ça suffit. Ne pas regarder le code derrière, c'est beaucoup moins un problème. La partie calcul, elle, doit être vérifiée, et on n'a pas besoin de l'interface pour ça : « voilà mes inputs, qu'est-ce que tu fais comme output ? », plusieurs fois. C'est un travail classique. Pour l'interface, travailler avec quelqu'un du front, c'est mieux.</p></li>
+</ol>
+<p>C'est le processus de création d'un outil. TCOR calcule le coût total du risque d'un client : il importe ses sinistres, les ramène en as-if aux prix d'une année de référence, calibre la fréquence et la sévérité, simule des années, et tarifie un programme en tranches. Son code a déjà ses trois couches, chacune dans son dossier.</p>
+<pre><code>src/front/            l'interface : les écrans, les graphiques
+src/back/             le back-end
+  db/schema.sql         le schéma de la base SQLite
+  services/             ce que le back calcule lui-même, dont l'as-if
+  calc.js               le pont vers Python
+python/               le paquet et son contrat
+  runner.py             lit un JSON, rend un JSON
+  tcor_runner/actions/  une action par calcul (calibrate, simulate...)
+  vendor/tcor/          le paquet actuariel : calibration, simulation
+  tests/golden/         les cas de référence : entrée, sortie attendue</code></pre>
+<h2 id="paquet">Le paquet : un contrat, des cas de référence</h2>
+<p>Le paquet <code>tcor</code> est la copie d'un paquet actuariel écrit à part. Une couche fine, <code>tcor_runner</code>, en fait des actions : une action par calcul, chacune une fonction qui prend un dictionnaire et en rend un. Le back-end l'appelle comme une fonction : il lance Python, écrit un JSON sur son entrée, lit un JSON sur sa sortie. Rien d'autre ne passe, ni base, ni écran. Voici l'entrée d'une calibration, sur un client fictif.</p>
+<pre><code>{"action": "calibrate", "client": "ACME",
+ "params": {"client_name": "ACME", "bool_attri": "non"},
+ "claims": [{"client": "ACME", "annee": 2010, "montant": 40435.2},
+            {"client": "ACME", "annee": 2011, "montant": 21715.35},
+            ...]}</code></pre>
+<p>Et sa sortie, réduite à deux lignes.</p>
+<pre><code>{"ok": true,
+ "result": {
+  "counts": {"global": 200},
+  "frequency": [
+    {"freq_dist": "Poisson", "freq_method": "mle",
+     "freq_p1": 16.6666666667, "AIC": 58.0917693468, "choice": 0},
+    ...],
+  "severity": [
+    {"sev_dist": "Log Normale tronquée", "sev_method": "mle",
+     "sev_p1": 1.045541386, "sev_p3": 21232.3117621994,
+     "p_ks": 0.374071115, "choice": 1},
+    ...]}}</code></pre>
+<p>Pour chaque loi et chaque méthode, la sortie donne les paramètres, les critères, et la loi retenue (<code>choice</code> vaut 1). Le paramètre de la loi de Poisson est la moyenne du nombre de sinistres par an : deux cents sinistres sur douze ans, \(\hat{\lambda} = 200/12 \approx 16{,}67\). Très actuariel, même une moyenne : c'est l'actuaire qui sait que ce nombre doit sortir. Une erreur revient aussi en JSON, avec <code>"ok": false</code> et son message.</p>
+<p>Chaque action a ses cas de référence, rangés par paires : une entrée, la sortie attendue. Un script rejoue chaque entrée et compare la sortie, à l'octet près, à celle qui est rangée à côté. Les cas couvrent le normal et les bords : un seul sinistre, des montants tous égaux, des montants négatifs ou nuls, un montant manquant, une liste vide.</p>
+<pre><code>python/tests/golden/calibrate/
+  normal-200.input.json            normal-200.expected.json
+  1-sinistre.input.json            1-sinistre.expected.json
+  montants-identiques.input.json   montants-identiques.expected.json
+  ...
+
+python scripts/golden/golden_master.py check</code></pre>
+<p>La règle est écrite en tête du script : un cas qui casse, c'est un bug à corriger ou une modification à défaire, jamais une sortie attendue qu'on met à jour. Les sorties ne valent qu'avec les versions figées des paquets Python (numpy, scipy, pandas) : l'environnement fait partie du contrat. À côté, des classeurs de référence de l'actuaire : l'application doit retrouver, au centime, l'as-if calculé dans le classeur. C'est « voilà mes inputs, qu'est-ce que tu fais comme output ? », rejoué à chaque changement. Les familles de tests sont au chapitre <a href="../../industrialisation/algorithmes/index.html#tests">Organiser les algorithmes</a>.</p>
+<h2 id="base">Le back-end : le schéma rendu visible</h2>
+<figure class="figure-frame">
+<svg aria-label="Le schéma de TCOR. Entrées : sinistre, client, exposition, indice d'inflation. L'étude : projet, programme, tranche. Résultats : modélisation, modèles de fréquence et de sévérité, simulation et tarification. Un client a ses sinistres et ses expositions ; un projet réunit des clients et choisit sa série d'inflation par son nom ; tout résultat pointe vers sa modélisation." role="img" viewbox="0 0 880 480">
+<defs><marker id="ot-s" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"></path></marker></defs>
+<g font-family="Manrope, Segoe UI, sans-serif">
+<g fill="#78828f" font-size="11" font-weight="800" letter-spacing="0.6">
+<text x="60" y="22">ENTRÉES</text><text x="340" y="22">L'ÉTUDE</text><text x="630" y="22">RÉSULTATS</text>
+</g>
+<!-- entrées -->
+<rect fill="#fff" height="100" rx="12" stroke="#dcd8d4" width="210" x="60" y="36"></rect>
+<path d="M60 48 a12 12 0 0 1 12 -12 h186 a12 12 0 0 1 12 12 v14 h-210 z" fill="#13264A"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="74" y="54">sinistre</text>
+<rect fill="#fff" height="80" rx="12" stroke="#dcd8d4" width="210" x="60" y="160"></rect>
+<path d="M60 172 a12 12 0 0 1 12 -12 h186 a12 12 0 0 1 12 12 v14 h-210 z" fill="#13264A"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="74" y="178">client</text>
+<rect fill="#fff" height="100" rx="12" stroke="#dcd8d4" width="210" x="60" y="264"></rect>
+<path d="M60 276 a12 12 0 0 1 12 -12 h186 a12 12 0 0 1 12 12 v14 h-210 z" fill="#13264A"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="74" y="282">exposition</text>
+<rect fill="#fff" height="80" rx="12" stroke="#dcd8d4" width="210" x="60" y="388"></rect>
+<path d="M60 400 a12 12 0 0 1 12 -12 h186 a12 12 0 0 1 12 12 v14 h-210 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="74" y="406">indice_inflation</text>
+<g fill="#1f2733" font-size="12">
+<text x="74" y="82"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_sinistre</text>
+<text x="74" y="102">id_client</text><text x="74" y="122">annee, montant</text>
+<text x="74" y="206"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_client</text>
+<text x="74" y="226">nom, secteur, pays</text>
+<text x="74" y="310"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_exposition</text>
+<text x="74" y="330">id_client</text><text x="74" y="350">type, annee, valeur</text>
+<text x="74" y="434"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_indice</text>
+<text x="74" y="454">nom, nature, annee, valeur</text>
+</g>
+<!-- l'étude -->
+<rect fill="#fff" height="100" rx="12" stroke="#dcd8d4" width="210" x="340" y="36"></rect>
+<path d="M340 48 a12 12 0 0 1 12 -12 h186 a12 12 0 0 1 12 12 v14 h-210 z" fill="#13264A"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="354" y="54">projet</text>
+<rect fill="#fff" height="80" rx="12" stroke="#dcd8d4" width="210" x="340" y="180"></rect>
+<path d="M340 192 a12 12 0 0 1 12 -12 h186 a12 12 0 0 1 12 12 v14 h-210 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="354" y="198">programme</text>
+<rect fill="#fff" height="100" rx="12" stroke="#dcd8d4" width="210" x="340" y="296"></rect>
+<path d="M340 308 a12 12 0 0 1 12 -12 h186 a12 12 0 0 1 12 12 v14 h-210 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="354" y="314">tranche</text>
+<g fill="#1f2733" font-size="12">
+<text x="354" y="82"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_projet</text>
+<text x="354" y="102">annee_reference, seuil</text><text x="354" y="122">serie_inflation, serie_expo</text>
+<text x="354" y="226"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_programme</text>
+<text x="354" y="246">id_projet</text>
+<text x="354" y="342"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_tranche</text>
+<text x="354" y="362">id_programme</text><text x="354" y="382">attachement, portee, aad</text>
+</g>
+<!-- résultats -->
+<rect fill="#fff" height="100" rx="12" stroke="#dcd8d4" width="230" x="630" y="36"></rect>
+<path d="M630 48 a12 12 0 0 1 12 -12 h206 a12 12 0 0 1 12 12 v14 h-230 z" fill="#13264A"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="644" y="54">modelisation</text>
+<rect fill="#fff" height="80" rx="12" stroke="#dcd8d4" width="230" x="630" y="156"></rect>
+<path d="M630 168 a12 12 0 0 1 12 -12 h206 a12 12 0 0 1 12 12 v14 h-230 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="644" y="174">modele_frequence</text>
+<rect fill="#fff" height="80" rx="12" stroke="#dcd8d4" width="230" x="630" y="252"></rect>
+<path d="M630 264 a12 12 0 0 1 12 -12 h206 a12 12 0 0 1 12 12 v14 h-230 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="644" y="270">modele_severite</text>
+<rect fill="#fff" height="80" rx="12" stroke="#dcd8d4" width="230" x="630" y="348"></rect>
+<path d="M630 360 a12 12 0 0 1 12 -12 h206 a12 12 0 0 1 12 12 v14 h-230 z" fill="#3B547D"></path>
+<text fill="#fff" font-size="12.5" font-weight="800" x="644" y="366">simulation, tarification</text>
+<g fill="#1f2733" font-size="12">
+<text x="644" y="82"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_modelisation</text>
+<text x="644" y="102">id_projet</text><text x="644" y="122">franchise, seuil, statut</text>
+<text x="644" y="202">id_modelisation</text><text x="644" y="222">distribution, methode</text>
+<text x="644" y="298">id_modelisation</text><text x="644" y="318">distribution, methode</text>
+<text x="644" y="394"><tspan fill="#BA1C3A" font-weight="800">clé </tspan>id_modelisation</text>
+<text x="644" y="414">spec_json, result_json</text>
+</g>
+</g>
+<g fill="none" marker-end="url(#ot-s)" stroke="#7D92AC" stroke-width="2">
+<path d="M110 158 V 140"></path><path d="M110 242 V 260"></path>
+<path d="M270 200 C 290 200, 290 60, 334 60"></path>
+<path d="M445 138 V 176"></path><path d="M445 262 V 292"></path>
+<path d="M550 60 H 626"></path>
+<path d="M630 124 H 606 V 388 H 626"></path><path d="M606 196 H 626"></path><path d="M606 292 H 626"></path>
+<path d="M274 428 H 305 V 118 H 336" stroke-dasharray="6 5"></path>
+</g>
+<g fill="#BA1C3A" font-family="Manrope, Segoe UI, sans-serif" font-size="11.5" font-weight="800">
+<text x="118" y="153">1 à n</text><text x="118" y="256">1 à n</text>
+<text x="296" y="100">n à n</text>
+<text x="453" y="162">1 à n</text><text x="453" y="282">1 à n</text>
+<text x="566" y="52">1 à n</text>
+<text x="568" y="191">1 à n</text><text x="568" y="287">1 à n</text><text x="561" y="383">0 ou 1</text>
+<text text-anchor="middle" transform="rotate(-90 298 300)" x="298" y="300">par le nom de la série</text>
+</g>
+</svg>
+<figcaption>Le back-end de TCOR range tout dans une base SQLite, un fichier sur le poste, dont le schéma tient dans <code>src/back/db/schema.sql</code>. Ses tables principales, rangées comme le fichier lui-même : les entrées, l'étude, les résultats. Un projet réunit ses clients par une table de liaison, projet_client, et choisit sa série d'inflation par son nom.</figcaption>
+</figure>
+<p>Le schéma dit les relations que le formateur demande de rendre visibles. Le cœur d'un sinistre est minimal : un client, une année, un montant ; la segmentation (branche, type, région) passe par un catalogue de variables propre à chaque client, plutôt que par des colonnes dont le sens changerait d'un client à l'autre. Un sinistre et une exposition appartiennent à un client ; l'exposition a plusieurs séries (chiffre d'affaires, nombre de sites), et une série en euros est d'abord revalorisée. L'inflation n'appartient à personne : ses séries sont partagées, et le projet choisit la sienne, avec son année de référence. Le facteur as-if d'un sinistre en découle : l'indice de l'année de référence divisé par celui de l'année du sinistre, \(I_r / I_a\).</p>
+<p>Côté résultats, chaque modélisation garde ses paramètres figés et son état, même quand le calcul a échoué ; les lois calibrées, la dernière simulation et la dernière tarification pointent vers elle. La simulation est gardée avec les paramètres qui l'ont produite, pour savoir quand elle est périmée.</p>
+<h2 id="interface">L'interface : voir ce qu'on doit voir</h2>
+<p>L'interface de TCOR, ce sont des écrans : les projets, les clients, l'import, l'inflation, puis, dans un projet, l'exploration, la calibration, la simulation, la tarification. Elle parle au back-end par un pont unique, <code>window.api</code> : une fonction par demande. Un écran se vérifie en le regardant, à condition que le calcul ne s'y cache pas.</p>
+<p>TCOR montre pourquoi. L'écran d'exploration recalcule l'as-if dans la page ; la calibration le recalcule dans le back-end. Les deux copies ont divergé sur une règle : un sinistre égal à la limite basse (les montants inconnus, enregistrés à 5 €) était compté par l'une, écarté par l'autre. La règle est maintenant la même, et un test la tient contre le classeur de référence de l'actuaire. Le paquet, lui, a sa fonction d'inflation, que rien n'appelle. Un calcul vit à un seul endroit, dans le paquet, et les écrans montrent son résultat.</p>
+<h2 id="vision">Dans Vision</h2>
+<p>Vision suit les mêmes couches, et chacune se vérifie à sa façon.</p>
+<ul class="clean">
+<li><strong>Le calcul</strong> : les moteurs <code>CL_</code> (triangles, lois, simulation, tranches...) sont écrits en JavaScript pour tourner dans la page, et ils sont purs : ni écran, ni horloge, des entrées et des sorties. Un contrôle les charge seuls dans une page vierge et rejoue des cas connus, pris dans la littérature (Taylor et Ashe, Mack), dans les textes, ou recalculés en Python, à part du moteur. Puis il glisse une faute dans un moteur et vérifie que les cas tombent.</li>
+<li><strong>L'as-if</strong> : pour la cotation de Moselle Énergie, la reprise de TCOR dans Vision, le contrôle vérifie que le coefficient de l'année \(a\) vaut \((1+i)^{r-a}\), pour l'année de référence \(r\) et un taux d'indexation \(i\) constant, et que la charge as-if égale celle recomptée en Python sur les sinistres du compte. Sa faute met l'exposant à l'envers.</li>
+<li><strong>Le schéma</strong> : chaque rubrique d'actuariat a son onglet Schéma, les tables, leurs clés, leurs liens ; et « Mes données », au menu de chaque poste, tire de ses écrans le schéma de ce que le poste lit et écrit.</li>
+<li><strong>Les résultats</strong> : TCOR garde la dernière simulation de chaque modélisation ; Vision range chaque résultat avec l'identifiant de son jeu d'entrées, comme au chapitre <a href="../../communication/tracabilite/index.html">La traçabilité : des jeux d'entrées et leurs résultats</a>.</li>
+</ul>
+<p>Dans Vision : <code>#/rc-avocats?ong=schema</code> et <code>#/modeles/cotation-moselle?ong=resultats</code>, au poste d'actuaire tarification IARD ; <code>#/donnees</code> pour Mes données.</p>
+<div class="demo-shots">
+<figure><a href="img/rc_avocats_03_schema.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'onglet Schéma de la RC avocats : les données (entreprises, contrats, sinistres, exposition), les indices, les jeux d'entrée et les résultats, avec leurs clés" height="903" src="img/rc_avocats_03_schema.png" width="1440"/></a><figcaption><b>1</b>La RC avocats, onglet Schéma : les sinistres, l'exposition, les indices d'inflation, et les résultats dont la clé commence par l'identifiant du jeu.</figcaption></figure>
+<figure><a href="img/tcor_01_historique.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="La cotation de Moselle Énergie, Historique par année : le coefficient as-if, la charge brute et la charge as-if de chaque année" height="1290" src="img/tcor_01_historique.png" width="1440"/></a><figcaption><b>2</b>La cotation de Moselle Énergie : chaque année, son coefficient as-if et sa charge, brute puis as-if. L'écran montre ; le calcul se vérifie ailleurs.</figcaption></figure>
+</div>
+<h2 id="garants">L'IA, le développement, et l'actuaire garant</h2>
+<p>Je suis convaincu que l'IA est en train de bouleverser le monde du développement : tout le monde est développeur. Pas forcément pour les actuaires : il y a derrière un métier technique précis, et les actuaires sont garants des résultats.</p>
+<p>Pour l'interface, l'expérience utilisateur et le reste, il y a une vraie question : on a beaucoup moins besoin des développeurs front et des spécialistes de l'expérience utilisateur pour construire ça.</p>
+<h2 id="questions">Questions</h2>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg> À votre avis</span>
+<p>Qui vérifie la fonction d'as-if, et comment, sans ouvrir l'interface ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>L'actuaire, par ses entrées et ses sorties. Un sinistre de 100 000 € survenu en 2020, un indice qui monte de 3 % par an, l'année de référence 2025 : il attend \(100\,000 \times 1{,}03^{5} \approx 115\,927{,}41\) €. Si la fonction rend 86 260,88 €, l'exposant est à l'envers. Il ajoute un sinistre de l'année de référence, dont le coefficient vaut 1, et range ces cas parmi les cas de référence, rejoués à chaque changement. C'est ce que fait le contrôle de la cotation dans Vision, et sa faute est justement l'exposant à l'envers. Dans TCOR, l'application doit en plus retrouver au centime l'as-if du classeur de l'actuaire.</p>
+</details>
+</div>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg> À votre avis</span>
+<p>Sur le cas de référence de la calibration, le paquet retient pour la fréquence une loi binomiale de paramètre \(n = 17\), que l'AIC préfère nettement à la loi de Poisson. Faut-il la garder ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Pas pour un tarif. Les sinistres du cas sont trop réguliers : 17 par an de 2010 à 2017, 16 ensuite. La binomiale colle à ces données, et elle dit qu'il n'y aura jamais plus de 17 sinistres dans une année. Le code a fait ce qu'on lui demandait ; le choix de la loi est un jugement d'actuaire, et c'est lui qui en répond, pas l'interface ni le développeur. Ici, c'est un cas de test, fait pour vérifier que le calcul ne bouge pas.</p>
+</details>
+</div>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg> À votre avis</span>
+<p>Un écran de TCOR affiche une prime qui vous semble fausse. Par où commencez-vous ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Par le calcul, sans l'écran. On reprend l'entrée que le back-end envoie au paquet, on relance le paquet, et on compare la sortie à ce qu'on attend. Si la sortie est juste, l'erreur est avant, dans le back-end (les sinistres retenus, l'as-if, la franchise), ou après, dans l'affichage. Si elle est fausse, elle est dans le paquet, et elle devient un nouveau cas de référence. Les couches séparées coupent la recherche en morceaux.</p>
+</details>
+</div>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>Trois couches : le paquet, tenu par l'actuaire et vérifié par ses entrées et ses sorties ; le back-end, maîtrisé par l'actuaire et programmé avec un développeur, vérifié par son schéma et ses résultats stockés ; l'interface, faite avec un développeur front, vérifiée en la regardant.</li>
+<li>Le paquet se parle par un contrat, un JSON d'entrée et un JSON de sortie, et ses cas de référence se rejouent à chaque changement.</li>
+<li>Le schéma se rend visible : les sinistres, l'inflation, l'exposition, et chaque résultat relié à ce qui l'a produit.</li>
+<li>Un calcul vit à un seul endroit ; deux copies finissent par diverger.</li>
+<li>L'IA fait de chacun un développeur ; l'actuaire reste garant des résultats.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../exploration/stocker/index.html"><small>&larr; Précédent</small>Calculer dans le back, stocker les résultats</a><a class="next" href="../../exploration/explorer/index.html"><small>Suivant &rarr;</small>Comprendre une donnée nouvelle</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

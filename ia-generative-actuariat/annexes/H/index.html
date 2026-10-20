@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annexe H. Comparaison des outils IA pour le développement · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn active" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 6 · Annexes</div>
+      <h1 style="max-width:28ch">Annexe H. Comparaison des outils IA pour le développement</h1>
+      <p class="lede">Le paysage des outils change d’un trimestre à l’autre. Cette annexe donne un état au 29 septembre 2026 des outils les plus utiles à un actuaire, avec leurs forces, leurs limites et leurs usages. Les prix de Claude sont ceux de claude.com/pricing à cette date ; ceux des autres éditeurs changent souvent et se vérifient sur leur site.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#tableau-comparatif">Tableau comparatif</a><a href="#recommandations-par-profil">Recommandations par profil</a><a href="#détail-outil-par-outil">Détail outil par outil</a><a href="#ce-qui-bouge">Ce qui bouge</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+
+<section class="level2" data-number="37.1" id="tableau-comparatif">
+<h2 class="anchored" data-anchor-id="tableau-comparatif" data-number="37.1" id="tableau-comparatif"> Tableau comparatif</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+<col style="width: 20%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Outil</th>
+<th>Niveau du cadrage</th>
+<th>Surface</th>
+<th>Modèle de coût</th>
+<th>Pour quel actuaire</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ChatGPT</strong> (OpenAI)</td>
+<td>1, assistant</td>
+<td>Navigateur, applications</td>
+<td>Abonnement, offres entreprise</td>
+<td>Tous, pour les questions ponctuelles</td>
+</tr>
+<tr class="even">
+<td><strong>Claude</strong> (claude.ai)</td>
+<td>1, assistant</td>
+<td>Navigateur, applications de bureau et mobiles</td>
+<td>Gratuit, Pro, Max, Team, Enterprise</td>
+<td>Tous, pour la rédaction et les documents longs</td>
+</tr>
+<tr class="odd">
+<td><strong>Mistral Le Chat</strong></td>
+<td>1, assistant</td>
+<td>Navigateur, applications</td>
+<td>Gratuit, abonnement</td>
+<td>Qui préfère un éditeur européen</td>
+</tr>
+<tr class="even">
+<td><strong>Microsoft Copilot Chat</strong></td>
+<td>1, assistant</td>
+<td>Intégré à Microsoft 365</td>
+<td>Selon la licence</td>
+<td>Cabinets équipés de Microsoft 365</td>
+</tr>
+<tr class="odd">
+<td><strong>GitHub Copilot</strong></td>
+<td>1 et 2 : complétion, conversation, mode agent</td>
+<td>Extension des éditeurs (VS Code, JetBrains)</td>
+<td>Abonnement par utilisateur</td>
+<td>Actuaires qui codent tous les jours</td>
+</tr>
+<tr class="even">
+<td><strong>Claude Code</strong></td>
+<td>2, agent</td>
+<td>Terminal, VS Code, JetBrains, application de bureau, web, mobile</td>
+<td>Inclus dans les plans payants de Claude, ou API au token</td>
+<td>L’objet de cette formation</td>
+</tr>
+<tr class="odd">
+<td><strong>Codex CLI</strong> (OpenAI), <strong>Gemini CLI</strong> (Google)</td>
+<td>2, agent</td>
+<td>Terminal</td>
+<td>Selon le compte de l’éditeur</td>
+<td>Alternatives en ligne de commande</td>
+</tr>
+<tr class="even">
+<td><strong>Cursor</strong></td>
+<td>2, agent</td>
+<td>Éditeur dédié, dérivé de VS Code</td>
+<td>Abonnement</td>
+<td>Développement intensif</td>
+</tr>
+<tr class="odd">
+<td><strong>Cline</strong></td>
+<td>2, agent</td>
+<td>Extension VS Code, open source</td>
+<td>Votre propre clé d’API, au token</td>
+<td>Contrôle fin du coût</td>
+</tr>
+<tr class="even">
+<td><strong>Aider</strong></td>
+<td>2, agent</td>
+<td>Terminal, open source</td>
+<td>Votre propre clé d’API, au token</td>
+<td>Travail centré sur Git</td>
+</tr>
+<tr class="odd">
+<td><strong>Lovable</strong></td>
+<td>2, agent pour applications web</td>
+<td>Navigateur</td>
+<td>Abonnement</td>
+<td>Prototypes d’applications et de tableaux de bord</td>
+</tr>
+<tr class="even">
+<td><strong>SDK Anthropic</strong></td>
+<td>3, outil métier</td>
+<td>Python, TypeScript</td>
+<td>API au token</td>
+<td>Industrialisation</td>
+</tr>
+</tbody>
+</table>
+<p>Les niveaux sont ceux du chapitre « Pas toujours besoin d’un modèle de langue » (partie 1) : l’assistant à qui l’on parle, l’agent qui exécute sur votre poste, l’outil métier qui appelle le modèle depuis un programme.</p>
+<section class="level3" data-number="37.1.1" id="les-offres-de-claude-au-29-septembre-2026">
+<h3 class="anchored" data-anchor-id="les-offres-de-claude-au-29-septembre-2026" data-number="37.1.1"> Les offres de Claude au 29 septembre 2026</h3>
+<p>En dollars hors taxes (claude.com/pricing). Claude Code est inclus dans tous les plans payants, pas dans l’offre gratuite.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+<col style="width: 33%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Offre</th>
+<th>Prix</th>
+<th>Nature</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pro</td>
+<td>20 $ par mois (17 $ en annuel)</td>
+<td>Grand public</td>
+</tr>
+<tr class="even">
+<td>Max</td>
+<td>100 $ ou 200 $ par mois</td>
+<td>Grand public</td>
+</tr>
+<tr class="odd">
+<td>Team</td>
+<td>Siège Standard 25 $ par mois (20 $ en annuel), Premium 125 $ (100 $)</td>
+<td>Entreprise</td>
+</tr>
+<tr class="even">
+<td>Enterprise</td>
+<td>Siège, plus l’usage au tarif de l’API</td>
+<td>Entreprise</td>
+</tr>
+<tr class="odd">
+<td>API (Console)</td>
+<td>Au token</td>
+<td>Entreprise, avec un contrat de traitement des données</td>
+</tr>
+</tbody>
+</table>
+<p>Côté API, la documentation d’Anthropic (« Manage costs », code.claude.com/docs/en/costs) donne pour Claude Code un coût moyen d’environ 13 $ par développeur et par jour actif, 150 à 250 $ par développeur et par mois, et moins de 30 $ par jour actif pour 90 % des utilisateurs.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>La question avant le prix : les données
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tout ce qu’un assistant ou un agent lit part chez son éditeur. Les offres grand public et les offres entreprise ne se valent pas : seule une offre entreprise (chez Anthropic : Team, Enterprise, API avec contrat) fait de l’éditeur un sous-traitant de votre organisme au sens du RGPD. La même question se pose pour chaque outil du tableau, et se tranche avec la DSI et le délégué à la protection des données. Sur un compte grand public, vérifiez aussi dans les réglages si vos conversations peuvent servir à entraîner les modèles. Voir l’<a href="../../annexes/G/index.html">annexe G</a>.</p>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="37.2" id="recommandations-par-profil">
+<h2 class="anchored" data-anchor-id="recommandations-par-profil" data-number="37.2" id="recommandations-par-profil"> Recommandations par profil</h2>
+<section class="level3" data-number="37.2.1" id="actuaire-dabord-sur-excel-débutant-en-python">
+<h3 class="anchored" data-anchor-id="actuaire-dabord-sur-excel-débutant-en-python" data-number="37.2.1"> Actuaire d’abord sur Excel, débutant en Python</h3>
+<ul>
+<li>Claude Code dans l’extension VS Code (niveau 2), pour les calculs Python dès qu’il y a une boucle écrire, exécuter, corriger. C’est l’objet de cette formation.</li>
+<li>Un assistant conversationnel (niveau 1), sous l’offre que votre organisme autorise, pour les questions ponctuelles et les angles d’analyse.</li>
+</ul>
+<p><strong>À éviter au démarrage</strong> : Cursor (un éditeur de plus à apprendre), le SDK (il demande un savoir-faire d’ingénieur), la complétion de GitHub Copilot (peu utile quand on écrit peu de code soi-même).</p>
+</section>
+<section class="level3" data-number="37.2.2" id="actuaire-à-laise-en-python">
+<h3 class="anchored" data-anchor-id="actuaire-à-laise-en-python" data-number="37.2.2"> Actuaire à l’aise en Python</h3>
+<ul>
+<li>Claude Code, dans VS Code ou dans le terminal (niveau 2), comme outil principal.</li>
+<li>Un assistant conversationnel (niveau 1) pour les questions de fond.</li>
+<li>GitHub Copilot en option, si vous écrivez beaucoup de code répétitif.</li>
+</ul>
+<p>Après quelques mois, comparer avec un autre agent (Cursor, Codex CLI) si votre façon de travailler s’y prête.</p>
+</section>
+<section class="level3" data-number="37.2.3" id="actuaire-data-avancé-équipe-dindustrialisation">
+<h3 class="anchored" data-anchor-id="actuaire-data-avancé-équipe-dindustrialisation" data-number="37.2.3"> Actuaire data avancé, équipe d’industrialisation</h3>
+<ul>
+<li>Claude Code (niveau 2) au quotidien.</li>
+<li>Le SDK Anthropic (niveau 3) pour les outils métier : validation automatisée, production en lot, classification.</li>
+<li>Lovable pour prototyper une interface quand Streamlit ou Dash ne suffisent pas, sur des données synthétiques ou agrégées.</li>
+</ul>
+</section>
+</section>
+<section class="level2" data-number="37.3" id="détail-outil-par-outil">
+<h2 class="anchored" data-anchor-id="détail-outil-par-outil" data-number="37.3" id="détail-outil-par-outil"> Détail outil par outil</h2>
+<section class="level3" data-number="37.3.1" id="chatgpt">
+<h3 class="anchored" data-anchor-id="chatgpt" data-number="37.3.1"> ChatGPT</h3>
+<p><strong>Forces.</strong> Notoriété, écosystème large, mémoire entre conversations, applications mobiles abouties.</p>
+<p><strong>Limites.</strong> Dans l’interface conversationnelle, le code s’exécute dans l’environnement d’OpenAI, pas sur votre poste ni sur vos fichiers : on revient vite au copier-coller. Mêmes questions d’offre et de données que pour Claude.</p>
+<p><strong>Quand l’utiliser</strong> : questions ponctuelles ou conceptuelles, recherche d’angles d’analyse, premier jet d’un code court.</p>
+</section>
+<section class="level3" data-number="37.3.2" id="claude-claude.ai">
+<h3 class="anchored" data-anchor-id="claude-claude.ai" data-number="37.3.2"> Claude (claude.ai)</h3>
+<p><strong>Forces.</strong> Raisonnement long, rédaction et relecture de prose, lecture de documents longs (un PDF de plusieurs centaines de pages). Applications de bureau et mobiles.</p>
+<p><strong>Limites.</strong> La version web n’accède pas à vos fichiers locaux. Les offres Pro et Max sont des offres grand public : pas de données de clients dessus.</p>
+<p><strong>Quand l’utiliser</strong> : analyse de documents publics longs (un texte de l’ACPR, un rapport de place), rédaction et relecture d’une note, discussion de méthode.</p>
+</section>
+<section class="level3" data-number="37.3.3" id="mistral-le-chat">
+<h3 class="anchored" data-anchor-id="mistral-le-chat" data-number="37.3.3"> Mistral Le Chat</h3>
+<p><strong>Forces.</strong> Éditeur français, bon niveau en français.</p>
+<p><strong>Limites.</strong> Écosystème plus petit qu’OpenAI ou Anthropic, intégrations aux éditeurs de code moins nombreuses. Le contrat et le lieu d’hébergement se vérifient comme pour les autres : un éditeur européen ne dispense pas de choisir l’offre.</p>
+<p><strong>Quand l’utiliser</strong> : quand le cabinet préfère un éditeur européen, sous une offre adaptée aux données traitées.</p>
+</section>
+<section class="level3" data-number="37.3.4" id="microsoft-copilot-chat">
+<h3 class="anchored" data-anchor-id="microsoft-copilot-chat" data-number="37.3.4"> Microsoft Copilot Chat</h3>
+<p><strong>Forces.</strong> Intégré à Word, Excel, PowerPoint et Outlook. Utile pour la bureautique assistée : rédiger une note, mettre en forme, analyser un tableau Excel.</p>
+<p><strong>Limites.</strong> Pas fait pour le développement Python. Lié à l’écosystème Microsoft : un avantage si le cabinet y est déjà, une friction sinon.</p>
+<p><strong>Quand l’utiliser</strong> : rédiger une note dans Word, analyser un tableau sans quitter Excel. C’est aussi l’assistant que beaucoup d’organismes autorisent en premier : la démarche de la formation s’y applique, sans l’exécution automatique.</p>
+</section>
+<section class="level3" data-number="37.3.5" id="github-copilot">
+<h3 class="anchored" data-anchor-id="github-copilot" data-number="37.3.5"> GitHub Copilot</h3>
+<p><strong>Forces.</strong> Complétion dans l’éditeur, conversation intégrée à VS Code, et depuis 2025 un mode agent qui modifie les fichiers et lance des commandes, à la manière des agents du niveau 2. Bonne intégration à GitHub.</p>
+<p><strong>Limites.</strong> Un coût de plus si vous payez déjà un autre agent. Les mêmes questions de permissions et de données que pour Claude Code.</p>
+<p><strong>Quand l’utiliser</strong> : en complément pour la complétion, ou comme agent principal si votre organisme a déjà une licence.</p>
+</section>
+<section class="level3" data-number="37.3.6" id="claude-code">
+<h3 class="anchored" data-anchor-id="claude-code" data-number="37.3.6"> Claude Code</h3>
+<p><strong>Forces.</strong> Agent complet : il lit, modifie et exécute du code sur votre poste. Plusieurs surfaces (terminal, VS Code, JetBrains, application de bureau, web, mobile). Mémoire de projet par <code>CLAUDE.md</code> et <code>.claude/rules/</code>, mode plan, skills, sous-agents, hooks, bac à sable hors Windows natif.</p>
+<p><strong>Limites.</strong> Un coût qui monte en usage intensif sur l’API (150 à 250 $ par développeur et par mois selon la documentation d’Anthropic). Une courbe d’apprentissage sur les permissions et la mémoire. Sous Windows natif, pas de bac à sable : la protection des données repose sur leur absence du dossier.</p>
+<p><strong>Quand l’utiliser</strong> : votre outil principal au niveau 2, après cette formation.</p>
+</section>
+<section class="level3" data-number="37.3.7" id="codex-cli-et-gemini-cli">
+<h3 class="anchored" data-anchor-id="codex-cli-et-gemini-cli" data-number="37.3.7"> Codex CLI et Gemini CLI</h3>
+<p><strong>Forces.</strong> Les agents en ligne de commande d’OpenAI et de Google, de la même famille que Claude Code : ils lisent, modifient et exécutent sur votre poste.</p>
+<p><strong>Limites.</strong> Les mêmes questions que pour Claude Code : permissions, offre, données.</p>
+<p><strong>Quand l’utiliser</strong> : si votre organisme a déjà un contrat avec l’un de ces éditeurs. La démarche de la formation s’y transpose sans changement.</p>
+</section>
+<section class="level3" data-number="37.3.8" id="cursor">
+<h3 class="anchored" data-anchor-id="cursor" data-number="37.3.8"> Cursor</h3>
+<p><strong>Forces.</strong> Éditeur complet dérivé de VS Code, agent intégré, choix entre plusieurs modèles.</p>
+<p><strong>Limites.</strong> Un éditeur de plus à apprendre. Un tarif qui dépend de l’usage.</p>
+<p><strong>Quand l’utiliser</strong> : en alternative à Claude Code si vous préférez un éditeur dédié à une extension. À comparer après quelques mois de Claude Code.</p>
+</section>
+<section class="level3" data-number="37.3.9" id="cline">
+<h3 class="anchored" data-anchor-id="cline" data-number="37.3.9"> Cline</h3>
+<p><strong>Forces.</strong> Open source, extension VS Code, avec votre propre clé d’API : vous payez le modèle au token, directement.</p>
+<p><strong>Limites.</strong> Moins abouti que Claude Code ou Cursor. La clé d’API se configure soi-même, et se protège.</p>
+<p><strong>Quand l’utiliser</strong> : pour comprendre la mécanique interne d’un agent, ou pour suivre le coût au plus près.</p>
+</section>
+<section class="level3" data-number="37.3.10" id="aider">
+<h3 class="anchored" data-anchor-id="aider" data-number="37.3.10"> Aider</h3>
+<p><strong>Forces.</strong> Outil léger en ligne de commande, centré sur Git : chaque modification donne un commit. Rapide à démarrer.</p>
+<p><strong>Limites.</strong> Pas d’interface graphique ; un démarrage rude sans habitude du terminal.</p>
+<p><strong>Quand l’utiliser</strong> : utilisateurs à l’aise dans le terminal, travaux scriptés.</p>
+</section>
+<section class="level3" data-number="37.3.11" id="lovable">
+<h3 class="anchored" data-anchor-id="lovable" data-number="37.3.11"> Lovable</h3>
+<p><strong>Forces.</strong> Lancé fin 2024 (ex GPT Engineer). Construit des applications web (React) en langage naturel, avec leur partie serveur et leur base de données hébergées, et les met en ligne en un clic.</p>
+<p><strong>Limites.</strong> L’application et ses données sont hébergées chez Lovable : données agrégées ou synthétiques seulement. Une application JavaScript n’importe pas un module Python : pour réutiliser un moteur de calcul, il faut une API entre les deux. L’option locale existe : un tableau de bord Streamlit construit par Claude Code sur le poste.</p>
+<p><strong>Quand l’utiliser</strong> : pour prototyper l’interface d’un tableau de bord quand Streamlit ou Dash ne suffisent pas visuellement.</p>
+</section>
+<section class="level3" data-number="37.3.12" id="sdk-anthropic">
+<h3 class="anchored" data-anchor-id="sdk-anthropic" data-number="37.3.12"> SDK Anthropic</h3>
+<p><strong>Forces.</strong> Appeler le modèle depuis vos programmes Python : validation automatisée, production en lot, classification, explication d’un résultat à qui le lit.</p>
+<p><strong>Limites.</strong> Il demande un savoir-faire d’ingénieur : gestion des appels, des erreurs, des coûts, du suivi.</p>
+<p><strong>Quand l’utiliser</strong> : au niveau 3, quand le besoin est récurrent, automatisable, et touche plusieurs collègues. Le chapitre « Les formes d’appel » (partie 4) en montre les premières formes.</p>
+</section>
+</section>
+<section class="level2" data-number="37.4" id="ce-qui-bouge">
+<h2 class="anchored" data-anchor-id="ce-qui-bouge" data-number="37.4" id="ce-qui-bouge"> Ce qui bouge</h2>
+<p>État au 29 septembre 2026.</p>
+<p><strong>Le pattern Advisor.</strong> Le billet d’Anthropic « The advisor strategy » (9 avril 2026) décrit un outil de l’API, en bêta, où un modèle rapide consulte un modèle plus fort quand il en a besoin. Les chiffres publiés : Haiku conseillé par Opus passe de 19,7 % à 41,2 % sur le banc d’essai BrowseComp et coûte 85 % de moins par tâche que Sonnet seul, mais reste en dessous du score de Sonnet ; Sonnet conseillé par Opus gagne 2,7 points sur SWE-bench Multilingual pour un coût inférieur de 11,9 %. Des gains réels sur des bancs d’essai précis, pas une division des coûts à généraliser (claude.com/blog/the-advisor-strategy).</p>
+<p><strong>Les Routines et l’automatisation.</strong> Lancées en préversion le 14 avril 2026 et présentées à la conférence Code w/ Claude du 6 mai, les Routines font tourner Claude Code sur des tâches asynchrones, sans session ouverte. Avec le mode non interactif (<code>claude -p</code>) et l’intégration à GitHub Actions, Claude Code est aussi un outil d’automatisation, pas seulement un outil interactif.</p>
+<p><strong>Les modèles.</strong> Opus 5.5 (<code>claude-opus-5-5</code>) est le modèle par défaut de Claude Code ; Sonnet 5.5 (<code>claude-sonnet-5-5</code>) est le Sonnet actuel ; Haiku 4.5 peut être retiré dès le 15 octobre 2026. Un code qui cite <code>claude-sonnet-4-6</code> est daté.</p>
+<p><strong>Le cadre réglementaire.</strong> Les règles de l’AI Act sur le haut risque s’appliquent au 2 décembre 2027, et l’ACPR a soumis à consultation un document sur l’équité algorithmique jusqu’au 30 septembre 2026. Voir l’<a href="../../annexes/G/index.html">annexe G</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice : quel outil, quelle offre ?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Votre DSI n’autorise que GitHub Copilot, sous licence entreprise. Un collègue soupire : <em>« Copilot ne fait que suggérer, on va tout copier-coller, la formation ne sert à rien. »</em> Que lui répondez-vous ?</li>
+<li>Pour essayer Claude Code sur un extrait pseudonymisé du portefeuille, une collègue propose de prendre un abonnement Pro à ses frais. Bonne idée ?</li>
+</ol>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li>Copilot a un mode agent depuis 2025 : il modifie les fichiers et lance des commandes. Et la démarche ne dépend pas de l’outil : intention avant code, petits pas, chiffres produits par un code exécuté, critique demandée, commits. Les questions de permissions et de données se posent de la même façon.</li>
+<li>Non. Pro est une offre grand public : Anthropic n’y est pas le sous-traitant de votre organisme, et une donnée pseudonymisée reste une donnée personnelle. L’essai se fait sur des données synthétiques ou publiques ; le passage aux vraies données attend une offre entreprise validée par la DSI et le délégué à la protection des données.</li>
+</ol>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="37.5" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="37.5" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>La documentation de Claude Code : code.claude.com/docs/en/overview, et les coûts : code.claude.com/docs/en/costs.</li>
+<li>Les offres à jour : claude.com/pricing.</li>
+<li>Le chapitre « Pas toujours besoin d’un modèle de langue » (partie 1), pour situer chaque outil dans le cadrage en trois niveaux.</li>
+<li>Le chapitre « Les formes d’appel » (partie 4), pour le passage au niveau 3.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../annexes/G/index.html"><small>&larr; Précédent</small>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a class="next" href="../../annexes/I/index.html"><small>Suivant &rarr;</small>Annexe I. Pour aller plus loin</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

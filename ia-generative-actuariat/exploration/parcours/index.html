@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Construire en direct : le parcours de l'actuaire · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn active" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 2 · 2.3 Projeter et simuler</div>
+      <h1 style="max-width:28ch">Construire en direct : le parcours de l'actuaire</h1>
+      <p class="lede">Les cas d'usage n'étaient pas prêts à l'avance : on les a construits en direct, avec l'IA, dans Vision. L'IA prépare des modèles, propose des scénarios et montre des résultats. L'actuaire décrit ce qu'il veut, explique la démarche et les résultats, puis valide d'un bouton. C'est la répartition des rôles qu'on garde ensuite dans le vrai travail.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#rubriques">Des rubriques de Vision, construites pendant la formation</a><a href="#parcours">Le parcours, et où l'IA aide</a><a href="#donnees">Les données : un portefeuille à une date</a><a href="#consigne">La consigne : décrire ce qu'on veut</a><a href="#validation">La validation : expliquer, puis valider</a><a href="#retenir">Ce qu'il faut garder</a><a href="#sources">Sources</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « Construire en direct : le parcours de l'actuaire ».
+     Le cadrage du formateur, formation du 19 octobre : « les cas d'usage
+     n'étaient pas prêts : on construit en direct. L'IA prépare des modèles,
+     propose des scénarios, montre des résultats ; l'actuaire explique la
+     démarche et les résultats, puis valide d'un bouton » ; « structurer le
+     workflow de l'actuaire et montrer où l'IA aide concrètement ; il faut plus
+     d'input pour l'IA : décrire ce qu'on veut, une forme de prompt engineering,
+     sur le portefeuille et les scénarios » ; « un portefeuille de base fictif à
+     une date (31/12/2025) que l'actuaire maîtrise et modifie ; souvent un
+     fichier Excel ; l'IA aide à importer et structurer proprement dans une
+     base, avec les formats de Solvabilité II (XML, XBRL), catégories,
+     sous-catégories, sous-totaux ».
+     L'auteur : ces écrans sont des rubriques de Vision comme les autres, on les
+     appelle par leur nom (l'ALM, le taux servi, la tarification de la RC
+     professionnelle, celle du transport de marchandises).
+     Les écrans : Vision, rubrique ALM (#/alm).
+     Captures : demos/_outils/captures_vision_actuariat.py, scène alm_parcours. -->
+
+<h2 id="rubriques">Des rubriques de Vision, construites pendant la formation</h2>
+<p>L'ALM, le taux servi, la tarification de la RC professionnelle et celle du transport de marchandises sont des rubriques du groupe Actuariat de Vision. Chacune a ses onglets de travail, puis des onglets communs à toutes : Schéma, Sources et Validation. L'ALM d'un portefeuille d'épargne en euros est la plus complète ; les autres suivent le même parcours sur d'autres domaines, au chapitre <a href="../../exploration/autres-domaines/index.html">D'autres domaines, le même parcours</a>.</p>
+<p>Dans Vision : <code>#/alm</code>, <code>#/taux-servi</code>, <code>#/rc-professionnelle</code> et <code>#/transport</code>, au poste d'actuaire provisionnement vie ou d'actuaire tarification IARD. Les données sont fictives. Vision n'est pas encore en ligne : le formateur fait la démonstration depuis son poste.</p>
+<h2 id="parcours">Le parcours, et où l'IA aide</h2>
+<p>Structurer le parcours de l'actuaire, c'est ce qui montre où l'IA aide concrètement. Chaque étape est un onglet de l'ALM ; un clic sur une étape ouvre sa section.</p>
+<figure class="figure-frame">
+<svg aria-label="Le parcours de l'actuaire sur l'ALM : données, consigne IA, modèles versionnés, scénarios, Monte-Carlo, résultats, retour vers les paramètres, validation." role="img" viewbox="0 0 880 330">
+<defs>
+<marker id="pf" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#7D92AC"></path></marker>
+<marker id="pr" markerheight="9" markerwidth="9" orient="auto" refx="7" refy="4.5"><path d="M0,0 L9,4.5 L0,9 z" fill="#BA1C3A"></path></marker>
+</defs>
+<g fill="none" marker-end="url(#pf)" stroke="#7D92AC" stroke-width="2">
+<path d="M210 74 H 232"></path>
+<path d="M430 74 H 452"></path>
+<path d="M650 74 H 672"></path>
+<path d="M770 112 V 210"></path>
+<path d="M672 248 H 650"></path>
+<path d="M452 248 H 430"></path>
+<path d="M232 248 H 210"></path>
+</g>
+<g fill="none" marker-end="url(#pr)" stroke="#BA1C3A" stroke-dasharray="6 5" stroke-width="2">
+<path d="M300 210 C 300 165, 140 165, 120 118"></path>
+<path d="M360 210 C 360 160, 540 160, 552 118"></path>
+</g>
+<g fill="#BA1C3A" font-family="Manrope, Segoe UI, sans-serif" font-size="11.5" font-weight="800" text-anchor="middle">
+<text x="330" y="156">suggestions, acceptées ou non</text>
+</g>
+<g font-family="Manrope, Segoe UI, sans-serif">
+<a href="../../exploration/parcours/index.html#donnees"><g>
+<rect fill="#fff" height="76" rx="12" stroke="#dcd8d4" width="200" x="10" y="36"></rect>
+<circle cx="32" cy="58" fill="#13264A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="32" y="62.5">1</text>
+<text fill="#13264A" font-size="14" font-weight="800" x="52" y="63">Données</text>
+<text fill="#1f2733" font-size="11.5" x="24" y="86">Excel ou XML de Solvabilité II</text>
+<text fill="#BA1C3A" font-size="11.5" x="24" y="102">Mia Scan range les colonnes</text>
+</g></a>
+<a href="../../exploration/parcours/index.html#consigne"><g>
+<rect fill="#fff" height="76" rx="12" stroke="#dcd8d4" width="200" x="230" y="36"></rect>
+<circle cx="252" cy="58" fill="#13264A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="252" y="62.5">2</text>
+<text fill="#13264A" font-size="14" font-weight="800" x="272" y="63">Consigne IA</text>
+<text fill="#1f2733" font-size="11.5" x="244" y="86">l'actuaire décrit ce qu'il veut</text>
+<text fill="#BA1C3A" font-size="11.5" x="244" y="102">Mia Chat propose</text>
+</g></a>
+<a href="../../exploration/projeter/index.html#modeles"><g>
+<rect fill="#fff" height="76" rx="12" stroke="#dcd8d4" width="200" x="450" y="36"></rect>
+<circle cx="472" cy="58" fill="#13264A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="472" y="62.5">3</text>
+<text fill="#13264A" font-size="14" font-weight="800" x="492" y="63">Modèles versionnés</text>
+<text fill="#1f2733" font-size="11.5" x="464" y="86">une table : numéro, valeur,</text>
+<text fill="#1f2733" font-size="11.5" x="464" y="102">paramètres, commentaire</text>
+</g></a>
+<a href="../../exploration/projeter/index.html#scenarios"><g>
+<rect fill="#fff" height="76" rx="12" stroke="#dcd8d4" width="200" x="670" y="36"></rect>
+<circle cx="692" cy="58" fill="#13264A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="692" y="62.5">4</text>
+<text fill="#13264A" font-size="14" font-weight="800" x="712" y="63">Scénarios</text>
+<text fill="#1f2733" font-size="11.5" x="684" y="86">Hull-White, Vasicek, actions</text>
+<text fill="#BA1C3A" font-size="11.5" x="684" y="102">Mia Chat propose des mélanges</text>
+</g></a>
+<a href="../../exploration/monte-carlo/index.html"><g>
+<rect fill="#fff" height="76" rx="12" stroke="#dcd8d4" width="200" x="670" y="210"></rect>
+<circle cx="692" cy="232" fill="#13264A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="692" y="236.5">5</text>
+<text fill="#13264A" font-size="14" font-weight="800" x="712" y="237">Monte-Carlo</text>
+<text fill="#1f2733" font-size="11.5" x="684" y="260">les trajectoires, graine fixe,</text>
+<text fill="#1f2733" font-size="11.5" x="684" y="276">la convergence vérifiée</text>
+</g></a>
+<a href="../../exploration/projeter/index.html#resultats"><g>
+<rect fill="#fff" height="76" rx="12" stroke="#dcd8d4" width="200" x="450" y="210"></rect>
+<circle cx="472" cy="232" fill="#13264A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="472" y="236.5">6</text>
+<text fill="#13264A" font-size="14" font-weight="800" x="492" y="237">Résultats</text>
+<text fill="#1f2733" font-size="11.5" x="464" y="260">distribution, quantiles,</text>
+<text fill="#1f2733" font-size="11.5" x="464" y="276">VaR à 99,5 %</text>
+</g></a>
+<a href="../../exploration/projeter/index.html#retour"><g>
+<rect fill="#fff" height="76" rx="12" stroke="#dcd8d4" width="200" x="230" y="210"></rect>
+<circle cx="252" cy="232" fill="#13264A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="252" y="236.5">7</text>
+<text fill="#13264A" font-size="14" font-weight="800" x="272" y="237">Retour</text>
+<text fill="#1f2733" font-size="11.5" x="244" y="260">vers les paramètres de départ</text>
+<text fill="#BA1C3A" font-size="11.5" x="244" y="276">l'IA suggère, chiffres à l'appui</text>
+</g></a>
+<a href="../../exploration/parcours/index.html#validation"><g>
+<rect fill="#13264A" height="76" rx="12" stroke="#13264A" width="200" x="10" y="210"></rect>
+<circle cx="32" cy="232" fill="#BA1C3A" r="12"></circle><text fill="#fff" font-size="12" font-weight="800" text-anchor="middle" x="32" y="236.5">8</text>
+<text fill="#fff" font-size="14" font-weight="800" x="52" y="237">Validation</text>
+<text fill="#d9e1ee" font-size="11.5" x="24" y="260">l'actuaire explique,</text>
+<text fill="#d9e1ee" font-size="11.5" x="24" y="276">puis valide d'un bouton</text>
+</g></a>
+</g>
+<g fill="#78828f" font-family="Manrope, Segoe UI, sans-serif" font-size="11">
+<text x="10" y="318">En rouge : ce que l'IA fait. L'actuaire décide à chaque étape, et c'est lui qui valide.</text>
+</g>
+</svg>
+<figcaption>Le parcours de l'actuaire sur l'ALM. Les résultats renvoient vers les données et les paramètres de départ, sous forme de suggestions que l'actuaire accepte ou non.</figcaption>
+</figure>
+<p>L'IA a besoin d'input. Plus l'actuaire décrit ce qu'il veut, sur le portefeuille comme sur les scénarios, plus sa proposition est précise : c'est une forme de prompt engineering, et pour un actuaire elle consiste surtout à écrire ce qu'il sait déjà.</p>
+<h2 id="donnees">Les données : un portefeuille à une date</h2>
+<p>Tout part d'un portefeuille de base, fictif ici, à une date : le 31/12/2025. L'actuaire le maîtrise et le modifie : un nominal, un coupon ou une provision se changent dans la case, et toute la page se recalcule. En pratique, ce portefeuille arrive souvent dans un fichier Excel, ou dans les états de Solvabilité II : la liste des actifs S.06.02, remise en XML au format XBRL. L'IA aide à l'importer et à le ranger proprement dans une base. Mia Scan propose la correspondance des colonnes, reconnue, à vérifier ou non reconnue, avec une remarque ; l'actif se range ensuite par catégorie et sous-catégorie du code CIC, avec les sous-totaux de chaque niveau.</p>
+<div class="demo-shots">
+<figure><a href="img/alm_01_import_da219fa8.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="La correspondance des colonnes proposée par Mia Scan à l'import des fichiers d'exemple" height="1480" src="img/alm_01_import_da219fa8.png" width="1440"/></a><figcaption><b>1</b>L'import : chaque colonne du fichier, son champ dans Vision, et ce qui reste à vérifier, comme le coupon ajouté par le dépositaire.</figcaption></figure>
+<figure><a href="img/alm_02_actif_59283c09.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'actif rangé par catégorie et sous-catégorie CIC, avec les sous-totaux et le total" height="1342" src="img/alm_02_actif_59283c09.png" width="1440"/></a><figcaption><b>2</b>L'actif rangé par catégorie et sous-catégorie CIC, avec ses sous-totaux ; nominal et coupon se changent dans la case.</figcaption></figure>
+</div>
+<p>Dans Vision : <code>#/alm?ong=donnees&amp;part=import</code>, puis « Importer le fichier d'exemple ». Les fichiers sont fictifs et la correspondance est écrite d'avance pour la formation. Un classeur mal rangé passe d'abord par le diagnostic du chapitre <a href="../../exploration/classeur/index.html">Un classeur bien rangé</a>.</p>
+<h2 id="consigne">La consigne : décrire ce qu'on veut</h2>
+<p>Dans l'onglet Consigne IA, l'actuaire écrit ce qu'il veut : l'horizon, le nombre de simulations, les risques à tester, la contrainte à respecter. « Proposer » rend la proposition de Mia Chat, avec à côté ce qui a été demandé et pourquoi chaque choix est fait. Rien ne change avant « Appliquer la proposition », qui crée les versions de modèles qui manquent, ajoute les stress proposés et un calcul.</p>
+<div class="ba">
+<div class="before">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> Une consigne vague</div>
+<div class="ba-body">
+<p class="prompt">Fais une ALM du portefeuille.</p>
+<p>L'horizon et le nombre de simulations sont pris par défaut, sans rachats dynamiques, sans inflation, sans stress. Et sans contrainte, rien ne dit quand le résultat est mauvais.</p>
+</div>
+</div>
+<div class="after">
+<div class="ba-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg> Une consigne précise</div>
+<div class="ba-body">
+<p class="prompt">Horizon 10 ans, 1 000 simulations. Tester la hausse des taux avec des rachats dynamiques, une baisse des actions de 30 %, et l'inflation des frais. Contrainte : couverture du passif au-dessus de 105 % au quantile 0,5 %.</p>
+<p>Chaque rubrique est reprise, des stress sont ajoutés un cran au-delà de la demande, et la contrainte est suivie dans les résultats.</p>
+</div>
+</div>
+</div>
+<figure>
+<a href="img/alm_03_consigne_66102edd.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="La consigne de l'actuaire et la proposition de Mia Chat : rubrique, demandé, proposé, pourquoi" height="1086" src="img/alm_03_consigne_66102edd.png" width="1440"/></a>
+<figcaption>La proposition : pour chaque rubrique, ce qui a été demandé, ce qui est proposé, et pourquoi. Le quantile 0,5 % sur 1 000 simulations repose sur 5 trajectoires, et la proposition le dit.</figcaption>
+</figure>
+<p>Dans Vision : <code>#/alm?ong=consigne</code>. La proposition est écrite d'avance : des règles fixes lisent la consigne, aucun modèle de langue n'est appelé, et la page le dit. Le geste, lui, est celui qu'on aura avec un vrai assistant.</p>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg> À votre avis</span>
+<p>Effacez la consigne, écrivez seulement « Fais une ALM du portefeuille », puis « Proposer ». Qu'est-ce qui manque dans la proposition, et qu'est-ce qui le montre ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>L'horizon de 10 ans et les 1 000 simulations sont pris par défaut. Le taux court est ajouté quand même, parce que le passif est garanti. Mais il n'y a ni rachats dynamiques, ni inflation des frais, ni stress, ni contrainte, et la colonne « Demandé » affiche « Non précisé » sur chacune de ces lignes. La dernière ligne le résume : sans contrainte, rien ne dit quand le résultat est mauvais.</p>
+</details>
+</div>
+<h2 id="validation">La validation : expliquer, puis valider</h2>
+<p>L'onglet Validation est le même dans toutes ces rubriques. Une ligne par stress et par calcul, ses fonds propres et leur écart au central, l'explication de l'actuaire et « Marquer revu » ; puis la conclusion. Le geste « Valider l'étude », en tête de page, demande ce que l'étude conclut, et garde qui a validé, quand, et l'empreinte des données : si une donnée change ensuite, la page affiche « Modifiée depuis la validation ».</p>
+<div class="demo-shots">
+<figure><a href="img/alm_04_validation_9237e89b.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'onglet Validation : trois lignes expliquées et revues, les autres à revoir" height="987" src="img/alm_04_validation_9237e89b.png" width="1440"/></a><figcaption><b>1</b>Trois lignes expliquées et marquées revues : la cause s'écrit, pas seulement le chiffre.</figcaption></figure>
+<figure><a href="img/alm_05_valider_bed73681.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="Le geste Valider l'étude : ce que l'étude conclut, puis Confirmer" height="900" src="img/alm_05_valider_bed73681.png" width="1440"/></a><figcaption><b>2</b>« Valider l'étude » : ce que l'étude conclut, puis Confirmer.</figcaption></figure>
+</div>
+<p>Dans Vision : <code>#/alm?ong=validation</code>.</p>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg> À votre avis</span>
+<p>Les fonds propres centraux valent 186,6 M€. Avec des taux à +100 pb, ils montent de 31,9 M€. Est-ce une bonne nouvelle, et qu'écrire dans l'explication ?</p>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Ça dit surtout que l'actif est plus court que le passif : l'écart de duration est de -5,7 ans, donc le passif perd plus de valeur que l'actif quand les taux montent. Le même écart coûte 48,1 M€ quand les taux baissent de 100 pb. Et si la hausse des taux fait partir les assurés, le stress « Hausse et rachats » coûte 78,7 M€. L'explication écrit la cause, la duration, et ce qu'on en fait.</p>
+</details>
+</div>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>L'IA prépare, propose et montre ; l'actuaire décrit, explique et valide.</li>
+<li>Le portefeuille de départ est daté, l'actuaire le maîtrise, et l'IA aide à le ranger dans les formats de Solvabilité II.</li>
+<li>Une consigne précise donne une proposition précise : l'horizon, les risques, la contrainte.</li>
+<li>Une validation garde qui, quand, pourquoi, et sur quelles données.</li>
+</ul>
+<h2 id="sources">Sources</h2>
+<ul class="clean">
+<li>Règlement d'exécution (UE) 2023/894 : modèles de reporting quantitatif, dont la liste des actifs S.06.02 et le code CIC ; remise en XML (XBRL) selon la taxonomie de l'EIOPA.</li>
+<li>Directive 2009/138/CE (Solvabilité II) : le bilan en valeur de marché, la mesure à 99,5 %.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../exploration/modeliser/index.html"><small>&larr; Précédent</small>Modéliser : choisir, calibrer, valider</a><a class="next" href="../../exploration/projeter/index.html"><small>Suivant &rarr;</small>Projeter : modèles versionnés, scénarios, distribution</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

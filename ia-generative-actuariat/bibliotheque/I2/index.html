@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I2. Vectorisation d’un Monte Carlo non-vie naïf · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">I2. Vectorisation d’un Monte Carlo non-vie naïf</h1>
+      <p class="lede">Cette fiche illustre la démarche E sur la performance. Ce que vous apprenez n’est pas le Monte Carlo non-vie, mais comment passer de boucles <code>for</code> Python à du NumPy vectorisé, comment mesurer le gain honnêtement, et comment vérifier que la version rapide simule toujours le même modèle (contrôle par les moments théoriques).</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : E, industrialiser un calcul (performance)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Automatisation et industrialisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="27.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="27.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Beaucoup de calculs actuariels reposent sur du Monte Carlo : simulation de la charge annuelle, projection de portefeuilles, stress-tests réglementaires. Écrite avec des boucles <code>for</code> Python imbriquées, une simulation passe son temps dans l’interpréteur ; vectorisée en NumPy, elle confie les mêmes tirages à du code compilé. Sur l’exemple de cette fiche, la version vectorisée va des dizaines de fois plus vite, et c’est ce qui rend une étude de sensibilité faisable ou non.</p>
+<p>Ce cas illustre la transformation. On part d’un script naïf typique (celui qu’écrit un actuaire qui débute en Python), on demande à Claude de le vectoriser, on mesure le gain sur ce poste, et on vérifie que les deux versions simulent bien la même loi.</p>
+<p>Ce cas sert de démonstration express dans l’atelier du deuxième après-midi (« Automatisation et industrialisation ») : sur un poste qui ne calcule rien d’autre, la version naïve tourne en quelques secondes (de 3 à 5 sur le poste de rédaction peu chargé), assez peu pour être lancée devant la salle.</p>
+</section>
+<section class="level2" data-number="27.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="27.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On simule la charge annuelle d’un portefeuille auto : 5 000 polices, nombre de sinistres par police de loi de Poisson de paramètre <span class="math inline">\(\lambda = 0{,}1\)</span> par an, coût d’un sinistre log-normal (<span class="math inline">\(\mu = 7\)</span>, <span class="math inline">\(\sigma = 1{,}2\)</span>). C’est une <strong>simulation paramétrique</strong> : les tirages viennent d’une loi posée, pas d’un rééchantillonnage de données observées (ce que serait un bootstrap).</p>
+<p>Le modèle a l’avantage d’avoir des moments connus. La charge totale <span class="math inline">\(S\)</span> est une Poisson composée de paramètre <span class="math inline">\(N\lambda\)</span>, donc</p>
+<p><span class="math display">\[
+\mathbb{E}[S] = N\lambda\, e^{\mu + \sigma^2/2}, \qquad \operatorname{Var}[S] = N\lambda\, e^{2\mu + 2\sigma^2}.
+\]</span></p>
+<p>Ces deux valeurs serviront de juge entre les versions.</p>
+<p>Deux tailles de simulation. La version naïve tourne sur 200 simulations, pour rester à quelques secondes (la démonstration en direct doit tenir). Les versions vectorisées tournent sur ces mêmes 200 simulations pour comparer les temps, puis sur 2 000 pour la distribution.</p>
+<div class="cell" data-execution_count="1" id="e60438e0">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>N_POLICES <span class="op">=</span> <span class="dv">5000</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>LAMBDA <span class="op">=</span> <span class="fl">0.1</span>       <span class="co"># fréquence Poisson par police et par an</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>MU_LN <span class="op">=</span> <span class="fl">7.0</span>        <span class="co"># paramètre mu de la log-normale</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>SIGMA_LN <span class="op">=</span> <span class="fl">1.2</span>     <span class="co"># paramètre sigma de la log-normale</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>N_SIM_NAIF <span class="op">=</span> <span class="dv">200</span>   <span class="co"># simulations pour la version naïve et la mesure des temps</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>N_SIM <span class="op">=</span> <span class="dv">2000</span>       <span class="co"># simulations pour la distribution (version vectorisée)</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a><span class="co"># Moments théoriques de la Poisson composée</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>esperance_th <span class="op">=</span> N_POLICES <span class="op">*</span> LAMBDA <span class="op">*</span> np.exp(MU_LN <span class="op">+</span> SIGMA_LN<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>variance_th <span class="op">=</span> N_POLICES <span class="op">*</span> LAMBDA <span class="op">*</span> np.exp(<span class="dv">2</span> <span class="op">*</span> MU_LN <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> SIGMA_LN<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>kappa4_th <span class="op">=</span> N_POLICES <span class="op">*</span> LAMBDA <span class="op">*</span> np.exp(<span class="dv">4</span> <span class="op">*</span> MU_LN <span class="op">+</span> <span class="dv">8</span> <span class="op">*</span> SIGMA_LN<span class="op">**</span><span class="dv">2</span>)  <span class="co"># 4e cumulant</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Portefeuille : </span><span class="sc">{</span>N_POLICES<span class="sc">}</span><span class="ss"> polices, lambda = </span><span class="sc">{</span>LAMBDA<span class="sc">}</span><span class="ss">, "</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>      <span class="ss">f"log-normale (mu = </span><span class="sc">{</span>MU_LN<span class="sc">}</span><span class="ss">, sigma = </span><span class="sc">{</span>SIGMA_LN<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût moyen d'un sinistre     : </span><span class="sc">{</span>np<span class="sc">.</span>exp(MU_LN <span class="op">+</span> SIGMA_LN<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span>)<span class="sc">:&gt;12,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Charge totale, espérance     : </span><span class="sc">{</span>esperance_th<span class="sc">:&gt;12,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Charge totale, écart-type    : </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(variance_th)<span class="sc">:&gt;12,.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Portefeuille : 5000 polices, lambda = 0.1, log-normale (mu = 7.0, sigma = 1.2)
+Coût moyen d'un sinistre     :        2,253 EUR
+Charge totale, espérance     :    1,126,480 EUR
+Charge totale, écart-type    :      103,498 EUR</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="27.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="27.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Constater le problème.</strong> <em>“Voici un Monte Carlo naïf en Python (fonction <code>monte_carlo_naif</code>). Lance-le sur 200 simulations, mesure le temps, dis-moi pourquoi c’est lent.”</em></p></li>
+<li><p><strong>Demander la vectorisation.</strong> <em>“Vectorise ce code en NumPy. Je veux le même modèle (Poisson par police, log-normale par sinistre), avec des tirages en bloc et sans boucle Python sur les polices ni sur les sinistres.”</em></p></li>
+<li><p><strong>Mesurer le gain.</strong> <em>“Mesure le temps des deux versions sur la même taille de simulation, avec <code>time.perf_counter</code>, en gardant le meilleur de plusieurs passages pour la version rapide. Donne le rapport et dis sur quelle machine.”</em></p></li>
+<li><p><strong>Vérifier que le modèle n’a pas changé.</strong> <em>“Les deux versions ne consomment pas le générateur dans le même ordre : même avec la même graine, les tirages diffèrent. Compare donc chaque version aux moments théoriques de la Poisson composée (espérance et variance), en nombre d’erreurs-types.”</em></p></li>
+<li><p><strong>Expliquer la transformation.</strong> <em>“Explique-moi en français, en 5 phrases maximum, comment tu as transformé le code. Quel pattern de vectorisation as-tu appliqué, et que reste-t-il comme boucle Python ?”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="27.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="27.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="27.4.1" id="étape-1.-la-version-naïve">
+<h3 class="anchored" data-anchor-id="étape-1.-la-version-naïve" data-number="27.4.1"> Étape 1. La version naïve</h3>
+<div class="cell" data-execution_count="2" id="e520fe88">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> monte_carlo_naif(n_polices, lam, mu_ln, sigma_ln, n_sim, seed):</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="co">"""Version naïve : boucles sur les simulations, les polices et les sinistres."""</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    cout_total_par_simulation <span class="op">=</span> np.zeros(n_sim)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    <span class="cf">for</span> s <span class="kw">in</span> <span class="bu">range</span>(n_sim):</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>        cout_s <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>        <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">range</span>(n_polices):</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>            nb_sinistres_p <span class="op">=</span> rng.poisson(lam)</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>            <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(nb_sinistres_p):</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>                cout_s <span class="op">+=</span> rng.lognormal(mu_ln, sigma_ln)</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>        cout_total_par_simulation[s] <span class="op">=</span> cout_s</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>    <span class="cf">return</span> cout_total_par_simulation</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a></span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>resultats_naif <span class="op">=</span> monte_carlo_naif(N_POLICES, LAMBDA, MU_LN, SIGMA_LN, N_SIM_NAIF, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>duree_naif <span class="op">=</span> time.perf_counter() <span class="op">-</span> t0</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Version naïve, </span><span class="sc">{</span>N_SIM_NAIF<span class="sc">}</span><span class="ss"> simulations : </span><span class="sc">{</span>duree_naif<span class="sc">:.2f}</span><span class="ss"> s"</span>)</span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Charge moyenne : </span><span class="sc">{</span>resultats_naif<span class="sc">.</span>mean()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Version naïve, 200 simulations : 1.17 s
+Charge moyenne : 1,119,663 EUR</code></pre>
+</div>
+</div>
+<p>Trois boucles imbriquées : sur les simulations, sur les polices, sur les sinistres de chaque police. Pour 200 simulations de 5 000 polices, cela fait un million d’appels <code>rng.poisson</code> un par un, plus un appel par sinistre. C’est la version qu’un débutant écrit naturellement.</p>
+</section>
+<section class="level3" data-number="27.4.2" id="étape-2.-la-version-vectorisée-puis-sans-aucune-boucle">
+<h3 class="anchored" data-anchor-id="étape-2.-la-version-vectorisée-puis-sans-aucune-boucle" data-number="27.4.2"> Étape 2. La version vectorisée, puis sans aucune boucle</h3>
+<p>La première vectorisation tire tous les nombres de sinistres en un seul appel (un tableau simulations × polices), puis tous les coûts en un seul appel. Il reste une boucle Python, courte : une somme par simulation.</p>
+<div class="cell" data-execution_count="3" id="94f66fd2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="kw">def</span> monte_carlo_vectorise(n_polices, lam, mu_ln, sigma_ln, n_sim, seed):</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>    <span class="co">"""Tirages en bloc ; reste une boucle Python sur les simulations pour sommer."""</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    n_sinistres <span class="op">=</span> rng.poisson(lam, size<span class="op">=</span>(n_sim, n_polices))</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>    par_simulation <span class="op">=</span> n_sinistres.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>    couts <span class="op">=</span> rng.lognormal(mu_ln, sigma_ln, size<span class="op">=</span>par_simulation.<span class="bu">sum</span>())</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>    fin <span class="op">=</span> par_simulation.cumsum()</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    debut <span class="op">=</span> np.concatenate([[<span class="dv">0</span>], fin[:<span class="op">-</span><span class="dv">1</span>]])</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    <span class="cf">return</span> np.array([couts[d:f].<span class="bu">sum</span>() <span class="cf">for</span> d, f <span class="kw">in</span> <span class="bu">zip</span>(debut, fin)])</span></code></pre></div></div>
+</div>
+<p>La variante <code>np.bincount</code> supprime cette dernière boucle. Chaque coût reçoit le numéro de sa simulation (<code>np.repeat</code>), et <code>np.bincount</code> fait la somme des coûts par numéro. Le même geste agrège par police, par segment ou par année : c’est le pattern à retenir.</p>
+<div class="cell" data-execution_count="4" id="e3c4ad79">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a><span class="kw">def</span> monte_carlo_bincount(n_polices, lam, mu_ln, sigma_ln, n_sim, seed):</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>    <span class="co">"""Tirages en bloc et somme par simulation avec np.bincount : aucune boucle Python."""</span></span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a>    n_sinistres <span class="op">=</span> rng.poisson(lam, size<span class="op">=</span>(n_sim, n_polices))</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a>    par_simulation <span class="op">=</span> n_sinistres.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a>    couts <span class="op">=</span> rng.lognormal(mu_ln, sigma_ln, size<span class="op">=</span>par_simulation.<span class="bu">sum</span>())</span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>    num_simulation <span class="op">=</span> np.repeat(np.arange(n_sim), par_simulation)</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>    <span class="cf">return</span> np.bincount(num_simulation, weights<span class="op">=</span>couts, minlength<span class="op">=</span>n_sim)</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a><span class="co"># Mêmes tirages dans le même ordre : les deux variantes doivent coïncider</span></span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a>a <span class="op">=</span> monte_carlo_vectorise(N_POLICES, LAMBDA, MU_LN, SIGMA_LN, N_SIM_NAIF, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a>b <span class="op">=</span> monte_carlo_bincount(N_POLICES, LAMBDA, MU_LN, SIGMA_LN, N_SIM_NAIF, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Les deux variantes vectorisées coïncident : </span><span class="sc">{</span>np<span class="sc">.</span>allclose(a, b, rtol<span class="op">=</span><span class="fl">1e-12</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Les deux variantes vectorisées coïncident : True</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="27.4.3" id="étape-3.-mesurer-le-gain">
+<h3 class="anchored" data-anchor-id="étape-3.-mesurer-le-gain" data-number="27.4.3"> Étape 3. Mesurer le gain</h3>
+<p>On compare à taille égale (200 simulations). Un temps court est sensible à tout ce qui tourne en même temps sur le poste : pour les versions vectorisées, on garde le meilleur de cinq passages.</p>
+<div class="cell" data-execution_count="5" id="f2c1f7aa">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">def</span> meilleur_temps(fonction, repetitions<span class="op">=</span><span class="dv">5</span>, <span class="op">**</span>kwargs):</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>    temps <span class="op">=</span> []</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(repetitions):</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>        t0 <span class="op">=</span> time.perf_counter()</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>        fonction(<span class="op">**</span>kwargs)</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>        temps.append(time.perf_counter() <span class="op">-</span> t0)</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">min</span>(temps)</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a></span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a>params <span class="op">=</span> <span class="bu">dict</span>(n_polices<span class="op">=</span>N_POLICES, lam<span class="op">=</span>LAMBDA, mu_ln<span class="op">=</span>MU_LN, sigma_ln<span class="op">=</span>SIGMA_LN,</span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a>              n_sim<span class="op">=</span>N_SIM_NAIF, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>duree_vec <span class="op">=</span> meilleur_temps(monte_carlo_vectorise, <span class="op">**</span>params)</span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>duree_bc <span class="op">=</span> meilleur_temps(monte_carlo_bincount, <span class="op">**</span>params)</span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a></span>
+<span id="cb8-15"><a aria-hidden="true" href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a aria-hidden="true" href="#cb8-16" tabindex="-1"></a><span class="kw">def</span> tirage_poisson_seul(n_polices, lam, n_sim, seed, <span class="op">**</span>autres):</span>
+<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a>    <span class="co">"""Le seul tirage du tableau simulations x polices, sans les coûts ni la somme."""</span></span>
+<span id="cb8-18"><a aria-hidden="true" href="#cb8-18" tabindex="-1"></a>    <span class="cf">return</span> np.random.default_rng(seed).poisson(lam, size<span class="op">=</span>(n_sim, n_polices))</span>
+<span id="cb8-19"><a aria-hidden="true" href="#cb8-19" tabindex="-1"></a></span>
+<span id="cb8-20"><a aria-hidden="true" href="#cb8-20" tabindex="-1"></a></span>
+<span id="cb8-21"><a aria-hidden="true" href="#cb8-21" tabindex="-1"></a>duree_tirage <span class="op">=</span> meilleur_temps(tirage_poisson_seul, <span class="op">**</span>params)</span>
+<span id="cb8-22"><a aria-hidden="true" href="#cb8-22" tabindex="-1"></a></span>
+<span id="cb8-23"><a aria-hidden="true" href="#cb8-23" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Temps pour </span><span class="sc">{</span>N_SIM_NAIF<span class="sc">}</span><span class="ss"> simulations de </span><span class="sc">{</span>N_POLICES<span class="sc">}</span><span class="ss"> polices :"</span>)</span>
+<span id="cb8-24"><a aria-hidden="true" href="#cb8-24" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  naïve                : </span><span class="sc">{</span>duree_naif<span class="sc">:8.3f}</span><span class="ss"> s"</span>)</span>
+<span id="cb8-25"><a aria-hidden="true" href="#cb8-25" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  vectorisée           : </span><span class="sc">{</span>duree_vec<span class="sc">:8.3f}</span><span class="ss"> s   (rapport x</span><span class="sc">{</span>duree_naif <span class="op">/</span> duree_vec<span class="sc">:.0f}</span><span class="ss">)"</span>)</span>
+<span id="cb8-26"><a aria-hidden="true" href="#cb8-26" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  vectorisée, bincount : </span><span class="sc">{</span>duree_bc<span class="sc">:8.3f}</span><span class="ss"> s   (rapport x</span><span class="sc">{</span>duree_naif <span class="op">/</span> duree_bc<span class="sc">:.0f}</span><span class="ss">)"</span>)</span>
+<span id="cb8-27"><a aria-hidden="true" href="#cb8-27" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  dont tirage Poisson  : </span><span class="sc">{</span>duree_tirage<span class="sc">:8.3f}</span><span class="ss"> s"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Temps pour 200 simulations de 5000 polices :
+  naïve                :    1.166 s
+  vectorisée           :    0.022 s   (rapport x52)
+  vectorisée, bincount :    0.024 s   (rapport x48)
+  dont tirage Poisson  :    0.016 s</code></pre>
+</div>
+</div>
+<p>Ces durées dépendent de la machine et de sa charge ; seul l’ordre de grandeur voyage. Mesuré le 13 octobre 2026 sur le poste de rédaction (un portable à processeur Intel Core i7-8550U, occupé en même temps par d’autres calculs), en sept séries : la version naïve a pris de 3 secondes, poste peu chargé, à près de 30 secondes, poste saturé ; les versions vectorisées, moins de deux dixièmes de seconde ; le rapport est allé de 53 à 188 selon la série. La version naïve, mesurée sur un seul passage, varie bien plus d’une série à l’autre que les vectorisées, mesurées sur le meilleur de cinq : c’est surtout elle qui fait bouger le rapport. Les deux variantes vectorisées font jeu égal, et la dernière ligne dit pourquoi : le seul tirage du tableau de 200 × 5 000 nombres de sinistres prend l’essentiel du temps, la somme finale presque rien. Le rapport du bloc ci-dessus est celui de la machine qui a rendu cette page.</p>
+<p>Le gain ne se déclare pas, il se mesure : un rapport de temps ne vaut que pour la machine, la taille et le code qui l’ont produit, et il s’écrit avec eux. Et la mémoire limite la taille : le tableau des nombres de sinistres occupe 8 octets par case.</p>
+<div class="cell" data-execution_count="6" id="273b46e2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="cf">for</span> n_pol, n_sim <span class="kw">in</span> [(<span class="dv">5_000</span>, <span class="dv">2_000</span>), (<span class="dv">500_000</span>, <span class="dv">2_000</span>), (<span class="dv">1_000_000</span>, <span class="dv">10_000</span>)]:</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>n_pol<span class="sc">:&gt;9,}</span><span class="ss"> polices x </span><span class="sc">{</span>n_sim<span class="sc">:&gt;6,}</span><span class="ss"> simulations : "</span></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>          <span class="ss">f"</span><span class="sc">{</span>n_pol <span class="op">*</span> n_sim <span class="op">*</span> <span class="dv">8</span> <span class="op">/</span> <span class="fl">1e9</span><span class="sc">:6.2f}</span><span class="ss"> Go pour le tableau des nombres de sinistres"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    5,000 polices x  2,000 simulations :   0.08 Go pour le tableau des nombres de sinistres
+  500,000 polices x  2,000 simulations :   8.00 Go pour le tableau des nombres de sinistres
+1,000,000 polices x 10,000 simulations :  80.00 Go pour le tableau des nombres de sinistres</code></pre>
+</div>
+</div>
+<p>Au-delà de quelques gigaoctets, on vectorise par paquets de simulations (une boucle externe sur des blocs de quelques centaines de simulations), au lieu d’un seul tableau.</p>
+</section>
+<section class="level3" data-number="27.4.4" id="étape-4.-vérifier-que-le-modèle-na-pas-changé">
+<h3 class="anchored" data-anchor-id="étape-4.-vérifier-que-le-modèle-na-pas-changé" data-number="27.4.4"> Étape 4. Vérifier que le modèle n’a pas changé</h3>
+<p>La même graine ne suffit pas à comparer les deux versions : la naïve tire un Poisson, puis ses coûts, puis le Poisson suivant ; la vectorisée tire tous les Poisson puis tous les coûts. Le générateur est consommé dans un autre ordre, les tirages diffèrent, et les résultats aussi. La graine rend chaque version reproductible ; elle ne rend pas les deux comparables tirage à tirage.</p>
+<p>Le juge est donc le modèle lui-même. Pour chaque version, on compare la moyenne et la variance simulées aux valeurs théoriques, en nombre d’erreurs-types (l’erreur-type de la variance empirique vaut environ <span class="math inline">\(\sqrt{(\kappa_4 + 2\operatorname{Var}[S]^2)/n}\)</span>, avec <span class="math inline">\(\kappa_4 = N\lambda\,e^{4\mu + 8\sigma^2}\)</span> le quatrième cumulant de la charge).</p>
+<div class="cell" data-execution_count="7" id="a3384652">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>resultats_vec <span class="op">=</span> monte_carlo_bincount(N_POLICES, LAMBDA, MU_LN, SIGMA_LN, N_SIM, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a><span class="kw">def</span> controle_moments(nom, x):</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(x)</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>    z_moy <span class="op">=</span> (x.mean() <span class="op">-</span> esperance_th) <span class="op">/</span> np.sqrt(variance_th <span class="op">/</span> n)</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>    se_var <span class="op">=</span> np.sqrt((kappa4_th <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> variance_th<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> n)</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>    z_var <span class="op">=</span> (x.var(ddof<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> variance_th) <span class="op">/</span> se_var</span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>nom<span class="sc">:&lt;22}</span><span class="ss"> n = </span><span class="sc">{</span>n<span class="sc">:&gt;5}</span><span class="ss">   moyenne </span><span class="sc">{</span>x<span class="sc">.</span>mean()<span class="sc">:&gt;11,.0f}</span><span class="ss"> (z = </span><span class="sc">{</span>z_moy<span class="sc">:+.2f}</span><span class="ss">)   "</span></span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a>          <span class="ss">f"écart-type </span><span class="sc">{</span>x<span class="sc">.</span>std(ddof<span class="op">=</span><span class="dv">1</span>)<span class="sc">:&gt;9,.0f}</span><span class="ss"> (z variance = </span><span class="sc">{</span>z_var<span class="sc">:+.2f}</span><span class="ss">)"</span>)</span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a></span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a></span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'Théorie'</span><span class="sc">:&lt;22}</span><span class="ss"> </span><span class="sc">{</span><span class="st">''</span><span class="sc">:&gt;9}</span><span class="ss">   moyenne </span><span class="sc">{</span>esperance_th<span class="sc">:&gt;11,.0f}</span><span class="ss">              "</span></span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a>      <span class="ss">f"écart-type </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(variance_th)<span class="sc">:&gt;9,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a>controle_moments(<span class="st">"Naïve"</span>, resultats_naif)</span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a>controle_moments(<span class="st">"Vectorisée (bincount)"</span>, resultats_vec)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Théorie                            moyenne   1,126,480              écart-type   103,498
+Naïve                  n =   200   moyenne   1,119,663 (z = -0.93)   écart-type    95,592 (z variance = -1.28)
+Vectorisée (bincount)  n =  2000   moyenne   1,125,304 (z = -0.51)   écart-type   101,197 (z variance = -1.21)</code></pre>
+</div>
+</div>
+<p>Les deux versions retombent sur l’espérance et l’écart-type théoriques, à moins de deux erreurs-types (les colonnes z) : c’est ce qu’on attend de deux simulations justes du même modèle.</p>
+<p>Ce contrôle a une puissance limitée, qu’il faut connaître. Une vectorisation fausse classique tire un seul coût par police sinistrée et le multiplie par le nombre de sinistres, au lieu d’un coût par sinistre. La moyenne reste juste ; la variance est gonflée d’un facteur <span class="math inline">\(1 + \lambda\,(1 - e^{-\sigma^2})\)</span>. Ce que cela donne ici :</p>
+<div class="cell" data-execution_count="8" id="2dd6a808">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>facteur_faux <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> LAMBDA <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>SIGMA_LN<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>se_relative_var <span class="op">=</span> np.sqrt((kappa4_th <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> variance_th<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> N_SIM) <span class="op">/</span> variance_th</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Variance de la version fausse / variance juste : </span><span class="sc">{</span>facteur_faux<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Erreur-type relative de la variance (</span><span class="sc">{</span>N_SIM<span class="sc">}</span><span class="ss"> simulations) : </span><span class="sc">{</span>se_relative_var<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart attendu, en erreurs-types : </span><span class="sc">{</span>(facteur_faux <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> se_relative_var<span class="sc">:.1f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Variance de la version fausse / variance juste : 1.076
+Erreur-type relative de la variance (2000 simulations) : 3.6%
+Écart attendu, en erreurs-types : 2.1</code></pre>
+</div>
+</div>
+<p>Une variance gonflée de 7,6 % pour une erreur-type de 3,6 % : l’écart attendu n’est que de deux erreurs-types environ, et le hasard d’une graine peut le faire passer sous le seuil. Pour trancher, on augmente le nombre de simulations du contrôle, ou on contrôle sur un cas où l’erreur pèse plus (une fréquence plus forte).</p>
+<p>Reste la queue de distribution. Le quantile à 99,5 % estimé sur 2 000 simulations repose sur la dizaine de valeurs les plus hautes : il bouge d’une graine à l’autre, avec la même version et le même modèle. Avant de comparer les quantiles de deux versions, on mesure ce bruit.</p>
+<div class="cell" data-execution_count="9" id="86282595">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>q995 <span class="op">=</span> {}</span>
+<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a><span class="cf">for</span> graine <span class="kw">in</span> [<span class="dv">42</span>, <span class="dv">43</span>, <span class="dv">44</span>]:</span>
+<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a>    x <span class="op">=</span> monte_carlo_bincount(N_POLICES, LAMBDA, MU_LN, SIGMA_LN, N_SIM, seed<span class="op">=</span>graine)</span>
+<span id="cb16-4"><a aria-hidden="true" href="#cb16-4" tabindex="-1"></a>    q995[graine] <span class="op">=</span> np.percentile(x, <span class="fl">99.5</span>)</span>
+<span id="cb16-5"><a aria-hidden="true" href="#cb16-5" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Version vectorisée, graine </span><span class="sc">{</span>graine<span class="sc">}</span><span class="ss"> : quantile 99,5 % = </span><span class="sc">{</span>q995[graine]<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb16-6"><a aria-hidden="true" href="#cb16-6" tabindex="-1"></a>etendue <span class="op">=</span> (<span class="bu">max</span>(q995.values()) <span class="op">-</span> <span class="bu">min</span>(q995.values())) <span class="op">/</span> np.mean(<span class="bu">list</span>(q995.values()))</span>
+<span id="cb16-7"><a aria-hidden="true" href="#cb16-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart entre graines, même code : </span><span class="sc">{</span>etendue<span class="sc">:.1%}</span><span class="ss"> du quantile moyen"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Version vectorisée, graine 42 : quantile 99,5 % = 1,398,294 EUR
+Version vectorisée, graine 43 : quantile 99,5 % = 1,466,014 EUR
+Version vectorisée, graine 44 : quantile 99,5 % = 1,426,833 EUR
+Écart entre graines, même code : 4.7% du quantile moyen</code></pre>
+</div>
+</div>
+<p>Un écart de quelques pour cent entre les quantiles de deux versions n’est donc pas un signe de bug à cette taille de simulation : c’est l’ordre de grandeur du bruit, visible ici sur une seule et même version. Pour un quantile réglementaire, on augmente le nombre de simulations jusqu’à ce que ce bruit devienne acceptable, et on le dit.</p>
+</section>
+<section class="level3" data-number="27.4.5" id="étape-5.-visualiser-les-deux-distributions">
+<h3 class="anchored" data-anchor-id="étape-5.-visualiser-les-deux-distributions" data-number="27.4.5"> Étape 5. Visualiser les deux distributions</h3>
+<div class="cell" data-execution_count="10" id="cell-fig-monte-carlo-vec">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a aria-hidden="true" href="#cb18-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb18-2"><a aria-hidden="true" href="#cb18-2" tabindex="-1"></a>naif_m, vec_m <span class="op">=</span> resultats_naif <span class="op">/</span> <span class="fl">1e6</span>, resultats_vec <span class="op">/</span> <span class="fl">1e6</span>   <span class="co"># en millions d'euros</span></span>
+<span id="cb18-3"><a aria-hidden="true" href="#cb18-3" tabindex="-1"></a>bornes <span class="op">=</span> np.linspace(<span class="bu">min</span>(naif_m.<span class="bu">min</span>(), vec_m.<span class="bu">min</span>()), <span class="bu">max</span>(naif_m.<span class="bu">max</span>(), vec_m.<span class="bu">max</span>()), <span class="dv">41</span>)</span>
+<span id="cb18-4"><a aria-hidden="true" href="#cb18-4" tabindex="-1"></a>ax.hist(vec_m, bins<span class="op">=</span>bornes, density<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.55</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>,</span>
+<span id="cb18-5"><a aria-hidden="true" href="#cb18-5" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Vectorisée, "</span> <span class="op">+</span> <span class="ss">f"</span><span class="sc">{</span>N_SIM<span class="sc">:,}</span><span class="ss">"</span>.replace(<span class="st">","</span>, <span class="st">" "</span>) <span class="op">+</span> <span class="st">" simulations"</span>)</span>
+<span id="cb18-6"><a aria-hidden="true" href="#cb18-6" tabindex="-1"></a>ax.hist(naif_m, bins<span class="op">=</span>bornes, density<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.55</span>, color<span class="op">=</span><span class="st">"#b45309"</span>,</span>
+<span id="cb18-7"><a aria-hidden="true" href="#cb18-7" tabindex="-1"></a>        label<span class="op">=</span><span class="ss">f"Naïve, </span><span class="sc">{</span>N_SIM_NAIF<span class="sc">}</span><span class="ss"> simulations"</span>)</span>
+<span id="cb18-8"><a aria-hidden="true" href="#cb18-8" tabindex="-1"></a>ax.axvline(esperance_th <span class="op">/</span> <span class="fl">1e6</span>, color<span class="op">=</span><span class="st">"#0f172a"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>,</span>
+<span id="cb18-9"><a aria-hidden="true" href="#cb18-9" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Espérance théorique : </span><span class="sc">{</span>esperance_th <span class="op">/</span> <span class="fl">1e6</span><span class="sc">:.3f}</span><span class="ss"> M EUR"</span>.replace(<span class="st">"."</span>, <span class="st">","</span>))</span>
+<span id="cb18-10"><a aria-hidden="true" href="#cb18-10" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Charge annuelle (millions d'EUR)"</span>)</span>
+<span id="cb18-11"><a aria-hidden="true" href="#cb18-11" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Densité"</span>)</span>
+<span id="cb18-12"><a aria-hidden="true" href="#cb18-12" tabindex="-1"></a>ax.set_title(<span class="st">"Monte Carlo non-vie : version naïve et version vectorisée"</span>)</span>
+<span id="cb18-13"><a aria-hidden="true" href="#cb18-13" tabindex="-1"></a>ax.legend()</span>
+<span id="cb18-14"><a aria-hidden="true" href="#cb18-14" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb18-15"><a aria-hidden="true" href="#cb18-15" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb18-16"><a aria-hidden="true" href="#cb18-16" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-monte-carlo-vec">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-monte-carlo-vec-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-monte-carlo-vec-output-1_d836ca0c.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monte-carlo-vec-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 27.1: Charge annuelle simulée : version naïve (200 simulations) et version vectorisée (2 000 simulations), en densité pour comparer des effectifs différents. Les deux sont centrées sur l’espérance théorique.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Les deux histogrammes ont la même forme, légèrement asymétrique vers la droite, et sont centrés sur l’espérance théorique ; celui de la version naïve est plus irrégulier parce qu’il repose sur dix fois moins de simulations. La figure illustre, elle ne prouve rien : la preuve, ce sont les moments de l’étape 4.</p>
+</section>
+</section>
+<section class="level2" data-number="27.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="27.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Un collègue a vectorisé son Monte Carlo et rédige sa validation ainsi :</p>
+<p><em>“J’ai lancé les deux versions avec la même graine 42, 2 000 simulations chacune. Les moyennes diffèrent (1 127 911 contre 1 125 304 EUR) : il y a donc un bug quelque part. J’ai quand même fait un test de Kolmogorov-Smirnov : p = 0,67 &gt; 0,05, donc les deux distributions sont équivalentes et la version vectorisée est validée. Le quantile à 99,5 % diffère de 4,6 %, mais c’est dans la tolérance.”</em></p>
+<p>Relevez ce qui ne va pas dans ce raisonnement.</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<ol type="1">
+<li><strong>La même graine ne rend pas les deux versions comparables tirage à tirage.</strong> Les deux versions consomment le générateur dans un ordre différent. Des moyennes différentes sont donc normales ; elles ne signalent pas un bug. Ce qu’il faut regarder, c’est l’écart de chaque moyenne à l’espérance théorique, en erreurs-types (la seconde moyenne est celle de la version vectorisée à l’étape 4) :</li>
+</ol>
+<div class="cell" data-execution_count="11" id="a582b346">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a aria-hidden="true" href="#cb19-1" tabindex="-1"></a>se_moyenne <span class="op">=</span> np.sqrt(variance_th <span class="op">/</span> <span class="dv">2000</span>)</span>
+<span id="cb19-2"><a aria-hidden="true" href="#cb19-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Erreur-type de la moyenne sur 2 000 simulations : </span><span class="sc">{</span>se_moyenne<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb19-3"><a aria-hidden="true" href="#cb19-3" tabindex="-1"></a><span class="cf">for</span> nom, moyenne <span class="kw">in</span> [(<span class="st">"naïve"</span>, <span class="dv">1_127_911</span>), (<span class="st">"vectorisée"</span>, <span class="dv">1_125_304</span>)]:</span>
+<span id="cb19-4"><a aria-hidden="true" href="#cb19-4" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Moyenne </span><span class="sc">{</span>nom<span class="sc">:&lt;10}</span><span class="ss"> : </span><span class="sc">{</span>(moyenne <span class="op">-</span> esperance_th) <span class="op">/</span> se_moyenne<span class="sc">:+.2f}</span><span class="ss"> erreur-type de l'espérance"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Erreur-type de la moyenne sur 2 000 simulations : 2,314 EUR
+Moyenne naïve      : +0.62 erreur-type de l'espérance
+Moyenne vectorisée : -0.51 erreur-type de l'espérance</code></pre>
+</div>
+</div>
+<p>Les deux moyennes sont à moins d’une erreur-type de l’espérance, de part et d’autre : parfaitement compatibles avec le modèle. 2. <strong>Un <span class="math inline">\(p &gt; 0{,}05\)</span> ne prouve pas l’équivalence.</strong> Il dit seulement que le test n’a pas détecté de différence avec ces échantillons. Avec peu de simulations, un test KS laisse passer des écarts réels, notamment dans la queue, là où se joue un quantile à 99,5 %. Le contrôle informatif est la comparaison aux moments théoriques, qui existent ici ; et, faute de théorie, la comparaison à une version de référence sur un nombre de simulations suffisant. 3. <strong>Le 4,6 % sur le quantile n’est ni un bug ni « dans la tolérance » : il n’a pas été mesuré contre le bruit.</strong> Aucune tolérance n’avait été fixée à l’avance. L’étape 4 montre qu’avec 2 000 simulations, le quantile varie déjà de quelques pour cent d’une graine à l’autre avec le même code. Il faut mesurer ce bruit avant de juger un écart, et augmenter le nombre de simulations si le quantile doit servir. 4. Et une conclusion en creux : le collègue écrit « il y a un bug » puis « validé » sans rien corriger entre les deux. Une validation qui peut conclure dans les deux sens sur les mêmes chiffres ne contrôle rien.</p>
+</details>
+</section>
+<section class="level2" data-number="27.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="27.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Croire que la même graine rend les versions comparables tirage à tirage.</strong> Elle rend chaque version reproductible. Dès que l’ordre des tirages change, les résultats changent. Comparez chaque version aux moments théoriques, ou à une référence sur beaucoup de simulations.</li>
+<li><strong>Lire « <span class="math inline">\(p &gt; 0{,}05\)</span> » comme une preuve d’équivalence.</strong> Un test qui ne rejette pas ne démontre rien. Préférez un contrôle dont on connaît la cible (espérance, variance) et une tolérance en erreurs-types fixée avant de regarder.</li>
+<li><strong>Vectoriser à l’aveugle.</strong> Le LLM peut proposer une vectorisation plus lente (tableaux énormes inutiles) ou fausse (un coût par police au lieu d’un par sinistre : la moyenne reste juste, la variance non). Toujours mesurer le temps et contrôler les moments après vectorisation. Si le gain n’est pas là, demander : <em>“pourquoi cette version n’est-elle pas plus rapide ?”</em>.</li>
+<li><strong>Annoncer un gain qu’on n’a pas mesuré.</strong> Un rapport de temps dépend de la machine, de sa charge, de la taille et du code. Donner la mesure, la machine et la taille, ou ne rien donner.</li>
+<li><strong>Oublier la mémoire.</strong> Un tableau simulations × polices de 1 million de polices et 10 000 simulations pèse 80 Go en entiers 64 bits (étape 3). Au-delà de quelques Go, vectoriser par paquets de simulations.</li>
+<li><strong>Sacrifier la lisibilité.</strong> Une version compacte illisible pour un gain marginal n’est pas un bon investissement. Préférer une version claire, un peu plus longue, que le successeur relira.</li>
+</ul>
+</section>
+<section class="level2" data-number="27.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="27.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>R4 Bootstrap Chain-Ladder</strong> : un vrai bootstrap (rééchantillonnage des résidus), avec des boucles sur simulations qui peuvent se vectoriser de la même façon.</li>
+<li><strong>I1 Migration d’un calcul Excel-VBA en module Python</strong> : un classeur migré en Python est souvent l’occasion de vectoriser, avec la même règle : valider avant de basculer.</li>
+<li><strong>I3 Tests pytest</strong> : un Monte Carlo vectorisé mérite des tests qui vérifient la reproductibilité (même graine, même résultat, pour une même version), l’accord avec les moments théoriques à une tolérance en erreurs-types, et les cas limites (<code>n_polices=0</code>, <code>lam=0</code>).</li>
+</ul>
+</section>
+<section class="level2" data-number="27.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="27.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Utiliser la structure du modèle.</strong> Si toutes les polices ont la même fréquence, le nombre total de sinistres d’une simulation suit directement une loi de Poisson de paramètre <span class="math inline">\(N\lambda\)</span> : un tirage par simulation au lieu de 5 000, et le tableau simulations × polices disparaît. Ce raccourci ne vaut plus dès que les fréquences diffèrent d’une police à l’autre ; il se valide, lui aussi, par les moments.</li>
+<li><strong>Numba (<code>@njit</code>)</strong> compile une boucle Python en code natif, sans réécrire en vectorisé. Utile quand la vectorisation est difficile à exprimer. Le gain se mesure comme ici.</li>
+<li><strong>JAX</strong> (calcul sur GPU si disponible) et <strong>Dask</strong> (calcul réparti sur plusieurs machines), quand un seul poste ne suffit plus.</li>
+</ul>
+<p>Demander à Claude : <em>“compare vectorisation NumPy, Numba et le raccourci Poisson(N lambda) sur ce même Monte Carlo : écris les trois, mesure-les sur ce poste, et vérifie les moments de chacun.”</em></p>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/I1/index.html"><small>&larr; Précédent</small>I1. Migration d’un calcul Excel-VBA en module Python</a><a class="next" href="../../bibliotheque/I3/index.html"><small>Suivant &rarr;</small>I3. Tests pytest sur un module de provisionnement</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

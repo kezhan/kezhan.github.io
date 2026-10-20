@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R2. Bornhuetter-Ferguson · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">R2. Bornhuetter-Ferguson</h1>
+      <p class="lede">Cette fiche illustre la démarche B avec un paramètre subjectif à sourcer (le Loss Ratio a priori). Ce que vous apprenez n’est pas la méthode BF, mais comment intégrer un paramètre expert dans un modèle, comment produire une table de sensibilité défendable, et comment demander la critique méthodologique sur le choix du paramètre.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-la-formule-du-prompt-et-celle-du-code">Exercice : la formule du prompt et celle du code</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle (avec a priori sourcé)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="9.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="9.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Le Chain-Ladder déterministe (cas R1) projette les ultimes uniquement à partir des cadences observées. Sur les années d’origine récentes, avec très peu de cellules connues, le facteur cumulé est grand et porte beaucoup d’erreur : une petite variation des premiers montants produit une grande variation de l’ultime projeté.</p>
+<p>La méthode <strong>Bornhuetter-Ferguson (BF)</strong> corrige ce problème en mêlant l’observation et un <strong>a priori actuariel</strong> sur l’ultime, typiquement <em>prime acquise × Loss Ratio a priori</em>. Sur les années matures, le BF redonne à peu près le CL. Sur les années récentes, il est dominé par l’a priori, donc plus stable.</p>
+<p>C’est une méthode de base du provisionnement non-vie. Son point faible est l’a priori lui-même : un Loss Ratio mal calibré biaise toute la réserve, et la stabilité du BF masque ce biais.</p>
+<p>Le cas illustre <strong>l’organisation des données</strong> (a priori sourcé et tracé), <strong>le pilotage IA</strong> (5 prompts dont une critique sévère sur le choix du LR), et <strong>la gouvernance</strong> (sensibilité documentée, a priori confronté à l’expérience).</p>
+</section>
+<section class="level2" data-number="9.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="9.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>On reprend le triangle Taylor-Ashe du cas R1 : montants de sinistres cumulés, en unités non monétaires, années d’origine 1 à 10 (Taylor et Ashe 1983 ; Mack 1993 ; jeu <code>GenIns</code> du package R ChainLadder). Le triangle n’est pas publié avec des primes : celles ci-dessous sont <strong>inventées pour l’exercice</strong>, dans la même unité que le triangle. Le Loss Ratio a priori de 78 % est celui qu’annonce la souscription, sans plus de justification : c’est le paramètre à mettre à l’épreuve.</p>
+<div class="cell" data-execution_count="1" id="37ed461c">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>TAYLOR_ASHE <span class="op">=</span> np.array([</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>    [<span class="dv">357848</span>, <span class="dv">1124788</span>, <span class="dv">1735330</span>, <span class="dv">2218270</span>, <span class="dv">2745596</span>, <span class="dv">3319994</span>, <span class="dv">3466336</span>, <span class="dv">3606286</span>, <span class="dv">3833515</span>, <span class="dv">3901463</span>],</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>    [<span class="dv">352118</span>, <span class="dv">1236139</span>, <span class="dv">2170033</span>, <span class="dv">3353322</span>, <span class="dv">3799067</span>, <span class="dv">4120063</span>, <span class="dv">4647867</span>, <span class="dv">4914039</span>, <span class="dv">5339085</span>, np.nan],</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>    [<span class="dv">290507</span>, <span class="dv">1292306</span>, <span class="dv">2218525</span>, <span class="dv">3235179</span>, <span class="dv">3985995</span>, <span class="dv">4132918</span>, <span class="dv">4628910</span>, <span class="dv">4909315</span>,      np.nan, np.nan],</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>    [<span class="dv">310608</span>, <span class="dv">1418858</span>, <span class="dv">2195047</span>, <span class="dv">3757447</span>, <span class="dv">4029929</span>, <span class="dv">4381982</span>, <span class="dv">4588268</span>,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>    [<span class="dv">443160</span>, <span class="dv">1136350</span>, <span class="dv">2128333</span>, <span class="dv">2897821</span>, <span class="dv">3402672</span>, <span class="dv">3873311</span>,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    [<span class="dv">396132</span>, <span class="dv">1333217</span>, <span class="dv">2180715</span>, <span class="dv">2985752</span>, <span class="dv">3691712</span>,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    [<span class="dv">440832</span>, <span class="dv">1288463</span>, <span class="dv">2419861</span>, <span class="dv">3483130</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    [<span class="dv">359480</span>, <span class="dv">1421128</span>, <span class="dv">2864498</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    [<span class="dv">376686</span>, <span class="dv">1363294</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    [<span class="dv">344014</span>,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan,      np.nan, np.nan],</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>])</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>n <span class="op">=</span> TAYLOR_ASHE.shape[<span class="dv">0</span>]</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>annees <span class="op">=</span> np.arange(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="co"># Primes acquises par année d'origine : synthétiques, même unité que le triangle</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>primes_acquises <span class="op">=</span> np.array([</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    <span class="dv">4_900_000</span>, <span class="dv">6_700_000</span>, <span class="dv">6_200_000</span>, <span class="dv">5_800_000</span>, <span class="dv">4_900_000</span>,</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>    <span class="dv">4_700_000</span>, <span class="dv">5_400_000</span>, <span class="dv">4_500_000</span>, <span class="dv">4_300_000</span>, <span class="dv">4_200_000</span>,</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>])</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="co"># Loss Ratio a priori annoncé par la souscription (à sourcer, puis à confronter au triangle)</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>LR_APRIORI <span class="op">=</span> <span class="fl">0.78</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a></span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>ultimes_apriori <span class="op">=</span> primes_acquises <span class="op">*</span> LR_APRIORI</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a></span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primes acquises par année d'origine :"</span>)</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a><span class="bu">print</span>(primes_acquises)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Loss Ratio a priori : </span><span class="sc">{</span>LR_APRIORI<span class="sc">:.0%}</span><span class="ss">"</span>)</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ultimes a priori (LR × primes) :"</span>)</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a><span class="bu">print</span>(ultimes_apriori.astype(<span class="bu">int</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Primes acquises par année d'origine :
+[4900000 6700000 6200000 5800000 4900000 4700000 5400000 4500000 4300000
+ 4200000]
+
+Loss Ratio a priori : 78%
+Ultimes a priori (LR × primes) :
+[3822000 5226000 4836000 4524000 3822000 3666000 4212000 3510000 3354000
+ 3276000]</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="9.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="9.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Rappeler le CL.</strong> <em>“Voici le triangle Taylor-Ashe et les primes acquises par année d’origine. Implémente le Chain-Ladder de référence, sors-moi les ultimes et le S/P implicite (ultime CL / prime) par année. C’est le baseline.”</em></p></li>
+<li><p><strong>Implémenter BF vectorisé.</strong> <em>“Implémente la méthode Bornhuetter-Ferguson : pour chaque année d’origine, ultime BF = (1 - 1/CDF) × ultime_apriori + (1/CDF) × ultime_CL, où CDF est le facteur cumulé jusqu’au développement ultime. Vectorisé NumPy.”</em></p></li>
+<li><p><strong>Comparer CL et BF.</strong> <em>“Compare les ultimes et les réserves CL et BF année par année. Quelle est la différence sur les années récentes (peu matures) et sur les années anciennes (matures) ?”</em></p></li>
+<li><p><strong>Sensibilité au LR a priori.</strong> <em>“Refais le calcul BF pour un LR de 70 %, 75 %, 78 %, 80 %, 85 %. Trace la réserve totale. Combien la réserve bouge-t-elle par point de LR ? Pour quel LR le BF redonne-t-il la réserve CL ?”</em></p></li>
+<li><p><strong>Critique méthodologique.</strong> <em>“Joue le rôle d’un actuaire senior en revue. Pour ce calcul BF, identifie les hypothèses implicites, confronte l’a priori à l’expérience du triangle, liste les points d’attention pour la note méthodologique et les sensibilités à documenter. Sois sévère.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="9.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="9.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="9.4.1" id="étape-1.-rappeler-le-chain-ladder-baseline">
+<h3 class="anchored" data-anchor-id="étape-1.-rappeler-le-chain-ladder-baseline" data-number="9.4.1"> Étape 1. Rappeler le Chain-Ladder baseline</h3>
+<div class="cell" data-execution_count="2" id="f44a2494">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> chain_ladder(triangle: np.ndarray) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="co">"""Chain-Ladder vectorisé (même calcul que R1)."""</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    n <span class="op">=</span> triangle.shape[<span class="dv">0</span>]</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    connu <span class="op">=</span> <span class="op">~</span>np.isnan(triangle)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    C <span class="op">=</span> np.where(connu, triangle, <span class="fl">0.0</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    paire <span class="op">=</span> connu[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">&amp;</span> connu[:, <span class="dv">1</span>:]</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    factors <span class="op">=</span> (C[:, <span class="dv">1</span>:] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>) <span class="op">/</span> (C[:, :<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> paire).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    derniere_col <span class="op">=</span> connu.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>    dernier_connu <span class="op">=</span> C[np.arange(n), derniere_col]</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    <span class="co"># CDF par colonne : produit des facteurs de la colonne j jusqu'à la dernière</span></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>    cdf_colonne <span class="op">=</span> np.append(np.cumprod(factors[::<span class="op">-</span><span class="dv">1</span>])[::<span class="op">-</span><span class="dv">1</span>], <span class="fl">1.0</span>)</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>    cdf <span class="op">=</span> cdf_colonne[derniere_col]</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>    ultimates <span class="op">=</span> dernier_connu <span class="op">*</span> cdf</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"factors"</span>: factors, <span class="st">"cdf"</span>: cdf, <span class="st">"dernier_connu"</span>: dernier_connu,</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>            <span class="st">"ultimates"</span>: ultimates, <span class="st">"reserves"</span>: ultimates <span class="op">-</span> dernier_connu}</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a>cl_result <span class="op">=</span> chain_ladder(TAYLOR_ASHE)</span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>sp_cl <span class="op">=</span> cl_result[<span class="st">"ultimates"</span>] <span class="op">/</span> primes_acquises</span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({</span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>    <span class="st">"annee_origine"</span>: annees,</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>    <span class="st">"ultime_CL"</span>: cl_result[<span class="st">"ultimates"</span>].<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>    <span class="st">"prime"</span>: primes_acquises,</span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>    <span class="st">"S/P CL (%)"</span>: (<span class="dv">100</span> <span class="op">*</span> sp_cl).<span class="bu">round</span>(<span class="dv">1</span>),</span>
+<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a>}).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Ultime total CL  : </span><span class="sc">{</span>cl_result[<span class="st">'ultimates'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb3-26"><a aria-hidden="true" href="#cb3-26" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve totale CL : </span><span class="sc">{</span>cl_result[<span class="st">'reserves'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb3-27"><a aria-hidden="true" href="#cb3-27" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"S/P CL global     : </span><span class="sc">{</span>cl_result[<span class="st">'ultimates'</span>]<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> primes_acquises<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> annee_origine  ultime_CL   prime  S/P CL (%)
+             1    3901463 4900000        79.6
+             2    5433719 6700000        81.1
+             3    5378826 6200000        86.8
+             4    5297906 5800000        91.3
+             5    4858200 4900000        99.1
+             6    5111171 4700000       108.7
+             7    5660771 5400000       104.8
+             8    6784799 4500000       150.8
+             9    5642266 4300000       131.2
+            10    4969825 4200000       118.3
+
+Ultime total CL  : 53,038,946
+Réserve totale CL : 18,680,856
+S/P CL global     : 102.8%</code></pre>
+</div>
+</div>
+<p>On retrouve la réserve Chain-Ladder publiée, 18 680 856. Le S/P implicite du Chain-Ladder va de 79,6 % (année 1) à 150,8 % (année 8), 102,8 % au global. Gardez ce chiffre en tête pour l’étape 5.</p>
+</section>
+<section class="level3" data-number="9.4.2" id="étape-2.-implémenter-bornhuetter-ferguson-vectorisé">
+<h3 class="anchored" data-anchor-id="étape-2.-implémenter-bornhuetter-ferguson-vectorisé" data-number="9.4.2"> Étape 2. Implémenter Bornhuetter-Ferguson vectorisé</h3>
+<div class="cell" data-execution_count="3" id="cc42a288">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="kw">def</span> bornhuetter_ferguson(dernier_connu: np.ndarray, cdf: np.ndarray,</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>                         ultimes_apriori: np.ndarray) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>    <span class="co">"""BF vectorisé : ultime_BF = dernier connu + (1 - 1/CDF) × ultime a priori.</span></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a><span class="co">        dernier_connu: array (n,), dernier montant cumulé connu par année d'origine.</span></span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a><span class="co">        cdf: array (n,), facteur cumulé de développement jusqu'à l'ultime (CL).</span></span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a><span class="co">        ultimes_apriori: array (n,), ultimes a priori (LR × primes).</span></span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a><span class="co">        dict avec 'poids_apriori' (1 - 1/CDF, part restant à développer),</span></span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a><span class="co">        'reserves_bf' et 'ultimates_bf'.</span></span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>    poids_apriori <span class="op">=</span> <span class="fl">1.0</span> <span class="op">-</span> <span class="fl">1.0</span> <span class="op">/</span> cdf</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>    reserves_bf <span class="op">=</span> poids_apriori <span class="op">*</span> ultimes_apriori</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"poids_apriori"</span>: poids_apriori, <span class="st">"reserves_bf"</span>: reserves_bf,</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>            <span class="st">"ultimates_bf"</span>: dernier_connu <span class="op">+</span> reserves_bf}</span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a></span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>bf_result <span class="op">=</span> bornhuetter_ferguson(cl_result[<span class="st">"dernier_connu"</span>], cl_result[<span class="st">"cdf"</span>], ultimes_apriori)</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>detail <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>    <span class="st">"annee_origine"</span>: annees,</span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>    <span class="st">"dernier_connu"</span>: cl_result[<span class="st">"dernier_connu"</span>].astype(<span class="bu">int</span>),</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>    <span class="st">"CDF"</span>: cl_result[<span class="st">"cdf"</span>].<span class="bu">round</span>(<span class="dv">3</span>),</span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>    <span class="st">"poids_apriori (%)"</span>: (<span class="dv">100</span> <span class="op">*</span> bf_result[<span class="st">"poids_apriori"</span>]).<span class="bu">round</span>(<span class="dv">1</span>),</span>
+<span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a>    <span class="st">"ult_apriori"</span>: ultimes_apriori.astype(<span class="bu">int</span>),</span>
+<span id="cb5-26"><a aria-hidden="true" href="#cb5-26" tabindex="-1"></a>    <span class="st">"ult_BF"</span>: bf_result[<span class="st">"ultimates_bf"</span>].<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb5-27"><a aria-hidden="true" href="#cb5-27" tabindex="-1"></a>    <span class="st">"ult_CL"</span>: cl_result[<span class="st">"ultimates"</span>].<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb5-28"><a aria-hidden="true" href="#cb5-28" tabindex="-1"></a>})</span>
+<span id="cb5-29"><a aria-hidden="true" href="#cb5-29" tabindex="-1"></a><span class="bu">print</span>(detail.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> annee_origine  dernier_connu    CDF  poids_apriori (%)  ult_apriori  ult_BF  ult_CL
+             1        3901463  1.000                0.0      3822000 3901463 3901463
+             2        5339085  1.018                1.7      5226000 5430101 5433719
+             3        4909315  1.096                8.7      4836000 5331444 5378826
+             4        4588268  1.155               13.4      4524000 5194244 5297906
+             5        3873311  1.254               20.3      3822000 4648134 4858200
+             6        3691712  1.384               27.8      3666000 4709823 5111171
+             7        3483130  1.625               38.5      4212000 5103443 5660771
+             8        2864498  2.369               57.8      3510000 4892599 6784799
+             9        1363294  4.139               75.8      3354000 3906895 5642266
+            10         344014 14.447               93.1      3276000 3393247 4969825</code></pre>
+</div>
+</div>
+<p>Le poids de l’a priori, <span class="math inline">\(1 - 1/\mathrm{CDF}\)</span>, est la part de l’ultime qui reste à développer selon les cadences CL : 1,7 % pour l’année 2, 93,1 % pour l’année 10 (CDF de 14,45).</p>
+</section>
+<section class="level3" data-number="9.4.3" id="étape-3.-comparer-cl-et-bf">
+<h3 class="anchored" data-anchor-id="étape-3.-comparer-cl-et-bf" data-number="9.4.3"> Étape 3. Comparer CL et BF</h3>
+<div class="cell" data-execution_count="4" id="cell-fig-cl-vs-bf">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>ax.plot(annees, cl_result[<span class="st">"ultimates"</span>], <span class="st">"o-"</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>,</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Chain-Ladder"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>ax.plot(annees, bf_result[<span class="st">"ultimates_bf"</span>], <span class="st">"s-"</span>, color<span class="op">=</span><span class="st">"#047857"</span>,</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Bornhuetter-Ferguson"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>ax.plot(annees, ultimes_apriori, <span class="st">"d--"</span>, color<span class="op">=</span><span class="st">"#b45309"</span>,</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>        label<span class="op">=</span><span class="ss">f"A priori (LR = </span><span class="sc">{</span>LR_APRIORI<span class="sc">:.0%}</span><span class="ss">)"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, markersize<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>ax.set_xticks(annees)</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Année d'origine"</span>)</span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Ultime (unités non monétaires)"</span>)</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>ax.set_title(<span class="st">"Comparaison Chain-Ladder et Bornhuetter-Ferguson"</span>)</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>ax.legend()</span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-cl-vs-bf">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cl-vs-bf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="471" src="img/fig-cl-vs-bf-output-1_950e0273.png" width="950"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cl-vs-bf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 9.1: Ultimes CL, BF et a priori par année d’origine : sur les années récentes, le BF suit l’a priori
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="5" id="e072010c">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a>reserve_cl <span class="op">=</span> cl_result[<span class="st">"reserves"</span>].<span class="bu">sum</span>()</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a>reserve_bf <span class="op">=</span> bf_result[<span class="st">"reserves_bf"</span>].<span class="bu">sum</span>()</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>ecart_par_annee <span class="op">=</span> bf_result[<span class="st">"ultimates_bf"</span>] <span class="op">-</span> cl_result[<span class="st">"ultimates"</span>]</span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve totale CL : </span><span class="sc">{</span>reserve_cl<span class="sc">:&gt;12,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve totale BF : </span><span class="sc">{</span>reserve_bf<span class="sc">:&gt;12,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart BF - CL     : </span><span class="sc">{</span>reserve_bf <span class="op">-</span> reserve_cl<span class="sc">:&gt;12,.0f}</span><span class="ss">  (</span><span class="sc">{</span>reserve_bf <span class="op">/</span> reserve_cl <span class="op">-</span> <span class="dv">1</span><span class="sc">:+.1%}</span><span class="ss">)"</span>)</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Écart d'ultime BF - CL par année d'origine :"</span>)</span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a><span class="bu">print</span>(pd.Series(ecart_par_annee.<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>), index<span class="op">=</span>pd.Index(annees, name<span class="op">=</span><span class="st">"annee_origine"</span>)).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Réserve totale CL :   18,680,856
+Réserve totale BF :   12,153,302
+Écart BF - CL     :   -6,527,553  (-34.9%)
+
+Écart d'ultime BF - CL par année d'origine :
+annee_origine
+1           0
+2       -3618
+3      -47383
+4     -103662
+5     -210066
+6     -401349
+7     -557327
+8    -1892200
+9    -1735371
+10   -1576577</code></pre>
+</div>
+</div>
+<p>Sur les années 1 à 4, les plus développées, BF et CL diffèrent de moins de 105 000 unités. Sur les années 8 à 10, le BF est très en dessous : l’année 8 passe de 6,78 millions à 4,89 millions. Au total, la réserve BF vaut 12,15 millions contre 18,68 millions en CL, <strong>35 % de moins</strong>. Ce n’est pas la « stabilisation » des années récentes : c’est l’a priori qui tire tout vers le bas. L’étape 5 dit pourquoi.</p>
+</section>
+<section class="level3" data-number="9.4.4" id="étape-4.-sensibilité-au-loss-ratio-a-priori">
+<h3 class="anchored" data-anchor-id="étape-4.-sensibilité-au-loss-ratio-a-priori" data-number="9.4.4"> Étape 4. Sensibilité au Loss Ratio a priori</h3>
+<div class="cell" data-execution_count="6" id="2251f558">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>lr_values <span class="op">=</span> np.array([<span class="fl">0.70</span>, <span class="fl">0.75</span>, <span class="fl">0.78</span>, <span class="fl">0.80</span>, <span class="fl">0.85</span>])</span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="co"># Vectorisé : une ligne par LR testé, une colonne par année d'origine</span></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>reserves_par_lr <span class="op">=</span> np.outer(lr_values, primes_acquises <span class="op">*</span> bf_result[<span class="st">"poids_apriori"</span>])</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>sens_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>    <span class="st">"LR_apriori (%)"</span>: (<span class="dv">100</span> <span class="op">*</span> lr_values).<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a>    <span class="st">"reserve_BF"</span>: reserves_par_lr.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>).<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a>    <span class="st">"ecart_vs_CL"</span>: (reserves_par_lr.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> reserve_cl).<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a>})</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Sensibilité de la réserve totale BF au LR a priori :"</span>)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a><span class="bu">print</span>(sens_df.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a></span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>par_point <span class="op">=</span> <span class="fl">0.01</span> <span class="op">*</span> (primes_acquises <span class="op">*</span> bf_result[<span class="st">"poids_apriori"</span>]).<span class="bu">sum</span>()</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a>lr_equivalent_cl <span class="op">=</span> reserve_cl <span class="op">/</span> (primes_acquises <span class="op">*</span> bf_result[<span class="st">"poids_apriori"</span>]).<span class="bu">sum</span>()</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Un point de LR déplace la réserve BF de </span><span class="sc">{</span>par_point<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"LR a priori qui redonne la réserve CL : </span><span class="sc">{</span>lr_equivalent_cl<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sensibilité de la réserve totale BF au LR a priori :
+ LR_apriori (%)  reserve_BF  ecart_vs_CL
+             70    10906810     -7774046
+             75    11685868     -6994988
+             78    12153302     -6527553
+             80    12464926     -6215930
+             85    13243983     -5436872
+
+Un point de LR déplace la réserve BF de 155,812
+LR a priori qui redonne la réserve CL : 119.9%</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="7" id="cell-fig-bf-sensibilite">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>ax.plot(<span class="dv">100</span> <span class="op">*</span> lr_values, sens_df[<span class="st">"reserve_BF"</span>], <span class="st">"o-"</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, linewidth<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Réserve BF"</span>)</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>ax.axhline(reserve_cl, color<span class="op">=</span><span class="st">"#b45309"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Réserve CL (</span><span class="sc">{</span>reserve_cl<span class="sc">:,.0f}</span><span class="ss">)"</span>)</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Loss Ratio a priori (%)"</span>)</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Réserve totale (unités non monétaires)"</span>)</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>ax.set_title(<span class="st">"Sensibilité du BF au LR a priori"</span>)</span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>ax.legend()</span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a>ax.grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-bf-sensibilite">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bf-sensibilite-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="470" src="img/fig-bf-sensibilite-output-1_6f89cfab.png" width="758"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bf-sensibilite-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 9.2: Sensibilité de la réserve totale BF au Loss Ratio a priori : la droite reste loin de la réserve CL
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La réserve BF est linéaire en LR : chaque point déplace la réserve de 155 812 unités, soit 0,8 % de la réserve CL. Sur toute la plage testée (70 % à 85 %), la réserve BF reste entre 10,9 et 13,2 millions, loin des 18,68 millions du CL. Il faudrait un LR a priori de 119,9 % pour retrouver la réserve CL. Le tableau de sensibilité répond donc à une question secondaire (un point de plus ou de moins) et laisse de côté la question principale : l’a priori est-il compatible avec le triangle ?</p>
+</section>
+<section class="level3" data-number="9.4.5" id="étape-5.-critique-méthodologique-confronter-la-priori-à-lexpérience">
+<h3 class="anchored" data-anchor-id="étape-5.-critique-méthodologique-confronter-la-priori-à-lexpérience" data-number="9.4.5"> Étape 5. Critique méthodologique : confronter l’a priori à l’expérience</h3>
+<p>À demander systématiquement à Claude avant de valider un BF :</p>
+<blockquote class="blockquote">
+<p><em>“Voici mon calcul BF (résultats, paramètres LR a priori, sensibilité). Joue le rôle d’un actuaire senior en revue, qui doit défendre ce calcul en comité. Liste : (1) les hypothèses implicites non vérifiées, (2) les points où l’a priori peut être contesté, en le confrontant au S/P observé sur les années matures, (3) les sensibilités à documenter, (4) les comparaisons à faire avec les autres méthodes (CL, Cape Cod, Mack), (5) les cas où le BF tomberait en défaut. Sois sévère.”</em></p>
+</blockquote>
+<p>Le premier point qu’une revue sévère doit soulever se calcule en quelques lignes : sur les années où le Chain-Ladder est fiable parce qu’il reste peu à développer, quel S/P observe-t-on ? Et quel LR a priori le triangle lui-même suggère-t-il ? La méthode de Cape Cod répond à la seconde question : elle estime un LR unique comme le rapport des montants connus aux primes « consommées » (<span class="math inline">\(\text{prime} / \mathrm{CDF}\)</span>), sans prendre les ultimes CL des années récentes pour argent comptant.</p>
+<div class="cell" data-execution_count="8" id="6b35f272">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a>matures <span class="op">=</span> bf_result[<span class="st">"poids_apriori"</span>] <span class="op">&lt;</span> <span class="fl">0.25</span>   <span class="co"># moins d'un quart de l'ultime reste à développer</span></span>
+<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a>sp_matures <span class="op">=</span> cl_result[<span class="st">"ultimates"</span>][matures].<span class="bu">sum</span>() <span class="op">/</span> primes_acquises[matures].<span class="bu">sum</span>()</span>
+<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Années matures (poids a priori &lt; 25 %) : </span><span class="sc">{</span>annees[matures]<span class="sc">.</span>tolist()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"S/P CL de ces années : </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(<span class="ss">f'</span><span class="sc">{</span>x<span class="sc">:.1%}</span><span class="ss">'</span> <span class="cf">for</span> x <span class="kw">in</span> sp_cl[matures])<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-5"><a aria-hidden="true" href="#cb13-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"S/P CL agrégé des années matures : </span><span class="sc">{</span>sp_matures<span class="sc">:.1%}</span><span class="ss">  (a priori : </span><span class="sc">{</span>LR_APRIORI<span class="sc">:.0%}</span><span class="ss">)"</span>)</span>
+<span id="cb13-6"><a aria-hidden="true" href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a aria-hidden="true" href="#cb13-7" tabindex="-1"></a><span class="co"># Cape Cod : LR estimé sur le triangle, primes pondérées par la part développée (1/CDF)</span></span>
+<span id="cb13-8"><a aria-hidden="true" href="#cb13-8" tabindex="-1"></a>lr_cape_cod <span class="op">=</span> cl_result[<span class="st">"dernier_connu"</span>].<span class="bu">sum</span>() <span class="op">/</span> (primes_acquises <span class="op">/</span> cl_result[<span class="st">"cdf"</span>]).<span class="bu">sum</span>()</span>
+<span id="cb13-9"><a aria-hidden="true" href="#cb13-9" tabindex="-1"></a>bf_cc <span class="op">=</span> bornhuetter_ferguson(cl_result[<span class="st">"dernier_connu"</span>], cl_result[<span class="st">"cdf"</span>], primes_acquises <span class="op">*</span> lr_cape_cod)</span>
+<span id="cb13-10"><a aria-hidden="true" href="#cb13-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">LR Cape Cod : </span><span class="sc">{</span>lr_cape_cod<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb13-11"><a aria-hidden="true" href="#cb13-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve BF avec LR Cape Cod : </span><span class="sc">{</span>bf_cc[<span class="st">'reserves_bf'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss">  (</span><span class="sc">{</span>bf_cc[<span class="st">'reserves_bf'</span>]<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> reserve_cl <span class="op">-</span> <span class="dv">1</span><span class="sc">:+.1%}</span><span class="ss"> vs CL)"</span>)</span>
+<span id="cb13-12"><a aria-hidden="true" href="#cb13-12" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"S/P CL des années 8 à 10    : </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(<span class="ss">f'</span><span class="sc">{</span>x<span class="sc">:.1%}</span><span class="ss">'</span> <span class="cf">for</span> x <span class="kw">in</span> sp_cl[<span class="dv">7</span>:])<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Années matures (poids a priori &lt; 25 %) : [1, 2, 3, 4, 5]
+S/P CL de ces années : 79.6%, 81.1%, 86.8%, 91.3%, 99.1%
+S/P CL agrégé des années matures : 87.3%  (a priori : 78%)
+
+LR Cape Cod : 95.4%
+Réserve BF avec LR Cape Cod : 14,862,743  (-20.4% vs CL)
+S/P CL des années 8 à 10    : 150.8%, 131.2%, 118.3%</code></pre>
+</div>
+</div>
+<p>Ce que la sortie établit :</p>
+<ol type="1">
+<li><strong>L’a priori contredit l’expérience.</strong> Les cinq années matures (1 à 5) ont un S/P Chain-Ladder de 79,6 % à 99,1 %, 87,3 % agrégé. L’a priori de 78 % est en dessous de la meilleure d’entre elles. Le BF à 78 % ne stabilise pas les années récentes : il leur impose un niveau de sinistralité que le portefeuille n’a jamais connu.</li>
+<li><strong>Le triangle suggère un LR de 95,4 %</strong> (Cape Cod). Avec cet a priori, la réserve BF vaut 14,86 millions, 20 % sous le CL. L’écart restant vient des années 8 à 10, dont le S/P CL (150,8 %, 131,2 %, 118,3 %) dépasse nettement la moyenne.</li>
+<li><strong>La vraie question est métier.</strong> Le S/P monte d’une année à la suivante, de 79,6 % (année 1) à 108,7 % (année 6) : la sinistralité se dégrade, ou les primes sont insuffisantes. Cape Cod, comme le BF, suppose un LR constant et ignore cette tendance. Les années 8 à 10 sont-elles vraiment mauvaises, ou leur ultime CL amplifie-t-il quelques cellules (CDF de 2,37 à 14,45) ? Ce n’est pas le choix de la méthode qui tranche, c’est l’échange avec la souscription et la gestion des sinistres.</li>
+</ol>
+<p>Pour la note méthodologique : la source du LR a priori, sa confrontation au S/P des années matures, le LR Cape Cod en contrôle, la réserve BF et CL côte à côte, et la sensibilité par point de LR.</p>
+</section>
+</section>
+<section class="level2" data-number="9.5" id="exercice-la-formule-du-prompt-et-celle-du-code">
+<h2 class="anchored" data-anchor-id="exercice-la-formule-du-prompt-et-celle-du-code" data-number="9.5" id="exercice-la-formule-du-prompt-et-celle-du-code"> Exercice : la formule du prompt et celle du code</h2>
+<p>Le prompt 2 donne la formule <span class="math display">\[
+\text{ultime BF} = \left(1 - \frac{1}{\mathrm{CDF}}\right) \times \text{ultime a priori} + \frac{1}{\mathrm{CDF}} \times \text{ultime CL},
+\]</span> une moyenne pondérée entre l’a priori et le Chain-Ladder. Le code de l’étape 2 calcule <span class="math display">\[
+\text{ultime BF} = \text{dernier connu} + \left(1 - \frac{1}{\mathrm{CDF}}\right) \times \text{ultime a priori}.
+\]</span> Claude a-t-il implémenté autre chose que ce qui était demandé ? Comment le vérifier sur les sorties de la fiche ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Les deux formules sont identiques. L’ultime CL vaut <span class="math inline">\(\text{dernier connu} \times \mathrm{CDF}\)</span>, donc <span class="math inline">\((1/\mathrm{CDF}) \times \text{ultime CL} = \text{dernier connu}\)</span>. Le second terme de la moyenne pondérée est exactement le montant déjà connu.</p>
+<p>Cette écriture dit aussi ce qu’est le BF : une moyenne de crédibilité entre le Chain-Ladder et l’a priori, où le poids du Chain-Ladder, <span class="math inline">\(1/\mathrm{CDF}\)</span>, est la part de l’ultime déjà développée. Pour l’année 10, ce poids vaut 6,9 % : le BF y est à 93 % l’a priori, ce qui explique l’étape 3.</p>
+<p>La vérification tient en une ligne, sur les objets de la fiche :</p>
+<div class="cell" data-execution_count="9" id="79c2c185">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>ult_ponderee <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> <span class="dv">1</span> <span class="op">/</span> cl_result[<span class="st">"cdf"</span>]) <span class="op">*</span> ultimes_apriori <span class="op">+</span> cl_result[<span class="st">"ultimates"</span>] <span class="op">/</span> cl_result[<span class="st">"cdf"</span>]</span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart maximal entre les deux formules : </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">max</span>(np.<span class="bu">abs</span>(ult_ponderee <span class="op">-</span> bf_result[<span class="st">'ultimates_bf'</span>]))<span class="sc">:.2e}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Écart maximal entre les deux formules : 0.00e+00</code></pre>
+</div>
+</div>
+<p>L’écart affiché est nul. Quand le code d’un assistant ne ressemble pas à la formule demandée, on ne le réécrit pas d’office : on vérifie l’équivalence par le calcul.</p>
+</details>
+</section>
+<section class="level2" data-number="9.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="9.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>LR a priori non sourcé.</strong> Le LR de 78 % vient d’où ? Si vous ne savez pas répondre, votre calcul BF est attaquable. <strong>Toujours documenter</strong> : moyenne historique du portefeuille, statistiques de marché publiées, tarif et ses hypothèses, opinion d’expert écrite.</li>
+<li><strong>LR a priori non confronté au triangle.</strong> Sourcé ou non, un a priori se compare au S/P des années matures et au LR Cape Cod. Ici, 78 % contre 87,3 % et 95,4 % : la réserve perd 35 % sans que la sensibilité de l’étape 4 le signale.</li>
+<li><strong>Confondre primes acquises et primes émises.</strong> Les primes acquises sont celles correspondant à l’exposition de la période. Les primes émises peuvent inclure des fractions d’années futures. <strong>Pour BF, c’est primes acquises</strong>, à vérifier dans l’extraction comptable.</li>
+<li><strong>BF mécanique sur les années anciennes.</strong> Sur une année presque entièrement développée, le poids de l’a priori est faible (1,7 % pour l’année 2 ici) et le BF retombe sur le CL. Le BF sert surtout sur les années récentes.</li>
+<li><strong>Ne pas tester la sensibilité.</strong> Le BF semble plus stable que le CL, mais cette stabilité cache sa sensibilité au LR. <strong>Toujours produire un tableau de sensibilité</strong> en annexe de la note méthodologique, avec le LR qui redonnerait la réserve CL.</li>
+<li><strong>Choisir BF par défaut sans critique.</strong> Sur certains portefeuilles (par exemple des risques industriels avec très peu de sinistres), le BF stabilise au prix d’un biais systématique (sous- ou sur-provisionnement). À évaluer cas par cas.</li>
+</ul>
+</section>
+<section class="level2" data-number="9.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="9.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>R1 Chain-Ladder</strong> : la baseline à comparer systématiquement.</li>
+<li><strong>R3 Mack stochastique</strong> : l’erreur de prédiction de la réserve Chain-Ladder.</li>
+<li><strong>R4 Bootstrap ODP</strong> : une distribution simulée de la réserve, sous un autre modèle stochastique.</li>
+<li><strong>S1 Note méthodologique SCR non-vie</strong> : la note de référence pour documenter ces choix méthodologiques.</li>
+</ul>
+</section>
+<section class="level2" data-number="9.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="9.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Cape Cod</strong> : utilisée ici en contrôle (étape 5), elle peut servir d’a priori quand on n’a pas d’opinion externe. Elle suppose un LR constant d’une année à l’autre, ce que la tendance de ce triangle met en doute.</li>
+<li><strong>Benktander</strong> : compromis entre BF et CL, qui réapplique le BF en prenant l’ultime BF comme a priori. Demander à Claude <em>“explique-moi Benktander, et quand l’utiliser plutôt que BF”</em>.</li>
+<li><strong>Erreur de prédiction du BF</strong> : Mack (2008), « The prediction error of Bornhuetter/Ferguson », <em>ASTIN Bulletin</em> 38(1), propose un modèle stochastique pour le BF et une estimation de son erreur de prédiction, l’équivalent pour le BF de ce que R3 fait pour le Chain-Ladder.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/R1/index.html"><small>&larr; Précédent</small>R1. Chain-Ladder déterministe</a><a class="next" href="../../bibliotheque/R3/index.html"><small>Suivant &rarr;</small>R3. Mack stochastique</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

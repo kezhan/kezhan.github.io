@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau de bord, rapport, diapositives · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn active" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 3 · 3.2 Restituer</div>
+      <h1 style="max-width:28ch">Tableau de bord, rapport, diapositives</h1>
+      <p class="lede">Pour présenter des résultats, on montre souvent l'outil dans Excel. C'est courant, et on ne va pas revenir sur le fait que ce n'est ni assez moderne ni assez joli pour une interface. Un tableau de bord HTML restitue mieux, et il remplace déjà une partie du PowerPoint et de l'Excel. Le rapport et les diapositives suivent le même chemin : l'IA les rédige et les met en forme, à partir des chiffres, et l'actuaire relit ce qui engage sa signature.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#tableau-de-bord">Le tableau de bord HTML</a><a href="#rapport">Le rapport : un gabarit, l'IA, puis le PDF</a><a href="#diapositives">Les diapositives : d'abord en HTML, puis le PowerPoint</a><a href="#paradigme">Et les outils classiques ?</a><a href="#verifier">Questions</a><a href="#sources">Sources</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Chapitre « Restituer : tableau de bord, rapport, diapositives », partie 03.
+     Le segment du formateur, formation du 20 octobre (transcription :
+     _sources/transcriptions/2026-10-20_restituer_tableau_de_bord_rapport_diapositives.md) : Excel pour
+     montrer un outil, puis le tableau de bord HTML ; le rapport rédigé avec l'IA sur un gabarit, imprimé en
+     PDF ; les diapositives animées, d'abord en HTML puis dans le PowerPoint ; et la question des outils
+     classiques, « un changement presque de paradigme ».
+     La section sur le tableau de bord reprend celle du chapitre « Restituer » (le générateur d'application,
+     l'automatisation sur l'exécution validée), qui renvoie ici.
+     Les exemples : Vision, l'ALM, onglet Comité ALM (le tableau de bord) et « Rédiger l'avis » (l'avis au
+     comité ALM, rubrique Rapports) ; le PDF et le PowerPoint dans demos/ (avis_comite_alm.pdf, sorti de la
+     scène alm_restituer de demos/_outils/captures_vision_actuariat.py ; diapos_restituer.pptx, fait par
+     demos/_outils/diapos_vers_pptx.py depuis les diapositives de ce chapitre). -->
+
+<h2 id="tableau-de-bord">Le tableau de bord HTML</h2>
+<p>Un tableau de bord HTML montre ce qu'un classeur montre mal : la table triée et filtrable, le graphique à côté, l'état de chaque ligne en couleur, et le lien vers le détail. Il se lit dans un navigateur, sans macro ni version de fichier à envoyer.</p>
+<p>Dans Vision, le comité de l'ALM est ce tableau de bord. Une ligne par stratégie, ses indicateurs (moyenne et quantiles des fonds propres actualisés, VaR à 99,5 %, probabilité de ruine), chacun contre les limites du comité, et le graphique dessous. Les résultats de la projection, la distribution des valeurs suivies, sont un autre onglet du même écran.</p>
+<div class="demo-shots">
+<figure><a href="img/alm_25_comite_tableau_de_bord.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'ALM, onglet Comité ALM : une ligne par stratégie, ses indicateurs et l'état de ses limites, puis le graphique" height="1148" src="img/alm_25_comite_tableau_de_bord.png" width="1440"/></a><figcaption><b>1</b>Le comité ALM : les stratégies, leurs indicateurs et leurs limites, la décision du comité en tête.</figcaption></figure>
+<figure><a href="img/alm_09_distribution.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'ALM, onglet Résultats : la distribution des valeurs suivies" height="1260" src="img/alm_09_distribution.png" width="1440"/></a><figcaption><b>2</b>Les résultats : la distribution des valeurs suivies, sur le même calcul.</figcaption></figure>
+</div>
+<p>Dans Vision : l'ALM, au poste d'actuaire provisionnement vie, onglet Comité ALM (<code>#/alm?ong=comite&amp;part=indicateurs</code>), puis Résultats. Les données sont fictives.</p>
+<p>Pour en faire un soi-même, les outils qui génèrent une application à partir d'une description en langage naturel donnent un premier tableau de bord utilisable sans écrire une ligne d'interface. On décrit les pages voulues, on regarde l'aperçu, on corrige par instructions successives, on branche une source de données, on publie. Le résultat est une application comme une autre : elle a un hébergement, des accès, une disponibilité. Le cas <a href="../../bibliotheque/C1/index.html">C1, tableau de bord de sinistralité</a> le fait pas à pas.</p>
+<p><strong>Automatiser</strong>, c'est brancher le tableau de bord sur la dernière exécution validée, jamais sur un fichier qu'on remplace à la main. Chaque arrêté produit une exécution datée, le tableau de bord la lit et affiche son identifiant en pied. Les commentaires qui accompagnent les chiffres peuvent eux aussi se générer à chaque exécution, à condition d'être relus : c'est l'IA qui produit en lot, au chapitre <a href="../../industrialisation/ia-dans-l-outil/index.html#produire">L'IA dans l'outil</a>.</p>
+<div class="callout assurance">
+<span class="label">Pendant la formation, et après</span>
+<p>En salle, on travaille sur données publiques ou synthétiques, jamais sur des données client. En production, les questions d'hébergement, d'authentification et de disponibilité se traitent projet par projet avec l'informatique du cabinet : elles sont reprises dans « Cadrer et tracer ».</p>
+</div>
+<h2 id="rapport">Le rapport : un gabarit, l'IA, puis le PDF</h2>
+<p>On peut demander à l'IA de rédiger le rapport directement. Avec un gabarit, c'est encore mieux : les sections sont fixées, les tableaux et les images sont alignés, et l'IA remplit à partir des chiffres. Le temps qu'on passait à déplacer une image ou à recaler une colonne disparaît. Et puisque le rapport finit le plus souvent en PDF, il peut s'écrire directement en HTML, avec ses couleurs : le navigateur l'imprime en PDF tel quel.</p>
+<ol class="steps">
+<li><strong>Le gabarit</strong><p>Les sections dans l'ordre où le lecteur les lit, la place de chaque table et de chaque figure, la feuille de style. Il s'écrit une fois.</p></li>
+<li><strong>Les chiffres</strong><p>Ils viennent de l'exécution ou de l'écran, jamais d'une saisie. Les tables et les figures se remplissent seules.</p></li>
+<li><strong>Le texte rédigé par l'IA</strong><p>La synthèse, écrite à partir des chiffres du rapport, et marquée comme telle. Chaque phrase reprend un chiffre qu'on retrouve dans une table.</p></li>
+<li><strong>La relecture</strong><p>L'actuaire relit le texte rédigé, ajoute ce qui engage son jugement, et signe.</p></li>
+<li><strong>Le PDF</strong><p>Les règles d'impression de la page fixent le format A4 et empêchent qu'une table ou une figure se coupe en deux. Imprimer suffit.</p></li>
+</ol>
+<p>Dans Vision, l'onglet Comité ALM porte « Rédiger l'avis ». Il ouvre l'avis au comité ALM dans la rubrique Rapports : la synthèse rédigée par Mia, le calcul évalué, les stratégies et leurs indicateurs, deux figures à la largeur des tables, les limites, l'avis et l'explication de l'actuaire, la décision et les sources. Le rapport se refait à chaque ouverture, depuis l'état de l'ALM : une explication changée, une stratégie réglée autrement, et il suit. « Imprimer ou enregistrer en PDF » donne le document.</p>
+<figure>
+<a href="img/alm_26_avis_rapport.png" target="_blank" rel="noopener" title="Ouvrir la capture en grand"><img alt="L'avis au comité ALM dans la rubrique Rapports de Vision : la synthèse rédigée par Mia, puis le calcul évalué" height="1148" src="img/alm_26_avis_rapport.png" width="1440"/></a>
+<figcaption>L'avis au comité ALM : la synthèse rédigée par Mia, marquée à relire, puis les tables du calcul.</figcaption>
+</figure>
+<p><a class="btn plein" download="" href="../../demos/avis_comite_alm.pdf">Télécharger l'avis imprimé en PDF <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt qui remplit un gabarit</span>
+<p class="prompt">Voici le gabarit HTML du rapport et les tables de l'exécution. Remplis chaque table et chaque figure avec ces chiffres, sans en recalculer aucun. Rédige la synthèse en cinq phrases au plus, chacune reprenant un chiffre d'une table, et marque-la comme rédigée par toi. Ajoute les règles d'impression : A4, aucune table ni figure coupée en deux.</p>
+</div>
+<p>Les cas <a href="../../bibliotheque/C2/index.html">C2, rapport annuel d'un fonds vie</a> et <a href="../../bibliotheque/S1/index.html">S1, note méthodologique</a> font la même démarche sur d'autres livrables. La note signée reste celle du chapitre <a href="../../communication/restituer/index.html#note">Le message, la note, les graphiques</a> : l'IA structure, l'actuaire écrit ce qui engage.</p>
+<h2 id="diapositives">Les diapositives : d'abord en HTML, puis le PowerPoint</h2>
+<p>On peut demander à l'IA de faire le PowerPoint, avec ses animations : des images qui défilent, des blocs qui apparaissent l'un après l'autre. À la main, c'est très fastidieux. Le chemin le plus sûr passe par un support HTML : on y construit les diapositives et leurs animations, on les voit dans le navigateur, on les corrige. Puis on demande à l'IA de les reporter dans le PowerPoint.</p>
+<p>Les diapositives de cette formation sont ce support HTML : chaque partie se projette depuis sa page (« Projeter cette partie »), et elles se construisent depuis les pages du site. Pour l'exemple, des diapositives de ce chapitre ont été refaites dans un PowerPoint par un script écrit avec l'IA. Chaque titre, chaque bloc et chaque image y est une forme PowerPoint qu'on modifie, pas une capture collée. Chaque élément entre à son tour au clic : un fondu pour le titre, une apparition pour chaque bloc.</p>
+<p><a class="btn plein" download="" href="../../demos/diapos_restituer.pptx">Télécharger les diapositives en PowerPoint <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt qui reporte le support HTML</span>
+<p class="prompt">Voici le support HTML et ses animations. Refais ces diapositives dans un PowerPoint, avec des formes natives modifiables : un titre, des zones de texte, des images, aux mêmes places. Pour chaque diapositive, fais entrer les éléments au clic dans l'ordre du support, un fondu pour le titre, une apparition pour chaque bloc. Ouvre ensuite le fichier et dis-moi combien d'animations chaque diapositive porte.</p>
+</div>
+<div class="callout warn">
+<span class="label">Ce qui se vérifie</span>
+<p>Un PowerPoint fait par script s'ouvre avant d'être envoyé. Les animations ne sont pas dans les fonctions de la bibliothèque la plus courante, python-pptx : elles s'écrivent dans le XML de la diapositive, et un XML mal formé donne un fichier que PowerPoint propose de réparer. On l'ouvre, on compte les animations, on le projette une fois.</p>
+</div>
+<h2 id="paradigme">Et les outils classiques ?</h2>
+<p>Au bout du compte, la question se pose : les outils classiques sont-ils encore nécessaires ? Le tableau de bord, le rapport, les diapositives, et même une application directement utilisable, peuvent tous se faire et se communiquer en HTML. C'est presque un changement de paradigme. Le PDF et le PowerPoint deviennent des sorties de ce format, faites pour qui les demande.</p>
+<h2 id="verifier">Questions</h2>
+<ol class="steps">
+<li><strong>Le comité veut le rapport en PDF, la direction veut un PowerPoint, le contrôle veut les chiffres. Combien de fois faut-il saisir les chiffres ?</strong>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Aucune. Les trois partent du même état : l'exécution, ou l'écran qui la montre. Le PDF est une impression de la page, le PowerPoint une conversion du support HTML, et les chiffres se lisent dans les tables. Un chiffre ressaisi est un chiffre qui finira par diverger.</p>
+</details>
+</li>
+<li><strong>La synthèse rédigée par l'IA cite une VaR qui n'est dans aucune table du rapport. Que faites-vous ?</strong>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>La phrase sort du rapport, et on cherche d'où vient le chiffre. Une synthèse rédigée à partir des chiffres ne doit en citer aucun qu'on ne retrouve pas dans une table. C'est pour cela qu'elle est marquée comme rédigée par l'IA : elle se relit avant la signature.</p>
+</details>
+</li>
+<li><strong>Pourquoi faire les diapositives d'abord en HTML, si la cible est un PowerPoint ?</strong>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Parce qu'on y voit tout de suite le résultat, animations comprises, et qu'on le corrige en une phrase. Le report dans le PowerPoint vient ensuite, en une fois, par un script qu'on relance quand le support change. Faire les animations à la main dans PowerPoint, élément par élément, est justement ce qu'on cherche à éviter.</p>
+</details>
+</li>
+<li><strong>Un collègue ouvre l'avis au comité et trouve une stratégie sans explication. Où se corrige-t-elle ?</strong>
+<details class="answer"><summary>Voir la réponse</summary>
+<p>Dans l'écran, pas dans le rapport : l'ALM, Comité ALM, Avis. Le rapport se refait à l'ouverture depuis cet état, il suit. Corriger le PDF à la main créerait une version que l'écran ne connaît pas.</p>
+</details>
+</li>
+</ol>
+<h2 id="sources">Sources</h2>
+<ul class="clean">
+<li>W3C, <a href="https://www.w3.org/TR/css-page-3/">CSS Paged Media Module Level 3</a> : le format de la page imprimée (<code>@page</code>), sur lequel s'appuie l'impression d'une page HTML en PDF.</li>
+<li>Ecma International, <a href="https://ecma-international.org/publications-and-standards/standards/ecma-376/">ECMA-376, Office Open XML File Formats</a> : le format des fichiers PowerPoint, dont les animations d'une diapositive.</li>
+<li><a href="https://python-pptx.readthedocs.io/">Documentation de python-pptx</a> : la bibliothèque Python qui écrit des diapositives en formes natives.</li>
+<li>Stephen Few (2006), <em>Information Dashboard Design: The Effective Visual Communication of Data</em>, O'Reilly : ce qu'un tableau de bord doit montrer d'un coup d'œil.</li>
+</ul>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>Un tableau de bord HTML restitue mieux que l'outil montré dans Excel, et remplace une partie du PowerPoint et de l'Excel.</li>
+<li>Le rapport s'écrit sur un gabarit : l'IA remplit à partir des chiffres et rédige la synthèse, marquée comme telle ; l'actuaire relit et signe.</li>
+<li>Un rapport en HTML s'imprime en PDF tel quel, avec ses couleurs.</li>
+<li>Les diapositives et leurs animations se font d'abord en HTML, puis l'IA les reporte dans le PowerPoint, en formes modifiables.</li>
+<li>Tout part du même état : aucun chiffre n'est ressaisi d'un format à l'autre.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../communication/restituer/index.html"><small>&larr; Précédent</small>Le message, la note, les graphiques</a><a class="next" href="../../communication/documenter/index.html"><small>Suivant &rarr;</small>Documenter : la machine écrit, vous relisez</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

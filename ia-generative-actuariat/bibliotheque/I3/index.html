@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I3. Tests pytest sur un module de provisionnement · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">I3. Tests pytest sur un module de provisionnement</h1>
+      <p class="lede">Cette fiche illustre la démarche E sur les tests. Ce que vous apprenez n’est pas le Chain-Ladder, mais une stratégie pytest minimale en cinq catégories (cas trivial, référence publiée, cas dégénérés, reproductibilité, non-régression), applicable à tout module actuariel dont dépend une clôture.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercices">Exercices</a><a href="#stratégie-dexécution-dans-le-cabinet">Stratégie d’exécution dans le cabinet</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : E, industrialiser un calcul (tests)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Automatisation et industrialisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="28.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="28.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Vous avez écrit un module Python <code>chain_ladder.py</code>, sur le modèle de la fiche R1. Il marche aujourd’hui. Dans six mois, vous le modifiez pour ajouter un facteur de queue. Comment être sûr que les résultats des clôtures passées sont préservés ? Sans tests, vous ne pouvez pas. Avec une suite pytest bien pensée, vous le savez au lancement suivant, en une commande.</p>
+<p>Les tests sont <strong>l’assurance vie du code actuariel</strong>. Sans eux, on n’ose plus modifier ; avec eux, on fait évoluer le module en sachant ce qui a changé. Pour un module utilisé en clôture trimestrielle, c’est non négociable.</p>
+<p>Ce cas illustre <strong>l’organisation des données</strong> (un jeu de référence figé à chaque clôture), <strong>la fiabilité et l’auditabilité</strong> (chaque modification passe par les tests, un échec laisse une trace), et <strong>le pilotage IA</strong> (5 prompts pour choisir les cas de test, les écrire, les automatiser).</p>
+<p>Le code de cette fiche se copie tel quel dans trois fichiers, rangés dans un même dossier de travail :</p>
+<pre><code>provision/
+├── chain_ladder.py             le module testé
+├── figer_cloture.py            fige une clôture pour la non-régression
+└── tests/
+    ├── test_chain_ladder.py    la suite de tests
+    └── data_reference/         créé par figer_cloture.py</code></pre>
+<p>Les tests se lancent depuis <code>provision/</code> avec <code>python -m pytest -q tests</code> (la forme <code>python -m</code> place le dossier courant dans le chemin d’import, ce qui rend <code>chain_ladder.py</code> importable depuis <code>tests/</code>).</p>
+</section>
+<section class="level2" data-number="28.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="28.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le module à tester. Il renvoie les facteurs de développement, le triangle complété, les ultimes et les réserves par année d’origine.</p>
+<div class="cell" data-execution_count="1" id="3de8c765">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="co"># Fichier : chain_ladder.py</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a><span class="kw">def</span> chain_ladder(triangle: np.ndarray) <span class="op">-&gt;</span> <span class="bu">dict</span>:</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>    <span class="co">"""Chain-Ladder déterministe sur un triangle de montants cumulés.</span></span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a></span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a><span class="co">        triangle: tableau n x n, années d'origine en lignes, développement en</span></span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a><span class="co">            colonnes, NaN dans la partie inconnue.</span></span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a></span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a><span class="co">        dict avec "factors" (n-1), "projected" (n x n), "ultimates" (n),</span></span>
+<span id="cb2-14"><a aria-hidden="true" href="#cb2-14" tabindex="-1"></a><span class="co">        "reserves" (n) = ultime moins dernier montant connu.</span></span>
+<span id="cb2-15"><a aria-hidden="true" href="#cb2-15" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-16"><a aria-hidden="true" href="#cb2-16" tabindex="-1"></a>    <span class="cf">if</span> triangle.ndim <span class="op">!=</span> <span class="dv">2</span> <span class="kw">or</span> triangle.shape[<span class="dv">0</span>] <span class="op">!=</span> triangle.shape[<span class="dv">1</span>]:</span>
+<span id="cb2-17"><a aria-hidden="true" href="#cb2-17" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Triangle doit être carré (n x n)."</span>)</span>
+<span id="cb2-18"><a aria-hidden="true" href="#cb2-18" tabindex="-1"></a>    n <span class="op">=</span> triangle.shape[<span class="dv">0</span>]</span>
+<span id="cb2-19"><a aria-hidden="true" href="#cb2-19" tabindex="-1"></a>    factors <span class="op">=</span> np.zeros(n <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb2-20"><a aria-hidden="true" href="#cb2-20" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb2-21"><a aria-hidden="true" href="#cb2-21" tabindex="-1"></a>        mask <span class="op">=</span> <span class="op">~</span>np.isnan(triangle[:, j]) <span class="op">&amp;</span> <span class="op">~</span>np.isnan(triangle[:, j <span class="op">+</span> <span class="dv">1</span>])</span>
+<span id="cb2-22"><a aria-hidden="true" href="#cb2-22" tabindex="-1"></a>        col_sum <span class="op">=</span> triangle[mask, j].<span class="bu">sum</span>()</span>
+<span id="cb2-23"><a aria-hidden="true" href="#cb2-23" tabindex="-1"></a>        <span class="cf">if</span> col_sum <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb2-24"><a aria-hidden="true" href="#cb2-24" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"Colonne </span><span class="sc">{</span>j<span class="sc">}</span><span class="ss"> vide ou nulle."</span>)</span>
+<span id="cb2-25"><a aria-hidden="true" href="#cb2-25" tabindex="-1"></a>        factors[j] <span class="op">=</span> triangle[mask, j <span class="op">+</span> <span class="dv">1</span>].<span class="bu">sum</span>() <span class="op">/</span> col_sum</span>
+<span id="cb2-26"><a aria-hidden="true" href="#cb2-26" tabindex="-1"></a>    projected <span class="op">=</span> triangle.copy()</span>
+<span id="cb2-27"><a aria-hidden="true" href="#cb2-27" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):</span>
+<span id="cb2-28"><a aria-hidden="true" href="#cb2-28" tabindex="-1"></a>        mask <span class="op">=</span> np.isnan(projected[:, j])</span>
+<span id="cb2-29"><a aria-hidden="true" href="#cb2-29" tabindex="-1"></a>        projected[mask, j] <span class="op">=</span> projected[mask, j <span class="op">-</span> <span class="dv">1</span>] <span class="op">*</span> factors[j <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb2-30"><a aria-hidden="true" href="#cb2-30" tabindex="-1"></a>    <span class="co"># Dernier montant connu de chaque ligne : la diagonale</span></span>
+<span id="cb2-31"><a aria-hidden="true" href="#cb2-31" tabindex="-1"></a>    derniers_connus <span class="op">=</span> np.array([ligne[<span class="op">~</span>np.isnan(ligne)][<span class="op">-</span><span class="dv">1</span>] <span class="cf">for</span> ligne <span class="kw">in</span> triangle])</span>
+<span id="cb2-32"><a aria-hidden="true" href="#cb2-32" tabindex="-1"></a>    ultimates <span class="op">=</span> projected[:, <span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb2-33"><a aria-hidden="true" href="#cb2-33" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"factors"</span>: factors, <span class="st">"projected"</span>: projected,</span>
+<span id="cb2-34"><a aria-hidden="true" href="#cb2-34" tabindex="-1"></a>            <span class="st">"ultimates"</span>: ultimates, <span class="st">"reserves"</span>: ultimates <span class="op">-</span> derniers_connus}</span></code></pre></div></div>
+</div>
+<p>Le jeu de référence : le triangle de Taylor et Ashe (1983), repris par Mack (1993) et distribué comme jeu <code>GenIns</code> du package R ChainLadder. Montants cumulés en unités non monétaires, années d’origine 1 à 10. Les valeurs publiées : <strong>réserve totale Chain-Ladder 18 680 856, ultime total 53 038 946</strong>.</p>
+<div class="cell" data-execution_count="2" id="2f31286b">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>TAYLOR_ASHE <span class="op">=</span> np.array([</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    [<span class="dv">357848</span>, <span class="dv">1124788</span>, <span class="dv">1735330</span>, <span class="dv">2218270</span>, <span class="dv">2745596</span>, <span class="dv">3319994</span>, <span class="dv">3466336</span>, <span class="dv">3606286</span>, <span class="dv">3833515</span>, <span class="dv">3901463</span>],</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>    [<span class="dv">352118</span>, <span class="dv">1236139</span>, <span class="dv">2170033</span>, <span class="dv">3353322</span>, <span class="dv">3799067</span>, <span class="dv">4120063</span>, <span class="dv">4647867</span>, <span class="dv">4914039</span>, <span class="dv">5339085</span>, np.nan],</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>    [<span class="dv">290507</span>, <span class="dv">1292306</span>, <span class="dv">2218525</span>, <span class="dv">3235179</span>, <span class="dv">3985995</span>, <span class="dv">4132918</span>, <span class="dv">4628910</span>, <span class="dv">4909315</span>, np.nan, np.nan],</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    [<span class="dv">310608</span>, <span class="dv">1418858</span>, <span class="dv">2195047</span>, <span class="dv">3757447</span>, <span class="dv">4029929</span>, <span class="dv">4381982</span>, <span class="dv">4588268</span>, np.nan, np.nan, np.nan],</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    [<span class="dv">443160</span>, <span class="dv">1136350</span>, <span class="dv">2128333</span>, <span class="dv">2897821</span>, <span class="dv">3402672</span>, <span class="dv">3873311</span>, np.nan, np.nan, np.nan, np.nan],</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    [<span class="dv">396132</span>, <span class="dv">1333217</span>, <span class="dv">2180715</span>, <span class="dv">2985752</span>, <span class="dv">3691712</span>, np.nan, np.nan, np.nan, np.nan, np.nan],</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>    [<span class="dv">440832</span>, <span class="dv">1288463</span>, <span class="dv">2419861</span>, <span class="dv">3483130</span>, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>    [<span class="dv">359480</span>, <span class="dv">1421128</span>, <span class="dv">2864498</span>, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>    [<span class="dv">376686</span>, <span class="dv">1363294</span>, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>    [<span class="dv">344014</span>, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan],</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>])</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>r <span class="op">=</span> chain_ladder(TAYLOR_ASHE)</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve totale : </span><span class="sc">{</span>r[<span class="st">'reserves'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;14,.0f}</span><span class="ss">   (publiée : 18 680 856)"</span>)</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ultime total   : </span><span class="sc">{</span>r[<span class="st">'ultimates'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;14,.0f}</span><span class="ss">   (publié  : 53 038 946)"</span>)</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Déjà connu     : </span><span class="sc">{</span>np<span class="sc">.</span>nansum(np.diag(np.fliplr(TAYLOR_ASHE)))<span class="sc">:&gt;14,.0f}</span><span class="ss">   (la diagonale : ultime moins réserve)"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Réserve totale :     18,680,856   (publiée : 18 680 856)
+Ultime total   :     53,038,946   (publié  : 53 038 946)
+Déjà connu     :     34,358,090   (la diagonale : ultime moins réserve)</code></pre>
+</div>
+</div>
+<p>Le module retrouve les deux valeurs publiées. Retenez la relation : ultime = déjà connu + réserve. L’exercice 3, en fin de fiche, montre ce que coûte un test qui la perd de vue.</p>
+</section>
+<section class="level2" data-number="28.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="28.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Stratégie de test.</strong> <em>“Voici le module <code>chain_ladder.py</code>. Liste les catégories de tests à écrire en pytest : (a) cas trivial calculable à la main, (b) référence publiée, (c) cas dégénérés et erreurs attendues, (d) reproductibilité, (e) non-régression d’une clôture. Pour chacune, un objectif en une phrase.”</em></p></li>
+<li><p><strong>Tests triviaux.</strong> <em>“Écris les tests pytest pour des cas calculables à la main : un triangle où tous les montants connus valent 100 (facteurs 1, réserves nulles), et un triangle 2 x 2 dont tu donnes le facteur, l’ultime et la réserve calculés à la main. Tolérance numérique explicite.”</em></p></li>
+<li><p><strong>Test contre la référence publiée.</strong> <em>“Écris le test pytest qui valide la sortie sur Taylor-Ashe : réserve totale Chain-Ladder 18 680 856 et ultime total 53 038 946 (Mack 1993, jeu GenIns de ChainLadder), à une unité près. Mets le triangle en fixture. Dis-moi en français ce que compare chaque assert.”</em></p></li>
+<li><p><strong>Cas dégénérés.</strong> <em>“Écris les tests pytest pour : un triangle 1 x 1, une colonne entièrement vide, un triangle non carré (ValueError attendue), un triangle entièrement nul (ValueError attendue).”</em></p></li>
+<li><p><strong>Test de non-régression.</strong> <em>“Écris un script <code>figer_cloture.py</code> qui, le jour d’une clôture, enregistre le triangle en <code>.npy</code> et les réserves calculées en <code>.json</code> dans <code>tests/data_reference/</code>. Puis un test paramétré qui, pour chaque clôture figée, recalcule les réserves et les compare aux valeurs enregistrées. Les valeurs attendues sont lues dans le fichier, jamais recalculées dans le test.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="28.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="28.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="28.4.1" id="étape-1.-stratégie-de-test-les-cinq-catégories">
+<h3 class="anchored" data-anchor-id="étape-1.-stratégie-de-test-les-cinq-catégories" data-number="28.4.1"> Étape 1. Stratégie de test : les cinq catégories</h3>
+<div class="cell" data-execution_count="3" id="c14c6aa1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>strategie <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    {<span class="st">"categorie"</span>: <span class="st">"Cas trivial"</span>, <span class="st">"exemple"</span>: <span class="st">"Montants connus tous à 100 : facteurs 1, réserves 0"</span>},</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>    {<span class="st">"categorie"</span>: <span class="st">"Référence publiée"</span>, <span class="st">"exemple"</span>: <span class="st">"Taylor-Ashe : réserve 18 680 856, ultime 53 038 946"</span>},</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>    {<span class="st">"categorie"</span>: <span class="st">"Cas dégénérés"</span>, <span class="st">"exemple"</span>: <span class="st">"1 x 1, colonne vide, non carré, tout à zéro"</span>},</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>    {<span class="st">"categorie"</span>: <span class="st">"Reproductibilité"</span>, <span class="st">"exemple"</span>: <span class="st">"Deux appels, mêmes résultats ; l'entrée n'est pas modifiée"</span>},</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>    {<span class="st">"categorie"</span>: <span class="st">"Non-régression"</span>, <span class="st">"exemple"</span>: <span class="st">"Clôture figée : réserves identiques à l'enregistrement"</span>},</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>])</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a><span class="bu">print</span>(strategie.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        categorie                                                    exemple
+      Cas trivial        Montants connus tous à 100 : facteurs 1, réserves 0
+Référence publiée        Taylor-Ashe : réserve 18 680 856, ultime 53 038 946
+    Cas dégénérés                1 x 1, colonne vide, non carré, tout à zéro
+ Reproductibilité Deux appels, mêmes résultats ; l'entrée n'est pas modifiée
+   Non-régression     Clôture figée : réserves identiques à l'enregistrement</code></pre>
+</div>
+</div>
+<p>Le Chain-Ladder est déterministe : ici, la reproductibilité vérifie que deux appels donnent le même résultat et que la fonction ne modifie pas le triangle qu’on lui passe (un <code>triangle[...] = ...</code> oublié sans <code>.copy()</code> corromprait les données de l’appelant). Pour un module stochastique (fiche R4), elle vérifie qu’une même graine redonne le même résultat.</p>
+</section>
+<section class="level3" data-number="28.4.2" id="étape-2.-début-du-fichier-de-tests-et-cas-triviaux">
+<h3 class="anchored" data-anchor-id="étape-2.-début-du-fichier-de-tests-et-cas-triviaux" data-number="28.4.2"> Étape 2. Début du fichier de tests et cas triviaux</h3>
+<p>Les blocs de code des étapes 2 à 5 dont la première ligne est <code># Fichier : tests/test_chain_ladder.py</code>, mis bout à bout dans l’ordre, forment le fichier de tests. Le premier pose les imports, le triangle de référence en fixture et les valeurs publiées.</p>
+<div class="cell" data-execution_count="4" id="4e0efbfe">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a><span class="co"># Fichier : tests/test_chain_ladder.py</span></span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a><span class="im">import</span> pytest</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a><span class="im">from</span> chain_ladder <span class="im">import</span> chain_ladder</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>NAN <span class="op">=</span> np.nan</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>TAYLOR_ASHE <span class="op">=</span> np.array([</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>    [<span class="dv">357848</span>, <span class="dv">1124788</span>, <span class="dv">1735330</span>, <span class="dv">2218270</span>, <span class="dv">2745596</span>, <span class="dv">3319994</span>, <span class="dv">3466336</span>, <span class="dv">3606286</span>, <span class="dv">3833515</span>, <span class="dv">3901463</span>],</span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>    [<span class="dv">352118</span>, <span class="dv">1236139</span>, <span class="dv">2170033</span>, <span class="dv">3353322</span>, <span class="dv">3799067</span>, <span class="dv">4120063</span>, <span class="dv">4647867</span>, <span class="dv">4914039</span>, <span class="dv">5339085</span>, NAN],</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>    [<span class="dv">290507</span>, <span class="dv">1292306</span>, <span class="dv">2218525</span>, <span class="dv">3235179</span>, <span class="dv">3985995</span>, <span class="dv">4132918</span>, <span class="dv">4628910</span>, <span class="dv">4909315</span>, NAN, NAN],</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>    [<span class="dv">310608</span>, <span class="dv">1418858</span>, <span class="dv">2195047</span>, <span class="dv">3757447</span>, <span class="dv">4029929</span>, <span class="dv">4381982</span>, <span class="dv">4588268</span>, NAN, NAN, NAN],</span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>    [<span class="dv">443160</span>, <span class="dv">1136350</span>, <span class="dv">2128333</span>, <span class="dv">2897821</span>, <span class="dv">3402672</span>, <span class="dv">3873311</span>, NAN, NAN, NAN, NAN],</span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>    [<span class="dv">396132</span>, <span class="dv">1333217</span>, <span class="dv">2180715</span>, <span class="dv">2985752</span>, <span class="dv">3691712</span>, NAN, NAN, NAN, NAN, NAN],</span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a>    [<span class="dv">440832</span>, <span class="dv">1288463</span>, <span class="dv">2419861</span>, <span class="dv">3483130</span>, NAN, NAN, NAN, NAN, NAN, NAN],</span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>    [<span class="dv">359480</span>, <span class="dv">1421128</span>, <span class="dv">2864498</span>, NAN, NAN, NAN, NAN, NAN, NAN, NAN],</span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>    [<span class="dv">376686</span>, <span class="dv">1363294</span>, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN],</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a>    [<span class="dv">344014</span>, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN],</span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a>])</span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>RESERVE_PUBLIEE <span class="op">=</span> <span class="dv">18_680_856</span>   <span class="co"># réserve totale Chain-Ladder (Mack 1993, GenIns)</span></span>
+<span id="cb7-24"><a aria-hidden="true" href="#cb7-24" tabindex="-1"></a>ULTIME_PUBLIE <span class="op">=</span> <span class="dv">53_038_946</span>     <span class="co"># ultime total = déjà payé + réserve</span></span>
+<span id="cb7-25"><a aria-hidden="true" href="#cb7-25" tabindex="-1"></a></span>
+<span id="cb7-26"><a aria-hidden="true" href="#cb7-26" tabindex="-1"></a></span>
+<span id="cb7-27"><a aria-hidden="true" href="#cb7-27" tabindex="-1"></a><span class="at">@pytest.fixture</span></span>
+<span id="cb7-28"><a aria-hidden="true" href="#cb7-28" tabindex="-1"></a><span class="kw">def</span> taylor_ashe():</span>
+<span id="cb7-29"><a aria-hidden="true" href="#cb7-29" tabindex="-1"></a>    <span class="co">"""Triangle Taylor-Ashe, copié pour qu'aucun test ne modifie l'original."""</span></span>
+<span id="cb7-30"><a aria-hidden="true" href="#cb7-30" tabindex="-1"></a>    <span class="cf">return</span> TAYLOR_ASHE.copy()</span>
+<span id="cb7-31"><a aria-hidden="true" href="#cb7-31" tabindex="-1"></a></span>
+<span id="cb7-32"><a aria-hidden="true" href="#cb7-32" tabindex="-1"></a></span>
+<span id="cb7-33"><a aria-hidden="true" href="#cb7-33" tabindex="-1"></a><span class="kw">def</span> triangle_constant(n, valeur<span class="op">=</span><span class="fl">100.0</span>):</span>
+<span id="cb7-34"><a aria-hidden="true" href="#cb7-34" tabindex="-1"></a>    <span class="co">"""Triangle n x n dont tous les montants connus valent `valeur`."""</span></span>
+<span id="cb7-35"><a aria-hidden="true" href="#cb7-35" tabindex="-1"></a>    triangle <span class="op">=</span> np.full((n, n), valeur)</span>
+<span id="cb7-36"><a aria-hidden="true" href="#cb7-36" tabindex="-1"></a>    triangle[np.add.outer(np.arange(n), np.arange(n)) <span class="op">&gt;</span> n <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> np.nan</span>
+<span id="cb7-37"><a aria-hidden="true" href="#cb7-37" tabindex="-1"></a>    <span class="cf">return</span> triangle</span>
+<span id="cb7-38"><a aria-hidden="true" href="#cb7-38" tabindex="-1"></a></span>
+<span id="cb7-39"><a aria-hidden="true" href="#cb7-39" tabindex="-1"></a></span>
+<span id="cb7-40"><a aria-hidden="true" href="#cb7-40" tabindex="-1"></a><span class="kw">def</span> test_triangle_constant():</span>
+<span id="cb7-41"><a aria-hidden="true" href="#cb7-41" tabindex="-1"></a>    <span class="co">"""Montants connus tous égaux : facteurs 1, ultimes 100, réserves nulles."""</span></span>
+<span id="cb7-42"><a aria-hidden="true" href="#cb7-42" tabindex="-1"></a>    result <span class="op">=</span> chain_ladder(triangle_constant(<span class="dv">5</span>))</span>
+<span id="cb7-43"><a aria-hidden="true" href="#cb7-43" tabindex="-1"></a>    np.testing.assert_allclose(result[<span class="st">"factors"</span>], <span class="fl">1.0</span>, atol<span class="op">=</span><span class="fl">1e-12</span>)</span>
+<span id="cb7-44"><a aria-hidden="true" href="#cb7-44" tabindex="-1"></a>    np.testing.assert_allclose(result[<span class="st">"ultimates"</span>], <span class="fl">100.0</span>, atol<span class="op">=</span><span class="fl">1e-10</span>)</span>
+<span id="cb7-45"><a aria-hidden="true" href="#cb7-45" tabindex="-1"></a>    np.testing.assert_allclose(result[<span class="st">"reserves"</span>], <span class="fl">0.0</span>, atol<span class="op">=</span><span class="fl">1e-10</span>)</span>
+<span id="cb7-46"><a aria-hidden="true" href="#cb7-46" tabindex="-1"></a></span>
+<span id="cb7-47"><a aria-hidden="true" href="#cb7-47" tabindex="-1"></a></span>
+<span id="cb7-48"><a aria-hidden="true" href="#cb7-48" tabindex="-1"></a><span class="kw">def</span> test_triangle_2x2_calcule_a_la_main():</span>
+<span id="cb7-49"><a aria-hidden="true" href="#cb7-49" tabindex="-1"></a>    <span class="co">"""Facteur 150 / 100 = 1,5 ; ultime de la 2e année 200 x 1,5 = 300 ; réserve 100."""</span></span>
+<span id="cb7-50"><a aria-hidden="true" href="#cb7-50" tabindex="-1"></a>    result <span class="op">=</span> chain_ladder(np.array([[<span class="fl">100.0</span>, <span class="fl">150.0</span>], [<span class="fl">200.0</span>, NAN]]))</span>
+<span id="cb7-51"><a aria-hidden="true" href="#cb7-51" tabindex="-1"></a>    <span class="cf">assert</span> result[<span class="st">"factors"</span>][<span class="dv">0</span>] <span class="op">==</span> pytest.approx(<span class="fl">1.5</span>)</span>
+<span id="cb7-52"><a aria-hidden="true" href="#cb7-52" tabindex="-1"></a>    <span class="cf">assert</span> result[<span class="st">"ultimates"</span>][<span class="dv">1</span>] <span class="op">==</span> pytest.approx(<span class="fl">300.0</span>)</span>
+<span id="cb7-53"><a aria-hidden="true" href="#cb7-53" tabindex="-1"></a>    <span class="cf">assert</span> result[<span class="st">"reserves"</span>].<span class="bu">sum</span>() <span class="op">==</span> pytest.approx(<span class="fl">100.0</span>)</span></code></pre></div></div>
+</div>
+</section>
+<section class="level3" data-number="28.4.3" id="étape-3.-test-contre-la-référence-publiée">
+<h3 class="anchored" data-anchor-id="étape-3.-test-contre-la-référence-publiée" data-number="28.4.3"> Étape 3. Test contre la référence publiée</h3>
+<p>Deux asserts, chacun comparant une grandeur à <strong>sa</strong> valeur publiée : la réserve à 18 680 856, l’ultime à 53 038 946. Les valeurs publiées sont arrondies à l’unité, d’où une tolérance absolue de 1.</p>
+<div class="cell" data-execution_count="5" id="e5683dec">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="co"># Fichier : tests/test_chain_ladder.py (suite)</span></span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a><span class="kw">def</span> test_taylor_ashe_reference_publiee(taylor_ashe):</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a>    <span class="co">"""Réserve et ultime totaux Chain-Ladder de Taylor-Ashe, à l'unité près."""</span></span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>    result <span class="op">=</span> chain_ladder(taylor_ashe)</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>    <span class="cf">assert</span> result[<span class="st">"reserves"</span>].<span class="bu">sum</span>() <span class="op">==</span> pytest.approx(RESERVE_PUBLIEE, <span class="bu">abs</span><span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>    <span class="cf">assert</span> result[<span class="st">"ultimates"</span>].<span class="bu">sum</span>() <span class="op">==</span> pytest.approx(ULTIME_PUBLIE, <span class="bu">abs</span><span class="op">=</span><span class="dv">1</span>)</span></code></pre></div></div>
+</div>
+</section>
+<section class="level3" data-number="28.4.4" id="étape-4.-cas-dégénérés-et-reproductibilité">
+<h3 class="anchored" data-anchor-id="étape-4.-cas-dégénérés-et-reproductibilité" data-number="28.4.4"> Étape 4. Cas dégénérés et reproductibilité</h3>
+<div class="cell" data-execution_count="6" id="e65d5343">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a><span class="co"># Fichier : tests/test_chain_ladder.py (suite)</span></span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a><span class="kw">class</span> TestCasDegeneres:</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>    <span class="co">"""Cas limites du module Chain-Ladder."""</span></span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>    <span class="kw">def</span> test_triangle_non_carre_leve(<span class="va">self</span>):</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>        <span class="cf">with</span> pytest.raises(<span class="pp">ValueError</span>, match<span class="op">=</span><span class="st">"carré"</span>):</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>            chain_ladder(np.array([[<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>], [<span class="fl">4.0</span>, <span class="fl">5.0</span>, <span class="fl">6.0</span>]]))</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>    <span class="kw">def</span> test_triangle_nul_leve(<span class="va">self</span>):</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>        <span class="cf">with</span> pytest.raises(<span class="pp">ValueError</span>, match<span class="op">=</span><span class="st">"vide ou nulle"</span>):</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>            chain_ladder(np.zeros((<span class="dv">5</span>, <span class="dv">5</span>)))</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a>    <span class="kw">def</span> test_triangle_1x1(<span class="va">self</span>):</span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a>        result <span class="op">=</span> chain_ladder(np.array([[<span class="fl">1000.0</span>]]))</span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>        <span class="cf">assert</span> result[<span class="st">"ultimates"</span>][<span class="dv">0</span>] <span class="op">==</span> <span class="fl">1000.0</span></span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>        <span class="cf">assert</span> result[<span class="st">"reserves"</span>][<span class="dv">0</span>] <span class="op">==</span> <span class="fl">0.0</span></span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">len</span>(result[<span class="st">"factors"</span>]) <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a></span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a>    <span class="kw">def</span> test_colonne_entierement_vide_leve(<span class="va">self</span>, taylor_ashe):</span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>        taylor_ashe[:, <span class="dv">3</span>] <span class="op">=</span> NAN</span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a>        <span class="cf">with</span> pytest.raises(<span class="pp">ValueError</span>, match<span class="op">=</span><span class="st">"vide ou nulle"</span>):</span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a>            chain_ladder(taylor_ashe)</span>
+<span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a></span>
+<span id="cb9-24"><a aria-hidden="true" href="#cb9-24" tabindex="-1"></a></span>
+<span id="cb9-25"><a aria-hidden="true" href="#cb9-25" tabindex="-1"></a><span class="kw">def</span> test_reproductible_et_entree_intacte(taylor_ashe):</span>
+<span id="cb9-26"><a aria-hidden="true" href="#cb9-26" tabindex="-1"></a>    <span class="co">"""Deux appels donnent le même résultat, et le triangle passé n'est pas modifié."""</span></span>
+<span id="cb9-27"><a aria-hidden="true" href="#cb9-27" tabindex="-1"></a>    avant <span class="op">=</span> taylor_ashe.copy()</span>
+<span id="cb9-28"><a aria-hidden="true" href="#cb9-28" tabindex="-1"></a>    r1 <span class="op">=</span> chain_ladder(taylor_ashe)</span>
+<span id="cb9-29"><a aria-hidden="true" href="#cb9-29" tabindex="-1"></a>    r2 <span class="op">=</span> chain_ladder(taylor_ashe)</span>
+<span id="cb9-30"><a aria-hidden="true" href="#cb9-30" tabindex="-1"></a>    np.testing.assert_array_equal(r1[<span class="st">"reserves"</span>], r2[<span class="st">"reserves"</span>])</span>
+<span id="cb9-31"><a aria-hidden="true" href="#cb9-31" tabindex="-1"></a>    np.testing.assert_array_equal(taylor_ashe, avant)   <span class="co"># NaN compris, aux mêmes places</span></span></code></pre></div></div>
+</div>
+</section>
+<section class="level3" data-number="28.4.5" id="étape-5.-non-régression-sur-les-clôtures-figées">
+<h3 class="anchored" data-anchor-id="étape-5.-non-régression-sur-les-clôtures-figées" data-number="28.4.5"> Étape 5. Non-régression sur les clôtures figées</h3>
+<p>Le jour d’une clôture, on fige le triangle et les réserves qu’il a produites. C’est un script à part, lancé une fois par clôture, dont les fichiers sont versionnés avec le code.</p>
+<div class="cell" data-execution_count="7" id="07822dbe">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="co"># Fichier : figer_cloture.py</span></span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="co">"""Fige une clôture pour le test de non-régression.</span></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a><span class="co">Usage : python figer_cloture.py triangle_2025q4.csv 2025q4</span></span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a><span class="co">Le CSV contient le triangle cumulé, séparateur ';', cellules inconnues vides ou 'nan'.</span></span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a></span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a><span class="im">from</span> chain_ladder <span class="im">import</span> chain_ladder</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a></span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a>source, cloture <span class="op">=</span> sys.argv[<span class="dv">1</span>], sys.argv[<span class="dv">2</span>]</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a>triangle <span class="op">=</span> np.genfromtxt(source, delimiter<span class="op">=</span><span class="st">";"</span>)</span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a>result <span class="op">=</span> chain_ladder(triangle)</span>
+<span id="cb10-18"><a aria-hidden="true" href="#cb10-18" tabindex="-1"></a></span>
+<span id="cb10-19"><a aria-hidden="true" href="#cb10-19" tabindex="-1"></a>dossier <span class="op">=</span> Path(<span class="va">__file__</span>).parent <span class="op">/</span> <span class="st">"tests"</span> <span class="op">/</span> <span class="st">"data_reference"</span></span>
+<span id="cb10-20"><a aria-hidden="true" href="#cb10-20" tabindex="-1"></a>dossier.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-21"><a aria-hidden="true" href="#cb10-21" tabindex="-1"></a>np.save(dossier <span class="op">/</span> <span class="ss">f"triangle_</span><span class="sc">{</span>cloture<span class="sc">}</span><span class="ss">.npy"</span>, triangle)</span>
+<span id="cb10-22"><a aria-hidden="true" href="#cb10-22" tabindex="-1"></a>(dossier <span class="op">/</span> <span class="ss">f"resultats_</span><span class="sc">{</span>cloture<span class="sc">}</span><span class="ss">.json"</span>).write_text(json.dumps({</span>
+<span id="cb10-23"><a aria-hidden="true" href="#cb10-23" tabindex="-1"></a>    <span class="st">"cloture"</span>: cloture,</span>
+<span id="cb10-24"><a aria-hidden="true" href="#cb10-24" tabindex="-1"></a>    <span class="st">"reserves"</span>: result[<span class="st">"reserves"</span>].tolist(),</span>
+<span id="cb10-25"><a aria-hidden="true" href="#cb10-25" tabindex="-1"></a>    <span class="st">"reserve_totale"</span>: <span class="bu">float</span>(result[<span class="st">"reserves"</span>].<span class="bu">sum</span>()),</span>
+<span id="cb10-26"><a aria-hidden="true" href="#cb10-26" tabindex="-1"></a>}, indent<span class="op">=</span><span class="dv">2</span>), encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb10-27"><a aria-hidden="true" href="#cb10-27" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Clôture </span><span class="sc">{</span>cloture<span class="sc">}</span><span class="ss"> figée : réserve totale </span><span class="sc">{</span>result[<span class="st">'reserves'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+</div>
+<p>Le test, lui, lit les valeurs attendues dans le fichier et ne les recalcule jamais : c’est ce qui lui permet d’échouer le jour où le module change de comportement.</p>
+<div class="cell" data-execution_count="8" id="90018620">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="co"># Fichier : tests/test_chain_ladder.py (suite)</span></span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="va">__file__</span>).parent <span class="op">/</span> <span class="st">"data_reference"</span></span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>CLOTURES <span class="op">=</span> <span class="bu">sorted</span>(p.stem.replace(<span class="st">"resultats_"</span>, <span class="st">""</span>) <span class="cf">for</span> p <span class="kw">in</span> DATA_DIR.glob(<span class="st">"resultats_*.json"</span>))</span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a><span class="at">@pytest.mark.parametrize</span>(<span class="st">"cloture"</span>, CLOTURES)</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a><span class="kw">def</span> test_non_regression_cloture(cloture):</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>    <span class="co">"""Les réserves d'une clôture figée ne changent pas quand le module évolue."""</span></span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>    attendu <span class="op">=</span> json.loads((DATA_DIR <span class="op">/</span> <span class="ss">f"resultats_</span><span class="sc">{</span>cloture<span class="sc">}</span><span class="ss">.json"</span>).read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>))</span>
+<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>    triangle <span class="op">=</span> np.load(DATA_DIR <span class="op">/</span> <span class="ss">f"triangle_</span><span class="sc">{</span>cloture<span class="sc">}</span><span class="ss">.npy"</span>)</span>
+<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>    result <span class="op">=</span> chain_ladder(triangle)</span>
+<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>    np.testing.assert_allclose(</span>
+<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>        result[<span class="st">"reserves"</span>], attendu[<span class="st">"reserves"</span>], rtol<span class="op">=</span><span class="fl">1e-9</span>,</span>
+<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>        err_msg<span class="op">=</span><span class="ss">f"Régression sur la clôture </span><span class="sc">{</span>cloture<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a>    )</span></code></pre></div></div>
+</div>
+</section>
+<section class="level3" data-number="28.4.6" id="étape-6.-lancer-la-suite-puis-la-voir-échouer">
+<h3 class="anchored" data-anchor-id="étape-6.-lancer-la-suite-puis-la-voir-échouer" data-number="28.4.6"> Étape 6. Lancer la suite, puis la voir échouer</h3>
+<p>Le bloc ci-dessous fait ce que vous feriez à la main : il écrit les trois fichiers à partir des blocs de cette fiche (chacun commence par <code># Fichier :</code> et le nom du fichier où il va ; « (suite) » l’ajoute à la fin de ce fichier) dans un dossier temporaire, fige une clôture d’exemple (le triangle Taylor-Ashe exporté en CSV, sous le nom <code>2025q4</code>), puis lance <code>python -m pytest -q tests</code>. Il recommence ensuite avec une version du module modifiée : facteurs calculés en moyenne simple des rapports individuels au lieu de la moyenne pondérée de Chain-Ladder.</p>
+<div class="cell" data-execution_count="9" id="4ba82512">
+<details class="code-fold">
+<summary>Le code qui assemble et lance la suite (à déplier)</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="im">import</span> importlib.util</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a></span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>FICHE <span class="op">=</span> Path(<span class="st">"I3_tests_pytest_module_provisionnement.qmd"</span>)</span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a></span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a></span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a><span class="kw">def</span> fichiers_de_la_fiche():</span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a>    <span class="co">"""Contenu de chaque fichier, assemblé depuis les blocs de la fiche."""</span></span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a>    fichiers <span class="op">=</span> {}</span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a>    <span class="cf">for</span> code <span class="kw">in</span> re.findall(<span class="vs">r"</span><span class="dv">^</span><span class="vs">```</span><span class="ch">\{</span><span class="vs">python</span><span class="ch">\}\n</span><span class="kw">(</span><span class="dv">.</span><span class="op">*?</span><span class="kw">)</span><span class="dv">^</span><span class="vs">```"</span>, FICHE.read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>), re.M <span class="op">|</span> re.S):</span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a>        lignes <span class="op">=</span> [l <span class="cf">for</span> l <span class="kw">in</span> code.splitlines() <span class="cf">if</span> <span class="kw">not</span> l.startswith(<span class="st">"#|"</span>)]</span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a>        entete <span class="op">=</span> re.match(<span class="vs">r"# Fichier : </span><span class="kw">(</span><span class="dv">\S</span><span class="op">+</span><span class="kw">)</span><span class="vs">"</span>, lignes[<span class="dv">0</span>]) <span class="cf">if</span> lignes <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb12-18"><a aria-hidden="true" href="#cb12-18" tabindex="-1"></a>        <span class="cf">if</span> entete:</span>
+<span id="cb12-19"><a aria-hidden="true" href="#cb12-19" tabindex="-1"></a>            nom <span class="op">=</span> entete.group(<span class="dv">1</span>)</span>
+<span id="cb12-20"><a aria-hidden="true" href="#cb12-20" tabindex="-1"></a>            fichiers[nom] <span class="op">=</span> fichiers.get(nom, <span class="st">""</span>) <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(lignes) <span class="op">+</span> <span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb12-21"><a aria-hidden="true" href="#cb12-21" tabindex="-1"></a>    <span class="cf">return</span> fichiers</span>
+<span id="cb12-22"><a aria-hidden="true" href="#cb12-22" tabindex="-1"></a></span>
+<span id="cb12-23"><a aria-hidden="true" href="#cb12-23" tabindex="-1"></a></span>
+<span id="cb12-24"><a aria-hidden="true" href="#cb12-24" tabindex="-1"></a><span class="kw">def</span> lancer(dossier, <span class="op">*</span>commande):</span>
+<span id="cb12-25"><a aria-hidden="true" href="#cb12-25" tabindex="-1"></a>    env <span class="op">=</span> {<span class="op">**</span>os.environ, <span class="st">"PYTHONUTF8"</span>: <span class="st">"1"</span>, <span class="st">"PYTHONIOENCODING"</span>: <span class="st">"utf-8"</span>,</span>
+<span id="cb12-26"><a aria-hidden="true" href="#cb12-26" tabindex="-1"></a>           <span class="st">"PYTEST_DISABLE_PLUGIN_AUTOLOAD"</span>: <span class="st">"1"</span>}   <span class="co"># pytest seul, sans les extensions installées</span></span>
+<span id="cb12-27"><a aria-hidden="true" href="#cb12-27" tabindex="-1"></a>    sortie <span class="op">=</span> subprocess.run([sys.executable, <span class="op">*</span>commande], cwd<span class="op">=</span>dossier, env<span class="op">=</span>env,</span>
+<span id="cb12-28"><a aria-hidden="true" href="#cb12-28" tabindex="-1"></a>                            capture_output<span class="op">=</span><span class="va">True</span>, text<span class="op">=</span><span class="va">True</span>, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb12-29"><a aria-hidden="true" href="#cb12-29" tabindex="-1"></a>    <span class="cf">return</span> sortie.stdout <span class="op">+</span> sortie.stderr</span>
+<span id="cb12-30"><a aria-hidden="true" href="#cb12-30" tabindex="-1"></a></span>
+<span id="cb12-31"><a aria-hidden="true" href="#cb12-31" tabindex="-1"></a></span>
+<span id="cb12-32"><a aria-hidden="true" href="#cb12-32" tabindex="-1"></a><span class="cf">if</span> importlib.util.find_spec(<span class="st">"pytest"</span>) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb12-33"><a aria-hidden="true" href="#cb12-33" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"pytest n'est pas installé sur la machine de rendu : pip install pytest"</span>)</span>
+<span id="cb12-34"><a aria-hidden="true" href="#cb12-34" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb12-35"><a aria-hidden="true" href="#cb12-35" tabindex="-1"></a>    <span class="cf">with</span> tempfile.TemporaryDirectory() <span class="im">as</span> tmp:</span>
+<span id="cb12-36"><a aria-hidden="true" href="#cb12-36" tabindex="-1"></a>        dossier <span class="op">=</span> Path(tmp)</span>
+<span id="cb12-37"><a aria-hidden="true" href="#cb12-37" tabindex="-1"></a>        <span class="cf">for</span> nom, contenu <span class="kw">in</span> fichiers_de_la_fiche().items():</span>
+<span id="cb12-38"><a aria-hidden="true" href="#cb12-38" tabindex="-1"></a>            (dossier <span class="op">/</span> nom).parent.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-39"><a aria-hidden="true" href="#cb12-39" tabindex="-1"></a>            (dossier <span class="op">/</span> nom).write_text(contenu, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb12-40"><a aria-hidden="true" href="#cb12-40" tabindex="-1"></a>        np.savetxt(dossier <span class="op">/</span> <span class="st">"triangle_2025q4.csv"</span>, TAYLOR_ASHE, delimiter<span class="op">=</span><span class="st">";"</span>, fmt<span class="op">=</span><span class="st">"%.0f"</span>)</span>
+<span id="cb12-41"><a aria-hidden="true" href="#cb12-41" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"$ python figer_cloture.py triangle_2025q4.csv 2025q4"</span>)</span>
+<span id="cb12-42"><a aria-hidden="true" href="#cb12-42" tabindex="-1"></a>        <span class="bu">print</span>(lancer(dossier, <span class="st">"figer_cloture.py"</span>, <span class="st">"triangle_2025q4.csv"</span>, <span class="st">"2025q4"</span>))</span>
+<span id="cb12-43"><a aria-hidden="true" href="#cb12-43" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"$ python -m pytest -q tests"</span>)</span>
+<span id="cb12-44"><a aria-hidden="true" href="#cb12-44" tabindex="-1"></a>        <span class="bu">print</span>(lancer(dossier, <span class="st">"-m"</span>, <span class="st">"pytest"</span>, <span class="st">"-q"</span>, <span class="st">"-p"</span>, <span class="st">"no:cacheprovider"</span>, <span class="st">"tests"</span>))</span>
+<span id="cb12-45"><a aria-hidden="true" href="#cb12-45" tabindex="-1"></a></span>
+<span id="cb12-46"><a aria-hidden="true" href="#cb12-46" tabindex="-1"></a>        <span class="co"># Le module modifié : moyenne simple des rapports individuels</span></span>
+<span id="cb12-47"><a aria-hidden="true" href="#cb12-47" tabindex="-1"></a>        module <span class="op">=</span> (dossier <span class="op">/</span> <span class="st">"chain_ladder.py"</span>).read_text(encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb12-48"><a aria-hidden="true" href="#cb12-48" tabindex="-1"></a>        modifie <span class="op">=</span> module.replace(</span>
+<span id="cb12-49"><a aria-hidden="true" href="#cb12-49" tabindex="-1"></a>            <span class="st">"factors[j] = triangle[mask, j + 1].sum() / col_sum"</span>,</span>
+<span id="cb12-50"><a aria-hidden="true" href="#cb12-50" tabindex="-1"></a>            <span class="st">"factors[j] = np.mean(triangle[mask, j + 1] / triangle[mask, j])"</span>)</span>
+<span id="cb12-51"><a aria-hidden="true" href="#cb12-51" tabindex="-1"></a>        <span class="cf">assert</span> modifie <span class="op">!=</span> module</span>
+<span id="cb12-52"><a aria-hidden="true" href="#cb12-52" tabindex="-1"></a>        (dossier <span class="op">/</span> <span class="st">"chain_ladder.py"</span>).write_text(modifie, encoding<span class="op">=</span><span class="st">"utf-8"</span>)</span>
+<span id="cb12-53"><a aria-hidden="true" href="#cb12-53" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"$ python -m pytest -q tests   (module modifié)"</span>)</span>
+<span id="cb12-54"><a aria-hidden="true" href="#cb12-54" tabindex="-1"></a>        sortie <span class="op">=</span> lancer(dossier, <span class="st">"-m"</span>, <span class="st">"pytest"</span>, <span class="st">"-q"</span>, <span class="st">"-p"</span>, <span class="st">"no:cacheprovider"</span>, <span class="st">"--tb=no"</span>, <span class="st">"tests"</span>)</span>
+<span id="cb12-55"><a aria-hidden="true" href="#cb12-55" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(l <span class="cf">for</span> l <span class="kw">in</span> sortie.splitlines() <span class="cf">if</span> l.startswith((<span class="st">"FAILED"</span>, <span class="st">"="</span>)) <span class="kw">or</span> <span class="st">"passed"</span> <span class="kw">in</span> l))</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ python figer_cloture.py triangle_2025q4.csv 2025q4
+Clôture 2025q4 figée : réserve totale 18,680,856
+
+$ python -m pytest -q tests
+.........                                                                [100%]
+9 passed in 0.81s
+
+$ python -m pytest -q tests   (module modifié)
+=========================== short test summary info ===========================
+FAILED tests/test_chain_ladder.py::test_taylor_ashe_reference_publiee - asser...
+FAILED tests/test_chain_ladder.py::test_non_regression_cloture[2025q4] - Asse...
+2 failed, 7 passed in 0.44s</code></pre>
+</div>
+</div>
+<p>La suite passe : 9 tests (deux cas triviaux, la référence publiée, quatre cas dégénérés, la reproductibilité, et la non-régression de la clôture figée). Avec le module modifié, deux tests échouent : la référence Taylor-Ashe et la non-régression de la clôture <code>2025q4</code>. Les cas triviaux, eux, passent toujours : sur un triangle constant ou un triangle 2 x 2, la moyenne simple et la moyenne pondérée des rapports donnent le même facteur. C’est pour cela qu’une catégorie seule ne suffit pas : les cas calculables à la main vérifient la mécanique, la référence et la non-régression vérifient la méthode.</p>
+<p>La durée affichée par pytest dépend de la machine qui a rendu la page et de sa charge ; elle comprend le chargement de NumPy et la découverte des tests, pas seulement les calculs.</p>
+</section>
+</section>
+<section class="level2" data-number="28.5" id="exercices">
+<h2 class="anchored" data-anchor-id="exercices" data-number="28.5" id="exercices"> Exercices</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice 1 : trouvez l’erreur
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un collègue trouve le script <code>figer_cloture.py</code> trop lourd. Il écrit à la place :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a><span class="kw">def</span> test_non_regression_2025q4():</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>    triangle <span class="op">=</span> np.load(DATA_DIR <span class="op">/</span> <span class="st">"triangle_2025q4.npy"</span>)</span>
+<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a>    attendu <span class="op">=</span> chain_ladder(triangle)[<span class="st">"reserves"</span>]</span>
+<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a>    np.testing.assert_allclose(chain_ladder(triangle)[<span class="st">"reserves"</span>], attendu, rtol<span class="op">=</span><span class="fl">1e-9</span>)</span></code></pre></div></div>
+<p>Le test passe. Que vérifie-t-il vraiment ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Presque rien. La valeur attendue est recalculée par le module testé, au moment du test : si le module change, l’attendu change avec lui, et le test passe toujours. Il vérifie seulement que la fonction est déterministe, ce que fait déjà le test de reproductibilité.</p>
+<p>Un test de non-régression compare le module d’aujourd’hui à une valeur <strong>produite hier et enregistrée hors du code</strong> : le fichier <code>resultats_2025q4.json</code> écrit le jour de la clôture. C’est le même défaut qu’une validation de migration qui compare un module Python à une colonne « Excel » recalculée avec le même code (fiche I1) : une vérification qui ne peut pas échouer ne vérifie rien.</p>
+</details>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice 2 : la propriété qui échoue
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un collègue découvre la librairie Hypothesis, qui génère des triangles au hasard (une centaine par défaut) pour tester une propriété. Il écrit : « pour tout triangle valide, l’ultime de chaque année d’origine est au moins égal à son dernier montant connu », c’est-à-dire des réserves positives ou nulles. Hypothesis trouve un contre-exemple. Il en conclut que le module est faux. A-t-il raison ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Non. La propriété est fausse, pas le module. Une réserve positive suppose des facteurs de développement au moins égaux à 1, donc des montants cumulés qui ne décroissent pas. C’est le cas d’un triangle de paiements sans recours. Sur un triangle de charges (paiements plus provisions dossier par dossier), des bonis de liquidation font baisser les montants cumulés, des facteurs passent sous 1, et Chain-Ladder donne légitimement une réserve négative. Hypothesis a fait son travail : il a trouvé le cas que la propriété oubliait, et il réduit tout contre-exemple au plus simple qu’il trouve. Un tel cas tient dans un triangle 2 x 2 : 100 000 puis 99 999 pour la première année, 100 000 pour la seconde.</p>
+<div class="cell" data-execution_count="10" id="a5272f0c">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>r_boni <span class="op">=</span> chain_ladder(np.array([[<span class="fl">100_000.0</span>, <span class="fl">99_999.0</span>], [<span class="fl">100_000.0</span>, np.nan]]))</span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Facteur : </span><span class="sc">{</span>r_boni[<span class="st">'factors'</span>][<span class="dv">0</span>]<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserves par année d'origine : </span><span class="sc">{</span>r_boni[<span class="st">'reserves'</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Facteur : 0.99999
+Réserves par année d'origine : [ 0. -1.]</code></pre>
+</div>
+</div>
+<p>Le facteur vaut 0,99999, et la réserve de la seconde année vaut −1 : un boni d’un euro suffit à faire tomber la propriété.</p>
+<p>Deux corrections possibles, selon ce qu’on veut garantir :</p>
+<ol type="1">
+<li>Restreindre la génération aux triangles dont les incréments sont positifs ou nuls (paiements) : la propriété devient vraie.</li>
+<li>Choisir une propriété vraie pour tout triangle, par exemple l’homogénéité : multiplier le triangle par une constante multiplie ultimes et réserves par cette constante et laisse les facteurs inchangés.</li>
+</ol>
+<p>Le test ci-dessous fait les deux ; il s’ajoute à la fin de <code>tests/test_chain_ladder.py</code>. Il n’est pas exécuté dans ce support (<code>hypothesis</code> ne figure pas dans <code>requirements.txt</code> ; <code>pip install hypothesis</code> pour l’essayer) ; il a été lancé à la rédaction de la fiche, ajouté à la suite des neuf autres, et les dix tests passent.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a><span class="im">from</span> hypothesis <span class="im">import</span> given, settings, strategies <span class="im">as</span> st</span>
+<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a><span class="im">from</span> hypothesis.extra.numpy <span class="im">import</span> arrays</span>
+<span id="cb17-3"><a aria-hidden="true" href="#cb17-3" tabindex="-1"></a></span>
+<span id="cb17-4"><a aria-hidden="true" href="#cb17-4" tabindex="-1"></a></span>
+<span id="cb17-5"><a aria-hidden="true" href="#cb17-5" tabindex="-1"></a><span class="at">@st.composite</span></span>
+<span id="cb17-6"><a aria-hidden="true" href="#cb17-6" tabindex="-1"></a><span class="kw">def</span> triangles_de_paiements(draw):</span>
+<span id="cb17-7"><a aria-hidden="true" href="#cb17-7" tabindex="-1"></a>    <span class="co">"""Triangle cumulé n x n à incréments positifs ou nuls, première colonne &gt; 0."""</span></span>
+<span id="cb17-8"><a aria-hidden="true" href="#cb17-8" tabindex="-1"></a>    n <span class="op">=</span> draw(st.integers(min_value<span class="op">=</span><span class="dv">2</span>, max_value<span class="op">=</span><span class="dv">6</span>))</span>
+<span id="cb17-9"><a aria-hidden="true" href="#cb17-9" tabindex="-1"></a>    increments <span class="op">=</span> draw(arrays(np.float64, (n, n), elements<span class="op">=</span>st.floats(<span class="dv">0</span>, <span class="fl">1e6</span>)))</span>
+<span id="cb17-10"><a aria-hidden="true" href="#cb17-10" tabindex="-1"></a>    increments[:, <span class="dv">0</span>] <span class="op">+=</span> <span class="fl">1.0</span></span>
+<span id="cb17-11"><a aria-hidden="true" href="#cb17-11" tabindex="-1"></a>    triangle <span class="op">=</span> increments.cumsum(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb17-12"><a aria-hidden="true" href="#cb17-12" tabindex="-1"></a>    triangle[np.add.outer(np.arange(n), np.arange(n)) <span class="op">&gt;</span> n <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> np.nan</span>
+<span id="cb17-13"><a aria-hidden="true" href="#cb17-13" tabindex="-1"></a>    <span class="cf">return</span> triangle</span>
+<span id="cb17-14"><a aria-hidden="true" href="#cb17-14" tabindex="-1"></a></span>
+<span id="cb17-15"><a aria-hidden="true" href="#cb17-15" tabindex="-1"></a></span>
+<span id="cb17-16"><a aria-hidden="true" href="#cb17-16" tabindex="-1"></a><span class="at">@settings</span>(deadline<span class="op">=</span><span class="va">None</span>)   <span class="co"># pas de limite de durée par cas : le poste peut être chargé</span></span>
+<span id="cb17-17"><a aria-hidden="true" href="#cb17-17" tabindex="-1"></a><span class="at">@given</span>(triangles_de_paiements(), st.floats(<span class="fl">0.01</span>, <span class="dv">100</span>))</span>
+<span id="cb17-18"><a aria-hidden="true" href="#cb17-18" tabindex="-1"></a><span class="kw">def</span> test_proprietes_chain_ladder(triangle, c):</span>
+<span id="cb17-19"><a aria-hidden="true" href="#cb17-19" tabindex="-1"></a>    result <span class="op">=</span> chain_ladder(triangle)</span>
+<span id="cb17-20"><a aria-hidden="true" href="#cb17-20" tabindex="-1"></a>    <span class="co"># Incréments positifs ou nuls : réserves positives ou nulles (à l'arrondi près)</span></span>
+<span id="cb17-21"><a aria-hidden="true" href="#cb17-21" tabindex="-1"></a>    <span class="cf">assert</span> np.<span class="bu">all</span>(result[<span class="st">"reserves"</span>] <span class="op">&gt;=</span> <span class="op">-</span><span class="fl">1e-6</span> <span class="op">*</span> np.nanmax(triangle))</span>
+<span id="cb17-22"><a aria-hidden="true" href="#cb17-22" tabindex="-1"></a>    <span class="co"># Homogénéité : vraie pour tout triangle</span></span>
+<span id="cb17-23"><a aria-hidden="true" href="#cb17-23" tabindex="-1"></a>    result_c <span class="op">=</span> chain_ladder(c <span class="op">*</span> triangle)</span>
+<span id="cb17-24"><a aria-hidden="true" href="#cb17-24" tabindex="-1"></a>    np.testing.assert_allclose(result_c[<span class="st">"factors"</span>], result[<span class="st">"factors"</span>], rtol<span class="op">=</span><span class="fl">1e-9</span>)</span>
+<span id="cb17-25"><a aria-hidden="true" href="#cb17-25" tabindex="-1"></a>    np.testing.assert_allclose(result_c[<span class="st">"reserves"</span>], c <span class="op">*</span> result[<span class="st">"reserves"</span>],</span>
+<span id="cb17-26"><a aria-hidden="true" href="#cb17-26" tabindex="-1"></a>                               rtol<span class="op">=</span><span class="fl">1e-9</span>, atol<span class="op">=</span><span class="fl">1e-6</span> <span class="op">*</span> c <span class="op">*</span> np.nanmax(triangle))</span></code></pre></div></div>
+</details>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Exercice 3 : un écart de 184 %
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un collègue écrit son test de référence de mémoire :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a aria-hidden="true" href="#cb18-1" tabindex="-1"></a><span class="kw">def</span> test_taylor_ashe(taylor_ashe):</span>
+<span id="cb18-2"><a aria-hidden="true" href="#cb18-2" tabindex="-1"></a>    result <span class="op">=</span> chain_ladder(taylor_ashe)</span>
+<span id="cb18-3"><a aria-hidden="true" href="#cb18-3" tabindex="-1"></a>    <span class="cf">assert</span> result[<span class="st">"ultimates"</span>].<span class="bu">sum</span>() <span class="op">==</span> pytest.approx(<span class="dv">18_680_856</span>, rel<span class="op">=</span><span class="fl">0.01</span>)</span></code></pre></div></div>
+<p>Le test échoue : la somme calculée vaut 53 038 946, soit 184 % de plus que l’attendu. Il hésite entre chercher un bug dans le module et relâcher la tolérance. Que se passe-t-il, et qu’est-ce qui, dans la taille même de l’écart, aurait dû le mettre sur la piste ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Ni l’un ni l’autre : le module est juste, le test compare l’ultime à la réserve. 18 680 856 est la réserve totale publiée ; l’ultime total publié est 53 038 946.</p>
+<div class="cell" data-execution_count="11" id="a66c1e2a">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a aria-hidden="true" href="#cb19-1" tabindex="-1"></a>reserve_publiee <span class="op">=</span> <span class="dv">18_680_856</span></span>
+<span id="cb19-2"><a aria-hidden="true" href="#cb19-2" tabindex="-1"></a>ultime_total <span class="op">=</span> r[<span class="st">"ultimates"</span>].<span class="bu">sum</span>()</span>
+<span id="cb19-3"><a aria-hidden="true" href="#cb19-3" tabindex="-1"></a>deja_connu <span class="op">=</span> ultime_total <span class="op">-</span> r[<span class="st">"reserves"</span>].<span class="bu">sum</span>()</span>
+<span id="cb19-4"><a aria-hidden="true" href="#cb19-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ultime total / réserve publiée - 1 : </span><span class="sc">{</span>ultime_total <span class="op">/</span> reserve_publiee <span class="op">-</span> <span class="dv">1</span><span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb19-5"><a aria-hidden="true" href="#cb19-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Déjà connu / réserve publiée       : </span><span class="sc">{</span>deja_connu <span class="op">/</span> reserve_publiee<span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb19-6"><a aria-hidden="true" href="#cb19-6" tabindex="-1"></a></span>
+<span id="cb19-7"><a aria-hidden="true" href="#cb19-7" tabindex="-1"></a><span class="co"># Pour comparer, une vraie erreur de méthode : la moyenne simple des rapports (étape 6)</span></span>
+<span id="cb19-8"><a aria-hidden="true" href="#cb19-8" tabindex="-1"></a>n <span class="op">=</span> TAYLOR_ASHE.shape[<span class="dv">0</span>]</span>
+<span id="cb19-9"><a aria-hidden="true" href="#cb19-9" tabindex="-1"></a>f_simple <span class="op">=</span> [np.nanmean(TAYLOR_ASHE[:, j <span class="op">+</span> <span class="dv">1</span>] <span class="op">/</span> TAYLOR_ASHE[:, j]) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>)]</span>
+<span id="cb19-10"><a aria-hidden="true" href="#cb19-10" tabindex="-1"></a>proj <span class="op">=</span> TAYLOR_ASHE.copy()</span>
+<span id="cb19-11"><a aria-hidden="true" href="#cb19-11" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):</span>
+<span id="cb19-12"><a aria-hidden="true" href="#cb19-12" tabindex="-1"></a>    inconnu <span class="op">=</span> np.isnan(proj[:, j])</span>
+<span id="cb19-13"><a aria-hidden="true" href="#cb19-13" tabindex="-1"></a>    proj[inconnu, j] <span class="op">=</span> proj[inconnu, j <span class="op">-</span> <span class="dv">1</span>] <span class="op">*</span> f_simple[j <span class="op">-</span> <span class="dv">1</span>]</span>
+<span id="cb19-14"><a aria-hidden="true" href="#cb19-14" tabindex="-1"></a>reserve_simple <span class="op">=</span> proj[:, <span class="op">-</span><span class="dv">1</span>].<span class="bu">sum</span>() <span class="op">-</span> deja_connu</span>
+<span id="cb19-15"><a aria-hidden="true" href="#cb19-15" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Réserve en moyenne simple / réserve publiée - 1 : </span><span class="sc">{</span>reserve_simple <span class="op">/</span> reserve_publiee <span class="op">-</span> <span class="dv">1</span><span class="sc">:.2%}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ultime total / réserve publiée - 1 : 183.92%
+Déjà connu / réserve publiée       : 183.92%
+Réserve en moyenne simple / réserve publiée - 1 : 1.08%</code></pre>
+</div>
+</div>
+<p>L’écart de 183,92 % est exactement le rapport du déjà connu à la réserve : l’ultime, c’est la réserve plus tout ce qui est déjà connu sur la diagonale. Une vraie erreur de méthode, la moyenne simple des rapports, ne déplace la réserve que de 1,08 %. Un écart qui se compte en dizaines de pour cent ne vient presque jamais d’un arrondi ou d’une méthode : il signale qu’on ne compare pas la même grandeur. Relâcher la tolérance jusqu’à le faire passer laisserait passer n’importe quoi. La correction est celle de l’étape 3 : chaque grandeur comparée à sa propre valeur publiée.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="level2" data-number="28.6" id="stratégie-dexécution-dans-le-cabinet">
+<h2 class="anchored" data-anchor-id="stratégie-dexécution-dans-le-cabinet" data-number="28.6" id="stratégie-dexécution-dans-le-cabinet"> Stratégie d’exécution dans le cabinet</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%"/>
+<col style="width: 50%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Quand lancer les tests</th>
+<th>Commande</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Avant chaque commit local</td>
+<td><code>python -m pytest -q tests</code></td>
+</tr>
+<tr class="even">
+<td>Sur l’intégration continue (GitHub Actions ou autre), à chaque push</td>
+<td><code>python -m pytest tests --cov=.</code> (extension <code>pytest-cov</code>)</td>
+</tr>
+<tr class="odd">
+<td>Le jour d’une clôture</td>
+<td><code>python figer_cloture.py &lt;triangle&gt;.csv &lt;clôture&gt;</code>, puis commit des fichiers de <code>tests/data_reference/</code></td>
+</tr>
+<tr class="even">
+<td>Revue ou audit (commissaire aux comptes, fonction actuarielle, ACPR)</td>
+<td>Démonstration des tests qui passent, historique Git</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="level2" data-number="28.7" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="28.7" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Tester juste « ça tourne ».</strong> Un test qui appelle <code>chain_ladder(triangle)</code> sans vérifier la sortie ne sert à rien. <strong>Toujours un assert</strong> sur une valeur attendue, avec une tolérance explicite.</li>
+<li><strong>Comparer une grandeur à la référence d’une autre.</strong> Réserve et ultime, brut et net, cumulé et incrémental : relisez ce que chaque assert compare. Un écart très grand signale presque toujours qu’on ne compare pas la même chose, pas une erreur d’arrondi.</li>
+<li><strong>Recalculer l’attendu dans le test.</strong> Un attendu vient d’ailleurs que du code testé : une publication, une clôture enregistrée, un calcul à la main.</li>
+<li><strong>Tester trop peu, ou trop.</strong> Un seul test sur Taylor-Ashe ne couvre ni les cas limites ni les clôtures passées : couvrez au moins les cinq catégories. À l’inverse, une suite trop lente pour être lancée avant chaque commit ne sera pas lancée : visez les tests qui protègent un résultat, supprimez les redondants.</li>
+<li><strong>Écrire des chemins absolus.</strong> <code>np.load("C:/Users/moi/donnees/triangle.npy")</code> casse chez le collègue qui clone le dépôt. <strong>Chemins relatifs</strong> au fichier de test (<code>Path(__file__).parent</code>).</li>
+<li><strong>Oublier la tolérance numérique.</strong> <code>assert reserve == 18_680_856</code> échoue pour 18 680 855,9999. <strong><code>pytest.approx</code></strong> ou <code>np.testing.assert_allclose</code>, avec une tolérance choisie et justifiée.</li>
+<li><strong>Recréer les jeux de données dans chaque test.</strong> Une <strong>fixture</strong> (<code>@pytest.fixture</code>) les partage, et une copie par test évite qu’un test modifie les données d’un autre.</li>
+<li><strong>Mettre des données réelles dans les tests.</strong> Les fichiers de <code>tests/data_reference/</code> sont versionnés et lus par Claude comme le reste du dépôt : triangles agrégés, sans donnée nominative. Tout ce que Claude lit part chez le fournisseur du modèle.</li>
+</ul>
+</section>
+<section class="level2" data-number="28.8" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="28.8" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>R1 Chain-Ladder déterministe</strong> : le module testé.</li>
+<li><strong>R3 Mack stochastique</strong> : même stratégie, avec la référence publiée de l’erreur de Mack sur Taylor-Ashe (<span class="math inline">\(\sqrt{\mathrm{MSEP}}\)</span> 2 447 095 sur la réserve totale).</li>
+<li><strong>R4 Bootstrap Chain-Ladder</strong> : la reproductibilité devient « même graine, même résultat », et l’accord avec la référence se juge à une tolérance statistique.</li>
+<li><strong>I1 Migration Excel-VBA en Python</strong> : les tests figent le comportement validé contre le classeur, y compris la règle d’arrondi.</li>
+<li><strong>I2 Vectorisation Monte Carlo</strong> : tests d’accord avec les moments théoriques entre version naïve et vectorisée.</li>
+</ul>
+</section>
+<section class="level2" data-number="28.9" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="28.9" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Couverture de code.</strong> <code>pytest --cov</code> (extension <code>pytest-cov</code>) mesure la part du code exécutée par les tests. Elle dit ce qui n’est jamais testé ; elle ne dit pas si les asserts sont bons. Une ligne couverte par un test qui ne peut pas échouer reste non testée.</li>
+<li><strong>Tests de propriété (Hypothesis).</strong> La librairie <code>hypothesis</code> génère des cas de test à partir d’une propriété qui doit toujours être vraie. L’exercice 2 en montre un, et le piège : la propriété doit être vraie pour tous les cas générés.</li>
+<li><strong>Intégration continue.</strong> Configurer GitHub Actions pour lancer les tests à chaque push, et bloquer la fusion d’une branche si un test échoue. Voir l’annexe E sur Git.</li>
+<li><strong>Mutation testing.</strong> Un outil modifie le code (un <code>&gt;</code> en <code>&gt;=</code>, un <code>+</code> en <code>-</code>) et vérifie que la suite détecte chaque modification. L’étape 6 en fait un à la main : il mesure la qualité de la suite, pas sa taille.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/I2/index.html"><small>&larr; Précédent</small>I2. Vectorisation d’un Monte Carlo non-vie naïf</a><a class="next" href="../../annexes/installation/index.html"><small>Suivant &rarr;</small>Installation et premier pas avec Claude Code</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S4. Lecture critique d’un texte de l’ACPR · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">S4. Lecture critique d’un texte de l’ACPR</h1>
+      <p class="lede">Cette fiche illustre la démarche A appliquée au texte (lire une publication de l’ACPR) puis la démarche C (produire la fiche d’impact). Ce que vous apprenez n’est pas le texte lui-même, mais comment en extraire les attentes concrètes sans changer leur portée juridique, comment vérifier chaque référence citée (le piège principal : les références inventées), et comment construire un plan d’action adapté à l’organisme.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-la-fausse-référence">Exercice : trouvez la fausse référence</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : A, explorer une donnée nouvelle (ici du texte), et C, produire un livrable réglementaire
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="22.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="22.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>L’ACPR publie des recommandations, des positions, des instructions et des notices. Leur portée n’est pas la même : une <strong>instruction</strong> est contraignante (c’est elle qui impose, par exemple, le contenu d’un reporting) ; une <strong>recommandation</strong> ou une <strong>position</strong> exprime les attentes de l’ACPR et son interprétation des textes, sans force contraignante propre. Pour la fonction actuarielle, la conformité ou la gestion des risques, <strong>lire ces textes et en sortir une fiche d’impact</strong> est un exercice récurrent, souvent à préparer pour un comité proche.</p>
+<p>Le LLM accélère la lecture, propose la structure, repère les impacts ; l’actuaire vérifie, qualifie la portée juridique et garde la plume.</p>
+<p>Ce cas est volontairement <strong>débutant</strong> : il se prête à une première prise en main, sur le versant rédactionnel, en parallèle de V1 (table de mortalité).</p>
+<p>Le cas illustre <strong>l’organisation des données</strong> (texte source traçable, dictionnaire des éléments extraits), <strong>l’interface de présentation</strong> (fiche d’impact structurée), <strong>la gouvernance</strong> (vérification de chaque référence citée), et <strong>le pilotage IA</strong> (5 prompts du résumé à la fiche d’impact).</p>
+</section>
+<section class="level2" data-number="22.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="22.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>En pratique, vous partez du texte officiel en PDF, téléchargé sur le site de l’ACPR. Ici, on travaille sur une recommandation <strong>fictive</strong>, écrite pour l’exercice. Elle cite trois textes : certaines de ces références sont réelles, au moins une ne l’est pas. L’exercice de fin de fiche vous demande de trouver laquelle.</p>
+<div class="cell" data-execution_count="1" id="6a1d1e22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a>TEXTE_ACPR <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="st">RECOMMANDATION ACPR 2026-R-XX (FICTIVE, exemple pédagogique)</span></span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="st">Gouvernance des modèles d'intelligence artificielle utilisés dans l'assurance.</span></span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a><span class="st">I. Périmètre</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a><span class="st">La présente recommandation s'adresse aux organismes d'assurance et de</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a><span class="st">réassurance, ainsi qu'aux groupes constitués majoritairement de tels</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a><span class="st">organismes. Elle vise les modèles d'intelligence artificielle utilisés</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a><span class="st">dans les processus suivants :</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a><span class="st">(a) la tarification individuelle des contrats d'assurance ;</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="st">(b) la souscription et l'évaluation du risque pour la décision d'acceptation</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a><span class="st">ou de refus ;</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a><span class="st">(c) la gestion des sinistres, en particulier les algorithmes d'aide à</span></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="st">l'évaluation des dommages ;</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="st">(d) le pilotage des fonds d'investissement liés à des contrats d'assurance vie.</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a><span class="st">II. Recommandations</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="st">II.1. Gouvernance et responsabilité</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="st">L'ACPR recommande que chaque modèle entrant dans le périmètre de la</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="st">section I soit documenté dans un dossier de gouvernance comprenant :</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a><span class="st">- la finalité du modèle, ses limites et ses cas d'usage explicitement exclus ;</span></span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a><span class="st">- les choix méthodologiques avec leur justification ;</span></span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a><span class="st">- la fréquence et les modalités des revues de qualité ;</span></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a><span class="st">- les rôles et responsabilités, dont un responsable identifié par modèle ;</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="st">- les procédures de remontée d'incident.</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="st">L'ACPR recommande en outre que l'organisme tienne un inventaire des modèles</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a><span class="st">entrant dans le périmètre de la section I.</span></span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a><span class="st">La validation des modèles de tarification s'appuie sur les principes de la</span></span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a><span class="st">position ACPR 2025-P-04 relative à la validation des modèles de tarification.</span></span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a></span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a><span class="st">II.2. Traçabilité</span></span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a><span class="st">L'ACPR recommande que chaque décision significative produite par un modèle</span></span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a><span class="st">puisse être retracée a posteriori : données d'entrée, version du modèle,</span></span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a><span class="st">version des paramètres et des prompts s'il s'agit d'un modèle génératif,</span></span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a><span class="st">décision produite et identité du valideur humain le cas échéant.</span></span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a><span class="st">Lorsque le modèle intervient dans le recueil des informations relatives au</span></span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a><span class="st">client, l'organisme se réfère également à la recommandation 2024-R-03 du</span></span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a><span class="st">21 novembre 2024 sur le recueil des informations relatives au client pour</span></span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a><span class="st">l'exercice du devoir de conseil.</span></span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a></span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a><span class="st">II.3. Non-discrimination</span></span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a><span class="st">L'ACPR recommande la mise en place de contrôles permettant de détecter une</span></span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a><span class="st">discrimination directe ou indirecte, et une revue annuelle documentée.</span></span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a></span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a><span class="st">III. Articulation avec le règlement européen sur l'IA</span></span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a><span class="st">Les systèmes relevant de l'annexe III, point 5 c), du règlement (UE)</span></span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a><span class="st">2024/1689 du 13 juin 2024 (évaluation des risques et tarification en ce qui</span></span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a><span class="st">concerne les personnes physiques en assurance vie et en assurance maladie)</span></span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a><span class="st">sont en outre soumis aux exigences de ce règlement applicables aux systèmes</span></span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a><span class="st">à haut risque.</span></span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a></span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a><span class="st">IV. Mise en œuvre</span></span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a><span class="st">L'ACPR invite les organismes à mettre en œuvre ces recommandations dans un</span></span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a><span class="st">délai de douze mois à compter de leur publication, et à tenir à sa</span></span>
+<span id="cb1-56"><a aria-hidden="true" href="#cb1-56" tabindex="-1"></a><span class="st">disposition l'inventaire recommandé au II.1.</span></span>
+<span id="cb1-57"><a aria-hidden="true" href="#cb1-57" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb1-58"><a aria-hidden="true" href="#cb1-58" tabindex="-1"></a></span>
+<span id="cb1-59"><a aria-hidden="true" href="#cb1-59" tabindex="-1"></a><span class="co"># Traçabilité de la source</span></span>
+<span id="cb1-60"><a aria-hidden="true" href="#cb1-60" tabindex="-1"></a>SOURCE <span class="op">=</span> {</span>
+<span id="cb1-61"><a aria-hidden="true" href="#cb1-61" tabindex="-1"></a>    <span class="st">"titre"</span>: <span class="st">"Recommandation ACPR 2026-R-XX (FICTIVE)"</span>,</span>
+<span id="cb1-62"><a aria-hidden="true" href="#cb1-62" tabindex="-1"></a>    <span class="st">"nature"</span>: <span class="st">"recommandation (non contraignante)"</span>,</span>
+<span id="cb1-63"><a aria-hidden="true" href="#cb1-63" tabindex="-1"></a>    <span class="st">"url"</span>: <span class="st">"[texte fictif, pas d'URL]"</span>,</span>
+<span id="cb1-64"><a aria-hidden="true" href="#cb1-64" tabindex="-1"></a>    <span class="st">"date_publication"</span>: <span class="st">"[fictive]"</span>,</span>
+<span id="cb1-65"><a aria-hidden="true" href="#cb1-65" tabindex="-1"></a>}</span>
+<span id="cb1-66"><a aria-hidden="true" href="#cb1-66" tabindex="-1"></a><span class="cf">for</span> cle, valeur <span class="kw">in</span> SOURCE.items():</span>
+<span id="cb1-67"><a aria-hidden="true" href="#cb1-67" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>cle<span class="sc">:17}</span><span class="ss">: </span><span class="sc">{</span>valeur<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-68"><a aria-hidden="true" href="#cb1-68" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Nombre de caractères du texte : </span><span class="sc">{</span><span class="bu">len</span>(TEXTE_ACPR)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>titre            : Recommandation ACPR 2026-R-XX (FICTIVE)
+nature           : recommandation (non contraignante)
+url              : [texte fictif, pas d'URL]
+date_publication : [fictive]
+
+Nombre de caractères du texte : 2800</code></pre>
+</div>
+</div>
+</section>
+<section class="level2" data-number="22.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="22.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Résumer.</strong> <em>“Voici le texte d’une publication de l’ACPR (variable <code>TEXTE_ACPR</code>). Résume-le en quatre rubriques courtes : sa nature juridique (instruction, recommandation, position, notice) et donc sa portée, le sujet, les attentes principales, le calendrier. Garde les verbes du texte (« recommande », « invite », « doit »).”</em></p></li>
+<li><p><strong>Identifier les attentes concrètes.</strong> <em>“Liste les attentes concrètes de ce texte. Pour chacune : (a) la nature (recommandation de l’ACPR ou exigence d’un autre texte contraignant), (b) le périmètre, (c) le délai. Format tableau.”</em></p></li>
+<li><p><strong>Identifier les processus impactés dans l’organisme.</strong> <em>“Pour notre organisme [décrire les activités : tarification auto, assurance décès individuelle, gestion des sinistres], quels processus internes sont concernés par ce texte ? Pour chacun, indique aussi s’il relève de l’annexe III, point 5 c), du règlement européen sur l’IA. Niveau d’urgence.”</em></p></li>
+<li><p><strong>Proposer un plan d’action.</strong> <em>“Construis un plan d’action en 6 à 10 étapes pour la mise en œuvre, avec : (a) responsable suggéré, (b) délai cible, (c) livrable attendu. Ordre logique de mise en œuvre.”</em></p></li>
+<li><p><strong>Vérifier les références.</strong> <em>“Pour chaque référence citée dans le texte (article de code, règlement, recommandation, position de l’ACPR, orientation de l’EIOPA), dis si tu peux confirmer qu’elle existe ET que son contenu correspond à ce que le texte lui attribue. Liste celles que tu ne peux pas confirmer, avec l’URL officielle où les vérifier. Je vérifierai moi-même.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="22.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="22.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="22.4.1" id="étape-1.-résumé-en-quatre-rubriques">
+<h3 class="anchored" data-anchor-id="étape-1.-résumé-en-quatre-rubriques" data-number="22.4.1"> Étape 1. Résumé en quatre rubriques</h3>
+<div class="cell" data-execution_count="2" id="1cc7abba">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>resume <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="st">NATURE : recommandation de l'ACPR, non contraignante en elle-même ; elle exprime</span></span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a><span class="st">         les attentes de l'ACPR. Seule la section III renvoie à un texte</span></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="st">         contraignant (le règlement européen sur l'IA).</span></span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a><span class="st">SUJET : gouvernance des modèles d'IA en assurance (tarification, souscription,</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="st">        sinistres, fonds vie).</span></span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a><span class="st">ATTENTES : l'ACPR recommande un dossier de gouvernance par modèle, un inventaire</span></span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a><span class="st">           des modèles, la traçabilité des décisions significatives, des</span></span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a><span class="st">           contrôles de non-discrimination avec une revue annuelle.</span></span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a><span class="st">CALENDRIER : l'ACPR invite à une mise en œuvre dans les 12 mois suivant la</span></span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a><span class="st">             publication, inventaire tenu à sa disposition.</span></span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a><span class="bu">print</span>(resume.strip())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NATURE : recommandation de l'ACPR, non contraignante en elle-même ; elle exprime
+         les attentes de l'ACPR. Seule la section III renvoie à un texte
+         contraignant (le règlement européen sur l'IA).
+SUJET : gouvernance des modèles d'IA en assurance (tarification, souscription,
+        sinistres, fonds vie).
+ATTENTES : l'ACPR recommande un dossier de gouvernance par modèle, un inventaire
+           des modèles, la traçabilité des décisions significatives, des
+           contrôles de non-discrimination avec une revue annuelle.
+CALENDRIER : l'ACPR invite à une mise en œuvre dans les 12 mois suivant la
+             publication, inventaire tenu à sa disposition.</code></pre>
+</div>
+</div>
+<p>Le résumé garde les verbes du texte : l’ACPR « recommande » et « invite », elle n’« impose » pas. Un résumé qui écrirait « obligations » ou « l’organisme doit » changerait la portée du texte, et la fiche d’impact partirait sur une base fausse.</p>
+</section>
+<section class="level3" data-number="22.4.2" id="étape-2.-tableau-des-attentes-concrètes">
+<h3 class="anchored" data-anchor-id="étape-2.-tableau-des-attentes-concrètes" data-number="22.4.2"> Étape 2. Tableau des attentes concrètes</h3>
+<div class="cell" data-execution_count="3" id="f78670be">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a><span class="kw">def</span> afficher(df: pd.DataFrame, titre: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="co">"""Une fiche par ligne : plus lisible qu'un tableau large dans une sortie texte."""</span></span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>    <span class="cf">for</span> _, ligne <span class="kw">in</span> df.iterrows():</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>titre<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>ligne<span class="sc">.</span>iloc[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>        <span class="cf">for</span> cle, valeur <span class="kw">in</span> ligne.iloc[<span class="dv">1</span>:].items():</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"    </span><span class="sc">{</span>cle<span class="sc">:15}</span><span class="ss">: </span><span class="sc">{</span>valeur<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>        <span class="bu">print</span>()</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>attentes <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>    {<span class="st">"attente"</span>: <span class="st">"Dossier de gouvernance par modèle"</span>,</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>     <span class="st">"nature"</span>: <span class="st">"Recommandation ACPR"</span>,</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>     <span class="st">"perimetre"</span>: <span class="st">"Modèles d'IA en tarification, souscription, sinistres, fonds vie"</span>,</span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>     <span class="st">"delai"</span>: <span class="st">"12 mois après publication"</span>},</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>    {<span class="st">"attente"</span>: <span class="st">"Traçabilité des décisions significatives"</span>,</span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>     <span class="st">"nature"</span>: <span class="st">"Recommandation ACPR"</span>,</span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>     <span class="st">"perimetre"</span>: <span class="st">"Chaque décision significative produite par un modèle"</span>,</span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>     <span class="st">"delai"</span>: <span class="st">"12 mois (mise en place du système)"</span>},</span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    {<span class="st">"attente"</span>: <span class="st">"Contrôles de non-discrimination, revue annuelle"</span>,</span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>     <span class="st">"nature"</span>: <span class="st">"Recommandation ACPR"</span>,</span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>     <span class="st">"perimetre"</span>: <span class="st">"Modèles du périmètre"</span>,</span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>     <span class="st">"delai"</span>: <span class="st">"Annuelle"</span>},</span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>    {<span class="st">"attente"</span>: <span class="st">"Inventaire des modèles à disposition de l'ACPR"</span>,</span>
+<span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a>     <span class="st">"nature"</span>: <span class="st">"Recommandation ACPR"</span>,</span>
+<span id="cb5-26"><a aria-hidden="true" href="#cb5-26" tabindex="-1"></a>     <span class="st">"perimetre"</span>: <span class="st">"Modèles du périmètre"</span>,</span>
+<span id="cb5-27"><a aria-hidden="true" href="#cb5-27" tabindex="-1"></a>     <span class="st">"delai"</span>: <span class="st">"12 mois"</span>},</span>
+<span id="cb5-28"><a aria-hidden="true" href="#cb5-28" tabindex="-1"></a>    {<span class="st">"attente"</span>: <span class="st">"Exigences des systèmes à haut risque"</span>,</span>
+<span id="cb5-29"><a aria-hidden="true" href="#cb5-29" tabindex="-1"></a>     <span class="st">"nature"</span>: <span class="st">"Règlement (UE) 2024/1689, contraignant"</span>,</span>
+<span id="cb5-30"><a aria-hidden="true" href="#cb5-30" tabindex="-1"></a>     <span class="st">"perimetre"</span>: <span class="st">"Tarification et évaluation des risques des personnes physiques en vie et maladie (annexe III, 5 c)"</span>,</span>
+<span id="cb5-31"><a aria-hidden="true" href="#cb5-31" tabindex="-1"></a>     <span class="st">"delai"</span>: <span class="st">"2 décembre 2027 (report par le règlement (UE) 2026/1744)"</span>},</span>
+<span id="cb5-32"><a aria-hidden="true" href="#cb5-32" tabindex="-1"></a>])</span>
+<span id="cb5-33"><a aria-hidden="true" href="#cb5-33" tabindex="-1"></a>afficher(attentes, <span class="st">"Attente"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Attente : Dossier de gouvernance par modèle
+    nature         : Recommandation ACPR
+    perimetre      : Modèles d'IA en tarification, souscription, sinistres, fonds vie
+    delai          : 12 mois après publication
+
+Attente : Traçabilité des décisions significatives
+    nature         : Recommandation ACPR
+    perimetre      : Chaque décision significative produite par un modèle
+    delai          : 12 mois (mise en place du système)
+
+Attente : Contrôles de non-discrimination, revue annuelle
+    nature         : Recommandation ACPR
+    perimetre      : Modèles du périmètre
+    delai          : Annuelle
+
+Attente : Inventaire des modèles à disposition de l'ACPR
+    nature         : Recommandation ACPR
+    perimetre      : Modèles du périmètre
+    delai          : 12 mois
+
+Attente : Exigences des systèmes à haut risque
+    nature         : Règlement (UE) 2024/1689, contraignant
+    perimetre      : Tarification et évaluation des risques des personnes physiques en vie et maladie (annexe III, 5 c)
+    delai          : 2 décembre 2027 (report par le règlement (UE) 2026/1744)
+</code></pre>
+</div>
+</div>
+<p>La dernière ligne ne vient pas de la recommandation mais du texte qu’elle cite : c’est la seule exigence contraignante du tableau. La date d’application des obligations « haut risque » de l’annexe III, fixée au 2 décembre 2027 par le règlement (UE) 2026/1744 (Digital Omnibus), ne figure pas dans le texte fictif : c’est l’actuaire qui l’ajoute, source à l’appui.</p>
+</section>
+<section class="level3" data-number="22.4.3" id="étape-3.-processus-impactés-dans-lorganisme-exemple">
+<h3 class="anchored" data-anchor-id="étape-3.-processus-impactés-dans-lorganisme-exemple" data-number="22.4.3"> Étape 3. Processus impactés dans l’organisme (exemple)</h3>
+<p>Pour un organisme fictif qui fait de la tarification auto, de l’assurance décès individuelle, de la souscription IARD et de la gestion de sinistres :</p>
+<div class="cell" data-execution_count="4" id="3afe7459">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a aria-hidden="true" href="#cb7-1" tabindex="-1"></a>processus_impactes <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb7-2"><a aria-hidden="true" href="#cb7-2" tabindex="-1"></a>    {<span class="st">"processus"</span>: <span class="st">"Tarification auto, GLM et modèle challenger de gradient boosting"</span>,</span>
+<span id="cb7-3"><a aria-hidden="true" href="#cb7-3" tabindex="-1"></a>     <span class="st">"recommandation"</span>: <span class="st">"Oui, (a) tarification"</span>,</span>
+<span id="cb7-4"><a aria-hidden="true" href="#cb7-4" tabindex="-1"></a>     <span class="st">"annexe_III_5c"</span>: <span class="st">"Non : l'auto n'est pas visée"</span>,</span>
+<span id="cb7-5"><a aria-hidden="true" href="#cb7-5" tabindex="-1"></a>     <span class="st">"urgence"</span>: <span class="st">"Haute"</span>},</span>
+<span id="cb7-6"><a aria-hidden="true" href="#cb7-6" tabindex="-1"></a>    {<span class="st">"processus"</span>: <span class="st">"Tarification de l'assurance décès individuelle par un modèle d'apprentissage"</span>,</span>
+<span id="cb7-7"><a aria-hidden="true" href="#cb7-7" tabindex="-1"></a>     <span class="st">"recommandation"</span>: <span class="st">"Oui, (a) tarification"</span>,</span>
+<span id="cb7-8"><a aria-hidden="true" href="#cb7-8" tabindex="-1"></a>     <span class="st">"annexe_III_5c"</span>: <span class="st">"Oui s'il s'agit d'un système d'IA au sens du règlement : haut risque"</span>,</span>
+<span id="cb7-9"><a aria-hidden="true" href="#cb7-9" tabindex="-1"></a>     <span class="st">"urgence"</span>: <span class="st">"Haute"</span>},</span>
+<span id="cb7-10"><a aria-hidden="true" href="#cb7-10" tabindex="-1"></a>    {<span class="st">"processus"</span>: <span class="st">"Aide à la souscription IARD par un LLM"</span>,</span>
+<span id="cb7-11"><a aria-hidden="true" href="#cb7-11" tabindex="-1"></a>     <span class="st">"recommandation"</span>: <span class="st">"Oui, (b) souscription ; prompts à tracer"</span>,</span>
+<span id="cb7-12"><a aria-hidden="true" href="#cb7-12" tabindex="-1"></a>     <span class="st">"annexe_III_5c"</span>: <span class="st">"Non (IARD)"</span>,</span>
+<span id="cb7-13"><a aria-hidden="true" href="#cb7-13" tabindex="-1"></a>     <span class="st">"urgence"</span>: <span class="st">"Haute"</span>},</span>
+<span id="cb7-14"><a aria-hidden="true" href="#cb7-14" tabindex="-1"></a>    {<span class="st">"processus"</span>: <span class="st">"Évaluation automatique des dommages auto"</span>,</span>
+<span id="cb7-15"><a aria-hidden="true" href="#cb7-15" tabindex="-1"></a>     <span class="st">"recommandation"</span>: <span class="st">"Oui, (c) sinistres"</span>,</span>
+<span id="cb7-16"><a aria-hidden="true" href="#cb7-16" tabindex="-1"></a>     <span class="st">"annexe_III_5c"</span>: <span class="st">"Non"</span>,</span>
+<span id="cb7-17"><a aria-hidden="true" href="#cb7-17" tabindex="-1"></a>     <span class="st">"urgence"</span>: <span class="st">"Haute"</span>},</span>
+<span id="cb7-18"><a aria-hidden="true" href="#cb7-18" tabindex="-1"></a>    {<span class="st">"processus"</span>: <span class="st">"Modèle de résiliation (churn)"</span>,</span>
+<span id="cb7-19"><a aria-hidden="true" href="#cb7-19" tabindex="-1"></a>     <span class="st">"recommandation"</span>: <span class="st">"À vérifier : absent de la liste (a) à (d)"</span>,</span>
+<span id="cb7-20"><a aria-hidden="true" href="#cb7-20" tabindex="-1"></a>     <span class="st">"annexe_III_5c"</span>: <span class="st">"Non"</span>,</span>
+<span id="cb7-21"><a aria-hidden="true" href="#cb7-21" tabindex="-1"></a>     <span class="st">"urgence"</span>: <span class="st">"Moyenne"</span>},</span>
+<span id="cb7-22"><a aria-hidden="true" href="#cb7-22" tabindex="-1"></a>])</span>
+<span id="cb7-23"><a aria-hidden="true" href="#cb7-23" tabindex="-1"></a>afficher(processus_impactes, <span class="st">"Processus"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processus : Tarification auto, GLM et modèle challenger de gradient boosting
+    recommandation : Oui, (a) tarification
+    annexe_III_5c  : Non : l'auto n'est pas visée
+    urgence        : Haute
+
+Processus : Tarification de l'assurance décès individuelle par un modèle d'apprentissage
+    recommandation : Oui, (a) tarification
+    annexe_III_5c  : Oui s'il s'agit d'un système d'IA au sens du règlement : haut risque
+    urgence        : Haute
+
+Processus : Aide à la souscription IARD par un LLM
+    recommandation : Oui, (b) souscription ; prompts à tracer
+    annexe_III_5c  : Non (IARD)
+    urgence        : Haute
+
+Processus : Évaluation automatique des dommages auto
+    recommandation : Oui, (c) sinistres
+    annexe_III_5c  : Non
+    urgence        : Haute
+
+Processus : Modèle de résiliation (churn)
+    recommandation : À vérifier : absent de la liste (a) à (d)
+    annexe_III_5c  : Non
+    urgence        : Moyenne
+</code></pre>
+</div>
+</div>
+<p>La colonne « annexe III, 5 c » évite une erreur fréquente : croire que toute tarification par IA est à haut risque au sens du règlement européen. Seules la tarification et l’évaluation des risques des personnes physiques en assurance vie et maladie le sont. La tarification auto relève de la recommandation, pas du régime « haut risque ».</p>
+</section>
+<section class="level3" data-number="22.4.4" id="étape-4.-plan-daction">
+<h3 class="anchored" data-anchor-id="étape-4.-plan-daction" data-number="22.4.4"> Étape 4. Plan d’action</h3>
+<div class="cell" data-execution_count="5" id="403f5a4e">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a aria-hidden="true" href="#cb9-1" tabindex="-1"></a>plan_action <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb9-2"><a aria-hidden="true" href="#cb9-2" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">1</span>, <span class="st">"action"</span>: <span class="st">"Recenser les modèles d'IA en production"</span>,</span>
+<span id="cb9-3"><a aria-hidden="true" href="#cb9-3" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"Direction des risques + actuariat"</span>, <span class="st">"delai"</span>: <span class="st">"M+1"</span>,</span>
+<span id="cb9-4"><a aria-hidden="true" href="#cb9-4" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Inventaire avec critères de classification"</span>},</span>
+<span id="cb9-5"><a aria-hidden="true" href="#cb9-5" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">2</span>, <span class="st">"action"</span>: <span class="st">"Identifier ceux du périmètre, et ceux de l'annexe III 5 c"</span>,</span>
+<span id="cb9-6"><a aria-hidden="true" href="#cb9-6" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"Comité IA (direction, juridique, conformité)"</span>, <span class="st">"delai"</span>: <span class="st">"M+2"</span>,</span>
+<span id="cb9-7"><a aria-hidden="true" href="#cb9-7" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Liste validée des modèles concernés, qualification juridique"</span>},</span>
+<span id="cb9-8"><a aria-hidden="true" href="#cb9-8" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">3</span>, <span class="st">"action"</span>: <span class="st">"Désigner un responsable par modèle"</span>,</span>
+<span id="cb9-9"><a aria-hidden="true" href="#cb9-9" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"Direction métier de chaque modèle"</span>, <span class="st">"delai"</span>: <span class="st">"M+3"</span>,</span>
+<span id="cb9-10"><a aria-hidden="true" href="#cb9-10" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Tableau des responsables"</span>},</span>
+<span id="cb9-11"><a aria-hidden="true" href="#cb9-11" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">4</span>, <span class="st">"action"</span>: <span class="st">"Rédiger le dossier de gouvernance type"</span>,</span>
+<span id="cb9-12"><a aria-hidden="true" href="#cb9-12" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"Actuariat + équipe modélisation"</span>, <span class="st">"delai"</span>: <span class="st">"M+5"</span>,</span>
+<span id="cb9-13"><a aria-hidden="true" href="#cb9-13" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Modèle de dossier de gouvernance"</span>},</span>
+<span id="cb9-14"><a aria-hidden="true" href="#cb9-14" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">5</span>, <span class="st">"action"</span>: <span class="st">"Mettre en place la traçabilité technique"</span>,</span>
+<span id="cb9-15"><a aria-hidden="true" href="#cb9-15" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"DSI + équipe data"</span>, <span class="st">"delai"</span>: <span class="st">"M+8"</span>,</span>
+<span id="cb9-16"><a aria-hidden="true" href="#cb9-16" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Journal des décisions des modèles"</span>},</span>
+<span id="cb9-17"><a aria-hidden="true" href="#cb9-17" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">6</span>, <span class="st">"action"</span>: <span class="st">"Conduire la première revue de non-discrimination"</span>,</span>
+<span id="cb9-18"><a aria-hidden="true" href="#cb9-18" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"Équipe modélisation + DPO"</span>, <span class="st">"delai"</span>: <span class="st">"M+10"</span>,</span>
+<span id="cb9-19"><a aria-hidden="true" href="#cb9-19" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Rapport de revue"</span>},</span>
+<span id="cb9-20"><a aria-hidden="true" href="#cb9-20" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">7</span>, <span class="st">"action"</span>: <span class="st">"Audit interne de la mise en œuvre"</span>,</span>
+<span id="cb9-21"><a aria-hidden="true" href="#cb9-21" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"Audit interne"</span>, <span class="st">"delai"</span>: <span class="st">"M+12"</span>,</span>
+<span id="cb9-22"><a aria-hidden="true" href="#cb9-22" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Rapport d'audit, plan correctif si besoin"</span>},</span>
+<span id="cb9-23"><a aria-hidden="true" href="#cb9-23" tabindex="-1"></a>    {<span class="st">"etape"</span>: <span class="dv">8</span>, <span class="st">"action"</span>: <span class="st">"Préparer les exigences « haut risque » pour les modèles vie et maladie"</span>,</span>
+<span id="cb9-24"><a aria-hidden="true" href="#cb9-24" tabindex="-1"></a>     <span class="st">"responsable"</span>: <span class="st">"Conformité + actuariat vie"</span>, <span class="st">"delai"</span>: <span class="st">"Avant le 2 décembre 2027"</span>,</span>
+<span id="cb9-25"><a aria-hidden="true" href="#cb9-25" tabindex="-1"></a>     <span class="st">"livrable"</span>: <span class="st">"Feuille de route AI Act"</span>},</span>
+<span id="cb9-26"><a aria-hidden="true" href="#cb9-26" tabindex="-1"></a>])</span>
+<span id="cb9-27"><a aria-hidden="true" href="#cb9-27" tabindex="-1"></a>afficher(plan_action, <span class="st">"Étape"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Étape : 1
+    action         : Recenser les modèles d'IA en production
+    responsable    : Direction des risques + actuariat
+    delai          : M+1
+    livrable       : Inventaire avec critères de classification
+
+Étape : 2
+    action         : Identifier ceux du périmètre, et ceux de l'annexe III 5 c
+    responsable    : Comité IA (direction, juridique, conformité)
+    delai          : M+2
+    livrable       : Liste validée des modèles concernés, qualification juridique
+
+Étape : 3
+    action         : Désigner un responsable par modèle
+    responsable    : Direction métier de chaque modèle
+    delai          : M+3
+    livrable       : Tableau des responsables
+
+Étape : 4
+    action         : Rédiger le dossier de gouvernance type
+    responsable    : Actuariat + équipe modélisation
+    delai          : M+5
+    livrable       : Modèle de dossier de gouvernance
+
+Étape : 5
+    action         : Mettre en place la traçabilité technique
+    responsable    : DSI + équipe data
+    delai          : M+8
+    livrable       : Journal des décisions des modèles
+
+Étape : 6
+    action         : Conduire la première revue de non-discrimination
+    responsable    : Équipe modélisation + DPO
+    delai          : M+10
+    livrable       : Rapport de revue
+
+Étape : 7
+    action         : Audit interne de la mise en œuvre
+    responsable    : Audit interne
+    delai          : M+12
+    livrable       : Rapport d'audit, plan correctif si besoin
+
+Étape : 8
+    action         : Préparer les exigences « haut risque » pour les modèles vie et maladie
+    responsable    : Conformité + actuariat vie
+    delai          : Avant le 2 décembre 2027
+    livrable       : Feuille de route AI Act
+</code></pre>
+</div>
+</div>
+</section>
+<section class="level3" data-number="22.4.5" id="étape-5.-vérification-des-références-étape-non-négociable">
+<h3 class="anchored" data-anchor-id="étape-5.-vérification-des-références-étape-non-négociable" data-number="22.4.5"> Étape 5. Vérification des références : étape non négociable</h3>
+<p>Le LLM peut inventer des références, et un texte (ou un brouillon) peut en contenir de fausses. Chaque référence se vérifie contre la source officielle : existence du numéro, <strong>et</strong> correspondance du contenu.</p>
+<div class="cell" data-execution_count="6" id="b55b9689">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>motif <span class="op">=</span> (<span class="vs">r"</span>(?:<span class="vs">recommandation</span><span class="cf">|</span><span class="vs">position</span><span class="cf">|</span><span class="vs">instruction</span>)<span class="dv">\s</span><span class="op">+</span>(?:<span class="vs">ACPR</span><span class="dv">\s</span><span class="op">+</span>)<span class="op">?</span><span class="dv">\d</span><span class="op">{4}</span><span class="vs">-</span><span class="pp">[A-Z]</span><span class="vs">-</span><span class="dv">\d</span><span class="op">{2}</span><span class="pp">[^.;]</span><span class="op">*</span><span class="vs">"</span></span>
+<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>         <span class="vs">r"</span><span class="cf">|</span><span class="vs">règlement </span><span class="ch">\(</span><span class="vs">UE</span><span class="ch">\)</span><span class="dv">\s</span><span class="op">+</span><span class="dv">\d</span><span class="op">{4}</span><span class="vs">/</span><span class="dv">\d</span><span class="op">+</span><span class="pp">[^.;]</span><span class="op">*</span><span class="vs">"</span></span>
+<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a>         <span class="vs">r"</span><span class="cf">|</span><span class="vs">article</span><span class="dv">\s</span><span class="op">+</span><span class="pp">[LRA]</span><span class="ch">\.</span><span class="dv">\s</span><span class="op">?</span><span class="pp">[</span><span class="dv">\d</span><span class="pp">-]</span><span class="op">+</span><span class="pp">[^.;]</span><span class="op">*</span><span class="vs">"</span>)</span>
+<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a>references <span class="op">=</span> re.findall(motif, TEXTE_ACPR.replace(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>, <span class="st">" "</span>), flags<span class="op">=</span>re.IGNORECASE)</span>
+<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Références extraites du texte : </span><span class="sc">{</span><span class="bu">len</span>(references)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a><span class="cf">for</span> ref <span class="kw">in</span> references:</span>
+<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  • </span><span class="sc">{</span><span class="st">' '</span><span class="sc">.</span>join(ref.split())[:<span class="dv">160</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Références extraites du texte : 3
+  • position ACPR 2025-P-04 relative à la validation des modèles de tarification
+  • recommandation 2024-R-03 du 21 novembre 2024 sur le recueil des informations relatives au client pour l'exercice du devoir de conseil
+  • règlement (UE) 2024/1689 du 13 juin 2024 (évaluation des risques et tarification en ce qui concerne les personnes physiques en assurance vie et en assurance mal</code></pre>
+</div>
+</div>
+<p>L’extraction automatique donne la liste à vérifier ; elle ne vérifie rien. Prompt à utiliser ensuite :</p>
+<blockquote class="blockquote">
+<p><em>“Pour chaque référence de cette liste, indique : (1) si elle existe à ta connaissance, (2) si son contenu correspond à ce que le texte lui attribue, (3) l’URL officielle où la vérifier (Légifrance, EUR-Lex, registre officiel de l’ACPR). Dis clairement quand tu n’es pas sûr.”</em></p>
+</blockquote>
+<p>L’actuaire <strong>vérifie ensuite lui-même</strong> chaque référence, en ouvrant la source. Une référence non vérifiée n’entre pas dans une fiche d’impact.</p>
+</section>
+</section>
+<section class="level2" data-number="22.5" id="exercice-trouvez-la-fausse-référence">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-la-fausse-référence" data-number="22.5" id="exercice-trouvez-la-fausse-référence"> Exercice : trouvez la fausse référence</h2>
+<p>Le texte fictif cite trois textes : le règlement (UE) 2024/1689, la recommandation 2024-R-03 et la position ACPR 2025-P-04. Au moins l’une de ces références est inventée. Laquelle, et comment le prouver sans faire confiance à un LLM ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p><strong>La position ACPR 2025-P-04 est inventée.</strong> Elle a été écrite pour cet exercice. Le registre officiel des positions de l’ACPR (site acpr.banque-france.fr, rubrique Réglementation, Registre officiel, Positions) ne contient pas de position 2025-P-04 ; la plus récente qu’il liste au 13 octobre 2026 est la position 2024-P-01 du 28 juin 2024. Attention : la numérotation en « P » sert aussi à des décisions de l’ACPR (par exemple la décision 2025-P-02 du 31 janvier 2025, sur une commission consultative). Trouver un numéro ne suffit donc pas : il faut que la nature, le titre et le contenu correspondent.</p>
+<p><strong>Les deux autres sont réelles, et correctement citées.</strong></p>
+<ol type="1">
+<li>Le règlement (UE) 2024/1689 du 13 juin 2024 est le règlement européen sur l’intelligence artificielle. Son annexe III, point 5 c), vise bien l’évaluation des risques et la tarification des personnes physiques en assurance vie et maladie (EUR-Lex, et le service d’assistance de la Commission sur l’AI Act).</li>
+<li>La recommandation 2024-R-03 du 21 novembre 2024 porte bien sur le recueil des informations relatives au client pour l’exercice du devoir de conseil en assurance (site de l’ACPR). Le piège inverse existe aussi : la même recommandation, bien réelle, citée à l’appui d’un contenu qu’elle ne contient pas, par exemple des attentes sur la documentation des modèles.</li>
+</ol>
+<p><strong>La méthode</strong> : pour chaque référence, ouvrir la source officielle, vérifier le numéro, puis lire le passage pour vérifier qu’il dit ce qu’on lui fait dire. Un LLM peut aider à trouver l’URL ; il ne remplace pas la lecture.</p>
+</details>
+</section>
+<section class="level2" data-number="22.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="22.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Références inventées ou détournées.</strong> Le piège principal sur les textes réglementaires. Un LLM peut produire un numéro d’article ou de recommandation plausible qui n’existe pas, ou citer un texte réel pour un contenu qu’il ne contient pas. <strong>Toujours vérifier</strong> le numéro et le contenu contre la source officielle.</li>
+<li><strong>Changer la portée juridique.</strong> Le LLM résume au prix de simplifications. Un « recommande » peut devenir « impose », un « doit » peut devenir « il est recommandé » : cela change la nature de l’obligation. <strong>Toujours relire le passage source</strong> et qualifier la nature du texte (instruction, recommandation, position, notice).</li>
+<li><strong>Confondre périmètre principal et exceptions.</strong> Un texte peut comporter des exceptions (taille, type d’activité, modèle interne) que le LLM aplatit dans le résumé. <strong>Toujours vérifier</strong> si l’organisme entre dans une exception.</li>
+<li><strong>Calendrier mal extrait.</strong> Le LLM peut confondre la date de publication, la date d’entrée en vigueur et la date de mise en œuvre attendue. <strong>Toujours expliciter</strong> ces dates dans la fiche d’impact.</li>
+<li><strong>Plan d’action trop générique.</strong> Un plan qui pourrait s’appliquer à n’importe quel texte n’est pas utile. <strong>Le plan doit être propre à l’organisme</strong> : qui fait quoi, sur quel modèle, avec quels moyens.</li>
+</ul>
+</section>
+<section class="level2" data-number="22.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="22.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>S1 Note méthodologique SCR non-vie</strong> : un livrable technique que l’ACPR peut demander.</li>
+<li><strong>S2 ORSA, synthèse exécutive</strong> : les attentes d’un texte comme celui-ci peuvent alimenter le rapport ORSA.</li>
+<li><strong>S3 IFRS 17 et CSM</strong> : pour les textes touchant la comptabilité d’assurance.</li>
+<li><strong>Annexe G (Cadre réglementaire)</strong> : sources officielles ACPR, EIOPA, AI Act, Code de déontologie.</li>
+</ul>
+</section>
+<section class="level2" data-number="22.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="22.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li><strong>Suivi de plusieurs textes.</strong> Quand plusieurs publications arrivent en parallèle, un tableau de suivi des attentes et des échéances évite d’en oublier. Lien avec C1 (tableau de bord, principe transposable).</li>
+<li><strong>Veille automatisée.</strong> Une chaîne qui surveille les pages de publications de l’ACPR et de l’EIOPA, télécharge les nouveaux textes et produit une première fiche d’impact à relire. C’est un usage de niveau 3 au sens du cadrage de la première demi-journée (« Introduction aux LLM ») : un traitement qui tourne sans personne devant, par le SDK Anthropic, avec vérification humaine des références.</li>
+<li><strong>Partage des fiches d’impact.</strong> Pour les sujets communs (ORSA, non-discrimination, traçabilité), les groupes de travail de l’Institut des Actuaires sont un lieu d’échange.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/S3/index.html"><small>&larr; Précédent</small>S3. IFRS 17, explication de la CSM</a><a class="next" href="../../bibliotheque/C1/index.html"><small>Suivant &rarr;</small>C1. Dashboard sinistralité auto avec Lovable</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

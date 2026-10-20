@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les formes d'appel · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn active" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 4 · 4.2 Brancher l'IA et la cadrer</div>
+      <h1 style="max-width:28ch">Les formes d'appel</h1>
+      <p class="lede">« Utiliser l'IA générative » recouvre des choses qui n'ont ni le même pouvoir ni le même risque. Entre un appel qui rend du texte et un agent qui supprime des fichiers, il y a le même écart qu'entre une calculatrice et un accès à la production. Les crans se montent un par un, et chacun s'ouvre avec son garde-fou.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#echelle">L'échelle, d'un coup d'œil</a><a href="#appel">L'appel simple, et la sortie structurée</a><a href="#outils">Les outils que vous écrivez</a><a href="#skill">Le skill : une fonction écrite en français</a><a href="#sql">L'agent SQL</a><a href="#fichiers">L'agent qui écrit, modifie, supprime</a><a href="#autonomie">L'agent qui enchaîne, et le vrai danger</a><a href="#choisir">Quelle forme pour quel besoin</a><a href="#decider">Ne pas laisser l'IA décider</a><a href="#retenir">Ce qu'il faut garder</a></aside>
+<div>
+
+<div class="prose">
+<!-- Ajout du segment du formateur du 20-10, jusqu'où industrialiser (_sources/transcriptions/2026-10-20_jusqu_ou_industrialiser_skill_plateforme_logiciel.md). -->
+<!-- Ajouts du segment du formateur du 20-10, ce que peut le chatbot d'un outil (_sources/transcriptions/2026-10-20_ce_que_peut_le_chatbot_d_un_outil.md). -->
+<!-- Le paragraphe sur les skills d'Anthropic : segment du formateur du 20-10 (_sources/transcriptions/2026-10-20_creer_l_outil_plutot_que_refaire.md). -->
+<!-- Chapitre « Les formes d'appel », partie 04.
+     Kezhan, 11 octobre : « tu peux notamment expliquer les différentes façons
+     d'utiliser l'IA générative : appels simples, utilisation des outils,
+     agents SQL, agents avec droit d'écrire des fichiers, et modifier
+     supprimer.... ». Une échelle, du moins puissant au plus dangereux, avec
+     le garde-fou de chaque cran. Couvre la ligne du programme officiel
+     « intégration raisonnée des LLM » et prépare « l'IA dans l'outil ». -->
+
+<h2 id="echelle">L'échelle, d'un coup d'œil</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Forme</th><th>Ce que le modèle peut faire</th><th>Ce qui peut mal tourner</th><th>Le garde-fou</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">Appel simple</td><td>Lire le texte qu'on lui donne, en écrire un autre</td><td>Une réponse fausse, bien formulée</td><td>Relecture humaine, aucun chiffre repris tel quel</td></tr>
+<tr><td class="rowhead">Sortie structurée</td><td>La même chose, dans un format imposé</td><td>Un champ absurde dans un format valide</td><td>Validation du contenu par du code, pas seulement du format</td></tr>
+<tr><td class="rowhead">Outils que vous écrivez</td><td>Demander l'exécution d'une fonction de votre liste</td><td>Un outil trop large, qui fait plus que son nom</td><td>Un outil fait une chose, sur un périmètre fixé</td></tr>
+<tr><td class="rowhead">Agent SQL</td><td>Écrire et lancer des requêtes sur une base</td><td>Une requête qui écrit, ou qui lit ce qu'il ne faut pas</td><td>Compte en lecture seule, vues dédiées, requêtes journalisées</td></tr>
+<tr><td class="rowhead">Agent sur les fichiers</td><td>Créer, modifier, supprimer dans un dossier</td><td>Un écrasement silencieux, une suppression</td><td>Dossier de travail dédié, tout versionné avant, revue après</td></tr>
+<tr><td class="rowhead">Agent qui enchaîne</td><td>Décider des étapes suivantes tout seul</td><td>Une erreur qui se propage sur vingt étapes</td><td>Un plan validé d'abord, un point d'arrêt, une trace de chaque action</td></tr>
+</tbody>
+</table>
+</div>
+<p>La règle qui traverse le tableau : <strong>le droit le plus faible qui fait le travail</strong>. On ne donne pas l'écriture pour une tâche de lecture, et on ne donne pas la base entière pour trois colonnes.</p>
+<h2 id="appel">L'appel simple, et la sortie structurée</h2>
+<p>Le premier cran ne touche à rien : du texte entre, du texte sort. C'est suffisant pour résumer, reformuler, expliquer, traduire une consigne en code que vous relirez.</p>
+<p>Le deuxième impose le format de la réponse : un objet dont les champs sont fixés d'avance, pas une phrase à découper. C'est ce qui rend un appel exploitable par un programme. Attention au faux confort : un format valide ne dit rien du contenu. Une cause de sinistre peut être bien rangée dans le bon champ et ne pas exister dans votre nomenclature. Le code qui reçoit vérifie les valeurs, pas seulement la forme.</p>
+<h2 id="outils">Les outils que vous écrivez</h2>
+<p>Le modèle ne peut rien faire par lui-même. Ce qu'on appelle « donner des outils », c'est lui présenter une liste de fonctions que vous avez écrites, avec leur nom et ce qu'elles attendent. Il ne les exécute pas : il demande, votre programme décide, exécute et lui rend le résultat.</p>
+<div class="callout">
+<span class="label">C'est la liste qui est le contrat</span>
+<p>Un outil nommé <code>charge_du_portefeuille(annee, branche)</code> fait exactement cela et rien d'autre. Un outil nommé <code>executer_requete(sql)</code> donne en réalité la base entière, quel que soit le nom qu'on lui a donné. Le périmètre se décide en écrivant les outils, pas en espérant que le modèle reste sage.</p>
+</div>
+<h2 id="skill">Le skill : une fonction écrite en français</h2>
+<p>Une formule Excel prend des variables et rend un résultat. Une fonction Python, une requête SQL aussi, et leur code se garde, parce que c'est lui qui calcule. Le skill (une compétence, dans les mots de <a href="../../introduction/piloter/index.html#personnalisation">Piloter l'IA</a>) est une abstraction de plus : la tâche est décrite en français, et cette description se sauvegarde comme un code. L'IA la retrouve quand la tâche revient.</p>
+<div class="grid grid-2">
+<div class="card">
+<h4>Ce qu'un skill porte</h4>
+<p>La tâche, dans l'ordre ; les définitions exactes (le S/P de la maison, pas un S/P) ; les variables à prendre, par leur nom dans le dictionnaire ; les contrôles à faire avant de rendre le chiffre.</p>
+</div>
+<div class="card accent">
+<h4>Ce qu'il faut surveiller</h4>
+<p>Comme une formule mal nommée : si une variable est mal définie, l'IA se trompe de variable, et elle ne le dit pas. Un skill se teste donc comme une fonction, sur un cas dont on connaît la réponse.</p>
+</div>
+</div>
+<p>C'est l'idée des skills d'Anthropic : l'IA ne fait pas tout, elle a besoin d'outils. Elle ne sait pas fabriquer un PDF ; elle sait lancer le code qui le fabrique, et ce code existe déjà, on ne le réécrit pas à chaque fois. Les présentations que Claude produit se reconnaissent d'ailleurs au premier coup d'œil : le mode d'emploi qu'il suit a été écrit par les ingénieurs d'Anthropic. Il n'y a pas de miracle : quand l'IA sait faire, c'est que quelqu'un a écrit l'outil et son mode d'emploi. Écrire les vôtres est une grosse partie du travail, et c'est la partie qui reste.</p>
+<h3 id="suivre-un-skill">Pourquoi un agent sait suivre un skill</h3>
+<p>Parce que les modèles ont changé de façon de répondre. D'abord le question-réponse : on donne le fil de la conversation, il rend une réponse. Puis le raisonnement, le <em>chain of thought</em> : à force d'avoir appris des enchaînements de questions et de réponses, le modèle se pose lui-même les questions intermédiaires avant de répondre. Les modèles de raisonnement montrent ce dialogue intérieur ; DeepSeek-R1, au début de 2025, allait jusqu'à écrire « aha » quand il revenait sur sa démarche, un comportement humain appris dans ses données.</p>
+<p>De là vient la planification : avant d'exécuter, l'agent écrit un plan, qui est encore du texte sorti du modèle, puis il en suit les étapes une à une. C'est ce qui le fait travailler longtemps sans s'arrêter, et ce qui donne l'impression d'intelligence. Le skill pousse l'idée d'un cran : au lieu de laisser l'agent planifier seul, on l'aide. Un plan qui a bien marché, on le relit, on le garde. C'est une fonction en langage naturel, l'équivalent du pseudo-code des livres de mathématiques ; et comme une fonction bien écrite, un skill bien écrit s'exécute mieux.</p>
+<h3 id="skill-sans-outil">Sans outil qui gère les skills</h3>
+<p>Tous les postes n'ont pas un assistant qui charge les skills tout seul ; souvent, on n'a qu'un chatbot dans le navigateur. Le skill s'écrit quand même. On l'enregistre soi-même, un fichier texte par processus, rangé avec le projet et versionné ; quand le besoin revient, on le dépose dans la conversation, ou on le colle, avant de donner l'entrée, et le chatbot le suit comme un assistant le ferait. Le jour où l'outil arrive, les fichiers sont prêts ; en attendant, le processus est écrit, et c'est déjà beaucoup.</p>
+<pre><code>skills/
+  provisions_chain_ladder.md    les entrées, les étapes, les contrôles avant de rendre
+  note_methodologique.md        le plan, les sections, les références à vérifier
+  controle_extraction.md        les colonnes attendues, les totaux de rapprochement</code></pre>
+<div class="try">
+<span class="label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z"/><path d="M14 7l3 3"/></svg> Le prompt qui fait suivre un skill déposé</span>
+<p>« Voici mon fichier de skill, provisions_chain_ladder.md. Suis-le exactement, étape par étape, avec ce triangle. Dis-moi à chaque étape ce que tu as fait, et arrête-toi si un contrôle échoue. »</p>
+</div>
+<h2 id="sql">L'agent SQL</h2>
+<p>C'est l'usage qui séduit le plus vite : poser une question en français, obtenir le chiffre. C'est aussi celui où l'on ouvre le plus grand accès sans s'en rendre compte, puisqu'une connexion suffit à tout lire.</p>
+<ul class="clean">
+<li>Un compte dédié, en lecture seule. Pas le compte de l'application, pas le vôtre. On ne donne pas à l'IA le droit de supprimer une table ou une colonne, pas plus qu'on ne donne les droits d'administrateur au premier venu.</li>
+<li>Des vues préparées plutôt que les tables brutes : le périmètre est décidé une fois, et les colonnes nominatives n'y sont pas.</li>
+<li>Une limite de lignes et une limite de durée, pour qu'une requête maladroite ne tienne pas la base.</li>
+<li>Toutes les requêtes journalisées, avec la question qui les a produites. C'est ce qui permet de comprendre après coup un chiffre inattendu.</li>
+<li>La requête affichée à côté du résultat. Un chiffre sans sa requête n'est pas vérifiable, donc il ne sort pas de l'outil.</li>
+</ul>
+<p>Et le réflexe de toujours : le résultat d'une requête générée se contrôle comme une production humaine, par un total connu, un ordre de grandeur, une année de référence.</p>
+<h2 id="fichiers">L'agent qui écrit, modifie, supprime</h2>
+<p>C'est le cran où l'on gagne le plus de temps, et celui qui demande le plus de discipline. Un agent qui travaille dans vos fichiers peut créer un module, corriger une fonction, réécrire une configuration. Il peut aussi écraser trois heures de travail sans prévenir.</p>
+<div class="feat">
+<div><div class="ico crimson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><div><strong>Tout est versionné avant</strong>
+<p>L'état d'avant est enregistré. C'est ce qui transforme une erreur en annulation de deux secondes, et c'est la parade la plus simple, pour le code. Elle ne protège ni les données hors du dépôt ni le travail non enregistré, et un agent à qui l'on laisse tout Git peut effacer l'historique récent ou les fichiers non suivis : ces commandes se refusent dans les permissions. Les points de retour automatiques de certains assistants ne suivent pas ce que fait une commande lancée dans le terminal.</p></div></div>
+<div><div class="ico crimson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div><strong>Un dossier de travail, pas le disque</strong>
+<p>Il écrit dans le projet, jamais dans la donnée brute ni ailleurs sur la machine : la donnée brute reste en lecture seule, hors de portée de l'agent. La suppression et les appels réseau se configurent en interdiction, et seul le bac à sable les arrête pour de bon, quand un script les fait lui-même ; il n'existe pas sous Windows natif.</p></div></div>
+<div><div class="ico crimson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div><strong>Une revue avant de garder</strong>
+<p>On relit ce qui a changé, fichier par fichier, avant d'enregistrer. La suite de tests du chapitre <a href="../../industrialisation/algorithmes/index.html#tests">Organiser les algorithmes</a> dit si les chiffres bougent.</p></div></div>
+</div>
+<p>C'est en partie ce que font les assistants de développement : créer des fichiers et les exécuter dans un terminal, ce qui revient à pouvoir tout faire. En entreprise, on ne commence jamais par là ; pour une équipe de sécurité, ce n'est pas un point de départ pensable.</p>
+<h2 id="autonomie">L'agent qui enchaîne, et le vrai danger</h2>
+<p>Le dernier cran n'ajoute pas un droit, il ajoute de l'autonomie : l'agent décide de la prochaine étape sans repasser par vous. Trois régimes, à choisir selon l'enjeu, et il n'y a pas de honte à rester au premier.</p>
+<ol class="steps">
+<li><strong>Il demande à chaque action</strong><p>Lent, sûr, et le bon réglage sur un calcul qui part en production.</p></li>
+<li><strong>Il propose un plan, vous le validez, il l'exécute</strong><p>Le meilleur compromis au quotidien : la décision reste en amont, l'exécution ne vous coûte rien.</p></li>
+<li><strong>Il va au bout tout seul</strong><p>Réservé à ce qui est réversible et vérifiable : une exploration, un brouillon, un dossier jetable. Jamais sur ce qui sort du cabinet.</p></li>
+</ol>
+<p>Vérifiez le réglage de départ de votre outil : ce n'est pas toujours le premier régime. Certains assistants démarrent dans un régime où un second modèle décide seul de ce qui passe sans vous demander. On le garde en connaissance de cause, on en change d'une touche ou dans les réglages, et l'administrateur peut le couper pour tous.</p>
+<p>Le danger n'est pas qu'il se trompe une fois, c'est qu'il se trompe tôt et continue. Une erreur de lecture à l'étape deux se propage jusqu'à l'étape vingt, chaque étape ayant l'air correcte. D'où le point d'arrêt : un agent autonome écrit ce qu'il a fait, et quelqu'un relit la trace, pas seulement le résultat.</p>
+<h2 id="choisir">Quelle forme pour quel besoin</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Le besoin</th><th>La forme qui suffit</th></tr></thead>
+<tbody>
+<tr><td class="rowhead">Expliquer une méthode, relire une note</td><td>Appel simple</td></tr>
+<tr><td class="rowhead">Classer des causes de sinistre en lot</td><td>Sortie structurée, valeurs contrôlées</td></tr>
+<tr><td class="rowhead">Répondre aux questions sur un tableau de bord</td><td>Outils que vous écrivez, sur des vues préparées</td></tr>
+<tr><td class="rowhead">Explorer une base pour une étude ponctuelle</td><td>Agent SQL en lecture seule, requêtes affichées</td></tr>
+<tr><td class="rowhead">Écrire et corriger le code d'un calcul</td><td>Agent sur les fichiers, tout versionné, revue avant de garder</td></tr>
+<tr><td class="rowhead">Automatiser un circuit autour du calcul : réception, contrôle, alerte</td><td>Une plateforme d'agents, de préférence installée chez soi ; le calcul appelé dans son module testé</td></tr>
+<tr><td class="rowhead">Un arrêté réglementaire</td><td>Aucune des formes autonomes : l'agent aide à écrire, l'exécution est pilotée</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="decider">Ne pas laisser l'IA décider</h2>
+<p>La tentation de l'agentique : donner tous les outils à l'IA, lui poser la question finale, et prendre la réponse. Ne le faites pas. Dans l'ALM, on pourrait lui laisser choisir elle-même la valeur d'un paramètre ou le scénario ; pour une colonne d'adresses, la laisser décider seule du rapprochement final. Elle le fera, à votre place. Elle propose, vous décidez : pour la sécurité, pour la maîtrise, et pour que le calcul ne devienne pas une boîte noire. C'est la méthode du chapitre <a href="../../exploration/donnees/index.html#colonne-texte">Structurer les données</a> : l'IA ne raisonne que sur les cas difficiles, et ce qu'elle propose se relit.</p>
+<h2 id="retenir">Ce qu'il faut garder</h2>
+<ul class="clean">
+<li>Le droit le plus faible qui fait le travail, et un outil qui fait une chose.</li>
+<li>Un format valide ne garantit pas un contenu valide : le code vérifie les valeurs.</li>
+<li>Un agent SQL se branche sur un compte en lecture seule et des vues, et sa requête s'affiche avec le résultat.</li>
+<li>Un agent qui écrit n'est acceptable que si tout est versionné avant et relu après.</li>
+<li>Le danger de l'autonomie, c'est l'erreur précoce qui se propage : on valide un plan, on garde un point d'arrêt.</li>
+</ul>
+
+</div>
+<div class="chapter-nav"><a href="../../industrialisation/produit/index.html"><small>&larr; Précédent</small>Du script au produit</a><a class="next" href="../../industrialisation/cadrer/index.html"><small>Suivant &rarr;</small>Cadrer et tracer</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E3. Actions : brownien géométrique ou sauts · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">E3. Actions : brownien géométrique ou sauts</h1>
+      <p class="lede">Ce que vous apprenez ici n’est pas le modèle de Merton. C’est la façon de faire voir ce qu’un modèle simple oublie : garder tout ce qui est commun (le rendement espéré, le bruit), ajouter un seul ingrédient, et regarder où la différence se loge. Ici, elle se loge dans la queue gauche, celle qui fait le capital.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#lillustration-demandée-à-lia">L’illustration, demandée à l’IA</a><a href="#ce-que-disent-les-modèles">Ce que disent les modèles</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#dans-vision">Dans Vision</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle (voir ce qu’un modèle oublie)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="17.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="17.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Dans un générateur de scénarios, l’indice actions suit le plus souvent un mouvement brownien géométrique : des rendements logarithmiques normaux, une volatilité constante. C’est simple et suffisant pour la moyenne. Mais les krachs ne ressemblent pas à des mauvais jours ordinaires : ils arrivent d’un coup. Le modèle de Merton (1976) ajoute au brownien des sauts, en nombre aléatoire chaque année, de taille aléatoire.</p>
+<p>La question pour un actuaire n’est pas académique : la perte à 99,5 % sur un an, celle qui fait le capital de solvabilité, dépend surtout de la queue. La formule standard de Solvabilité II retient un choc de 39 % pour les actions de type 1, avant l’ajustement symétrique.</p>
+</section>
+<section class="level2" data-number="17.2" id="lillustration-demandée-à-lia">
+<h2 class="anchored" data-anchor-id="lillustration-demandée-à-lia" data-number="17.2" id="lillustration-demandée-à-lia"> L’illustration, demandée à l’IA</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Le prompt de l’illustration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>« Fais-moi une page HTML autonome qui compare un mouvement brownien géométrique et le modèle de Merton à sauts. Même rendement espéré pour les deux (le terme de compensation λκ dans la dérive), et le même bruit brownien, pour que les sauts soient la seule différence. Curseurs : rendement espéré, volatilité, nombre moyen de sauts par an, saut médian, dispersion des sauts. Montre quelques trajectoires sur 10 ans, et la loi du rendement sur un an avec la perte à 99,5 % de chaque modèle et le choc de 39 % de la formule standard. »</em></p>
+</div>
+</div>
+<div class="demo-embed">
+<div class="demo-head"><b>Brownien ou sauts, à manipuler</b><span>Mettez λ à zéro, puis remontez-le</span></div>
+<iframe loading="lazy" src="img/actions_3857a814.html" style="height:930px" title="Actions : brownien géométrique ou sauts"></iframe>
+<p class="print-note">L'illustration interactive est sur le site du support, bibliothèque, fiche E3.</p>
+</div>
+<p>Ce qui saute aux yeux :</p>
+<ol type="1">
+<li><strong>À <span class="math inline">\(\lambda = 0\)</span>, les deux modèles se confondent</strong> : les trajectoires rouges recouvrent les bleues.</li>
+<li><strong>Avec quelques sauts par décennie</strong>, le centre de la loi bouge à peine, mais la queue gauche s’allonge. La perte à 99,5 % passe d’environ 30 % à près de 50 % avec les réglages par défaut.</li>
+<li><strong>Le choc de 39 %</strong> est rarement dépassé par le brownien, beaucoup plus souvent par le modèle à sauts.</li>
+</ol>
+</section>
+<section class="level2" data-number="17.3" id="ce-que-disent-les-modèles">
+<h2 class="anchored" data-anchor-id="ce-que-disent-les-modèles" data-number="17.3" id="ce-que-disent-les-modèles"> Ce que disent les modèles</h2>
+<ol type="1">
+<li><p><strong>Brownien géométrique</strong> :</p>
+<p><span class="math display">\[
+\frac{\mathrm{d}S_t}{S_t} = \mu\,\mathrm{d}t + \sigma\,\mathrm{d}W_t.
+\]</span></p>
+<p>Sur un an, le rendement logarithmique est normal, de moyenne <span class="math inline">\(\mu - \frac{\sigma^2}{2}\)</span> et d’écart type <span class="math inline">\(\sigma\)</span> ; <span class="math inline">\(\mathbb{E}\left[S_1 / S_0\right] = e^{\mu}\)</span>.</p></li>
+<li><p><strong>Merton</strong> :</p>
+<p><span class="math display">\[
+\frac{\mathrm{d}S_t}{S_t} = (\mu - \lambda\kappa)\,\mathrm{d}t + \sigma\,\mathrm{d}W_t + \left(e^{J} - 1\right)\mathrm{d}N_t.
+\]</span></p>
+<p><span class="math inline">\(N\)</span> compte les sauts (Poisson d’intensité <span class="math inline">\(\lambda\)</span>), <span class="math inline">\(J\)</span> est la taille logarithmique d’un saut (normale de moyenne <span class="math inline">\(\mu_J\)</span> et d’écart type <span class="math inline">\(\delta\)</span>), <span class="math inline">\(\kappa = e^{\mu_J + \delta^2/2} - 1\)</span>. Le terme <span class="math inline">\(-\lambda\kappa\)</span> compense les sauts dans la dérive, pour que <span class="math inline">\(\mathbb{E}\left[S_1 / S_0\right]\)</span> reste <span class="math inline">\(e^{\mu}\)</span>.</p></li>
+</ol>
+</section>
+<section class="level2" data-number="17.4" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="17.4" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 3 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Simuler une année.</strong> <em>« Simule 200 000 rendements sur un an d’un brownien géométrique (μ = 6 %, σ = 16 %) et d’un Merton avec les mêmes μ et σ, λ = 0,4 saut par an, saut médian −18 %, dispersion 10 %. Même graine, mêmes normales pour la partie brownienne. Vectorisé. »</em></p></li>
+<li><p><strong>Vérifier puis lire la queue.</strong> <em>« Vérifie d’abord que les deux rendements espérés valent e^μ − 1. Puis donne, pour chaque modèle, la perte à 99,5 % et la probabilité de perdre plus de 39 % en un an. »</em></p></li>
+<li><p><strong>Critiquer.</strong> <em>« Joue le rôle d’un contrôleur des risques : qu’est-ce qui décide de la perte à 99,5 % dans ce modèle à sauts, et comment calibrerais-tu λ et la taille des sauts sans tomber dans le surajustement ? »</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="17.5" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="17.5" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="17.5.1" id="étape-1.-simuler-une-année-avec-le-même-bruit">
+<h3 class="anchored" data-anchor-id="étape-1.-simuler-une-année-avec-le-même-bruit" data-number="17.5.1"> Étape 1. Simuler une année, avec le même bruit</h3>
+<div class="cell" data-execution_count="1" id="319eb95d">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>mu, sigma <span class="op">=</span> <span class="fl">0.06</span>, <span class="fl">0.16</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>lam, saut_median, delta <span class="op">=</span> <span class="fl">0.4</span>, <span class="op">-</span><span class="fl">0.18</span>, <span class="fl">0.10</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>mu_j <span class="op">=</span> np.log(<span class="dv">1</span> <span class="op">+</span> saut_median)</span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>kappa <span class="op">=</span> np.exp(mu_j <span class="op">+</span> delta<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span>) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">200_000</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>z <span class="op">=</span> rng.standard_normal(n)                      <span class="co"># le bruit brownien, commun aux deux modèles</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>nb_sauts <span class="op">=</span> rng.poisson(lam, n)</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>somme_sauts <span class="op">=</span> mu_j <span class="op">*</span> nb_sauts <span class="op">+</span> delta <span class="op">*</span> np.sqrt(nb_sauts) <span class="op">*</span> rng.standard_normal(n)</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>r_gbm <span class="op">=</span> np.exp(mu <span class="op">-</span> sigma<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> sigma <span class="op">*</span> z) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>r_mer <span class="op">=</span> np.exp(mu <span class="op">-</span> sigma<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span> <span class="op">-</span> lam <span class="op">*</span> kappa <span class="op">+</span> sigma <span class="op">*</span> z <span class="op">+</span> somme_sauts) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>    <span class="st">"modèle"</span>: [<span class="st">"brownien géométrique"</span>, <span class="st">"Merton à sauts"</span>],</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>    <span class="st">"rendement espéré simulé"</span>: [<span class="ss">f"</span><span class="sc">{</span>r_gbm<span class="sc">.</span>mean()<span class="sc">:.2%}</span><span class="ss">"</span>, <span class="ss">f"</span><span class="sc">{</span>r_mer<span class="sc">.</span>mean()<span class="sc">:.2%}</span><span class="ss">"</span>],</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    <span class="st">"rendement espéré exact"</span>: [<span class="ss">f"</span><span class="sc">{</span>np<span class="sc">.</span>exp(mu) <span class="op">-</span> <span class="dv">1</span><span class="sc">:.2%}</span><span class="ss">"</span>] <span class="op">*</span> <span class="dv">2</span>,</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>})</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">modèle</th>
+<th data-quarto-table-cell-role="th">rendement espéré simulé</th>
+<th data-quarto-table-cell-role="th">rendement espéré exact</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>brownien géométrique</td>
+<td>6.18%</td>
+<td>6.18%</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Merton à sauts</td>
+<td>6.20%</td>
+<td>6.18%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>La somme de <span class="math inline">\(k\)</span> sauts normaux indépendants est normale, de moyenne <span class="math inline">\(k\,\mu_J\)</span> et d’écart type <span class="math inline">\(\delta\sqrt{k}\)</span> : c’est ce qui permet de tirer tous les sauts d’une année d’un coup. Les deux rendements espérés tombent sur <span class="math inline">\(e^{\mu} - 1\)</span> : la compensation fait son travail.</p>
+</section>
+<section class="level3" data-number="17.5.2" id="étape-2.-la-queue-gauche">
+<h3 class="anchored" data-anchor-id="étape-2.-la-queue-gauche" data-number="17.5.2"> Étape 2. La queue gauche</h3>
+<div class="cell" data-execution_count="2" id="1ac225ac">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>choc <span class="op">=</span> <span class="op">-</span><span class="fl">0.39</span></span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>pd.DataFrame({</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    <span class="st">"modèle"</span>: [<span class="st">"brownien géométrique"</span>, <span class="st">"Merton à sauts"</span>],</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>    <span class="st">"perte à 99,5 </span><span class="sc">% s</span><span class="st">ur un an"</span>: [<span class="ss">f"</span><span class="sc">{</span><span class="op">-</span>np<span class="sc">.</span>quantile(r_gbm, <span class="fl">0.005</span>)<span class="sc">:.1%}</span><span class="ss">"</span>, <span class="ss">f"</span><span class="sc">{</span><span class="op">-</span>np<span class="sc">.</span>quantile(r_mer, <span class="fl">0.005</span>)<span class="sc">:.1%}</span><span class="ss">"</span>],</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>    <span class="st">"probabilité de perdre plus de 39 %"</span>: [<span class="ss">f"</span><span class="sc">{</span>(r_gbm <span class="op">&lt;</span> choc)<span class="sc">.</span>mean()<span class="sc">:.2%}</span><span class="ss">"</span>, <span class="ss">f"</span><span class="sc">{</span>(r_mer <span class="op">&lt;</span> choc)<span class="sc">.</span>mean()<span class="sc">:.2%}</span><span class="ss">"</span>],</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>})</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">modèle</th>
+<th data-quarto-table-cell-role="th">perte à 99,5 % sur un an</th>
+<th data-quarto-table-cell-role="th">probabilité de perdre plus de 39 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>brownien géométrique</td>
+<td>30.6%</td>
+<td>0.04%</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Merton à sauts</td>
+<td>47.6%</td>
+<td>1.65%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Même moyenne, même bruit : la perte à 99,5 % ne tient pourtant presque qu’aux sauts. Un générateur calé sur la volatilité seule passe à côté de ce qui fait le capital.</p>
+</section>
+<section class="level3" data-number="17.5.3" id="étape-3.-les-deux-lois-sur-un-graphique">
+<h3 class="anchored" data-anchor-id="étape-3.-les-deux-lois-sur-un-graphique" data-number="17.5.3"> Étape 3. Les deux lois, sur un graphique</h3>
+<div class="cell" data-execution_count="3" id="cell-fig-actions-e3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>bornes <span class="op">=</span> np.linspace(<span class="op">-</span><span class="fl">0.75</span>, <span class="fl">0.75</span>, <span class="dv">76</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.6</span>))</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>plt.hist(r_gbm, bins<span class="op">=</span>bornes, density<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">"#c3cedc"</span>, label<span class="op">=</span><span class="st">"brownien géométrique"</span>)</span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>plt.hist(r_mer, bins<span class="op">=</span>bornes, density<span class="op">=</span><span class="va">True</span>, histtype<span class="op">=</span><span class="st">"step"</span>, color<span class="op">=</span><span class="st">"#BA1C3A"</span>, lw<span class="op">=</span><span class="fl">1.6</span>, label<span class="op">=</span><span class="st">"Merton à sauts"</span>)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>plt.axvline(choc, color<span class="op">=</span><span class="st">"#9A6B1E"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="fl">1.4</span>, label<span class="op">=</span><span class="st">"choc de 39 %"</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>plt.axvline(np.quantile(r_gbm, <span class="fl">0.005</span>), color<span class="op">=</span><span class="st">"#3B547D"</span>, ls<span class="op">=</span><span class="st">":"</span>, lw<span class="op">=</span><span class="fl">1.2</span>)</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>plt.axvline(np.quantile(r_mer, <span class="fl">0.005</span>), color<span class="op">=</span><span class="st">"#BA1C3A"</span>, ls<span class="op">=</span><span class="st">":"</span>, lw<span class="op">=</span><span class="fl">1.2</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>plt.xlabel(<span class="st">"rendement sur un an"</span>)<span class="op">;</span> plt.yticks([])<span class="op">;</span> plt.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-actions-e3">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-actions-e3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="336" src="img/fig-actions-e3-output-1.png" width="852"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-actions-e3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 17.1: La loi du rendement sur un an : le centre est le même, la queue gauche du modèle à sauts dépasse largement le choc de 39 %.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="17.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="17.6" id="pièges-typiques"> Pièges typiques</h2>
+<ol type="1">
+<li><strong>Oublier la compensation <span class="math inline">\(\lambda\kappa\)</span>.</strong> Sans elle, le modèle à sauts a un rendement espéré plus bas, et l’on compare deux choses différentes.</li>
+<li><strong>Lire la volatilité seule.</strong> Deux modèles de même volatilité peuvent avoir des pertes à 99,5 % très différentes ; c’est la forme de la queue qui compte.</li>
+<li><strong>Calibrer les sauts sur trop peu d’années.</strong> Quelques krachs suffisent à fixer <span class="math inline">\(\lambda\)</span> et la taille des sauts ; une fenêtre qui n’en contient aucun donne <span class="math inline">\(\lambda = 0\)</span>.</li>
+<li><strong>Confondre le choc de la formule standard et un quantile du modèle.</strong> Le 39 % est un paramètre réglementaire calibré une fois pour tous, ajusté chaque mois par l’ajustement symétrique ; il ne remplace pas la loi de votre modèle.</li>
+</ol>
+</section>
+<section class="level2" data-number="17.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="17.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ol type="1">
+<li><strong>E4 Le générateur assemblé</strong> : les actions branchées sur le taux court, et le test de martingale.</li>
+<li>Une volatilité stochastique (Heston), autre façon d’épaissir les queues, avec des périodes calmes et des périodes agitées.</li>
+<li>La fiche <strong>I2</strong> de la bibliothèque, pour tirer ces simulations en bloc plutôt qu’en boucle.</li>
+</ol>
+</section>
+<section class="level2" data-number="17.8" id="dans-vision">
+<h2 class="anchored" data-anchor-id="dans-vision" data-number="17.8" id="dans-vision"> Dans Vision</h2>
+<p>L’étude ALM de Vision modélise l’indice actions par un brownien géométrique (le taux court plus une prime, une volatilité), corrélé au taux court. Les sauts n’y sont pas : cette fiche montre ce qu’ils changeraient. En local sur <code>http://127.0.0.1:8013/vision360/index.html?profil=actuaire_vie#/alm</code>.</p>
+</section>
+<section class="level2" data-number="17.9" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="17.9" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ol type="1">
+<li>Merton, R. (1976), Option pricing when underlying stock returns are discontinuous, <em>Journal of Financial Economics</em>, 3(1-2), 125-144.</li>
+<li>Règlement délégué (UE) 2015/35 de la Commission, article 169 : le choc actions de la formule standard.</li>
+<li>Cont, R. et Tankov, P. (2004), <em>Financial Modelling with Jump Processes</em>, Chapman and Hall.</li>
+</ol>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/E2/index.html"><small>&larr; Précédent</small>E2. Vasicek, CIR et Hull-White comparés</a><a class="next" href="../../bibliotheque/E4/index.html"><small>Suivant &rarr;</small>E4. Le générateur assemblé, et son test de martingale</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

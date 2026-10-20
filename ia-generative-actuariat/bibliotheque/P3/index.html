@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P3. GLM Gamma de coût moyen · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">P3. GLM Gamma de coût moyen</h1>
+      <p class="lede">Cette fiche illustre la démarche B (construire un modèle) sur la sévérité des sinistres. Ce que vous apprenez n’est pas le GLM Gamma, mais comment guider le LLM vers la bonne famille de modèle (sans la prescrire), comment gérer un piège métier (les grands sinistres), et comment documenter une décision (plafonnement) pour la note méthodologique qui suit.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#donnée-dentrée">Donnée d’entrée</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#exercice-trouvez-lerreur">Exercice : trouvez l’erreur</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="5.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="5.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>En pricing non-vie, on décompose la prime pure en fréquence × sévérité. La fréquence se modélise par un GLM Poisson (cas P2). La sévérité (coût moyen d’un sinistre) se modélise classiquement par un GLM Gamma à lien log. La difficulté principale : la sévérité est très dispersée, et quelques grands sinistres (des corporels graves en responsabilité civile auto) dominent les estimations si on n’y prend pas garde. Sur le portefeuille de cette fiche, les 5 % de sinistres les plus chers font la moitié du coût (étape 2).</p>
+<p>Ce cas reprend le portefeuille auto de P1 et P2, mais travaille sur <strong>la table des sinistres</strong> (une ligne par sinistre), pas sur la table des polices.</p>
+</section>
+<section class="level2" data-number="5.2" id="donnée-dentrée">
+<h2 class="anchored" data-anchor-id="donnée-dentrée" data-number="5.2" id="donnée-dentrée"> Donnée d’entrée</h2>
+<p>Le pendant réel est <strong>freMTPL2sev</strong> (même package <code>CASdatasets</code>, OpenML 41215) : une ligne par sinistre, le montant (<code>ClaimAmount</code>) et l’identifiant de police (<code>IDpol</code>) qui fait la jointure avec freMTPL2freq. Ici, on reprend la simulation commune aux fiches P1 à P5, puis on tire le coût de chaque sinistre : des sinistres matériels log-normaux, plus chers hors agglomération, avec la puissance et pour les jeunes conducteurs, et 1 % de corporels graves qui font la queue épaisse.</p>
+<div class="cell" data-execution_count="1" id="93158bbe">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">50_000</span>  <span class="co"># le vrai freMTPL2freq compte 678 013 lignes</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>age <span class="op">=</span> rng.integers(<span class="dv">18</span>, <span class="dv">86</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>puissance <span class="op">=</span> rng.integers(<span class="dv">4</span>, <span class="dv">12</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a>zone <span class="op">=</span> rng.choice(<span class="bu">list</span>(<span class="st">"ABCDEF"</span>), size<span class="op">=</span>N, p<span class="op">=</span>[<span class="fl">0.12</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.20</span>, <span class="fl">0.10</span>])  <span class="co"># A rural, F urbain dense</span></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="co"># 60 % des contrats présents toute l'année, les autres entrés ou sortis en cours d'année</span></span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>exposure <span class="op">=</span> np.where(rng.random(N) <span class="op">&lt;</span> <span class="fl">0.6</span>, <span class="fl">1.0</span>, rng.uniform(<span class="fl">0.05</span>, <span class="fl">1.0</span>, size<span class="op">=</span>N)).<span class="bu">round</span>(<span class="dv">3</span>)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a><span class="co"># Risque propre au conducteur, que le tarif ne voit pas (moyenne 1). Il fait les</span></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a><span class="co"># sinistres passés, donc le bonus-malus, et les sinistres de l'année : c'est par lui</span></span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="co"># que le bonus-malus prédit la fréquence.</span></span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>risque_cache <span class="op">=</span> rng.gamma(shape<span class="op">=</span><span class="fl">2.0</span>, scale<span class="op">=</span><span class="fl">0.5</span>, size<span class="op">=</span>N)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>sinistres_passes <span class="op">=</span> rng.poisson(<span class="fl">0.25</span> <span class="op">*</span> risque_cache)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a><span class="co"># Bonus-malus à la française (clause type de l'article A121-1 du Code des assurances) :</span></span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a><span class="co"># 100 au permis, 0,95 par an sans sinistre responsable, plancher 50, 1,25 par</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a><span class="co"># sinistre responsable, plafond 350.</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>plancher <span class="op">=</span> np.maximum(<span class="dv">50</span>, <span class="dv">100</span> <span class="op">*</span> <span class="fl">0.95</span> <span class="op">**</span> (age <span class="op">-</span> <span class="dv">18</span>))</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>bonus_malus <span class="op">=</span> np.minimum(<span class="dv">350</span>, np.<span class="bu">round</span>(plancher <span class="op">*</span> <span class="fl">1.25</span> <span class="op">**</span> sinistres_passes)).astype(<span class="bu">int</span>)</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a><span class="co"># Fréquence annuelle : en U selon l'âge (jeunes conducteurs les plus risqués, remontée</span></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a><span class="co"># après 70 ans), croissante avec la densité, un peu avec la puissance, et plus forte</span></span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a><span class="co"># pour un conducteur de 25 ans ou moins au volant d'un véhicule puissant.</span></span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>effet_zone <span class="op">=</span> pd.Series(zone).<span class="bu">map</span>({<span class="st">"A"</span>: <span class="op">-</span><span class="fl">0.30</span>, <span class="st">"B"</span>: <span class="op">-</span><span class="fl">0.15</span>, <span class="st">"C"</span>: <span class="fl">0.0</span>,</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>                                  <span class="st">"D"</span>: <span class="fl">0.10</span>, <span class="st">"E"</span>: <span class="fl">0.25</span>, <span class="st">"F"</span>: <span class="fl">0.40</span>}).to_numpy()</span>
+<span id="cb1-30"><a aria-hidden="true" href="#cb1-30" tabindex="-1"></a>log_freq <span class="op">=</span> (np.log(<span class="fl">0.07</span>)</span>
+<span id="cb1-31"><a aria-hidden="true" href="#cb1-31" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">1.1</span> <span class="op">*</span> np.exp(<span class="op">-</span>(age <span class="op">-</span> <span class="dv">18</span>) <span class="op">/</span> <span class="dv">6</span>)</span>
+<span id="cb1-32"><a aria-hidden="true" href="#cb1-32" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> np.maximum(age <span class="op">-</span> <span class="dv">70</span>, <span class="dv">0</span>)</span>
+<span id="cb1-33"><a aria-hidden="true" href="#cb1-33" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.03</span> <span class="op">*</span> (puissance <span class="op">-</span> <span class="dv">6</span>)</span>
+<span id="cb1-34"><a aria-hidden="true" href="#cb1-34" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> ((age <span class="op">&lt;=</span> <span class="dv">25</span>) <span class="op">&amp;</span> (puissance <span class="op">&gt;=</span> <span class="dv">9</span>))</span>
+<span id="cb1-35"><a aria-hidden="true" href="#cb1-35" tabindex="-1"></a>            <span class="op">+</span> effet_zone</span>
+<span id="cb1-36"><a aria-hidden="true" href="#cb1-36" tabindex="-1"></a>            <span class="op">+</span> np.log(risque_cache))</span>
+<span id="cb1-37"><a aria-hidden="true" href="#cb1-37" tabindex="-1"></a>nb_sinistres <span class="op">=</span> rng.poisson(np.exp(log_freq) <span class="op">*</span> exposure)</span>
+<span id="cb1-38"><a aria-hidden="true" href="#cb1-38" tabindex="-1"></a></span>
+<span id="cb1-39"><a aria-hidden="true" href="#cb1-39" tabindex="-1"></a>polices <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-40"><a aria-hidden="true" href="#cb1-40" tabindex="-1"></a>    <span class="st">"age"</span>: age,</span>
+<span id="cb1-41"><a aria-hidden="true" href="#cb1-41" tabindex="-1"></a>    <span class="st">"bonus_malus"</span>: bonus_malus,</span>
+<span id="cb1-42"><a aria-hidden="true" href="#cb1-42" tabindex="-1"></a>    <span class="st">"puissance"</span>: puissance,</span>
+<span id="cb1-43"><a aria-hidden="true" href="#cb1-43" tabindex="-1"></a>    <span class="st">"zone"</span>: zone,</span>
+<span id="cb1-44"><a aria-hidden="true" href="#cb1-44" tabindex="-1"></a>    <span class="st">"exposure"</span>: exposure,</span>
+<span id="cb1-45"><a aria-hidden="true" href="#cb1-45" tabindex="-1"></a>    <span class="st">"nb_sinistres"</span>: nb_sinistres,</span>
+<span id="cb1-46"><a aria-hidden="true" href="#cb1-46" tabindex="-1"></a>})</span>
+<span id="cb1-47"><a aria-hidden="true" href="#cb1-47" tabindex="-1"></a></span>
+<span id="cb1-48"><a aria-hidden="true" href="#cb1-48" tabindex="-1"></a><span class="co"># Le coût de chaque sinistre (fiches P3 et P4). Une ligne par sinistre, qui hérite</span></span>
+<span id="cb1-49"><a aria-hidden="true" href="#cb1-49" tabindex="-1"></a><span class="co"># des caractéristiques de sa police.</span></span>
+<span id="cb1-50"><a aria-hidden="true" href="#cb1-50" tabindex="-1"></a>pol <span class="op">=</span> np.repeat(np.arange(N), nb_sinistres)</span>
+<span id="cb1-51"><a aria-hidden="true" href="#cb1-51" tabindex="-1"></a><span class="co"># Sinistres matériels : log-normaux, plus chers hors agglomération (chocs à plus</span></span>
+<span id="cb1-52"><a aria-hidden="true" href="#cb1-52" tabindex="-1"></a><span class="co"># grande vitesse), avec la puissance et pour les jeunes conducteurs.</span></span>
+<span id="cb1-53"><a aria-hidden="true" href="#cb1-53" tabindex="-1"></a>effet_zone_cout <span class="op">=</span> pd.Series(zone[pol]).<span class="bu">map</span>({<span class="st">"A"</span>: <span class="fl">0.20</span>, <span class="st">"B"</span>: <span class="fl">0.10</span>, <span class="st">"C"</span>: <span class="fl">0.0</span>,</span>
+<span id="cb1-54"><a aria-hidden="true" href="#cb1-54" tabindex="-1"></a>                                            <span class="st">"D"</span>: <span class="op">-</span><span class="fl">0.05</span>, <span class="st">"E"</span>: <span class="op">-</span><span class="fl">0.10</span>, <span class="st">"F"</span>: <span class="op">-</span><span class="fl">0.15</span>}).to_numpy()</span>
+<span id="cb1-55"><a aria-hidden="true" href="#cb1-55" tabindex="-1"></a>log_cout <span class="op">=</span> (np.log(<span class="dv">1_200</span>)</span>
+<span id="cb1-56"><a aria-hidden="true" href="#cb1-56" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.05</span> <span class="op">*</span> (puissance[pol] <span class="op">-</span> <span class="dv">6</span>)</span>
+<span id="cb1-57"><a aria-hidden="true" href="#cb1-57" tabindex="-1"></a>            <span class="op">+</span> <span class="fl">0.3</span> <span class="op">*</span> np.exp(<span class="op">-</span>(age[pol] <span class="op">-</span> <span class="dv">18</span>) <span class="op">/</span> <span class="dv">6</span>)</span>
+<span id="cb1-58"><a aria-hidden="true" href="#cb1-58" tabindex="-1"></a>            <span class="op">+</span> effet_zone_cout)</span>
+<span id="cb1-59"><a aria-hidden="true" href="#cb1-59" tabindex="-1"></a>cout <span class="op">=</span> rng.lognormal(log_cout, <span class="fl">1.0</span>)</span>
+<span id="cb1-60"><a aria-hidden="true" href="#cb1-60" tabindex="-1"></a><span class="co"># 1 % de corporels graves, log-normaux autour de 50 000 EUR : la queue épaisse.</span></span>
+<span id="cb1-61"><a aria-hidden="true" href="#cb1-61" tabindex="-1"></a>corporel <span class="op">=</span> rng.random(<span class="bu">len</span>(pol)) <span class="op">&lt;</span> <span class="fl">0.01</span></span>
+<span id="cb1-62"><a aria-hidden="true" href="#cb1-62" tabindex="-1"></a>cout[corporel] <span class="op">=</span> rng.lognormal(np.log(<span class="dv">50_000</span>), <span class="fl">1.2</span>, size<span class="op">=</span>corporel.<span class="bu">sum</span>())</span>
+<span id="cb1-63"><a aria-hidden="true" href="#cb1-63" tabindex="-1"></a></span>
+<span id="cb1-64"><a aria-hidden="true" href="#cb1-64" tabindex="-1"></a>sinistres <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-65"><a aria-hidden="true" href="#cb1-65" tabindex="-1"></a>    <span class="st">"police"</span>: pol,</span>
+<span id="cb1-66"><a aria-hidden="true" href="#cb1-66" tabindex="-1"></a>    <span class="st">"age"</span>: age[pol],</span>
+<span id="cb1-67"><a aria-hidden="true" href="#cb1-67" tabindex="-1"></a>    <span class="st">"bonus_malus"</span>: bonus_malus[pol],</span>
+<span id="cb1-68"><a aria-hidden="true" href="#cb1-68" tabindex="-1"></a>    <span class="st">"puissance"</span>: puissance[pol],</span>
+<span id="cb1-69"><a aria-hidden="true" href="#cb1-69" tabindex="-1"></a>    <span class="st">"zone"</span>: zone[pol],</span>
+<span id="cb1-70"><a aria-hidden="true" href="#cb1-70" tabindex="-1"></a>    <span class="st">"cout"</span>: cout.<span class="bu">round</span>(<span class="dv">0</span>),</span>
+<span id="cb1-71"><a aria-hidden="true" href="#cb1-71" tabindex="-1"></a>})</span>
+<span id="cb1-72"><a aria-hidden="true" href="#cb1-72" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Nombre de sinistres : </span><span class="sc">{</span><span class="bu">len</span>(sinistres)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb1-73"><a aria-hidden="true" href="#cb1-73" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût total : </span><span class="sc">{</span>sinistres[<span class="st">'cout'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-74"><a aria-hidden="true" href="#cb1-74" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût moyen : </span><span class="sc">{</span>sinistres[<span class="st">'cout'</span>]<span class="sc">.</span>mean()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-75"><a aria-hidden="true" href="#cb1-75" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût médian : </span><span class="sc">{</span>sinistres[<span class="st">'cout'</span>]<span class="sc">.</span>median()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb1-76"><a aria-hidden="true" href="#cb1-76" tabindex="-1"></a>sinistres.head()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nombre de sinistres : 4,014
+Coût total : 13,332,940 EUR
+Coût moyen : 3,322 EUR
+Coût médian : 1,324 EUR</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">police</th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">bonus_malus</th>
+<th data-quarto-table-cell-role="th">puissance</th>
+<th data-quarto-table-cell-role="th">zone</th>
+<th data-quarto-table-cell-role="th">cout</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2</td>
+<td>62</td>
+<td>50</td>
+<td>8</td>
+<td>D</td>
+<td>602.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>24</td>
+<td>71</td>
+<td>78</td>
+<td>7</td>
+<td>E</td>
+<td>4800.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>31</td>
+<td>33</td>
+<td>50</td>
+<td>9</td>
+<td>C</td>
+<td>1460.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>31</td>
+<td>33</td>
+<td>50</td>
+<td>9</td>
+<td>C</td>
+<td>363.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>45</td>
+<td>84</td>
+<td>50</td>
+<td>10</td>
+<td>D</td>
+<td>5643.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section class="level2" data-number="5.3" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="5.3" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 5 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Explorer la distribution.</strong> <em>“Voici le DataFrame <code>sinistres</code>, une ligne par sinistre. Décris la distribution du coût : statistiques univariées, percentiles, identification des grands sinistres. Trace l’histogramme en échelle log.”</em></p></li>
+<li><p><strong>Détecter les grands sinistres.</strong> <em>“Identifie les sinistres au-dessus du percentile 99. Combien y en a-t-il, quelle fraction du coût total représentent-ils ? Quelle part du coût font les 5 % de sinistres les plus chers ?”</em></p></li>
+<li><p><strong>Modéliser la sévérité.</strong> <em>“Pour modéliser le coût moyen d’un sinistre, quelle famille de modèle me recommandes-tu et pourquoi ? Ajuste-la sur la table des sinistres avec l’âge bandé comme en P2, la puissance et la zone.”</em></p></li>
+<li><p><strong>Gérer les grands sinistres.</strong> <em>“Plafonne les sinistres à 50 000 EUR et refais l’ajustement. Compare les relativités et leur précision : quelle est l’influence des grands sinistres ? Que fais-tu du coût au-delà du plafond ?”</em></p></li>
+<li><p><strong>Combiner avec la fréquence.</strong> <em>“À partir de ce modèle de coût et du GLM de fréquence de P2, construis la prime pure par police : fréquence × coût moyen, plus la part des grands sinistres. Vérifie que le total retrouve la charge observée, puis sors la prime pure moyenne par zone.”</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="5.4" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="5.4" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="5.4.1" id="étape-1.-explorer-la-distribution">
+<h3 class="anchored" data-anchor-id="étape-1.-explorer-la-distribution" data-number="5.4.1"> Étape 1. Explorer la distribution</h3>
+<div class="cell" data-execution_count="2" id="726c5fa5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Statistiques du coût :"</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a><span class="bu">print</span>(sinistres[<span class="st">"cout"</span>].describe(percentiles<span class="op">=</span>[<span class="fl">0.5</span>, <span class="fl">0.9</span>, <span class="fl">0.95</span>, <span class="fl">0.99</span>]).<span class="bu">round</span>(<span class="dv">0</span>).to_string())</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Coût moyen : </span><span class="sc">{</span>sinistres[<span class="st">'cout'</span>]<span class="sc">.</span>mean()<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût médian : </span><span class="sc">{</span>sinistres[<span class="st">'cout'</span>]<span class="sc">.</span>median()<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ratio moyenne/médiane : </span><span class="sc">{</span>sinistres[<span class="st">'cout'</span>]<span class="sc">.</span>mean() <span class="op">/</span> sinistres[<span class="st">'cout'</span>]<span class="sc">.</span>median()<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Statistiques du coût :
+count       4014.0
+mean        3322.0
+std        23351.0
+min           29.0
+50%         1324.0
+90%         5115.0
+95%         7846.0
+99%        32170.0
+max      1337334.0
+
+Coût moyen : 3,322
+Coût médian : 1,324
+Ratio moyenne/médiane : 2.51</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="3" id="cell-fig-cout-distribution">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>axes[<span class="dv">0</span>].hist(sinistres[<span class="st">"cout"</span>], bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolor<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Coût (EUR)"</span>)</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Nombre"</span>)</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Distribution brute (échelle linéaire)"</span>)</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>axes[<span class="dv">1</span>].hist(np.log10(sinistres[<span class="st">"cout"</span>]), bins<span class="op">=</span><span class="dv">50</span>, color<span class="op">=</span><span class="st">"#1d4ed8"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, edgecolor<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"log10(Coût) : 3 = 1 000 EUR, 5 = 100 000 EUR"</span>)</span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">"Nombre"</span>)</span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Distribution en échelle log"</span>)</span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a></span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-cout-distribution">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cout-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="375" src="img/fig-cout-distribution-output-1_23bf6f13.png" width="1142"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cout-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 5.1: Distribution des coûts en échelle linéaire et en échelle log
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>4 014 sinistres, un coût moyen de 3 322 EUR pour une médiane de 1 324 EUR : la moyenne vaut 2,5 fois la médiane. Le percentile 99 est à 32 170 EUR, le maximum à 1 337 334 EUR. En échelle linéaire, presque tout tient dans la première barre, l’axe étiré par ce seul sinistre. En échelle log, une cloche centrée vers 1 300 EUR (la médiane), et une traîne à droite au-delà de 30 000 EUR : les corporels graves.</p>
+</section>
+<section class="level3" data-number="5.4.2" id="étape-2.-détecter-les-grands-sinistres">
+<h3 class="anchored" data-anchor-id="étape-2.-détecter-les-grands-sinistres" data-number="5.4.2"> Étape 2. Détecter les grands sinistres</h3>
+<div class="cell" data-execution_count="4" id="8c1e6c64">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a aria-hidden="true" href="#cb6-1" tabindex="-1"></a>seuil_99 <span class="op">=</span> sinistres[<span class="st">"cout"</span>].quantile(<span class="fl">0.99</span>)</span>
+<span id="cb6-2"><a aria-hidden="true" href="#cb6-2" tabindex="-1"></a>grands_sinistres <span class="op">=</span> sinistres[sinistres[<span class="st">"cout"</span>] <span class="op">&gt;</span> seuil_99]</span>
+<span id="cb6-3"><a aria-hidden="true" href="#cb6-3" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Seuil percentile 99 : </span><span class="sc">{</span>seuil_99<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb6-4"><a aria-hidden="true" href="#cb6-4" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Nombre de sinistres &gt; p99 : </span><span class="sc">{</span><span class="bu">len</span>(grands_sinistres)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-5"><a aria-hidden="true" href="#cb6-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Fraction du coût total : </span><span class="sc">{</span>grands_sinistres[<span class="st">'cout'</span>]<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> sinistres[<span class="st">'cout'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb6-6"><a aria-hidden="true" href="#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a aria-hidden="true" href="#cb6-7" tabindex="-1"></a>couts_tries <span class="op">=</span> sinistres[<span class="st">"cout"</span>].sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-8"><a aria-hidden="true" href="#cb6-8" tabindex="-1"></a>n_5pc <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.05</span> <span class="op">*</span> <span class="bu">len</span>(couts_tries))</span>
+<span id="cb6-9"><a aria-hidden="true" href="#cb6-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Part du coût portée par les 5 % de sinistres les plus chers (</span><span class="sc">{</span>n_5pc<span class="sc">}</span><span class="ss">) : "</span></span>
+<span id="cb6-10"><a aria-hidden="true" href="#cb6-10" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>couts_tries<span class="sc">.</span>head(n_5pc)<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> couts_tries<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb6-11"><a aria-hidden="true" href="#cb6-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sinistres au-dessus de 50 000 EUR : </span><span class="sc">{</span>(sinistres[<span class="st">'cout'</span>] <span class="op">&gt;</span> <span class="dv">50_000</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-12"><a aria-hidden="true" href="#cb6-12" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb6-13"><a aria-hidden="true" href="#cb6-13" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Les 10 plus gros sinistres :"</span>)</span>
+<span id="cb6-14"><a aria-hidden="true" href="#cb6-14" tabindex="-1"></a><span class="bu">print</span>(sinistres.nlargest(<span class="dv">10</span>, <span class="st">"cout"</span>)[[<span class="st">"police"</span>, <span class="st">"age"</span>, <span class="st">"puissance"</span>, <span class="st">"zone"</span>, <span class="st">"cout"</span>]].to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Seuil percentile 99 : 32,170 EUR
+Nombre de sinistres &gt; p99 : 41
+Fraction du coût total : 34.8%
+Part du coût portée par les 5 % de sinistres les plus chers (200) : 49.9%
+Sinistres au-dessus de 50 000 EUR : 26
+
+Les 10 plus gros sinistres :
+      police  age  puissance zone       cout
+3084   38768   29          5    E  1337334.0
+1031   12918   24         11    C   251480.0
+3991   49778   70         11    F   239124.0
+3585   44895   76         10    D   177413.0
+228     3044   30         11    B   158424.0
+1397   17556   38          8    E   154159.0
+1246   15486   62          5    C   151650.0
+1864   23376   38          8    D   140769.0
+3550   44556   23          9    F   138413.0
+1059   13147   59          8    D   106952.0</code></pre>
+</div>
+</div>
+<p>Les 41 sinistres au-dessus du percentile 99 font 34,8 % du coût total ; les 200 plus chers (5 %) en font 49,9 %. Le plus gros, 1 337 334 EUR, vaut à lui seul un dixième du coût du portefeuille : il est sur une police de la zone E, conducteur de 29 ans. 26 sinistres dépassent 50 000 EUR : c’est le seuil retenu à l’étape 4, un nombre rond au-dessus du percentile 99 (32 170 EUR).</p>
+</section>
+<section class="level3" data-number="5.4.3" id="étape-3.-modéliser-la-sévérité">
+<h3 class="anchored" data-anchor-id="étape-3.-modéliser-la-sévérité" data-number="5.4.3"> Étape 3. Modéliser la sévérité</h3>
+<p>Le coût est positif, asymétrique, et sa dispersion croît avec son niveau : c’est le terrain du GLM Gamma à lien log. Le lien log donne des relativités multiplicatives, comme pour la fréquence, et des prédictions toujours positives. On l’ajuste sur la table des sinistres, une ligne par sinistre : chaque sinistre compte une fois.</p>
+<div class="cell" data-execution_count="5" id="4c065d19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb8-2"><a aria-hidden="true" href="#cb8-2" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb8-3"><a aria-hidden="true" href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a aria-hidden="true" href="#cb8-4" tabindex="-1"></a>BANDES_AGE <span class="op">=</span> [<span class="dv">17</span>, <span class="dv">21</span>, <span class="dv">25</span>, <span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">85</span>]</span>
+<span id="cb8-5"><a aria-hidden="true" href="#cb8-5" tabindex="-1"></a>LIBELLES_AGE <span class="op">=</span> [<span class="st">"18-21"</span>, <span class="st">"22-25"</span>, <span class="st">"26-30"</span>, <span class="st">"31-45"</span>, <span class="st">"46-60"</span>, <span class="st">"61-70"</span>, <span class="st">"71-85"</span>]</span>
+<span id="cb8-6"><a aria-hidden="true" href="#cb8-6" tabindex="-1"></a>sinistres[<span class="st">"age_bande"</span>] <span class="op">=</span> pd.cut(sinistres[<span class="st">"age"</span>], bins<span class="op">=</span>BANDES_AGE, labels<span class="op">=</span>LIBELLES_AGE)</span>
+<span id="cb8-7"><a aria-hidden="true" href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a aria-hidden="true" href="#cb8-8" tabindex="-1"></a>variables <span class="op">=</span> <span class="st">"C(age_bande, Treatment('31-45')) + puissance + C(zone)"</span></span>
+<span id="cb8-9"><a aria-hidden="true" href="#cb8-9" tabindex="-1"></a>gamma_log <span class="op">=</span> sm.families.Gamma(link<span class="op">=</span>sm.families.links.Log())</span>
+<span id="cb8-10"><a aria-hidden="true" href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a aria-hidden="true" href="#cb8-11" tabindex="-1"></a><span class="kw">def</span> relativites(modele):</span>
+<span id="cb8-12"><a aria-hidden="true" href="#cb8-12" tabindex="-1"></a>    <span class="co">"""Relativités (exp des coefficients) et erreur standard, libellés lisibles."""</span></span>
+<span id="cb8-13"><a aria-hidden="true" href="#cb8-13" tabindex="-1"></a>    t <span class="op">=</span> pd.DataFrame({<span class="st">"relativite"</span>: np.exp(modele.params), <span class="st">"erreur_std"</span>: modele.bse})</span>
+<span id="cb8-14"><a aria-hidden="true" href="#cb8-14" tabindex="-1"></a>    t.index <span class="op">=</span> t.index.<span class="bu">str</span>.replace(<span class="vs">r"C</span><span class="ch">\(</span><span class="kw">(</span><span class="dv">\w</span><span class="op">+</span><span class="kw">)</span><span class="dv">.</span><span class="op">*?</span><span class="ch">\)\[</span><span class="vs">T</span><span class="ch">\.</span><span class="kw">(</span><span class="dv">.</span><span class="op">+</span><span class="kw">)</span><span class="ch">\]</span><span class="vs">"</span>, <span class="vs">r"</span><span class="ch">\1</span><span class="vs"> = </span><span class="ch">\2</span><span class="vs">"</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-15"><a aria-hidden="true" href="#cb8-15" tabindex="-1"></a>    <span class="cf">return</span> t</span>
+<span id="cb8-16"><a aria-hidden="true" href="#cb8-16" tabindex="-1"></a></span>
+<span id="cb8-17"><a aria-hidden="true" href="#cb8-17" tabindex="-1"></a>modele_brut <span class="op">=</span> smf.glm(<span class="ss">f"cout ~ </span><span class="sc">{</span>variables<span class="sc">}</span><span class="ss">"</span>, data<span class="op">=</span>sinistres, family<span class="op">=</span>gamma_log).fit()</span>
+<span id="cb8-18"><a aria-hidden="true" href="#cb8-18" tabindex="-1"></a><span class="bu">print</span>(relativites(modele_brut).<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb8-19"><a aria-hidden="true" href="#cb8-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Paramètre de dispersion : </span><span class="sc">{</span>modele_brut<span class="sc">.</span>scale<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   relativite  erreur_std
+Intercept            2451.374       0.349
+age_bande = 18-21       1.199       0.228
+age_bande = 22-25       1.529       0.263
+age_bande = 26-30       2.938       0.287
+age_bande = 46-60       0.857       0.216
+age_bande = 61-70       1.239       0.244
+age_bande = 71-85       1.042       0.202
+zone = B                0.867       0.318
+zone = C                0.948       0.275
+zone = D                0.799       0.271
+zone = E                0.955       0.273
+zone = F                0.815       0.295
+puissance               1.028       0.028
+
+Paramètre de dispersion : 16.64</code></pre>
+</div>
+</div>
+<p>Sur les coûts bruts, le modèle est le jouet des grands sinistres. Les 26-30 ans ressortent à 2,94 : ce n’est pas un effet d’âge, c’est le sinistre de 1,34 M EUR d’un conducteur de 29 ans, vu à l’étape 2. La zone n’a pas de profil lisible (E à 0,955, D à 0,799). Les erreurs standard valent 0,2 à 0,3 sur l’échelle log : chaque intervalle de confiance à 95 % va d’environ 0,6 à 1,7 fois la relativité. Le paramètre de dispersion de 16,6 dit la même chose : un coefficient de variation d’environ 4 par sinistre (<span class="math inline">\(\sqrt{16{,}6}\)</span>).</p>
+</section>
+<section class="level3" data-number="5.4.4" id="étape-4.-gérer-les-grands-sinistres-plafonner-et-mutualiser">
+<h3 class="anchored" data-anchor-id="étape-4.-gérer-les-grands-sinistres-plafonner-et-mutualiser" data-number="5.4.4"> Étape 4. Gérer les grands sinistres : plafonner et mutualiser</h3>
+<div class="cell" data-execution_count="6" id="20ced75b">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a>SEUIL_PLAFOND <span class="op">=</span> <span class="dv">50_000</span></span>
+<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a></span>
+<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a>sinistres[<span class="st">"cout_plafonne"</span>] <span class="op">=</span> sinistres[<span class="st">"cout"</span>].clip(upper<span class="op">=</span>SEUIL_PLAFOND)</span>
+<span id="cb10-4"><a aria-hidden="true" href="#cb10-4" tabindex="-1"></a>excedent <span class="op">=</span> sinistres[<span class="st">"cout"</span>].<span class="bu">sum</span>() <span class="op">-</span> sinistres[<span class="st">"cout_plafonne"</span>].<span class="bu">sum</span>()</span>
+<span id="cb10-5"><a aria-hidden="true" href="#cb10-5" tabindex="-1"></a>surcout_par_sinistre <span class="op">=</span> excedent <span class="op">/</span> <span class="bu">len</span>(sinistres)</span>
+<span id="cb10-6"><a aria-hidden="true" href="#cb10-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sinistres plafonnés : </span><span class="sc">{</span>(sinistres[<span class="st">'cout'</span>] <span class="op">&gt;</span> SEUIL_PLAFOND)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-7"><a aria-hidden="true" href="#cb10-7" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût total brut      : </span><span class="sc">{</span>sinistres[<span class="st">'cout'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb10-8"><a aria-hidden="true" href="#cb10-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût total plafonné  : </span><span class="sc">{</span>sinistres[<span class="st">'cout_plafonne'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:&gt;13,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb10-9"><a aria-hidden="true" href="#cb10-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Excédent à mutualiser : </span><span class="sc">{</span>excedent<span class="sc">:&gt;12,.0f}</span><span class="ss"> EUR, soit </span><span class="sc">{</span>excedent <span class="op">/</span> sinistres[<span class="st">'cout'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:.1%}</span><span class="ss"> du coût"</span>)</span>
+<span id="cb10-10"><a aria-hidden="true" href="#cb10-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Surcoût grands sinistres par sinistre : </span><span class="sc">{</span>surcout_par_sinistre<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb10-11"><a aria-hidden="true" href="#cb10-11" tabindex="-1"></a></span>
+<span id="cb10-12"><a aria-hidden="true" href="#cb10-12" tabindex="-1"></a>modele_plafonne <span class="op">=</span> smf.glm(<span class="ss">f"cout_plafonne ~ </span><span class="sc">{</span>variables<span class="sc">}</span><span class="ss">"</span>, data<span class="op">=</span>sinistres, family<span class="op">=</span>gamma_log).fit()</span>
+<span id="cb10-13"><a aria-hidden="true" href="#cb10-13" tabindex="-1"></a>comparaison <span class="op">=</span> relativites(modele_brut).join(relativites(modele_plafonne), lsuffix<span class="op">=</span><span class="st">"_brut"</span>,</span>
+<span id="cb10-14"><a aria-hidden="true" href="#cb10-14" tabindex="-1"></a>                                            rsuffix<span class="op">=</span><span class="st">"_plafonne"</span>)</span>
+<span id="cb10-15"><a aria-hidden="true" href="#cb10-15" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb10-16"><a aria-hidden="true" href="#cb10-16" tabindex="-1"></a><span class="bu">print</span>(comparaison.<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb10-17"><a aria-hidden="true" href="#cb10-17" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Paramètre de dispersion : </span><span class="sc">{</span>modele_brut<span class="sc">.</span>scale<span class="sc">:.2f}</span><span class="ss"> brut, </span><span class="sc">{</span>modele_plafonne<span class="sc">.</span>scale<span class="sc">:.2f}</span><span class="ss"> plafonné"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sinistres plafonnés : 26
+Coût total brut      :    13,332,940 EUR
+Coût total plafonné  :    10,556,659 EUR
+Excédent à mutualiser :    2,776,281 EUR, soit 20.8% du coût
+Surcoût grands sinistres par sinistre : 692 EUR
+
+                   relativite_brut  erreur_std_brut  relativite_plafonne  erreur_std_plafonne
+Intercept                 2451.374            0.349             2405.378                0.167
+age_bande = 18-21            1.199            0.228                1.295                0.109
+age_bande = 22-25            1.529            0.263                1.287                0.126
+age_bande = 26-30            2.938            0.287                1.198                0.138
+age_bande = 46-60            0.857            0.216                0.877                0.104
+age_bande = 61-70            1.239            0.244                1.119                0.117
+age_bande = 71-85            1.042            0.202                1.044                0.097
+zone = B                     0.867            0.318                0.888                0.152
+zone = C                     0.948            0.275                0.875                0.132
+zone = D                     0.799            0.271                0.739                0.130
+zone = E                     0.955            0.273                0.752                0.131
+zone = F                     0.815            0.295                0.721                0.141
+puissance                    1.028            0.028                1.030                0.014
+
+Paramètre de dispersion : 16.64 brut, 3.83 plafonné</code></pre>
+</div>
+</div>
+<p>Le plafonnement mord : 26 sinistres écrêtés, 2 776 281 EUR mis de côté, 20,8 % du coût. Les relativités changent de sens métier :</p>
+<ul>
+<li>les 26-30 ans passent de 2,94 à 1,20, dans la suite des 18-21 ans (1,30) et des 22-25 ans (1,29) : les jeunes conducteurs ont des sinistres un peu plus chers ;</li>
+<li>la zone devient lisible : A, la référence rurale, est la plus chère, B et C sont autour de 0,88, D, E et F entre 0,72 et 0,75. Hors agglomération, les sinistres sont moins fréquents (P2) mais plus coûteux ;</li>
+<li>les erreurs standard sont à peu près divisées par deux, et la dispersion tombe de 16,6 à 3,8.</li>
+</ul>
+<p>L’excédent ne disparaît pas du tarif : il est mutualisé. Ici, un surcoût de 692 EUR par sinistre (l’excédent divisé par le nombre de sinistres), ce qui revient à supposer que tout sinistre a la même chance de devenir un grand sinistre, quel que soit le profil. C’est une hypothèse, à écrire dans la note méthodologique avec le seuil ; si les grands sinistres se concentrent sur un segment, on leur donne un modèle de fréquence à part.</p>
+</section>
+<section class="level3" data-number="5.4.5" id="étape-5.-combiner-fréquence-et-sévérité-pour-la-prime-pure">
+<h3 class="anchored" data-anchor-id="étape-5.-combiner-fréquence-et-sévérité-pour-la-prime-pure" data-number="5.4.5"> Étape 5. Combiner fréquence et sévérité pour la prime pure</h3>
+<p>On réajuste le GLM de fréquence de P2 (même formule) sur tout le portefeuille, puis on calcule pour chaque police :</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{prime pure} &amp;= \text{fréquence prédite} \times \bigl( \text{coût moyen plafonné prédit} \\
+&amp;\qquad + \text{surcoût grands sinistres par sinistre} \bigr).
+\end{aligned}
+\]</span></p>
+<div class="cell" data-execution_count="7" id="98e60edd">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a>BANDES_BM <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">80</span>, <span class="dv">100</span>, <span class="dv">350</span>]</span>
+<span id="cb12-2"><a aria-hidden="true" href="#cb12-2" tabindex="-1"></a>LIBELLES_BM <span class="op">=</span> [<span class="st">"50"</span>, <span class="st">"51-60"</span>, <span class="st">"61-80"</span>, <span class="st">"81-100"</span>, <span class="st">"101+"</span>]</span>
+<span id="cb12-3"><a aria-hidden="true" href="#cb12-3" tabindex="-1"></a>polices[<span class="st">"age_bande"</span>] <span class="op">=</span> pd.cut(polices[<span class="st">"age"</span>], bins<span class="op">=</span>BANDES_AGE, labels<span class="op">=</span>LIBELLES_AGE)</span>
+<span id="cb12-4"><a aria-hidden="true" href="#cb12-4" tabindex="-1"></a>polices[<span class="st">"bm_bande"</span>] <span class="op">=</span> pd.cut(polices[<span class="st">"bonus_malus"</span>], bins<span class="op">=</span>BANDES_BM, labels<span class="op">=</span>LIBELLES_BM)</span>
+<span id="cb12-5"><a aria-hidden="true" href="#cb12-5" tabindex="-1"></a></span>
+<span id="cb12-6"><a aria-hidden="true" href="#cb12-6" tabindex="-1"></a>glm_freq <span class="op">=</span> smf.glm(<span class="st">"nb_sinistres ~ C(age_bande, Treatment('31-45')) + C(bm_bande, Treatment('50'))"</span></span>
+<span id="cb12-7"><a aria-hidden="true" href="#cb12-7" tabindex="-1"></a>                   <span class="st">" + puissance + C(zone)"</span>,</span>
+<span id="cb12-8"><a aria-hidden="true" href="#cb12-8" tabindex="-1"></a>                   data<span class="op">=</span>polices, family<span class="op">=</span>sm.families.Poisson(),</span>
+<span id="cb12-9"><a aria-hidden="true" href="#cb12-9" tabindex="-1"></a>                   offset<span class="op">=</span>np.log(polices[<span class="st">"exposure"</span>])).fit()</span>
+<span id="cb12-10"><a aria-hidden="true" href="#cb12-10" tabindex="-1"></a></span>
+<span id="cb12-11"><a aria-hidden="true" href="#cb12-11" tabindex="-1"></a>polices[<span class="st">"freq_pred"</span>] <span class="op">=</span> glm_freq.predict(polices, offset<span class="op">=</span>np.zeros(N))</span>
+<span id="cb12-12"><a aria-hidden="true" href="#cb12-12" tabindex="-1"></a>polices[<span class="st">"cout_moyen_pred"</span>] <span class="op">=</span> modele_plafonne.predict(polices) <span class="op">+</span> surcout_par_sinistre</span>
+<span id="cb12-13"><a aria-hidden="true" href="#cb12-13" tabindex="-1"></a>polices[<span class="st">"prime_pure"</span>] <span class="op">=</span> polices[<span class="st">"freq_pred"</span>] <span class="op">*</span> polices[<span class="st">"cout_moyen_pred"</span>]</span>
+<span id="cb12-14"><a aria-hidden="true" href="#cb12-14" tabindex="-1"></a>polices[<span class="st">"charge"</span>] <span class="op">=</span> sinistres.groupby(<span class="st">"police"</span>)[<span class="st">"cout"</span>].<span class="bu">sum</span>().reindex(<span class="bu">range</span>(N), fill_value<span class="op">=</span><span class="dv">0</span>).to_numpy()</span>
+<span id="cb12-15"><a aria-hidden="true" href="#cb12-15" tabindex="-1"></a></span>
+<span id="cb12-16"><a aria-hidden="true" href="#cb12-16" tabindex="-1"></a>charge_predite <span class="op">=</span> (polices[<span class="st">"prime_pure"</span>] <span class="op">*</span> polices[<span class="st">"exposure"</span>]).<span class="bu">sum</span>()</span>
+<span id="cb12-17"><a aria-hidden="true" href="#cb12-17" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Charge observée : </span><span class="sc">{</span>polices[<span class="st">'charge'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb12-18"><a aria-hidden="true" href="#cb12-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Charge prédite  : </span><span class="sc">{</span>charge_predite<span class="sc">:,.0f}</span><span class="ss"> EUR (prime pure × exposition)"</span>)</span>
+<span id="cb12-19"><a aria-hidden="true" href="#cb12-19" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb12-20"><a aria-hidden="true" href="#cb12-20" tabindex="-1"></a></span>
+<span id="cb12-21"><a aria-hidden="true" href="#cb12-21" tabindex="-1"></a><span class="kw">def</span> par_segment(col):</span>
+<span id="cb12-22"><a aria-hidden="true" href="#cb12-22" tabindex="-1"></a>    g <span class="op">=</span> polices.assign(pp_expo<span class="op">=</span>polices[<span class="st">"prime_pure"</span>] <span class="op">*</span> polices[<span class="st">"exposure"</span>],</span>
+<span id="cb12-23"><a aria-hidden="true" href="#cb12-23" tabindex="-1"></a>                       sin_pred<span class="op">=</span>polices[<span class="st">"freq_pred"</span>] <span class="op">*</span> polices[<span class="st">"exposure"</span>])</span>
+<span id="cb12-24"><a aria-hidden="true" href="#cb12-24" tabindex="-1"></a>    t <span class="op">=</span> g.groupby(col, observed<span class="op">=</span><span class="va">True</span>).agg(exposition<span class="op">=</span>(<span class="st">"exposure"</span>, <span class="st">"sum"</span>), charge<span class="op">=</span>(<span class="st">"charge"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb12-25"><a aria-hidden="true" href="#cb12-25" tabindex="-1"></a>                                          pp_expo<span class="op">=</span>(<span class="st">"pp_expo"</span>, <span class="st">"sum"</span>), sin_pred<span class="op">=</span>(<span class="st">"sin_pred"</span>, <span class="st">"sum"</span>))</span>
+<span id="cb12-26"><a aria-hidden="true" href="#cb12-26" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame({</span>
+<span id="cb12-27"><a aria-hidden="true" href="#cb12-27" tabindex="-1"></a>        <span class="st">"frequence"</span>: t[<span class="st">"sin_pred"</span>] <span class="op">/</span> t[<span class="st">"exposition"</span>],</span>
+<span id="cb12-28"><a aria-hidden="true" href="#cb12-28" tabindex="-1"></a>        <span class="st">"cout_moyen"</span>: t[<span class="st">"pp_expo"</span>] <span class="op">/</span> t[<span class="st">"sin_pred"</span>],</span>
+<span id="cb12-29"><a aria-hidden="true" href="#cb12-29" tabindex="-1"></a>        <span class="st">"prime_pure"</span>: t[<span class="st">"pp_expo"</span>] <span class="op">/</span> t[<span class="st">"exposition"</span>],</span>
+<span id="cb12-30"><a aria-hidden="true" href="#cb12-30" tabindex="-1"></a>        <span class="st">"charge_obs_par_an"</span>: t[<span class="st">"charge"</span>] <span class="op">/</span> t[<span class="st">"exposition"</span>],</span>
+<span id="cb12-31"><a aria-hidden="true" href="#cb12-31" tabindex="-1"></a>    })</span>
+<span id="cb12-32"><a aria-hidden="true" href="#cb12-32" tabindex="-1"></a></span>
+<span id="cb12-33"><a aria-hidden="true" href="#cb12-33" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Par zone (fréquence et coût moyen prédits, prime pure annuelle, charge observée par année) :"</span>)</span>
+<span id="cb12-34"><a aria-hidden="true" href="#cb12-34" tabindex="-1"></a><span class="bu">print</span>(par_segment(<span class="st">"zone"</span>).<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Charge observée : 13,332,940 EUR
+Charge prédite  : 13,331,283 EUR (prime pure × exposition)
+
+Par zone (fréquence et coût moyen prédits, prime pure annuelle, charge observée par année) :
+      frequence  cout_moyen  prime_pure  charge_obs_par_an
+zone                                                      
+A         0.061    3983.592     243.223            211.968
+B         0.078    3595.104     278.749            250.930
+C         0.097    3559.618     346.991            326.153
+D         0.100    3114.573     310.359            269.783
+E         0.118    3154.066     370.988            485.595
+F         0.134    3053.885     408.558            398.514</code></pre>
+</div>
+</div>
+<p>La charge prédite (13 331 283 EUR) retrouve la charge observée (13 332 940 EUR) : le GLM de Poisson reproduit le nombre total de sinistres, le GLM Gamma à peu près le coût plafonné total, et le surcoût ramène l’excédent.</p>
+<p>Par zone, les deux effets se contrarient. La fréquence monte de 0,061 (A) à 0,134 (F) quand le coût moyen baisse de 3 984 à 3 054 EUR : la prime pure ne va plus que de 243 à 409 EUR par an, un rapport de 1,7 contre 2,2 pour la fréquence seule. La charge observée par année s’écarte nettement en zone E (486 EUR pour 371 prédits) : c’est la zone du sinistre de 1,34 M EUR, que le plafonnement a retiré de la zone pour le répartir sur tout le portefeuille. Ailleurs, la charge observée est de 2 à 13 % sous la prime pure, l’autre face du même transfert : ce seul sinistre fait près de la moitié de l’excédent mutualisé. C’est le prix de la stabilité, et il se défend mieux qu’une zone E tarifée sur un accident.</p>
+</section>
+</section>
+<section class="level2" data-number="5.5" id="exercice-trouvez-lerreur">
+<h2 class="anchored" data-anchor-id="exercice-trouvez-lerreur" data-number="5.5" id="exercice-trouvez-lerreur"> Exercice : trouvez l’erreur</h2>
+<p>Un collègue trouve le GLM Gamma compliqué. Il propose une régression linéaire sur le logarithme du coût, « équivalente en pratique », et prend l’exponentielle de la prédiction comme coût moyen :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a>ols <span class="op">=</span> smf.ols(<span class="ss">f"np.log(cout_plafonne) ~ </span><span class="sc">{</span>variables<span class="sc">}</span><span class="ss">"</span>, data<span class="op">=</span>sinistres).fit()</span>
+<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a>cout_moyen <span class="op">=</span> np.exp(ols.fittedvalues)</span></code></pre></div></div>
+<p>Qu’est-ce qui ne va pas ? Quel ordre de grandeur d’erreur attendez-vous ?</p>
+<details class="answer">
+<summary>
+Voir la réponse
+</summary>
+<p>Une régression sur <span class="math inline">\(\log(\text{coût})\)</span> estime <span class="math inline">\(\mathbb{E}[\log Y]\)</span>, pas <span class="math inline">\(\log \mathbb{E}[Y]\)</span>. Si <span class="math inline">\(\log Y\)</span> est normal de moyenne <span class="math inline">\(\mu\)</span> et d’écart-type <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(\mathbb{E}[Y] = e^{\mu + \sigma^2/2}\)</span> : prendre <span class="math inline">\(e^{\mu}\)</span> estime la médiane, pas la moyenne, et sous-estime le coût moyen d’un facteur <span class="math inline">\(e^{\sigma^2/2}\)</span>. C’est le biais de retransformation. La correction classique est le facteur de <em>smearing</em> de Duan (1983, <em>Journal of the American Statistical Association</em>) : la moyenne des exponentielles des résidus, qui ne suppose pas la normalité. Elle suppose en revanche une dispersion des résidus la même dans tous les segments ; sinon les relativités elles-mêmes sont faussées. Le GLM Gamma à lien log modélise directement <span class="math inline">\(\log \mathbb{E}[Y]\)</span> : pas de retransformation.</p>
+<div class="cell" data-execution_count="8" id="fb908f42">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a>ols <span class="op">=</span> smf.ols(<span class="ss">f"np.log(cout_plafonne) ~ </span><span class="sc">{</span>variables<span class="sc">}</span><span class="ss">"</span>, data<span class="op">=</span>sinistres).fit()</span>
+<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>naif <span class="op">=</span> np.exp(ols.fittedvalues)</span>
+<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a>smearing <span class="op">=</span> np.mean(np.exp(ols.resid))</span>
+<span id="cb15-4"><a aria-hidden="true" href="#cb15-4" tabindex="-1"></a>sigma <span class="op">=</span> np.sqrt(ols.scale)</span>
+<span id="cb15-5"><a aria-hidden="true" href="#cb15-5" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Écart-type des résidus en log : </span><span class="sc">{</span>sigma<span class="sc">:.3f}</span><span class="ss">, exp(sigma²/2) = </span><span class="sc">{</span>np<span class="sc">.</span>exp(sigma<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span>)<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb15-6"><a aria-hidden="true" href="#cb15-6" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Facteur de smearing de Duan   : </span><span class="sc">{</span>smearing<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb15-7"><a aria-hidden="true" href="#cb15-7" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb15-8"><a aria-hidden="true" href="#cb15-8" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Coût moyen plafonné observé   : </span><span class="sc">{</span>sinistres[<span class="st">'cout_plafonne'</span>]<span class="sc">.</span>mean()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb15-9"><a aria-hidden="true" href="#cb15-9" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"log-OLS, exp(prédiction)      : </span><span class="sc">{</span>naif<span class="sc">.</span>mean()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb15-10"><a aria-hidden="true" href="#cb15-10" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"log-OLS corrigé par smearing  : </span><span class="sc">{</span>(naif <span class="op">*</span> smearing)<span class="sc">.</span>mean()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span>
+<span id="cb15-11"><a aria-hidden="true" href="#cb15-11" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"GLM Gamma                     : </span><span class="sc">{</span>modele_plafonne<span class="sc">.</span>fittedvalues<span class="sc">.</span>mean()<span class="sc">:,.0f}</span><span class="ss"> EUR"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Écart-type des résidus en log : 1.058, exp(sigma²/2) = 1.750
+Facteur de smearing de Duan   : 1.912
+
+Coût moyen plafonné observé   : 2,630 EUR
+log-OLS, exp(prédiction)      : 1,378 EUR
+log-OLS corrigé par smearing  : 2,635 EUR
+GLM Gamma                     : 2,631 EUR</code></pre>
+</div>
+</div>
+<p>L’écart-type des résidus en log vaut 1,058, d’où <span class="math inline">\(e^{\sigma^2/2} = 1{,}750\)</span> ; le <em>smearing</em> de Duan vaut 1,912, un peu plus, parce que les résidus ne sont pas tout à fait normaux (la bosse des corporels plafonnés à 50 000 EUR). La retransformation naïve donne un coût moyen de 1 378 EUR pour 2 630 EUR observés : 48 % de moins. Corrigée par <em>smearing</em>, 2 635 EUR ; le GLM Gamma, 2 631 EUR. « Équivalent en pratique » est faux sur le niveau, et le niveau est ce que le tarif facture.</p>
+</details>
+</section>
+<section class="level2" data-number="5.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="5.6" id="pièges-typiques"> Pièges typiques</h2>
+<ul>
+<li><strong>Prendre <span class="math inline">\(\exp(\text{prédiction})\)</span> d’une régression sur <span class="math inline">\(\log(\text{coût})\)</span>.</strong> Elle estime la médiane, pas la moyenne : sur ce portefeuille, le coût moyen sort à peu près divisé par deux (exercice ci-dessus). Un GLM Gamma à lien log, ou la correction de Duan si l’on garde la régression sur le log.</li>
+<li><strong>Ne pas plafonner les grands sinistres.</strong> Laissés bruts, une poignée de corporels décide des relativités d’un segment : ici un seul sinistre fait passer une bande d’âge de 1,20 à 2,94. <strong>Plafonner à un seuil écrit et justifié</strong>, et mutualiser l’excédent à part, avec l’hypothèse de répartition dans la note méthodologique.</li>
+<li><strong>Confondre la sévérité par sinistre et la sévérité par police.</strong> Le GLM Gamma s’ajuste sur la table des sinistres, une ligne par sinistre. Sur la table des polices, on modélise le coût moyen de la police avec un poids égal à son nombre de sinistres (<code>var_weights</code>). Jamais l’identifiant de police en variable : un paramètre par police n’est plus un tarif.</li>
+<li><strong>Croire que le Tweedie lève l’hypothèse d’indépendance.</strong> Le produit fréquence × coût moyen suppose que le nombre et le coût des sinistres sont indépendants, à variables du tarif données. Un GLM Tweedie avec <span class="math inline">\(1 &lt; p &lt; 2\)</span> (fiche P4) est un Poisson composé de lois Gamma : il fait la même hypothèse (Smyth et Jørgensen, 2002, <em>ASTIN Bulletin</em>). Si l’on soupçonne que les polices multi-sinistrées ont des sinistres plus graves, on le teste, par exemple en ajoutant le nombre de sinistres de la police comme variable du GLM de coût.</li>
+<li><strong>Modéliser des coûts qui ne sont pas finaux.</strong> Les sinistres récents ne sont pas clos, les corporels encore moins : leur coût connu sous-estime le coût final. Développer les coûts à l’ultime (fiche R1), puis appliquer un facteur d’évolution des coûts jusqu’à la période d’application du tarif.</li>
+</ul>
+</section>
+<section class="level2" data-number="5.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="5.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ul>
+<li><strong>P2 GLM Poisson de fréquence</strong> : le pendant fréquence, à coupler avec ce P3 pour obtenir la prime pure.</li>
+<li><strong>P4 Prime pure Tweedie</strong> : alternative directe au produit P2 × P3, comparée hors échantillon.</li>
+<li><strong>P5 GLM contre gradient boosting</strong> : la démarche du challenger, montrée sur la fréquence ; elle s’applique au coût moyen.</li>
+<li><strong>R1 Chain-Ladder déterministe</strong> et <strong>R4 Bootstrap Chain-Ladder</strong> : développer les coûts à l’ultime avant de les tarifer, et mesurer l’incertitude de ce développement.</li>
+</ul>
+</section>
+<section class="level2" data-number="5.8" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="5.8" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ul>
+<li>Sur le choix Gamma ou log-normale : <strong>demander à Claude</strong> <em>“compare les ajustements d’une log-normale et d’un Gamma sur ces coûts plafonnés, en log-vraisemblance et en QQ-plot”</em>, puis lire les deux sorties avant de trancher.</li>
+<li>Pour les grands portefeuilles, un mélange de lois (une composante pour les sinistres courants, une pour les grands) suit mieux une queue à deux régimes, au prix d’une revue plus longue. Le seuil entre les deux se choisit avec les outils de la théorie des valeurs extrêmes (graphique de l’excès moyen).</li>
+<li>Pour les corporels lourds (rente, capital invalidité), une modélisation par tête plutôt que sur le coût agrégé est souvent plus stable.</li>
+</ul>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/P2/index.html"><small>&larr; Précédent</small>P2. GLM Poisson de fréquence</a><a class="next" href="../../bibliotheque/P4/index.html"><small>Suivant &rarr;</small>P4. Prime pure Tweedie et bandes commerciales</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

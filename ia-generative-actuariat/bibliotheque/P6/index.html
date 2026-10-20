@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P6. Une loi de sévérité sur des sinistres tronqués et censurés · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">P6. Une loi de sévérité sur des sinistres tronqués et censurés</h1>
+      <p class="lede">Ce que vous apprenez ici n’est pas la loi lognormale. C’est la façon d’écrire à l’IA ce que la donnée ne contient pas : les sinistres sous la franchise, qu’on n’a jamais vus, et le montant au-delà du plafond, qu’on ne connaît pas. Une vraisemblance bien écrite les remet dans le calcul ; un ajustement naïf les oublie, et le prix d’une tranche le paie.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#lillustration-demandée-à-lia">L’illustration, demandée à l’IA</a><a href="#ce-que-dit-le-modèle">Ce que dit le modèle</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#dans-loutil-de-tarification-et-dans-vision">Dans l’outil de tarification et dans Vision</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle (ce que la donnée ne montre pas)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans l’atelier de la demi-journée « Exploration et modélisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="8.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="8.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>Dans la vraie vie, une base de sinistres est toujours tronquée. Un sinistre sous la franchise n’est pas déclaré, ou pas saisi : il manque, et rien ne dit combien il en manque. Au-dessus, un sinistre plafonné n’est connu que jusqu’à la limite : on sait seulement qu’il la dépasse. C’est la troncature, à gauche, et la censure, à droite.</p>
+<p>Le cas d’école tronque tout l’échantillon au même seuil. La vraie donnée ne le fait pas :</p>
+<ol type="1">
+<li><strong>la franchise change</strong> d’une police à l’autre, et d’une année à l’autre quand elle est relevée ;</li>
+<li><strong>l’inflation la déplace</strong> : une fois les sinistres revalorisés en euros constants, une franchise nominale fixe ne l’est plus. À 3 % par an, une franchise de 10 000 € en 2016 vaut 13 048 € de 2025 ;</li>
+<li><strong>le plafond aussi</strong> se revalorise, et chaque sinistre plafonné a son propre point de censure.</li>
+</ol>
+<p>Chaque sinistre a donc son propre point de troncature et, s’il est plafonné, son propre point de censure. C’est là que se joue le calibrage, et c’est ce que les outils qui tronquent à un intervalle fixe ne font pas encore.</p>
+</section>
+<section class="level2" data-number="8.2" id="lillustration-demandée-à-lia">
+<h2 class="anchored" data-anchor-id="lillustration-demandée-à-lia" data-number="8.2" id="lillustration-demandée-à-lia"> L’illustration, demandée à l’IA</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Le prompt de l’illustration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>« Fais-moi une page HTML autonome qui simule dix ans de sinistres lognormaux, avec une franchise par police relevée en 2021, une inflation et un plafond, puis qui ajuste la lognormale de trois façons : naïvement, tronquée à un seul plancher, et avec un point de troncature par sinistre et la censure au plafond. Curseurs : la franchise, l’inflation, le plafond. Montre l’histogramme des montants vus en échelle logarithmique avec les densités ajustées, les paramètres trouvés contre la vérité, la fréquence au premier euro, et l’écart de prime de trois tranches : sous les franchises, dans la zone observée, dans la queue. »</em></p>
+</div>
+</div>
+<div class="demo-embed">
+<div class="demo-head"><b>La troncature et la censure, à manipuler</b><span>Montez l'inflation, puis la franchise</span></div>
+<iframe loading="lazy" src="img/troncature_8d491099.html" style="height:930px" title="Une loi calibrée sur des sinistres tronqués et censurés"></iframe>
+<p class="print-note">L'illustration interactive est sur le site du support, bibliothèque, fiche P6.</p>
+</div>
+<p>Ce qui saute aux yeux :</p>
+<ol type="1">
+<li><strong>L’ajustement naïf déplace la loi vers la droite et la resserre</strong> : il prend les sinistres vus pour toute la loi, alors qu’il manque tout ce qui est sous les franchises.</li>
+<li><strong>Dans la zone observée, toutes les méthodes trouvent à peu près le même prix</strong> : au-dessus des franchises et sous le plafond, la fréquence et la sévérité vues se compensent.</li>
+<li><strong>Sous les franchises et dans la queue, seul le bon ajustement tient</strong> : c’est là que la loi doit parler de ce qu’on n’a pas vu.</li>
+</ol>
+</section>
+<section class="level2" data-number="8.3" id="ce-que-dit-le-modèle">
+<h2 class="anchored" data-anchor-id="ce-que-dit-le-modèle" data-number="8.3" id="ce-que-dit-le-modèle"> Ce que dit le modèle</h2>
+<p>Les montants <span class="math inline">\(x_i\)</span>, les franchises <span class="math inline">\(d_i\)</span> et les plafonds <span class="math inline">\(c_i\)</span> sont revalorisés en euros constants, chacun avec le coefficient de son année. <span class="math inline">\(C\)</span> désigne les sinistres au plafond. La vraisemblance d’une loi de densité <span class="math inline">\(f_\theta\)</span> et de fonction de survie <span class="math inline">\(S_\theta\)</span> s’écrit :</p>
+<p><span class="math display">\[
+\ell(\theta) = \sum_{i \notin C} \ln f_\theta(x_i) + \sum_{i \in C} \ln S_\theta(c_i) - \sum_{i} \ln S_\theta(d_i).
+\]</span></p>
+<p>Le premier terme est l’ajustement habituel. Le deuxième dit, pour un sinistre plafonné, seulement qu’il dépasse <span class="math inline">\(c_i\)</span>. Le troisième divise chaque sinistre par la probabilité d’avoir été vu : c’est la troncature, avec le point de troncature de ce sinistre-là.</p>
+<p>La fréquence vue n’est pas la fréquence au premier euro. Si une part <span class="math inline">\(w_k\)</span> des polices a la franchise <span class="math inline">\(d'_{k,t}\)</span> en euros constants de l’année <span class="math inline">\(t\)</span>, et que <span class="math inline">\(n_t\)</span> sinistres ont été vus :</p>
+<p><span class="math display">\[
+\hat{\lambda}_t = \frac{n_t}{\sum_k w_k \, S_{\hat{\theta}}(d'_{k,t})}.
+\]</span></p>
+<p>Le prix d’une tranche de <span class="math inline">\(b\)</span> à <span class="math inline">\(h\)</span> par an est <span class="math inline">\(\lambda \left(\mathrm{LEV}(h) - \mathrm{LEV}(b)\right)\)</span>, avec, pour la lognormale, la valeur espérée limitée :</p>
+<p><span class="math display">\[
+\mathrm{LEV}(u) = e^{\mu + \sigma^2/2} \, \Phi\!\left(\frac{\ln u - \mu - \sigma^2}{\sigma}\right) + u \left(1 - \Phi\!\left(\frac{\ln u - \mu}{\sigma}\right)\right).
+\]</span></p>
+</section>
+<section class="level2" data-number="8.4" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="8.4" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 3 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Écrire la vraisemblance.</strong> <em>« J’ai une table de sinistres avec, pour chacun, l’année, le montant brut, la franchise de la police, le plafond et un indicateur “au plafond”. Revalorise montants, franchises et plafonds en euros 2025 avec cet indice. Écris la log-vraisemblance d’une lognormale avec une troncature à gauche propre à chaque sinistre et une censure à droite au plafond, et ajuste-la par maximum de vraisemblance. Explique chaque terme. »</em></p></li>
+<li><p><strong>Comparer.</strong> <em>« Ajuste aussi la même loi naïvement, puis tronquée au plus bas des franchises revalorisées. Donne μ, σ, la fréquence au premier euro de chaque ajustement, et la prime pure de trois tranches : de 1 000 à 10 000 €, de 10 000 à 250 000 €, et 1 M€ au-delà de 500 000 €. »</em></p></li>
+<li><p><strong>Critiquer.</strong> <em>« Joue le rôle du contrôleur : dans quels cas l’ajustement naïf suffit-il, et pourquoi ? Qu’est-ce qui change si les montants de la base sont nets de franchise, ou si une partie des sinistres est encore en cours ? »</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="8.5" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="8.5" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="8.5.1" id="étape-1.-des-sinistres-dont-on-connaît-la-vérité">
+<h3 class="anchored" data-anchor-id="étape-1.-des-sinistres-dont-on-connaît-la-vérité" data-number="8.5.1"> Étape 1. Des sinistres dont on connaît la vérité</h3>
+<p>On fabrique dix ans de sinistres à partir d’une loi connue, pour pouvoir juger les ajustements. 60 % des polices ont la petite franchise, relevée de 5 000 à 7 500 € en 2021 ; les autres ont 10 000 €. Un sinistre n’est vu que s’il dépasse la franchise de sa police ; au-delà de 250 000 €, seul le plafond est enregistré.</p>
+<div class="cell" data-execution_count="1" id="92d383b1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats, optimize</span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>MU, SIGMA, LAMBDA <span class="op">=</span> <span class="fl">9.2</span>, <span class="fl">1.5</span>, <span class="dv">400</span>        <span class="co"># la vraie loi, en euros 2025, et la fréquence au premier euro</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>ANNEES, INFL, PLAFOND <span class="op">=</span> np.arange(<span class="dv">2016</span>, <span class="dv">2026</span>), <span class="fl">0.03</span>, <span class="dv">250_000</span></span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a>PART_PETITE <span class="op">=</span> <span class="fl">0.6</span></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a><span class="kw">def</span> franchises(annee):</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    <span class="co">"""Les franchises nominales de l'année : la petite, relevée en 2021, et la grande."""</span></span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    <span class="cf">return</span> (<span class="dv">5_000</span> <span class="cf">if</span> annee <span class="op">&lt;=</span> <span class="dv">2020</span> <span class="cf">else</span> <span class="dv">7_500</span>), <span class="dv">10_000</span></span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a></span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>lignes <span class="op">=</span> []</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a><span class="cf">for</span> t <span class="kw">in</span> ANNEES:</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>    n <span class="op">=</span> rng.poisson(LAMBDA)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>    x_nominal <span class="op">=</span> rng.lognormal(MU, SIGMA, n) <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> INFL) <span class="op">**</span> (t <span class="op">-</span> <span class="dv">2025</span>)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>    petite <span class="op">=</span> rng.random(n) <span class="op">&lt;</span> PART_PETITE</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>    d <span class="op">=</span> np.where(petite, <span class="op">*</span>franchises(t))</span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>    vu <span class="op">=</span> x_nominal <span class="op">&gt;</span> d</span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>    lignes.append(pd.DataFrame({<span class="st">"annee"</span>: t, <span class="st">"montant"</span>: np.minimum(x_nominal[vu], PLAFOND),</span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>                                <span class="st">"franchise"</span>: d[vu], <span class="st">"au_plafond"</span>: x_nominal[vu] <span class="op">&gt;=</span> PLAFOND}))</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>sinistres <span class="op">=</span> pd.concat(lignes, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a>pd.DataFrame({<span class="st">"sinistres vus"</span>: [<span class="bu">len</span>(sinistres)], <span class="st">"au plafond"</span>: [<span class="bu">int</span>(sinistres[<span class="st">"au_plafond"</span>].<span class="bu">sum</span>())],</span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>              <span class="st">"sinistres au premier euro, en moyenne par an"</span>: [LAMBDA]})</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">sinistres vus</th>
+<th data-quarto-table-cell-role="th">au plafond</th>
+<th data-quarto-table-cell-role="th">sinistres au premier euro, en moyenne par an</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2186</td>
+<td>50</td>
+<td>400</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section class="level3" data-number="8.5.2" id="étape-2.-revaloriser-le-montant-la-franchise-et-le-plafond">
+<h3 class="anchored" data-anchor-id="étape-2.-revaloriser-le-montant-la-franchise-et-le-plafond" data-number="8.5.2"> Étape 2. Revaloriser le montant, la franchise et le plafond</h3>
+<p>La revalorisation en euros 2025 s’applique aux trois : chaque sinistre garde ainsi son propre point de troncature et son propre point de censure.</p>
+<div class="cell" data-execution_count="2" id="05a65157">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a>coef <span class="op">=</span> (<span class="dv">1</span> <span class="op">+</span> INFL) <span class="op">**</span> (<span class="dv">2025</span> <span class="op">-</span> sinistres[<span class="st">"annee"</span>])</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>x <span class="op">=</span> (sinistres[<span class="st">"montant"</span>] <span class="op">*</span> coef).to_numpy()</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>d <span class="op">=</span> (sinistres[<span class="st">"franchise"</span>] <span class="op">*</span> coef).to_numpy()</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a>c <span class="op">=</span> (PLAFOND <span class="op">*</span> coef).to_numpy()</span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>plafonne <span class="op">=</span> sinistres[<span class="st">"au_plafond"</span>].to_numpy()</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>pd.DataFrame({<span class="st">"année"</span>: [<span class="dv">2016</span>, <span class="dv">2020</span>, <span class="dv">2021</span>, <span class="dv">2025</span>],</span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a>              <span class="st">"petite franchise, en euros 2025"</span>: [<span class="bu">round</span>(franchises(a)[<span class="dv">0</span>] <span class="op">*</span> <span class="fl">1.03</span> <span class="op">**</span> (<span class="dv">2025</span> <span class="op">-</span> a)) <span class="cf">for</span> a <span class="kw">in</span> (<span class="dv">2016</span>, <span class="dv">2020</span>, <span class="dv">2021</span>, <span class="dv">2025</span>)],</span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>              <span class="st">"grande franchise, en euros 2025"</span>: [<span class="bu">round</span>(franchises(a)[<span class="dv">1</span>] <span class="op">*</span> <span class="fl">1.03</span> <span class="op">**</span> (<span class="dv">2025</span> <span class="op">-</span> a)) <span class="cf">for</span> a <span class="kw">in</span> (<span class="dv">2016</span>, <span class="dv">2020</span>, <span class="dv">2021</span>, <span class="dv">2025</span>)]})</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">année</th>
+<th data-quarto-table-cell-role="th">petite franchise, en euros 2025</th>
+<th data-quarto-table-cell-role="th">grande franchise, en euros 2025</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2016</td>
+<td>6524</td>
+<td>13048</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>2020</td>
+<td>5796</td>
+<td>11593</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2021</td>
+<td>8441</td>
+<td>11255</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2025</td>
+<td>7500</td>
+<td>10000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Les points de troncature vont de 5 796 € à 13 048 € de 2025 : un seul plancher ne peut pas les représenter tous.</p>
+</section>
+<section class="level3" data-number="8.5.3" id="étape-3.-quatre-ajustements-de-la-même-loi">
+<h3 class="anchored" data-anchor-id="étape-3.-quatre-ajustements-de-la-même-loi" data-number="8.5.3"> Étape 3. Quatre ajustements de la même loi</h3>
+<div class="cell" data-execution_count="3" id="14dd35ec">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> log_s(y, mu, sg):</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>    <span class="cf">return</span> stats.norm.logsf((np.log(y) <span class="op">-</span> mu) <span class="op">/</span> sg)</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a><span class="kw">def</span> ajuster(x, d<span class="op">=</span><span class="va">None</span>, plafonne<span class="op">=</span><span class="va">None</span>, c<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>    <span class="co">"""Lognormale par maximum de vraisemblance ; d : troncature par sinistre ; plafonne, c : censure."""</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>    plafonne <span class="op">=</span> np.zeros(<span class="bu">len</span>(x), <span class="bu">bool</span>) <span class="cf">if</span> plafonne <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> plafonne</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>    <span class="kw">def</span> nll(theta):</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>        mu, sg <span class="op">=</span> theta[<span class="dv">0</span>], np.exp(theta[<span class="dv">1</span>])</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>        ll <span class="op">=</span> np.where(plafonne, log_s(c <span class="cf">if</span> c <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> x, mu, sg),</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>                      stats.norm.logpdf((np.log(x) <span class="op">-</span> mu) <span class="op">/</span> sg) <span class="op">-</span> np.log(sg <span class="op">*</span> x))</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>        <span class="cf">if</span> d <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>            ll <span class="op">=</span> ll <span class="op">-</span> log_s(d, mu, sg)</span>
+<span id="cb3-13"><a aria-hidden="true" href="#cb3-13" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">-</span>ll.<span class="bu">sum</span>()</span>
+<span id="cb3-14"><a aria-hidden="true" href="#cb3-14" tabindex="-1"></a>    r <span class="op">=</span> optimize.minimize(nll, [np.log(x).mean(), np.log(np.log(x).std())], method<span class="op">=</span><span class="st">"Nelder-Mead"</span>,</span>
+<span id="cb3-15"><a aria-hidden="true" href="#cb3-15" tabindex="-1"></a>                          options<span class="op">=</span>{<span class="st">"xatol"</span>: <span class="fl">1e-8</span>, <span class="st">"fatol"</span>: <span class="fl">1e-8</span>, <span class="st">"maxiter"</span>: <span class="dv">4000</span>})</span>
+<span id="cb3-16"><a aria-hidden="true" href="#cb3-16" tabindex="-1"></a>    <span class="cf">return</span> r.x[<span class="dv">0</span>], np.exp(r.x[<span class="dv">1</span>])</span>
+<span id="cb3-17"><a aria-hidden="true" href="#cb3-17" tabindex="-1"></a></span>
+<span id="cb3-18"><a aria-hidden="true" href="#cb3-18" tabindex="-1"></a>haut <span class="op">=</span> x <span class="op">&gt;</span> d.<span class="bu">max</span>()</span>
+<span id="cb3-19"><a aria-hidden="true" href="#cb3-19" tabindex="-1"></a>fits <span class="op">=</span> {</span>
+<span id="cb3-20"><a aria-hidden="true" href="#cb3-20" tabindex="-1"></a>    <span class="st">"naïf"</span>: ajuster(x),</span>
+<span id="cb3-21"><a aria-hidden="true" href="#cb3-21" tabindex="-1"></a>    <span class="st">"un seul plancher, le plus bas"</span>: ajuster(x, np.full_like(x, d.<span class="bu">min</span>())),</span>
+<span id="cb3-22"><a aria-hidden="true" href="#cb3-22" tabindex="-1"></a>    <span class="st">"un seul plancher, le plus haut"</span>: ajuster(x[haut], np.full(haut.<span class="bu">sum</span>(), d.<span class="bu">max</span>()), plafonne[haut], c[haut]),</span>
+<span id="cb3-23"><a aria-hidden="true" href="#cb3-23" tabindex="-1"></a>    <span class="st">"un point par sinistre, sans censure"</span>: ajuster(x, d),</span>
+<span id="cb3-24"><a aria-hidden="true" href="#cb3-24" tabindex="-1"></a>    <span class="st">"un point par sinistre, et la censure"</span>: ajuster(x, d, plafonne, c),</span>
+<span id="cb3-25"><a aria-hidden="true" href="#cb3-25" tabindex="-1"></a>}</span>
+<span id="cb3-26"><a aria-hidden="true" href="#cb3-26" tabindex="-1"></a></span>
+<span id="cb3-27"><a aria-hidden="true" href="#cb3-27" tabindex="-1"></a><span class="kw">def</span> frequence(mu, sg):</span>
+<span id="cb3-28"><a aria-hidden="true" href="#cb3-28" tabindex="-1"></a>    <span class="co">"""La fréquence au premier euro : les sinistres vus de l'année, divisés par la probabilité d'être vu."""</span></span>
+<span id="cb3-29"><a aria-hidden="true" href="#cb3-29" tabindex="-1"></a>    lam <span class="op">=</span> []</span>
+<span id="cb3-30"><a aria-hidden="true" href="#cb3-30" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> ANNEES:</span>
+<span id="cb3-31"><a aria-hidden="true" href="#cb3-31" tabindex="-1"></a>        dp, dg <span class="op">=</span> np.array(franchises(t)) <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> INFL) <span class="op">**</span> (<span class="dv">2025</span> <span class="op">-</span> t)</span>
+<span id="cb3-32"><a aria-hidden="true" href="#cb3-32" tabindex="-1"></a>        p <span class="op">=</span> PART_PETITE <span class="op">*</span> np.exp(log_s(dp, mu, sg)) <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> PART_PETITE) <span class="op">*</span> np.exp(log_s(dg, mu, sg))</span>
+<span id="cb3-33"><a aria-hidden="true" href="#cb3-33" tabindex="-1"></a>        lam.append((sinistres[<span class="st">"annee"</span>] <span class="op">==</span> t).<span class="bu">sum</span>() <span class="op">/</span> p)</span>
+<span id="cb3-34"><a aria-hidden="true" href="#cb3-34" tabindex="-1"></a>    <span class="cf">return</span> np.array(lam)</span>
+<span id="cb3-35"><a aria-hidden="true" href="#cb3-35" tabindex="-1"></a></span>
+<span id="cb3-36"><a aria-hidden="true" href="#cb3-36" tabindex="-1"></a>pd.DataFrame([{<span class="st">"ajustement"</span>: k, <span class="st">"μ"</span>: <span class="bu">round</span>(mu, <span class="dv">3</span>), <span class="st">"σ"</span>: <span class="bu">round</span>(sg, <span class="dv">3</span>), <span class="st">"fréquence au premier euro"</span>: <span class="bu">round</span>(frequence(mu, sg).mean())}</span>
+<span id="cb3-37"><a aria-hidden="true" href="#cb3-37" tabindex="-1"></a>              <span class="cf">for</span> k, (mu, sg) <span class="kw">in</span> fits.items()] <span class="op">+</span> [{<span class="st">"ajustement"</span>: <span class="st">"la vraie loi"</span>, <span class="st">"μ"</span>: MU, <span class="st">"σ"</span>: SIGMA, <span class="st">"fréquence au premier euro"</span>: LAMBDA}])</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ajustement</th>
+<th data-quarto-table-cell-role="th">μ</th>
+<th data-quarto-table-cell-role="th">σ</th>
+<th data-quarto-table-cell-role="th">fréquence au premier euro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>naïf</td>
+<td>10.250</td>
+<td>0.911</td>
+<td>244</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>un seul plancher, le plus bas</td>
+<td>10.031</td>
+<td>1.085</td>
+<td>270</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>un seul plancher, le plus haut</td>
+<td>9.171</td>
+<td>1.496</td>
+<td>410</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>un point par sinistre, sans censure</td>
+<td>9.383</td>
+<td>1.369</td>
+<td>367</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>un point par sinistre, et la censure</td>
+<td>9.186</td>
+<td>1.487</td>
+<td>407</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>la vraie loi</td>
+<td>9.200</td>
+<td>1.500</td>
+<td>400</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>L’ajustement naïf trouve un <span class="math inline">\(\sigma\)</span> de 0,91 au lieu de 1,5, et une fréquence d’un peu plus de la moitié de la vraie. Le plancher le plus bas corrige un peu ; le plus haut retrouve la loi, mais en jetant les sinistres sous 13 048 €. Un point par sinistre, avec la censure, la retrouve en gardant tout : sans la censure, la queue reste trop mince.</p>
+</section>
+<section class="level3" data-number="8.5.4" id="étape-4.-ce-que-ça-change-sur-le-prix">
+<h3 class="anchored" data-anchor-id="étape-4.-ce-que-ça-change-sur-le-prix" data-number="8.5.4"> Étape 4. Ce que ça change sur le prix</h3>
+<div class="cell" data-execution_count="4" id="886293a6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a aria-hidden="true" href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> lev(u, mu, sg):</span>
+<span id="cb4-2"><a aria-hidden="true" href="#cb4-2" tabindex="-1"></a>    <span class="cf">return</span> (np.exp(mu <span class="op">+</span> sg<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span>) <span class="op">*</span> stats.norm.cdf((np.log(u) <span class="op">-</span> mu <span class="op">-</span> sg<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> sg)</span>
+<span id="cb4-3"><a aria-hidden="true" href="#cb4-3" tabindex="-1"></a>            <span class="op">+</span> u <span class="op">*</span> stats.norm.sf((np.log(u) <span class="op">-</span> mu) <span class="op">/</span> sg))</span>
+<span id="cb4-4"><a aria-hidden="true" href="#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a aria-hidden="true" href="#cb4-5" tabindex="-1"></a>TRANCHES <span class="op">=</span> {<span class="st">"de 1 000 à 10 000 € (sous les franchises)"</span>: (<span class="dv">1_000</span>, <span class="dv">10_000</span>),</span>
+<span id="cb4-6"><a aria-hidden="true" href="#cb4-6" tabindex="-1"></a>            <span class="st">"de 10 000 à 250 000 € (zone observée)"</span>: (<span class="dv">10_000</span>, <span class="dv">250_000</span>),</span>
+<span id="cb4-7"><a aria-hidden="true" href="#cb4-7" tabindex="-1"></a>            <span class="st">"1 M€ au-delà de 500 000 € (la queue)"</span>: (<span class="dv">500_000</span>, <span class="dv">1_500_000</span>)}</span>
+<span id="cb4-8"><a aria-hidden="true" href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a aria-hidden="true" href="#cb4-9" tabindex="-1"></a><span class="kw">def</span> prime(mu, sg, lam, bas, haut):</span>
+<span id="cb4-10"><a aria-hidden="true" href="#cb4-10" tabindex="-1"></a>    <span class="cf">return</span> lam <span class="op">*</span> (lev(haut, mu, sg) <span class="op">-</span> lev(bas, mu, sg))</span>
+<span id="cb4-11"><a aria-hidden="true" href="#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a aria-hidden="true" href="#cb4-12" tabindex="-1"></a>lignes <span class="op">=</span> []</span>
+<span id="cb4-13"><a aria-hidden="true" href="#cb4-13" tabindex="-1"></a><span class="cf">for</span> k, (mu, sg) <span class="kw">in</span> fits.items():</span>
+<span id="cb4-14"><a aria-hidden="true" href="#cb4-14" tabindex="-1"></a>    lam <span class="op">=</span> frequence(mu, sg).mean()</span>
+<span id="cb4-15"><a aria-hidden="true" href="#cb4-15" tabindex="-1"></a>    ligne <span class="op">=</span> {<span class="st">"ajustement"</span>: k}</span>
+<span id="cb4-16"><a aria-hidden="true" href="#cb4-16" tabindex="-1"></a>    <span class="cf">for</span> nom, (bas, haut_t) <span class="kw">in</span> TRANCHES.items():</span>
+<span id="cb4-17"><a aria-hidden="true" href="#cb4-17" tabindex="-1"></a>        v, vrai <span class="op">=</span> prime(mu, sg, lam, bas, haut_t), prime(MU, SIGMA, LAMBDA, bas, haut_t)</span>
+<span id="cb4-18"><a aria-hidden="true" href="#cb4-18" tabindex="-1"></a>        ligne[nom] <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>v <span class="op">/</span> vrai <span class="op">-</span> <span class="dv">1</span><span class="sc">:+.0%}</span><span class="ss">"</span></span>
+<span id="cb4-19"><a aria-hidden="true" href="#cb4-19" tabindex="-1"></a>    lignes.append(ligne)</span>
+<span id="cb4-20"><a aria-hidden="true" href="#cb4-20" tabindex="-1"></a>pd.DataFrame(lignes)</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ajustement</th>
+<th data-quarto-table-cell-role="th">de 1 000 à 10 000 € (sous les franchises)</th>
+<th data-quarto-table-cell-role="th">de 10 000 à 250 000 € (zone observée)</th>
+<th data-quarto-table-cell-role="th">1 M€ au-delà de 500 000 € (la queue)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>naïf</td>
+<td>-14%</td>
+<td>+1%</td>
+<td>-95%</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>un seul plancher, le plus bas</td>
+<td>-10%</td>
+<td>+3%</td>
+<td>-78%</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>un seul plancher, le plus haut</td>
+<td>+2%</td>
+<td>-1%</td>
+<td>-6%</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>un point par sinistre, sans censure</td>
+<td>-1%</td>
+<td>-5%</td>
+<td>-43%</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>un point par sinistre, et la censure</td>
+<td>+2%</td>
+<td>-1%</td>
+<td>-9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Dans la zone observée, toutes les méthodes trouvent le prix à quelques pour cent : ce prix-là se lit presque directement dans la donnée. Sous les franchises, l’ajustement naïf perd près de 15 % de la prime ; dans la queue, il en perd presque tout. Le bon ajustement reste à quelques pour cent partout, à l’erreur d’échantillonnage près : la queue s’estime sur peu de sinistres.</p>
+</section>
+<section class="level3" data-number="8.5.5" id="étape-5.-la-fréquence-année-par-année">
+<h3 class="anchored" data-anchor-id="étape-5.-la-fréquence-année-par-année" data-number="8.5.5"> Étape 5. La fréquence, année par année</h3>
+<div class="cell" data-execution_count="5" id="cell-fig-troncature-p6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a>vus <span class="op">=</span> sinistres.groupby(<span class="st">"annee"</span>).size().reindex(ANNEES).to_numpy()</span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a>ramenes <span class="op">=</span> frequence(<span class="op">*</span>fits[<span class="st">"un point par sinistre, et la censure"</span>])</span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.4</span>))</span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>plt.plot(ANNEES, vus, <span class="st">"o-"</span>, color<span class="op">=</span><span class="st">"#BA1C3A"</span>, label<span class="op">=</span><span class="st">"sinistres vus"</span>)</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>plt.plot(ANNEES, ramenes, <span class="st">"o-"</span>, color<span class="op">=</span><span class="st">"#1F6F6B"</span>, label<span class="op">=</span><span class="st">"ramenés au premier euro"</span>)</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>plt.axhline(LAMBDA, color<span class="op">=</span><span class="st">"#13264A"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="st">"vraie fréquence"</span>)</span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>plt.axvline(<span class="fl">2020.5</span>, color<span class="op">=</span><span class="st">"#9A6B1E"</span>, ls<span class="op">=</span><span class="st">":"</span>, lw<span class="op">=</span><span class="fl">1.2</span>)</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>plt.text(<span class="fl">2020.6</span>, <span class="dv">80</span>, <span class="st">"franchise relevée"</span>, color<span class="op">=</span><span class="st">"#9A6B1E"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>, <span class="va">None</span>)<span class="op">;</span> plt.xlabel(<span class="st">"année"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"sinistres par an"</span>)<span class="op">;</span> plt.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-troncature-p6">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-troncature-p6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="317" src="img/fig-troncature-p6-output-1.png" width="854"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-troncature-p6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 8.1: Les sinistres vus baissent quand la franchise est relevée, en 2021, et glissent avec l’inflation ; ramenés au premier euro par le bon ajustement, ils restent autour de la vraie fréquence.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="8.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="8.6" id="pièges-typiques"> Pièges typiques</h2>
+<ol type="1">
+<li><strong>Confondre troncature et censure.</strong> Un sinistre sous la franchise manque : il divise la vraisemblance. Un sinistre plafonné est là, mais incomplet : il compte pour sa probabilité de dépasser le plafond.</li>
+<li><strong>Un plancher en euros constants qui oublie l’inflation.</strong> La franchise nominale d’une année ancienne vaut plus en euros d’aujourd’hui ; un plancher unique, fixé en euros constants, est faux pour presque toutes les années.</li>
+<li><strong>Des montants nets de franchise ajustés comme s’ils étaient bruts.</strong> La loi porte sur le montant brut : on rajoute la franchise avant d’ajuster, et elle reste le point de troncature.</li>
+<li><strong>Une fréquence vue prise pour la fréquence.</strong> Elle dépend des franchises de l’année ; on la ramène au premier euro, ou au même seuil pour toutes les années, avec la loi ajustée.</li>
+<li><strong>Un sinistre en cours pris pour un sinistre censuré.</strong> Sa provision est une estimation, pas un minimum : on l’ajuste revalorisé à sa charge estimée, ou on attend qu’il se développe, mais il n’est pas « au moins » ce montant.</li>
+</ol>
+</section>
+<section class="level2" data-number="8.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="8.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ol type="1">
+<li><strong>Un corps et une queue</strong> : au-dessus d’un seuil, une Pareto ou une loi de Pareto généralisée, ajustée elle aussi avec sa troncature au seuil ; c’est le découpage attritionnel et grave des outils de tarification.</li>
+<li><strong>La censure des durées</strong> : le maintien en incapacité se calcule avec Kaplan-Meier, la même idée pour une durée (un arrêt encore en cours est censuré).</li>
+<li>La fiche <strong>P3</strong> pour le coût moyen par GLM, et l’annexe K pour le prix des tranches hautes et l’indice de queue.</li>
+</ol>
+</section>
+<section class="level2" data-number="8.8" id="dans-loutil-de-tarification-et-dans-vision">
+<h2 class="anchored" data-anchor-id="dans-loutil-de-tarification-et-dans-vision" data-number="8.8" id="dans-loutil-de-tarification-et-dans-vision"> Dans l’outil de tarification et dans Vision</h2>
+<p>L’outil de tarification TCOR calibrait ses lois de sévérité tronquées à un intervalle fixe, le même pour tout l’échantillon (le plancher, puis le seuil entre attritionnel et grave). Depuis le 20 octobre, il sait aussi tronquer sinistre par sinistre, la franchise revalorisée comme le montant, et censurer au plafond : une option du calibrage, testée sur le cas de cette fiche, qu’il retrouve aux mêmes chiffres (<span class="math inline">\(\mu = 9{,}186\)</span>, <span class="math inline">\(\sigma = 1{,}487\)</span>, une fréquence de 407 par an). Vision, qui a repris l’ancien calcul, suivra.</p>
+</section>
+<section class="level2" data-number="8.9" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="8.9" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ol type="1">
+<li>Klugman, S., Panjer, H. et Willmot, G. (2019), <em>Loss Models: From Data to Decisions</em>, 5e éd., Wiley : la modification des données (troncature et censure) et l’estimation qui en tient compte.</li>
+<li>Hogg, R. et Klugman, S. (1984), <em>Loss Distributions</em>, Wiley.</li>
+<li>Charpentier, A. (dir.) (2014), <em>Computational Actuarial Science with R</em>, Chapman and Hall, pour les ajustements de sévérité en pratique.</li>
+</ol>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/P5/index.html"><small>&larr; Précédent</small>P5. Comparaison GLM contre gradient boosting</a><a class="next" href="../../bibliotheque/R1/index.html"><small>Suivant &rarr;</small>R1. Chain-Ladder déterministe</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E4. Le générateur assemblé, et son test de martingale · IA générative pour l'actuariat</title>
+<link rel="icon" href="../../assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../../assets/logo.svg">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="manifest" href="../../assets/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>.katex{font-size:1.1em}.katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:.1em 0}.katex-display>.katex{font-size:1.15em}</style>
+</head>
+<body>
+<header class="nav" id="site-nav"><a class="brand" href="../../index.html"><span class="mark mark-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IA générative pour l'actuariat">
+  <!-- La marque du site : le triangle de liquidation, que tout actuaire
+       reconnait, et l'etincelle a la place du coin manquant, celui qu'on
+       estime. Blanc sur navy de la charte, etincelle crimson. Six cases
+       seulement et une grande etincelle : la marque doit encore se lire a
+       16 px, la taille d'une favicon dans un onglet. Sert de favicon
+       (favicon.svg, favicon.png, apple-touch-icon.png, poses par
+       outils/make_favicon.py). -->
+  <rect width="64" height="64" rx="15" fill="#13264A"/>
+  <g fill="#ffffff">
+    <rect x="12" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="27" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="42" y="14" width="12" height="10" rx="3" opacity=".95"/>
+    <rect x="12" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="27" y="27" width="12" height="10" rx="3" opacity=".78"/>
+    <rect x="12" y="40" width="12" height="10" rx="3" opacity=".6"/>
+  </g>
+  <path d="M44 31 Q46 42 57 44 Q46 46 44 57 Q42 46 31 44 Q42 42 44 31 Z" fill="#e8536e"/>
+</svg></span><span>IA générative pour l'actuariat</span></a><button class="hamb" aria-label="Menu" id="hambBtn"><span></span><span></span><span></span></button><div class="navlinks"><a href="../../index.html">Accueil</a><div class="dd"><a class="ddbtn" href="../../introduction/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 3z"/></svg></span><span class="num">1</span> LLM <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../introduction/index.html"><b>LLM</b><small>comment ça marche, ce que ça invente, comment le piloter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">1.1</b>Comprendre le modèle</span><a class="sub" href="../../introduction/llm/index.html"><b class="n">1.1.1</b>Un modèle qui écrit le mot suivant</a><a class="sub" href="../../introduction/limites/index.html"><b class="n">1.1.2</b>Ce qu'il sait, ce qu'il invente</a><span class="grp"><b class="n">1.2</b>S'en servir</span><a class="sub" href="../../introduction/niveaux/index.html"><b class="n">1.2.1</b>Pas toujours besoin d'un modèle de langue</a><a class="sub" href="../../introduction/brancher/index.html"><b class="n">1.2.2</b>Le brancher sans lui ouvrir les données</a><a class="sub" href="../../introduction/piloter/index.html"><b class="n">1.2.3</b>Piloter l'IA</a><a href="../../introduction/atelier-premier-echange/index.html"><b class="n">1.3</b>Atelier : un premier échange cadré</a></div></div><div class="dd"><a class="ddbtn" href="../../exploration/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><circle cx="8" cy="15" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="16" cy="12" r="1.6"/><circle cx="19" cy="6" r="1.6"/></svg></span><span class="num">2</span> Modélisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../exploration/index.html"><b>Modélisation</b><small>structurer, explorer, modéliser</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">2.1</b>Ranger la donnée et le calcul</span><a class="sub" href="../../exploration/donnees/index.html"><b class="n">2.1.1</b>Structurer les données</a><a class="sub" href="../../exploration/classeur/index.html"><b class="n">2.1.2</b>Un classeur bien rangé</a><a class="sub" href="../../exploration/couches/index.html"><b class="n">2.1.3</b>Base de données, API, interface</a><a class="sub" href="../../exploration/stocker/index.html"><b class="n">2.1.4</b>Calculer dans le back, stocker les résultats</a><a class="sub" href="../../exploration/outil/index.html"><b class="n">2.1.5</b>Construire un outil actuariel : paquet, back-end, interface</a><span class="grp"><b class="n">2.2</b>Comprendre et modéliser</span><a class="sub" href="../../exploration/explorer/index.html"><b class="n">2.2.1</b>Comprendre une donnée nouvelle</a><a class="sub" href="../../exploration/modeliser/index.html"><b class="n">2.2.2</b>Modéliser : choisir, calibrer, valider</a><span class="grp"><b class="n">2.3</b>Projeter et simuler</span><a class="sub" href="../../exploration/parcours/index.html"><b class="n">2.3.1</b>Construire en direct : le parcours de l'actuaire</a><a class="sub" href="../../exploration/projeter/index.html"><b class="n">2.3.2</b>Projeter : modèles versionnés, scénarios, distribution</a><a class="sub" href="../../exploration/monte-carlo/index.html"><b class="n">2.3.3</b>Monte-Carlo : un générateur n'est jamais aléatoire</a><a class="sub" href="../../exploration/a-la-volee/index.html"><b class="n">2.3.4</b>Calculer à la volée ou préparer à l'avance</a><a class="sub" href="../../exploration/autres-domaines/index.html"><b class="n">2.3.5</b>D'autres domaines, le même parcours</a><a href="../../exploration/atelier-frequence/index.html"><b class="n">2.4</b>Atelier : explorer puis modéliser la fréquence</a></div></div><div class="dd"><a class="ddbtn" href="../../communication/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M3 21V3"/><path d="M5 17l4-5 4 2 6-8"/></svg></span><span class="num">3</span> Communication <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../communication/index.html"><b>Communication</b><small>versionner, restituer, documenter</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">3.1</b>Ranger et tracer les résultats</span><a class="sub" href="../../communication/resultats/index.html"><b class="n">3.1.1</b>Versionner les résultats</a><a class="sub" href="../../communication/hasard/index.html"><b class="n">3.1.2</b>Le hasard se pilote : graines et trajectoires</a><a class="sub" href="../../communication/tracabilite/index.html"><b class="n">3.1.3</b>Tracer : des jeux d'entrées et leurs résultats</a><span class="grp"><b class="n">3.2</b>Restituer</span><a class="sub" href="../../communication/restituer/index.html"><b class="n">3.2.1</b>Le message, la note, les graphiques</a><a class="sub" href="../../communication/tableau-rapport-diapos/index.html"><b class="n">3.2.2</b>Tableau de bord, rapport, diapositives</a><span class="grp"><b class="n">3.3</b>Documenter et nommer</span><a class="sub" href="../../communication/documenter/index.html"><b class="n">3.3.1</b>Documenter : la machine écrit, vous relisez</a><a class="sub" href="../../communication/ontologie/index.html"><b class="n">3.3.2</b>Nommer les objets du métier : l'ontologie, le self-BI</a><a href="../../communication/atelier-restitution/index.html"><b class="n">3.4</b>Atelier : de l'exécution au tableau de bord et à la note</a></div></div><div class="dd"><a class="ddbtn" href="../../industrialisation/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="9" width="20" height="6" rx="1"/><path d="M6 9v6M10 9v6M14 9v6M18 9v6"/><rect x="4.5" y="6" width="9" height="12" rx="2"/></svg></span><span class="num">4</span> Industrialisation <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../industrialisation/index.html"><b>Industrialisation</b><small>du moteur testé à l'outil qui explique</small></a><span class="sep">Dans cette partie</span><span class="grp"><b class="n">4.1</b>Construire l'outil</span><a class="sub" href="../../industrialisation/benchmark/index.html"><b class="n">4.1.1</b>Regarder ce qui existe avant de construire</a><a class="sub" href="../../industrialisation/algorithmes/index.html"><b class="n">4.1.2</b>Organiser les algorithmes</a><a class="sub" href="../../industrialisation/produit/index.html"><b class="n">4.1.3</b>Du script au produit</a><span class="grp"><b class="n">4.2</b>Brancher l'IA et la cadrer</span><a class="sub" href="../../industrialisation/formes-appel/index.html"><b class="n">4.2.1</b>Les formes d'appel</a><a class="sub" href="../../industrialisation/cadrer/index.html"><b class="n">4.2.2</b>Cadrer et tracer</a><a class="sub" href="../../industrialisation/ia-dans-l-outil/index.html"><b class="n">4.2.3</b>L'IA dans l'outil</a><a href="../../industrialisation/atelier-module/index.html"><b class="n">4.3</b>Atelier : du carnet à l'outil</a></div></div><span class="nav-sep" title="références" aria-hidden="true"></span><div class="dd"><a class="ddbtn active" href="../../bibliotheque/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="num">5</span> Bibliothèque <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../bibliotheque/index.html"><b>Bibliothèque</b><small>les cas actuariels prêts à reprendre</small></a><span class="sep">Dans cette partie</span><a href="../../bibliotheque/index.html#tarification"><b class="n">5.1</b>Tarification</a><a href="../../bibliotheque/index.html#provisionnement"><b class="n">5.2</b>Provisionnement</a><a href="../../bibliotheque/index.html#vie"><b class="n">5.3</b>Vie et démographie</a><a href="../../bibliotheque/index.html#scenarios"><b class="n">5.4</b>Scénarios économiques</a><a href="../../bibliotheque/index.html#reglementaire"><b class="n">5.5</b>Réglementaire</a><a href="../../bibliotheque/index.html#communication"><b class="n">5.6</b>Communication</a><a href="../../bibliotheque/index.html#industrialisation"><b class="n">5.7</b>Industrialisation</a></div></div><div class="dd"><a class="ddbtn" href="../../annexes/index.html"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span class="num">6</span> Annexes <span class="car">&#9662;</span></a><div class="menu"><a class="menu-head" href="../../annexes/index.html"><b>Annexes</b><small>glossaire, prompts, modèles de fichiers, cadre</small></a><span class="sep">Dans cette partie</span><a href="../../annexes/installation/index.html"><b class="n">6.1</b>Installation et premier pas avec Claude Code</a><a href="../../annexes/A/index.html"><b class="n">6.2</b>Annexe A. Glossaire Claude Code et IA générative</a><a href="../../annexes/B/index.html"><b class="n">6.3</b>Annexe B. Bibliothèque de prompts d’intention</a><a href="../../annexes/C/index.html"><b class="n">6.4</b>Annexe C. CLAUDE.md type pour un cabinet d’actuariat</a><a href="../../annexes/D/index.html"><b class="n">6.5</b>Annexe D. settings.json pour un cabinet : permissions, bac à sable, hooks</a><a href="../../annexes/E/index.html"><b class="n">6.6</b>Annexe E. Conventions Git légères pour une équipe actuarielle</a><a href="../../annexes/F/index.html"><b class="n">6.7</b>Annexe F. Liste des pièges fréquents</a><a href="../../annexes/G/index.html"><b class="n">6.8</b>Annexe G. Cadre réglementaire pour l’IA en assurance</a><a href="../../annexes/H/index.html"><b class="n">6.9</b>Annexe H. Comparaison des outils IA pour le développement</a><a href="../../annexes/I/index.html"><b class="n">6.10</b>Annexe I. Pour aller plus loin</a><a href="../../annexes/J/index.html"><b class="n">6.11</b>Annexe J. Formulaire pré-formation</a><a href="../../annexes/K/index.html"><b class="n">6.12</b>Annexe K. Ordres de grandeur de marché : les tranches hautes</a></div></div></div></header>
+
+<section class="page-head">
+  <div class="wrap page-head-inner">
+    <div>
+      <div class="eyebrow eyebrow-light">Partie 5 · Bibliothèque</div>
+      <h1 style="max-width:28ch">E4. Le générateur assemblé, et son test de martingale</h1>
+      <p class="lede">Ce que vous apprenez ici n’est pas la théorie de l’évaluation risque neutre. C’est le test qu’on demande à l’IA d’écrire avant de croire un générateur de scénarios : actualisé au taux court, chaque actif doit valoir en moyenne son prix d’aujourd’hui. Un test qui tient en deux lignes, et qui attrape l’erreur la plus fréquente des générateurs maison.</p>
+    </div>
+  </div>
+</section>
+<div class="wrap with-toc" style="margin-top:44px">
+<aside class="toc"><div class="toc-title">Sur cette page</div><a href="#le-contexte-métier">Le contexte métier</a><a href="#lillustration-demandée-à-lia">L’illustration, demandée à l’IA</a><a href="#ce-que-dit-le-modèle">Ce que dit le modèle</a><a href="#prompts-dintention-suggérés">Prompts d’intention suggérés</a><a href="#corrigé-pas-à-pas">Corrigé pas à pas</a><a href="#pièges-typiques">Pièges typiques</a><a href="#variantes-et-cas-connexes">Variantes et cas connexes</a><a href="#dans-vision">Dans Vision</a><a href="#pour-aller-plus-loin">Pour aller plus loin</a></aside>
+<div>
+
+<div class="prose">
+
+
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Démarche illustrée : B, construire un modèle, et E, industrialiser (le test qui valide)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+<p>La démarche se pratique en direct dans les ateliers des demi-journées « Exploration et modélisation » et « Automatisation et industrialisation » du support.</p>
+</div>
+</div>
+<section class="level2" data-number="18.1" id="le-contexte-métier">
+<h2 class="anchored" data-anchor-id="le-contexte-métier" data-number="18.1" id="le-contexte-métier"> Le contexte métier</h2>
+<p>La meilleure estimation des contrats d’épargne avec participation, et toute valeur de marché d’un passif à options, se calcule sur des scénarios risque neutres : la moyenne des flux actualisés au taux court de chaque scénario. Le générateur doit donc respecter une propriété précise. Sous la probabilité risque neutre, le prix actualisé de tout actif est une martingale : en moyenne, un indice actions actualisé vaut sa valeur d’aujourd’hui, et un euro actualisé vaut le prix zéro-coupon du modèle.</p>
+<p>Les autorités demandent de le vérifier : un générateur qui échoue au test de martingale fait une meilleure estimation fausse, dans un sens que personne ne voit à l’œil nu.</p>
+</section>
+<section class="level2" data-number="18.2" id="lillustration-demandée-à-lia">
+<h2 class="anchored" data-anchor-id="lillustration-demandée-à-lia" data-number="18.2" id="lillustration-demandée-à-lia"> L’illustration, demandée à l’IA</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Le prompt de l’illustration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><em>« Fais-moi une page HTML autonome qui assemble un petit générateur risque neutre : un taux court de Vasicek, un indice actions qui dérive au taux court avec sa volatilité, une corrélation entre les deux bruits. Pour un horizon T et un nombre de scénarios que je choisis, trace la moyenne de D_T S_T / S_0 et celle de D_T au fil des scénarios, avec leur intervalle à 95 %, contre 1 et contre le prix zéro-coupon du modèle. Ajoute un bouton qui introduit l’erreur classique, une dérive de monde réel pour les actions, pour voir le test la détecter. »</em></p>
+</div>
+</div>
+<div class="demo-embed">
+<div class="demo-head"><b>Le test de martingale, à manipuler</b><span>Lancez la lecture, puis introduisez l'erreur</span></div>
+<iframe loading="lazy" src="img/gse_9c9e4ef0.html" style="height:930px" title="Un générateur assemblé et son test de martingale"></iframe>
+<p class="print-note">L'illustration interactive est sur le site du support, bibliothèque, fiche E4.</p>
+</div>
+<p>Ce qui saute aux yeux :</p>
+<ol type="1">
+<li><strong>L’intervalle se resserre en <span class="math inline">\(1 / \sqrt{n}\)</span></strong> : avec 4 fois plus de scénarios, il est deux fois plus étroit, pas quatre.</li>
+<li><strong>Avec l’erreur introduite</strong>, le test actions échoue de très loin (une prime de 4 % sur 10 ans donne une moyenne autour de <span class="math inline">\(e^{0{,}4} \approx 1{,}49\)</span>) ; le test taux, lui, passe toujours, parce que l’erreur ne touche pas le taux. Il faut un test par actif.</li>
+</ol>
+</section>
+<section class="level2" data-number="18.3" id="ce-que-dit-le-modèle">
+<h2 class="anchored" data-anchor-id="ce-que-dit-le-modèle" data-number="18.3" id="ce-que-dit-le-modèle"> Ce que dit le modèle</h2>
+<ol type="1">
+<li><p><strong>Le taux court</strong> suit Vasicek, simulé par sa transition exacte :</p>
+<p><span class="math display">\[
+r_{t+\Delta} = r_t\,e^{-a\Delta} + b\left(1 - e^{-a\Delta}\right) + \sigma\sqrt{\frac{1 - e^{-2a\Delta}}{2a}}\;Z_1.
+\]</span></p></li>
+<li><p><strong>L’indice actions</strong> dérive au taux court, pas après pas :</p>
+<p><span class="math display">\[
+\ln S_{t+\Delta} = \ln S_t + \left(r_t - \frac{\sigma_S^2}{2}\right)\Delta + \sigma_S\sqrt{\Delta}\;Z_S,
+\qquad Z_S = \rho\,Z_1 + \sqrt{1 - \rho^2}\;Z_2.
+\]</span></p></li>
+<li><p><strong>Le déflateur</strong> <span class="math inline">\(D_T = \exp\!\left(-\int_0^T r_s\,\mathrm{d}s\right)\)</span> actualise chaque scénario à son propre taux court.</p></li>
+<li><p><strong>Ce qui doit tenir</strong> :</p>
+<p><span class="math display">\[
+\mathbb{E}\left[D_T\,S_T\right] = S_0 \qquad \text{et} \qquad \mathbb{E}\left[D_T\right] = P(0, T),
+\]</span></p>
+<p>le prix zéro-coupon de Vasicek, à l’erreur de simulation près.</p></li>
+</ol>
+<p>Un détail de construction, qui compte : si le déflateur et la dérive des actions prennent le taux du début de chaque pas, <span class="math inline">\(D \cdot S\)</span> est une martingale exacte du schéma discret, quelle que soit la taille du pas. Le test actions mesure alors la seule erreur de simulation.</p>
+</section>
+<section class="level2" data-number="18.4" id="prompts-dintention-suggérés">
+<h2 class="anchored" data-anchor-id="prompts-dintention-suggérés" data-number="18.4" id="prompts-dintention-suggérés"> Prompts d’intention suggérés</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Les 3 prompts d’intention
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Assembler.</strong> <em>« Écris un générateur risque neutre au pas mensuel : Vasicek pour le taux court (a = 0,30, b = 2,5 %, σ = 1 %, r₀ = 2 %), un indice actions à 18 % de volatilité qui dérive au taux court, une corrélation de −0,2. 5 000 scénarios sur 10 ans, graine 42, vectorisé sur les scénarios. »</em></p></li>
+<li><p><strong>Tester.</strong> <em>« Écris les deux tests de martingale : E[D_T S_T] / S_0 contre 1, E[D_T] contre le prix zéro-coupon de Vasicek, chacun avec son intervalle à 95 % et l’écart en nombre d’erreurs de simulation. »</em></p></li>
+<li><p><strong>Casser exprès.</strong> <em>« Refais tourner avec une dérive de monde réel pour les actions, le taux court plus 4 %, et montre que le test la détecte. Explique pourquoi le test taux ne la voit pas. »</em></p></li>
+</ol>
+</div>
+</div>
+</section>
+<section class="level2" data-number="18.5" id="corrigé-pas-à-pas">
+<h2 class="anchored" data-anchor-id="corrigé-pas-à-pas" data-number="18.5" id="corrigé-pas-à-pas"> Corrigé pas à pas</h2>
+<section class="level3" data-number="18.5.1" id="étape-1.-assembler-le-générateur">
+<h3 class="anchored" data-anchor-id="étape-1.-assembler-le-générateur" data-number="18.5.1"> Étape 1. Assembler le générateur</h3>
+<div class="cell" data-execution_count="1" id="ab36b786">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a aria-hidden="true" href="#cb1-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a aria-hidden="true" href="#cb1-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a aria-hidden="true" href="#cb1-3" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a aria-hidden="true" href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a aria-hidden="true" href="#cb1-5" tabindex="-1"></a>a, b, s_r, r0 <span class="op">=</span> <span class="fl">0.30</span>, <span class="fl">0.025</span>, <span class="fl">0.01</span>, <span class="fl">0.02</span></span>
+<span id="cb1-6"><a aria-hidden="true" href="#cb1-6" tabindex="-1"></a>s_s, rho <span class="op">=</span> <span class="fl">0.18</span>, <span class="op">-</span><span class="fl">0.2</span></span>
+<span id="cb1-7"><a aria-hidden="true" href="#cb1-7" tabindex="-1"></a>T, pas, n <span class="op">=</span> <span class="dv">10</span>, <span class="dv">1</span> <span class="op">/</span> <span class="dv">12</span>, <span class="dv">5_000</span></span>
+<span id="cb1-8"><a aria-hidden="true" href="#cb1-8" tabindex="-1"></a>n_pas <span class="op">=</span> <span class="bu">int</span>(<span class="bu">round</span>(T <span class="op">/</span> pas))</span>
+<span id="cb1-9"><a aria-hidden="true" href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a aria-hidden="true" href="#cb1-10" tabindex="-1"></a><span class="kw">def</span> generer(prime<span class="op">=</span><span class="fl">0.0</span>, graine<span class="op">=</span><span class="dv">42</span>):</span>
+<span id="cb1-11"><a aria-hidden="true" href="#cb1-11" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(graine)</span>
+<span id="cb1-12"><a aria-hidden="true" href="#cb1-12" tabindex="-1"></a>    e <span class="op">=</span> np.exp(<span class="op">-</span>a <span class="op">*</span> pas)</span>
+<span id="cb1-13"><a aria-hidden="true" href="#cb1-13" tabindex="-1"></a>    sd_pas <span class="op">=</span> s_r <span class="op">*</span> np.sqrt((<span class="dv">1</span> <span class="op">-</span> e<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> a))</span>
+<span id="cb1-14"><a aria-hidden="true" href="#cb1-14" tabindex="-1"></a>    r <span class="op">=</span> np.full(n, r0)</span>
+<span id="cb1-15"><a aria-hidden="true" href="#cb1-15" tabindex="-1"></a>    ln_d, ln_dt, ln_s <span class="op">=</span> np.zeros(n), np.zeros(n), np.zeros(n)</span>
+<span id="cb1-16"><a aria-hidden="true" href="#cb1-16" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_pas):</span>
+<span id="cb1-17"><a aria-hidden="true" href="#cb1-17" tabindex="-1"></a>        z1 <span class="op">=</span> rng.standard_normal(n)</span>
+<span id="cb1-18"><a aria-hidden="true" href="#cb1-18" tabindex="-1"></a>        zs <span class="op">=</span> rho <span class="op">*</span> z1 <span class="op">+</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> rho<span class="op">**</span><span class="dv">2</span>) <span class="op">*</span> rng.standard_normal(n)</span>
+<span id="cb1-19"><a aria-hidden="true" href="#cb1-19" tabindex="-1"></a>        ln_s <span class="op">+=</span> (r <span class="op">+</span> prime <span class="op">-</span> s_s<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> <span class="dv">2</span>) <span class="op">*</span> pas <span class="op">+</span> s_s <span class="op">*</span> np.sqrt(pas) <span class="op">*</span> zs</span>
+<span id="cb1-20"><a aria-hidden="true" href="#cb1-20" tabindex="-1"></a>        ln_d <span class="op">-=</span> r <span class="op">*</span> pas                                   <span class="co"># au taux du début du pas</span></span>
+<span id="cb1-21"><a aria-hidden="true" href="#cb1-21" tabindex="-1"></a>        r_suiv <span class="op">=</span> r <span class="op">*</span> e <span class="op">+</span> b <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> e) <span class="op">+</span> sd_pas <span class="op">*</span> z1        <span class="co"># Vasicek, transition exacte</span></span>
+<span id="cb1-22"><a aria-hidden="true" href="#cb1-22" tabindex="-1"></a>        ln_dt <span class="op">-=</span> (r <span class="op">+</span> r_suiv) <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> pas                   <span class="co"># déflateur du test taux, par trapèzes</span></span>
+<span id="cb1-23"><a aria-hidden="true" href="#cb1-23" tabindex="-1"></a>        r <span class="op">=</span> r_suiv</span>
+<span id="cb1-24"><a aria-hidden="true" href="#cb1-24" tabindex="-1"></a>    <span class="cf">return</span> np.exp(ln_d <span class="op">+</span> ln_s), np.exp(ln_dt)</span>
+<span id="cb1-25"><a aria-hidden="true" href="#cb1-25" tabindex="-1"></a></span>
+<span id="cb1-26"><a aria-hidden="true" href="#cb1-26" tabindex="-1"></a>B <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> np.exp(<span class="op">-</span>a <span class="op">*</span> T)) <span class="op">/</span> a</span>
+<span id="cb1-27"><a aria-hidden="true" href="#cb1-27" tabindex="-1"></a>p0T <span class="op">=</span> np.exp((b <span class="op">-</span> s_r<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> a<span class="op">**</span><span class="dv">2</span>)) <span class="op">*</span> (B <span class="op">-</span> T) <span class="op">-</span> s_r<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> B<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="dv">4</span> <span class="op">*</span> a) <span class="op">-</span> B <span class="op">*</span> r0)</span>
+<span id="cb1-28"><a aria-hidden="true" href="#cb1-28" tabindex="-1"></a>x_ok, y_ok <span class="op">=</span> generer()</span>
+<span id="cb1-29"><a aria-hidden="true" href="#cb1-29" tabindex="-1"></a>pd.DataFrame({<span class="st">"scénarios"</span>: [n], <span class="st">"pas"</span>: [n_pas], <span class="st">"prix zéro-coupon P(0, T)"</span>: [<span class="bu">round</span>(p0T, <span class="dv">5</span>)]})</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">scénarios</th>
+<th data-quarto-table-cell-role="th">pas</th>
+<th data-quarto-table-cell-role="th">prix zéro-coupon P(0, T)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>5000</td>
+<td>120</td>
+<td>0.79358</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section class="level3" data-number="18.5.2" id="étape-2.-les-deux-tests-et-lerreur-quils-attrapent">
+<h3 class="anchored" data-anchor-id="étape-2.-les-deux-tests-et-lerreur-quils-attrapent" data-number="18.5.2"> Étape 2. Les deux tests, et l’erreur qu’ils attrapent</h3>
+<div class="cell" data-execution_count="2" id="2c2d3b96">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">def</span> tester(x, cible):</span>
+<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a>    m, se <span class="op">=</span> x.mean(), x.std(ddof<span class="op">=</span><span class="dv">1</span>) <span class="op">/</span> np.sqrt(<span class="bu">len</span>(x))</span>
+<span id="cb2-3"><a aria-hidden="true" href="#cb2-3" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>m<span class="sc">:.4f}</span><span class="ss"> ± </span><span class="sc">{</span><span class="fl">1.96</span> <span class="op">*</span> se<span class="sc">:.4f}</span><span class="ss">"</span>, <span class="bu">round</span>((m <span class="op">-</span> cible) <span class="op">/</span> se, <span class="dv">1</span>)</span>
+<span id="cb2-4"><a aria-hidden="true" href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a aria-hidden="true" href="#cb2-5" tabindex="-1"></a>x_err, y_err <span class="op">=</span> generer(prime<span class="op">=</span><span class="fl">0.04</span>)</span>
+<span id="cb2-6"><a aria-hidden="true" href="#cb2-6" tabindex="-1"></a>lignes <span class="op">=</span> []</span>
+<span id="cb2-7"><a aria-hidden="true" href="#cb2-7" tabindex="-1"></a><span class="cf">for</span> cas, (x, y) <span class="kw">in</span> {<span class="st">"générateur correct"</span>: (x_ok, y_ok), <span class="st">"dérive de monde réel (+4 %)"</span>: (x_err, y_err)}.items():</span>
+<span id="cb2-8"><a aria-hidden="true" href="#cb2-8" tabindex="-1"></a>    ma, za <span class="op">=</span> tester(x, <span class="fl">1.0</span>)</span>
+<span id="cb2-9"><a aria-hidden="true" href="#cb2-9" tabindex="-1"></a>    mo, zo <span class="op">=</span> tester(y, p0T)</span>
+<span id="cb2-10"><a aria-hidden="true" href="#cb2-10" tabindex="-1"></a>    lignes.append({<span class="st">"cas"</span>: cas, <span class="st">"E[D·S] / S0"</span>: ma, <span class="st">"écart à 1 (erreurs)"</span>: za,</span>
+<span id="cb2-11"><a aria-hidden="true" href="#cb2-11" tabindex="-1"></a>                   <span class="st">"E[D]"</span>: mo, <span class="st">"écart à P(0, T) (erreurs)"</span>: zo,</span>
+<span id="cb2-12"><a aria-hidden="true" href="#cb2-12" tabindex="-1"></a>                   <span class="st">"verdict"</span>: <span class="st">"passe"</span> <span class="cf">if</span> <span class="bu">abs</span>(za) <span class="op">&lt;</span> <span class="fl">1.96</span> <span class="kw">and</span> <span class="bu">abs</span>(zo) <span class="op">&lt;</span> <span class="fl">1.96</span> <span class="cf">else</span> <span class="st">"échoue"</span>})</span>
+<span id="cb2-13"><a aria-hidden="true" href="#cb2-13" tabindex="-1"></a>pd.DataFrame(lignes)</span></code></pre></div></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">cas</th>
+<th data-quarto-table-cell-role="th">E[D·S] / S0</th>
+<th data-quarto-table-cell-role="th">écart à 1 (erreurs)</th>
+<th data-quarto-table-cell-role="th">E[D]</th>
+<th data-quarto-table-cell-role="th">écart à P(0, T) (erreurs)</th>
+<th data-quarto-table-cell-role="th">verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>générateur correct</td>
+<td>1.0007 ± 0.0171</td>
+<td>0.1</td>
+<td>0.7937 ± 0.0017</td>
+<td>0.1</td>
+<td>passe</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>dérive de monde réel (+4 %)</td>
+<td>1.4928 ± 0.0255</td>
+<td>37.9</td>
+<td>0.7937 ± 0.0017</td>
+<td>0.1</td>
+<td>échoue</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Le générateur correct passe les deux tests. L’erreur fait sortir le test actions de plusieurs dizaines d’erreurs de simulation ; le test taux, lui, ne bouge pas, puisque le taux n’a pas changé. C’est pour cela qu’on teste chaque actif du générateur, et pas seulement l’actualisation.</p>
+</section>
+<section class="level3" data-number="18.5.3" id="étape-3.-la-convergence-sur-un-graphique">
+<h3 class="anchored" data-anchor-id="étape-3.-la-convergence-sur-un-graphique" data-number="18.5.3"> Étape 3. La convergence, sur un graphique</h3>
+<div class="cell" data-execution_count="3" id="cell-fig-gse-e4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a aria-hidden="true" href="#cb3-1" tabindex="-1"></a>k <span class="op">=</span> np.arange(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb3-2"><a aria-hidden="true" href="#cb3-2" tabindex="-1"></a>moy <span class="op">=</span> np.cumsum(x_ok) <span class="op">/</span> k</span>
+<span id="cb3-3"><a aria-hidden="true" href="#cb3-3" tabindex="-1"></a>var <span class="op">=</span> np.cumsum(x_ok<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> k <span class="op">-</span> moy<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb3-4"><a aria-hidden="true" href="#cb3-4" tabindex="-1"></a>demi <span class="op">=</span> <span class="fl">1.96</span> <span class="op">*</span> np.sqrt(np.maximum(var, <span class="dv">0</span>) <span class="op">/</span> k)</span>
+<span id="cb3-5"><a aria-hidden="true" href="#cb3-5" tabindex="-1"></a>debut <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb3-6"><a aria-hidden="true" href="#cb3-6" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.4</span>))</span>
+<span id="cb3-7"><a aria-hidden="true" href="#cb3-7" tabindex="-1"></a>plt.fill_between(k[debut:], (moy <span class="op">-</span> demi)[debut:], (moy <span class="op">+</span> demi)[debut:], color<span class="op">=</span><span class="st">"#d5dde8"</span>, label<span class="op">=</span><span class="st">"intervalle à 95 %"</span>)</span>
+<span id="cb3-8"><a aria-hidden="true" href="#cb3-8" tabindex="-1"></a>plt.plot(k[debut:], moy[debut:], color<span class="op">=</span><span class="st">"#13264A"</span>, lw<span class="op">=</span><span class="fl">1.8</span>, label<span class="op">=</span><span class="st">"moyenne des n premiers scénarios"</span>)</span>
+<span id="cb3-9"><a aria-hidden="true" href="#cb3-9" tabindex="-1"></a>plt.axhline(<span class="dv">1</span>, color<span class="op">=</span><span class="st">"#BA1C3A"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="fl">1.2</span>, label<span class="op">=</span><span class="st">"cible : 1"</span>)</span>
+<span id="cb3-10"><a aria-hidden="true" href="#cb3-10" tabindex="-1"></a>plt.xlabel(<span class="st">"nombre de scénarios"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"E[D·S] / S0"</span>)<span class="op">;</span> plt.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb3-11"><a aria-hidden="true" href="#cb3-11" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-12"><a aria-hidden="true" href="#cb3-12" tabindex="-1"></a>plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-float quarto-figure quarto-figure-center anchored" id="fig-gse-e4">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gse-e4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img class="figure-img" height="317" src="img/fig-gse-e4-output-1.png" width="854"/>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gse-e4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure 18.1: La moyenne de D·S / S0 au fil des scénarios, avec son intervalle à 95 % : elle se rapproche de 1 en 1 / √n.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section class="level2" data-number="18.6" id="pièges-typiques">
+<h2 class="anchored" data-anchor-id="pièges-typiques" data-number="18.6" id="pièges-typiques"> Pièges typiques</h2>
+<ol type="1">
+<li><strong>Une dérive de monde réel dans un générateur risque neutre.</strong> C’est l’erreur que le test attrape ici ; dans un générateur maison, elle vient souvent d’une prime de risque gardée par habitude.</li>
+<li><strong>Un déflateur incohérent avec la dérive.</strong> Actualiser par trapèzes et faire dériver les actions au taux du début du pas crée un petit écart de discrétisation, qui finit par faire échouer le test avec beaucoup de scénarios.</li>
+<li><strong>Conclure sur trop peu de scénarios.</strong> Avec 200 scénarios, l’intervalle est si large que presque tout passe ; un test qui ne peut pas échouer ne prouve rien.</li>
+<li><strong>Tester le seul horizon final.</strong> Le test se fait à chaque échéance où le passif a des flux, pas seulement à la dernière.</li>
+</ol>
+</section>
+<section class="level2" data-number="18.7" id="variantes-et-cas-connexes">
+<h2 class="anchored" data-anchor-id="variantes-et-cas-connexes" data-number="18.7" id="variantes-et-cas-connexes"> Variantes et cas connexes</h2>
+<ol type="1">
+<li><strong>E1 et E2</strong> : le modèle de taux, seul, puis comparé.</li>
+<li><strong>E3</strong> : un indice actions à sauts, qui doit lui aussi passer le test (la compensation <span class="math inline">\(\lambda\kappa\)</span> s’en charge).</li>
+<li>Le chapitre « Monte-Carlo : un générateur n’est jamais aléatoire » du support : les suites de Sobol et de Halton, qui resserrent l’intervalle plus vite.</li>
+</ol>
+</section>
+<section class="level2" data-number="18.8" id="dans-vision">
+<h2 class="anchored" data-anchor-id="dans-vision" data-number="18.8" id="dans-vision"> Dans Vision</h2>
+<p>L’étude ALM de Vision assemble le même type de générateur (Hull-White ou Vasicek, actions au taux court plus une prime, corrélation, inflation des frais, rachats dynamiques) et fige les jeux de scénarios après leurs tests. En local sur <code>http://127.0.0.1:8013/vision360/index.html?profil=actuaire_vie#/alm</code>, onglets Scénarios et Gouvernance.</p>
+</section>
+<section class="level2" data-number="18.9" id="pour-aller-plus-loin">
+<h2 class="anchored" data-anchor-id="pour-aller-plus-loin" data-number="18.9" id="pour-aller-plus-loin"> Pour aller plus loin</h2>
+<ol type="1">
+<li>Glasserman, P. (2004), <em>Monte Carlo Methods in Financial Engineering</em>, Springer, chapitres 1 et 3.</li>
+<li>Wüthrich, M. et Merz, M. (2013), <em>Financial Modeling, Actuarial Valuation and Solvency in Insurance</em>, Springer, pour l’évaluation par déflateurs.</li>
+<li>EIOPA, <em>Guidelines on valuation of technical provisions</em> (EIOPA-BoS-14/166), orientations sur les hypothèses économiques et la cohérence de marché des générateurs de scénarios.</li>
+</ol>
+</section>
+
+</div>
+<div class="chapter-nav"><a href="../../bibliotheque/E3/index.html"><small>&larr; Précédent</small>E3. Actions : brownien géométrique ou sauts</a><a class="next" href="../../bibliotheque/S1/index.html"><small>Suivant &rarr;</small>S1. Note méthodologique SCR non-vie</a></div>
+</div>
+</div>
+
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false});</script>
+<script src="../../assets/site.js"></script>
+<script src="../../assets/recherche.js" defer></script>
+</body>
+</html>
