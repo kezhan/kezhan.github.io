@@ -14,12 +14,12 @@
       celle d'une maison de langue ; bulleMot(ancre, m) : le mot écrit dans une petite bulle, son sens en petit. */
 // <mots>
 const MOTS_DU_JEU = {
-  // greetings and good manners (the villagers, the companions, the home screen, the doors, the Ombres)
+  // greetings and good manners (the villagers and the islanders, the companions, the home screen, the doors, the Ombres)
   bonjour: {fr: "bonjour", en: "Hello!", de: "Hallo!", lb: "Moien"},
   bonjour_matin: {fr: "bonjour, le matin", en: "Good morning!", de: "Guten Morgen!", lb: "Gudde Moien"},
   bonsoir: {fr: "bonsoir", en: "Good evening!", de: "Guten Abend!", lb: "Gudden Owend"},
   comment_vas_tu: {fr: "comment vas-tu ?", en: "How are you?", de: "Wie geht's?"},
-  bonne_journee: {fr: "bonne journée", en: "Have a nice day!", de: "Einen schönen Tag!"},
+  bonne_journee: {fr: "bonne journée", en: "Have a nice day!", de: "Einen schönen Tag!", lb: "Schéinen Dag!"},
   bravo: {fr: "bravo", en: "Well done!", de: "Gut gemacht!"},
   merci: {fr: "merci", en: "Thank you!", de: "Danke!", lb: "Merci"},
   au_revoir: {fr: "au revoir", en: "Goodbye!", de: "Tschüss!", lb: "Äddi"},
@@ -27,6 +27,7 @@ const MOTS_DU_JEU = {
   bonne_nuit: {fr: "bonne nuit", en: "Good night!", de: "Gute Nacht!", lb: "Gutt Nuecht"},
   a_tes_souhaits: {fr: "à tes souhaits", en: "Bless you!", de: "Gesundheit!", lb: "Gesondheet!"},
   bon_appetit: {fr: "bon appétit", en: "Enjoy your meal!", de: "Guten Appetit!"},
+  bonne_chance: {fr: "bonne chance", en: "Good luck!", de: "Viel Glück!", lb: "Vill Gléck!"},
   // what a companion says
   je_t_aime: {fr: "je t'aime", en: "I love you!", de: "Ich hab dich lieb!", lb: "Ech hunn dech gär!"},
   faim: {fr: "j'ai faim", en: "I'm hungry!", de: "Ich habe Hunger!", lb: "Ech sinn hongereg!"},
@@ -62,7 +63,8 @@ const MOTS_DU_JEU = {
   // above, the duckling of the pond by the port, the birds of the Grand-Duché, the fountain of Albion
   canard: {fr: "le canard", en: "duck"},
   oiseau: {fr: "l'oiseau", lb: "de Vull"},
-  eau: {fr: "l'eau", en: "water"},
+  // the water: the fountain of Albion, and the ferryman of the island (js/jeu/langues_habitants.js)
+  eau: {fr: "l'eau", en: "water", de: "das Wasser", lb: "d'Waasser"},
   // the little talks with Hugo and Paco (js/jeu/conversations.js): « How are you? », « How old are you? » and the
   // child's answers; their replies are above (bonne_journee, fatigue, faim, bon_appetit, bonne_nuit, bravo)
   je_vais_bien: {fr: "je vais bien", en: "I'm fine!", de: "Mir geht's gut!"},

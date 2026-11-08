@@ -243,6 +243,12 @@
 .piece-fx{position:fixed; pointer-events:none; height:auto}
 .lueur-fx{position:fixed; pointer-events:none; mix-blend-mode:screen}
 .voile-etoile{position:fixed; inset:0; width:100vw; height:100vh; z-index:70; pointer-events:none}
+/* the boat being made ready for a trip (js/jeu/voyage.js): over the closed star, the boat rocking and its words */
+.attente-voyage{position:fixed; inset:0; z-index:71; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+  background:var(--encre); color:#fff; font:700 26px var(--titre); text-align:center; padding:16px; pointer-events:none}
+.attente-voyage .icone{width:112px; height:112px; animation:bercer 1.6s ease-in-out infinite}
+@keyframes bercer{0%, 100%{transform:rotate(-7deg) translateY(0)} 50%{transform:rotate(7deg) translateY(-8px)}}
+@media (prefers-reduced-motion: reduce){ .attente-voyage .icone{animation:none} }
 
 @media (prefers-reduced-motion: reduce){
   .rayons-moment,.podium .rayons,.forme.nee,.carte.bilan .figure,.attaque.prete,.attaque.prete::before,.attaque .scintille,.medaille.brille img,.zzz i,.outil.montree,

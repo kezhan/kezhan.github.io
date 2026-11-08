@@ -3,7 +3,8 @@
    1. les séances : la page ouverte, prête, cachée, revenue, quittée ;
    2. chaque écran ouvert (sa durée se lit d'un écran au suivant) ;
    3. chaque toucher au village et ce qu'il a fait (marcher, une Ombre, le marchand, le jardin, un habitant, une
-      maison…, ou rien : un dessin mal compris), chaque toucher sur les menus, et ceux qui tombent à côté de tout ;
+      maison, la barque, un terrain…, ou rien : un dessin mal compris), et dans quel village (l : le premier ou l'île),
+      chaque toucher sur les menus, et ceux qui tombent à côté de tout ; chaque voyage en barque (js/jeu/voyage.js) ;
    4. chaque question : sa notion, son niveau, juste ou faux, la réponse donnée, le temps de réponse, la voix réécoutée ;
    5. chaque combat fini (ce que garde la partie : maison, gagné, bonnes réponses) ; un combat quitté sans fin se lit à
       l'écran qui suit ;
@@ -65,7 +66,9 @@ if (typeof document !== "undefined" && typeof addEventListener === "function") {
     if (window.__pret) { clearInterval(pret); noterJournal("pret", {ms: Math.round(performance.now())}); }
   }, 500);
   setTimeout(() => clearInterval(pret), 120000);
-  document.addEventListener("ecran", ev => noterJournal("ecran", {id: ev.detail}));
+  // the village's screen says which village: the first one or the island (js/etat.js, lieuDe)
+  document.addEventListener("ecran", ev => noterJournal("ecran", {id: ev.detail,
+    ...(ev.detail === "monde" && typeof lieuDe === "function" && typeof P === "function" && P() ? {l: lieuDe(P())} : {})}));
   // a touch on a menu (the village and the fights are noted by their own scenes): what it hit, or nothing
   document.addEventListener("click", ev => {
     const t = ev.target;

@@ -2,7 +2,7 @@
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». Une copie de secours est gardée ; une partie abîmée ou
    d'une version plus ancienne est réparée ; deux onglets ouverts ne s'effacent pas la partie l'un de l'autre. */
-const VERSION = "0.17";
+const VERSION = "0.18";
 const CLE = "academia.v1", CLE_COPIE = "academia.v1.copie";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;
@@ -27,7 +27,25 @@ function nouveauProfil(nom, age){
     // last met (ms)
     mots: {},
     accessoires: {possedes: [], porte: {}},   // bought from the merchant; porte: famille -> accessory worn
-    temps: {}};                           // time really played, per day ("2026-10-12" -> ms)
+    temps: {},                            // time really played, per day ("2026-10-12" -> ms)
+    // the village the child is in (LIEUX: the first village, the Île des Bâtisseurs) and where the hero stood in each
+    // one ({x, y} in tiles; js/jeu/monde.js); the first village's is also kept in `position`, as the older versions read it
+    lieu: "village", positions: {}};
+}
+const LIEUX = ["village", "ile"];
+const lieuDe = p => p && LIEUX.includes(p.lieu) ? p.lieu : "village";
+const positionValide = c => !!c && typeof c === "object" && Number.isInteger(c.x) && Number.isInteger(c.y) && c.x >= 0 && c.y >= 0 && c.x < 200 && c.y < 200;
+// where the hero stood in this village (null: never been there, the map's start then)
+function positionDe(p, lieu){
+  const c = p && p.positions && p.positions[lieu];
+  return positionValide(c) ? c : null;
+}
+// the hero's tile in this village, kept with the game (sauver() is the caller's)
+function garderPosition(p, lieu, c){
+  if (!p || !LIEUX.includes(lieu) || !positionValide(c)) return;
+  if (!p.positions || typeof p.positions !== "object" || Array.isArray(p.positions)) p.positions = {};
+  p.positions[lieu] = {x: c.x, y: c.y};
+  if (lieu === "village") p.position = {x: c.x, y: c.y};   // read by the older versions
 }
 const normNom = s => s.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 function profilParNom(nom){ return Object.values(E.profils).find(p => normNom(p.nom) === normNom(nom)) || null; }
@@ -67,6 +85,14 @@ function reparer(p){
   q.compagnons = q.compagnons.filter(c => c && c.id && FAMILLES[c.famille]);
   if (!q.compagnons.some(c => c.id === q.actif)) q.actif = q.compagnons[0] ? q.compagnons[0].id : null;
   if (typeof reparerJardin === "function") q.jardin = reparerJardin(q.jardin);   // the child's garden (js/jardin.js)
+  // the village where the child is and the hero's tile in each one (the Île des Bâtisseurs): an older game is in the
+  // first village, where its old `position` is; a damaged one starts again where each map starts
+  q.lieu = lieuDe(q);
+  const positions = objet(q.positions) ? q.positions : {};
+  q.positions = {};
+  LIEUX.forEach(l => { if (positionValide(positions[l])) q.positions[l] = {x: positions[l].x, y: positions[l].y}; });
+  if (positionValide(q.position)) q.positions.village = {x: q.position.x, y: q.position.y};   // an older version may have walked since
+  else delete q.position;
   return q;
 }
 function prendre(d){

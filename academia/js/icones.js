@@ -8,9 +8,9 @@
    3. Dans la page : <img data-icone="sac"> reçoit son image au lancement ; les styles lisent var(--ico-<nom>).
    Chargé après js/jeu/qualite.js. */
 const ICONES = [
-  // the game: money, attacks, jokers, rewards
+  // the game: money, attacks, jokers, rewards, the ferryman's boat
   "etincelle", "eclair", "choc", "etoile", "bouclier", "couronne", "revanche", "fusee", "potion", "chouette", "sablier",
-  "fuite", "epees", "pattes", "cadeau", "niveau", "trophee", "confettis", "dodo",
+  "fuite", "epees", "pattes", "cadeau", "niveau", "trophee", "confettis", "dodo", "barque",
   // menus: the bag, closing, arrows, yes and no, people, the speaker, the doors' padlocks, the grown-ups' settings
   "sac", "croix", "suivant", "retour", "lecture", "demi_tour", "coche", "vrai", "faux", "pouce", "parents", "gardien",
   "haut_parleur", "cadenas", "cadenas_ouvert", "images", "enregistrer", "ouvrir", "crayon",
@@ -25,7 +25,7 @@ const ICONES = [
 const EMOJI_ICONES = {
   "✨": "etincelle", "⚡": "eclair", "💥": "choc", "🌟": "etoile", "🛡": "bouclier", "👑": "couronne", "🔁": "revanche",
   "🚀": "fusee", "🧪": "potion", "🦉": "chouette", "⏳": "sablier", "⌛": "sablier", "🏃": "fuite", "⚔": "epees",
-  "🐾": "pattes", "🎁": "cadeau", "⬆": "niveau", "🏆": "trophee", "🎉": "confettis", "💤": "dodo",
+  "🐾": "pattes", "🎁": "cadeau", "⬆": "niveau", "🏆": "trophee", "🎉": "confettis", "💤": "dodo", "🛶": "barque",
   "🎒": "sac", "✖": "croix", "❌": "faux", "➡": "suivant", "⬅": "retour", "▶": "lecture", "↩": "demi_tour",
   "✔": "coche", "✅": "vrai", "👍": "pouce", "👪": "parents", "👤": "gardien", "🔊": "haut_parleur",
   "🔒": "cadenas", "🔓": "cadenas_ouvert", "🖼": "images", "💾": "enregistrer", "📂": "ouvrir", "✏": "crayon",

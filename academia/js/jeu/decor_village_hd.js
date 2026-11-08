@@ -8,8 +8,11 @@
    Dessins : outils/village/ (à nous, style plat des packs Kenney). Deux versions : assets/hd/village
    (8 pixels par unité du monde) et assets/leger/village (4) ; même code. Ce qui bouge est dans
    decor_village_hd_vivant.js, ce que le jeu appelle en marchant dans decor_village_hd_jeu.js.
+   L'Île des Bâtisseurs (carte.ile, js/jeu/carte_ile.js) se dessine par le même code : son sol et ses pièces viennent de
+   js/jeu/decor_ile_hd.js (la mer, la plage, l'herbe ; le ponton, la barque à quai, les terrains et leurs panneaux,
+   palmiers et rochers), le reste (arbres, fleurs, détails du pré, hautes herbes, vent) est celui du village.
    Contrat : IMAGES_VILLAGE, chargerVillageHD(load, version), dessinerVillageHD(scene, carte) qui rend
-   {etiquettes, maisons, ecrans, touffes, eau, enseignes}. */
+   {etiquettes, maisons, ecrans, touffes, eau, enseignes, barque}. */
 const IMAGES_VILLAGE = Object.keys(PLANCHES_VILLAGE).map(n => ({cle: "vh_" + n, fichier: n + ".png"}));
 
 // version 'hd' or 'leger': same drawing, same code (already loaded images are skipped)
@@ -37,6 +40,8 @@ const VILLAGE_HD = (() => {
       else if (e.type === "barque") remplir("pris", e.x - 1, e.y - 1, e.w + 2, e.h + 2);   // the boat and its beach
       else if (e.type !== "touffe" && e.type !== "fleur") remplir("pris", e.x, e.y, e.w, e.h);
     });
+    // the island: the grass is the only ground where the meadow's little things grow (not the sea, the beach, the paths)
+    if (carte.ile) for (let y = 0; y < HAUT; y++) for (let x = 0; x < LARG; x++) if (carte.sol[y][x] !== "herbe") g.pris[y][x] = true;
     for (let y = 0; y < HAUT; y++) for (let x = 0; x < LARG; x++) g.touffe[y][x] = !!(carte.herbe && carte.herbe[y][x]);
     return g;
   }
@@ -114,23 +119,29 @@ const VILLAGE_HD = (() => {
   }
 
   // ---------- pieces: a frame of a sheet, posed by its anchor, sized in world units ----------
+  // a piece of the village, or of the island (js/jeu/decor_ile_hd_pieces.js: same table, its own sheets)
+  const pieceDe = nom => PIECES_VILLAGE[nom] || (typeof PIECES_ILE === "object" ? PIECES_ILE[nom] : null);
+  const largeurPlanche = n => PLANCHES_VILLAGE[n] || (typeof PLANCHES_ILE === "object" ? PLANCHES_ILE[n] : 0);
   function cadre(scene, nom){
-    const p = PIECES_VILLAGE[nom], cle = p && "vh_" + p[0];
+    const p = pieceDe(nom), cle = p && "vh_" + p[0];
     if (!p || !scene.textures.exists(cle)) return null;
     const t = scene.textures.get(cle);
-    if (!t.has(nom)) { const k = t.source[0].width / PLANCHES_VILLAGE[p[0]]; t.add(nom, 0, p[1] * k, p[2] * k, p[3] * k, p[4] * k); }
+    if (!t.has(nom)) { const k = t.source[0].width / largeurPlanche(p[0]); t.add(nom, 0, p[1] * k, p[2] * k, p[3] * k, p[4] * k); }
     return cle;
   }
   function poser(scene, nom, x, y, profondeur, opts = {}){
     const cle = cadre(scene, nom); if (!cle) return null;
-    const p = PIECES_VILLAGE[nom];
+    const p = pieceDe(nom);
     const im = scene.add.image(x, y, cle, nom).setOrigin(p[5], p[6]).setDepth(profondeur);
     im.setScale((opts.echelle || 1) * p[3] / PX / im.width);
     if (opts.miroir) im.setFlipX(true);
     return im;
   }
   // a named point of a drawing (chimney, lamp, flag...), in world units from where the piece was posed
-  const point = (nom, quoi, x, y) => { const q = POINTS_VILLAGE[nom] && POINTS_VILLAGE[nom][quoi]; return q && {x: x + q[0], y: y + q[1]}; };
+  const point = (nom, quoi, x, y) => {
+    const t = POINTS_VILLAGE[nom] || (typeof POINTS_ILE === "object" ? POINTS_ILE[nom] : null), q = t && t[quoi];
+    return q && {x: x + q[0], y: y + q[1]};
+  };
   const pied = e => [(e.x + e.w / 2) * CASE, (e.y + e.h) * CASE];
 
   // houses, the Dojo's sign, the little places, rocks: the foot in the middle of the bottom of their cells. What can
@@ -240,7 +251,8 @@ const VILLAGE_HD = (() => {
     carte.elements.filter(e => e.type === "barque").forEach(e => {   // the beach runs from the pond's south shore to the boat
       const [x, y] = pied(e), eau = rendu.eau;
       poser(scene, "plage", eau ? (x + (eau.x0 + eau.x1) / 2) / 2 : x, eau ? eau.y1 - 8 : e.y * CASE - CASE, 5);
-      rendu.ecrans.push(poser(scene, "barque", x, y, profondeur(e.y + e.h - 1, 0)));
+      rendu.barque = poser(scene, "barque", x, y, profondeur(e.y + e.h - 1, 0));   // the ferryman's (js/jeu/voyage.js)
+      rendu.ecrans.push(rendu.barque);
     });
   }
 
@@ -287,19 +299,24 @@ const VILLAGE_HD = (() => {
 
   function dessiner(scene, carte){
     const rendu = {etiquettes: {}, maisons: [], ecrans: [], touffes: {}, lumieres: [], enseignes: {}, carte};
+    const ile = !!carte.ile && typeof ILE_HD === "object";
     if (!IMAGES_VILLAGE.every(i => scene.textures.exists(i.cle))) return rendu;   // not loaded: nothing drawn, the caller keeps its own map
+    if (ile && !ILE_HD.pret(scene)) return rendu;
     IMAGES_VILLAGE.forEach(i => scene.textures.get(i.cle).setFilter(Phaser.Textures.FilterMode.LINEAR));
     const g = grilles(carte);
-    sol(scene, carte, g);
+    if (ile) ILE_HD.sol(scene, carte, g, {coucheDouble, coucheCases, hasard}); else sol(scene, carte, g);
     batiments(scene, carte, rendu); enseignes(scene, carte, rendu); arbres(scene, carte, rendu); foret(scene, carte);
-    mare(scene, carte, rendu); fleurs(scene, carte); pre(scene, carte, g); herbes(scene, carte, rendu);
+    mare(scene, carte, rendu);
+    if (ile) ILE_HD.pieces(scene, carte, rendu);   // the pier, the moored boat, the lots and their signs, palm trees
+    fleurs(scene, carte); pre(scene, carte, g); herbes(scene, carte, rendu);
     rendu.ecrans = rendu.ecrans.filter(Boolean);
     rendu.ecrans.forEach(im => { im.bornes = im.getBounds(); });
     rendu.etiquettesDepart = {...rendu.etiquettes};   // a sign is placed again with its real width when its text is written
     Object.keys(rendu.etiquettes).forEach(r => { rendu.etiquettes[r] = VILLAGE_HD_JEU.placer(rendu, r, rendu.etiquettesDepart[r]); });
     scene.villageHD = rendu;
     VIVANT_HD.animer(scene, carte, rendu);
+    if (ile) ILE_HD.animer(scene, carte, rendu);   // the waves, the glints on the sea, a gull, the boat bobbing
     return rendu;
   }
-  return {dessiner, poser, point, hasard};
+  return {dessiner, poser, point, hasard, pieceDe, cadre};
 })();

@@ -12,7 +12,10 @@
 const LANGUES_HABITANTS = {
   sage: {langue: "lb", nom: "luxembourgeois", mots: ["bonjour", "bonjour_matin", "merci", "au_revoir"]},
   hugo: {langue: "en", nom: "anglais", mots: ["bonjour", "bonne_journee", "bravo", "merci", "au_revoir"]},
-  paco: {langue: "de", nom: "allemand", mots: ["bonjour", "bonne_journee", "bravo", "merci", "au_revoir"]}
+  paco: {langue: "de", nom: "allemand", mots: ["bonjour", "bonne_journee", "bravo", "merci", "au_revoir"]},
+  // the Île des Bâtisseurs (js/jeu/carte_ile.js): the cheffe de chantier speaks English, the ferryman Luxembourgish
+  cheffe: {langue: "en", nom: "anglais", mots: ["bonjour", "bienvenue", "bonne_chance", "bravo", "merci", "au_revoir"]},
+  passeur: {langue: "lb", nom: "luxembourgeois", mots: ["bonjour", "bienvenue", "eau", "bonne_journee", "bonne_chance", "au_revoir"]}
 };
 const VISITES_HABITANTS = {};   // in this sitting: the next word of each villager
 const MOT_EN_ATTENTE = {};      // a word just said by a villager (« Gesundheit! » after a sneeze): said again at the visit

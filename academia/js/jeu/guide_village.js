@@ -5,6 +5,8 @@
       proche, sinon l'Ombre la plus proche ; le compagnon sautille vers elle ; la voix du Sage dit quoi faire. Tout
       s'en va au premier toucher.
    3. Une porte vient de s'ouvrir (js/jeu/portes_village.js) : sans toucher pendant 10 s, la voix le redit.
+   Sur l'Île des Bâtisseurs, la main montre d'abord la cheffe de chantier, tant que l'enfant ne lui a pas parlé
+   (js/jeu/ile_village.js, cibleGuide).
    La voix ne coupe jamais un habitant qui parle dans sa bulle (js/jeu/histoire_village.js) : la main montre seule.
    Pièces dessinées : outils/effets/scripts/guide.py (guide_main, guide_fleche). */
 const GUIDE_ATTENTE_PETIT = 9000, GUIDE_ATTENTE = 15000, GUIDE_VOIX_ESPACE = 25000, GUIDE_RAPPEL_PORTE = 10000;
@@ -40,6 +42,9 @@ class GuideVillage {
   // what the child should touch now: the nearest open door, else the nearest Ombre ({x, y} in the world)
   cible(porteSeulement){
     const s = this.s, h = s.case;
+    // what the place shows first, before its doors and Ombres (the island's cheffe, js/jeu/ile_village.js)
+    const avant = !porteSeulement && s.histoire && s.histoire.cibleGuide ? s.histoire.cibleGuide() : null;
+    if (avant) return avant;
     const portes = s.portes ? s.portes.ouvertes() : [];
     if (portes.length) {
       const p = portes.reduce((a, b) => Math.abs(b.tx - h.x) + Math.abs(b.ty - h.y) < Math.abs(a.tx - h.x) + Math.abs(a.ty - h.y) ? b : a);
@@ -78,7 +83,7 @@ class GuideVillage {
     if (maintenant - this.voixA > GUIDE_VOIX_ESPACE && !(typeof bulleVillageOuverte === "function" && bulleVillageOuverte())
       && !(typeof voixEnCours === "function" && voixEnCours())) {
       this.voixA = maintenant;
-      dire(c.porte ? phrasePorte(regionDe(c.porte)) : "Touche une Ombre dans les hautes herbes !");
+      dire(c.dit || (c.porte ? phrasePorte(regionDe(c.porte)) : "Touche une Ombre dans les hautes herbes !"));
     }
   }
   cacherMain(){

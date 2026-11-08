@@ -138,8 +138,8 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .dlg-choix{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap}
 .dlg-choix .suite{width:48px; height:48px; background:var(--or); font:700 22px/1 var(--titre); display:inline-flex; align-items:center; justify-content:center;
   animation:palpite 1.4s ease-in-out infinite}
-.dlg-choix .epees{font-size:46px; min-width:132px; min-height:84px; border-radius:26px; animation:palpite 1.4s ease-in-out infinite}
-.dlg-choix .epees .icone{width:62px; height:62px}
+.dlg-choix .epees, .dlg-choix .barque{font-size:46px; min-width:132px; min-height:84px; border-radius:26px; animation:palpite 1.4s ease-in-out infinite}
+.dlg-choix .epees .icone, .dlg-choix .barque .icone{width:62px; height:62px}
 .dlg-choix .suite .icone{width:26px; height:26px}
 .dlg-corps p .icone{width:1.25em; height:1.25em; vertical-align:-.28em}
 
@@ -251,10 +251,10 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
   #creation .heros{grid-template-columns:repeat(7, minmax(0, 60px)); gap:6px}
   #creation .ligne{margin:6px 0 0} #creation .gros, #creation .moyen{min-height:50px; font-size:20px; padding:6px 18px}
   .dialogue{bottom:6px; padding:8px 10px; gap:10px} .dlg-portrait{width:64px; height:64px} .dlg-corps p{font-size:18px; margin:2px 0}
-  .dlg-choix .epees{min-height:60px; font-size:36px} .dlg-choix .epees .icone{width:46px; height:46px}
+  .dlg-choix .epees, .dlg-choix .barque{min-height:60px; font-size:36px} .dlg-choix .epees .icone, .dlg-choix .barque .icone{width:46px; height:46px}
 }
 @media (max-width:440px){ body{font-size:17px} .dlg-portrait{width:64px; height:64px} .dialogue{padding:10px; gap:8px} }
-@media (prefers-reduced-motion: reduce){ .sprite-hd.vivant, .ecran.plein, .palpite, .logo-eclat, .dlg-choix .suite, .dlg-choix .epees, .coucou .tete{animation:none} }
+@media (prefers-reduced-motion: reduce){ .sprite-hd.vivant, .ecran.plein, .palpite, .logo-eclat, .dlg-choix .suite, .dlg-choix .epees, .dlg-choix .barque, .coucou .tete{animation:none} }
 /* automated recette (#test): nothing moves */
 .test *, .test *::before, .test *::after{animation:none !important; transition:none !important}
 

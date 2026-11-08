@@ -8,7 +8,7 @@ const JEU = new Phaser.Game({
   type: Phaser.AUTO, parent: "jeu", backgroundColor: "#2B1E5C", images: {missing: TRANSPARENT},
   audio: {noAudio: true},   // the game's voice and sounds do not go through Phaser (no idle audio context)
   scale: {mode: Phaser.Scale.NONE, width: tailleToile()[0], height: tailleToile()[1], zoom: 1 / RATIO},
-  scene: [Chargement, Monde, SceneCombat, Vitrine]
+  scene: [Chargement, Monde, SceneCombat, Vitrine, Traversee]   // Traversee: the boat between the villages (js/jeu/traversee.js)
 });
 // the canvas follows the window and a turned tablet (each scene redraws itself on the resize event)
 let minuteurToile = null;
