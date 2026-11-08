@@ -7,7 +7,8 @@
       (js/jeu/arbre_monde.js), et revient au héros. Plusieurs cadeaux à rendre d'un coup (une partie d'avant la place) :
       un seul regard sur la place, une seule phrase. Au sixième badge, la fête sur la place.
    3. Les habitants parlent de la partie : le Sage montre la prochaine maison (la caméra y va pendant qu'il en parle) et
-      ouvre les missions, Hugo fête la dernière évolution, Paco dit qui reste à libérer.
+      ouvre les missions, Hugo fête la dernière évolution, Paco dit qui reste à libérer. Une visite sur deux, Hugo et
+      Paco posent plutôt une petite question dans leur langue (js/jeu/conversations.js).
    4. Après une vingtaine de minutes de jeu dans la journée (P().temps, compté ici), le soleil se couche doucement, le
       compagnon bâille et dit qu'il est fatigué dans une langue (« I'm tired… »), le Sage dit au revoir et finit par
       « Gutt Nuecht » ; le jeu reste jouable.
@@ -260,8 +261,11 @@ class HistoireVillage {
     return this.parole("hugo", `Hourra ! ${F.noms[ev.stade - 2]} a évolué : c'est maintenant ${F.noms[ev.stade - 1]} !`);
   }
   // ---------- what the villagers say (Monde.parler) ----------
-  // each villager opens with a word of their language (js/jeu/langues_habitants.js); the lines of the story follow
+  // each villager opens with a word of their language (js/jeu/langues_habitants.js); the lines of the story follow.
+  // Every other visit, Hugo and Paco ask a question instead, which the child answers (js/jeu/conversations.js)
   lignes(n){
+    const conv = typeof conversation === "function" ? conversation(n, this.s) : null;
+    if (conv) return conv;
     const h = this.lignesHistoire(n), salut = typeof salutHabitant === "function" ? salutHabitant(n) : null;
     if (!salut) return h;
     const suite = h.ligne;
@@ -269,22 +273,31 @@ class HistoireVillage {
   }
   lignesHistoire(n){
     if (n.cle === "sage") return this.lignesSage();
-    const p = P(), petit = p.age <= 5, c = actif(), l = [];
+    const l = [];
     if (n.cle === "hugo") {
-      const ev = this.derniereEvolution(), palier = c && PALIERS[stade(c)], reste = palier && palier - c.niveau;
+      const ev = this.derniereEvolution(), niveau = this.ligneNiveau();
       if (ev) l.push(`Hourra ! ${ev.avant} a évolué : c'est maintenant ${ev.apres} ! Tu l'as bien aidé.`);
-      if (c) l.push(palier ? `${nomCompagnon(c)} est au niveau ${c.niveau}. Encore ${reste} niveau${reste > 1 ? "x" : ""}, et il évolue !` : `${nomCompagnon(c)} est à sa plus grande forme. Quelle force !`);
+      if (niveau) l.push(niveau);
       return {lignes: [...l, n.dit[0]]};
     }
-    if (n.cle === "paco") {
-      const reste = REGIONS.filter(r => !p.compagnons.some(x => x.famille === r.famille)), k = reste.length;
-      l.push(!k ? "Tous les compagnons sont libres : ton équipe est au complet. Bravo !"
-        : petit ? `Encore ${k} ami${k > 1 ? "s" : ""} à libérer dans les maisons !`
-        : `Il reste ${k} compagnon${k > 1 ? "s" : ""} à libérer : ${reste.map(r => FAMILLES[r.famille].noms[0] + " " + (AU_REGION[r.id] || "à ") + r.nom).join(", ")}.`);
-      return {lignes: [...l, ...n.dit]};
-    }
+    if (n.cle === "paco") return {lignes: [this.ligneLiberer(), ...n.dit]};
     return {lignes: n.dit};
   }
+  // Hugo: where the companion is on its way to the next evolution
+  ligneNiveau(){
+    const c = actif(), palier = c && PALIERS[stade(c)], reste = palier && palier - c.niveau;
+    if (!c) return null;
+    return palier ? `${nomCompagnon(c)} est au niveau ${c.niveau}. Encore ${reste} niveau${reste > 1 ? "x" : ""}, et il évolue !` : `${nomCompagnon(c)} est à sa plus grande forme. Quelle force !`;
+  }
+  // Paco: who is still to be freed
+  ligneLiberer(){
+    const p = P(), petit = p.age <= 5, reste = REGIONS.filter(r => !p.compagnons.some(x => x.famille === r.famille)), k = reste.length;
+    return !k ? "Tous les compagnons sont libres : ton équipe est au complet. Bravo !"
+      : petit ? `Encore ${k} ami${k > 1 ? "s" : ""} à libérer dans les maisons !`
+      : `Il reste ${k} compagnon${k > 1 ? "s" : ""} à libérer : ${reste.map(r => FAMILLES[r.famille].noms[0] + " " + (AU_REGION[r.id] || "à ") + r.nom).join(", ")}.`;
+  }
+  // the one usual line a villager says after a little talk (js/jeu/conversations.js): the most useful of their visit
+  ligneUtile(n){ return n.cle === "hugo" ? this.ligneNiveau() : n.cle === "paco" ? this.ligneLiberer() : null; }
   // the Sage: the tree, the next house (the camera goes and looks at it while he speaks), the day's missions
   lignesSage(){
     const p = P(), k = etatArbre(), r = prochaineMaison(p), l = [], s = this.s;

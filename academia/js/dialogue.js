@@ -5,9 +5,12 @@
    Pendant qu'elle est ouverte, le village attend (js/jeu/monde.js, occupe) : un toucher sur le village passe à la ligne
    suivante, comme un toucher sur la boîte (avancerDialogue) ; sur la dernière ligne, il la ferme et compte comme un
    toucher du village (l'Ombre touchée lance la marche).
-   dialogue(nom, portrait, lignes, choix, opts) ; opts : quitter (un toucher sur le village ferme aussi une dernière
-   ligne qui a des boutons, sans rien choisir), instantane (le texte d'un coup : une question aux parents),
-   ligne(i, voix) (appelé à chaque ligne, voix : la promesse de la voix), fin() (appelé à la fermeture). */
+   dialogue(nom, portrait, lignes, choix, opts) ; un choix : {texte, dit, action, classe, aide}, ou contenu() à la place
+   du texte (un bouton fait d'une image et d'une phrase : js/jeu/conversations.js) ; opts : quitter (un toucher sur
+   le village ferme aussi une dernière ligne qui a des boutons, sans rien choisir), instantane (le texte d'un coup :
+   une question aux parents), choixApresVoix (les boutons ne viennent qu'à la fin de la voix de la ligne, 4 s au
+   plus : une question qu'il faut entendre avant d'y répondre), ligne(i, voix) (appelé à chaque ligne, voix : la
+   promesse de la voix), fin() (appelé à la fermeture). */
 const DLG = {fermable: false, fermer: null, suivante: null};
 const dialogueOuvert = () => !$("dialogue").hidden;
 const dialogueFermable = () => dialogueOuvert() && DLG.fermable;
@@ -69,14 +72,22 @@ function dialogue(nom, portrait, lignes, choix, opts = {}){
     const voix = opts.langue && typeof direMixte === "function" ? direMixte(texte, {langue: opts.langue}) : dire(texte);
     if (opts.ligne) opts.ligne(i, voix);
     DLG.fermable = derniere && (!avecChoix || !!opts.quitter);
-    if (avecChoix) choix.forEach((c, k) => {
-      const x = ecrireIcones(el("button", "moyen" + (k ? " gris" : "") + (c.classe ? " " + c.classe : "")), c.texte);
-      if (c.aide) x.setAttribute("aria-label", c.aide);
-      if (!k) markOk(x);
-      x.onclick = e => { e.stopPropagation(); sfx.tap(); if (typeof jouerSon === "function") jouerSon("bouton"); fermer(c.action); };
-      b.append(x);
-    });
-    else {
+    b.style.visibility = "";
+    if (avecChoix) {
+      choix.forEach((c, k) => {
+        const x = el("button", "moyen" + (k ? " gris" : "") + (c.classe ? " " + c.classe : ""));
+        if (c.contenu) x.append(c.contenu()); else ecrireIcones(x, c.texte);
+        if (c.aide) x.setAttribute("aria-label", c.aide);
+        if (!k) markOk(x);
+        x.onclick = e => { e.stopPropagation(); if (b.style.visibility) return; sfx.tap(); if (typeof jouerSon === "function") jouerSon("bouton"); fermer(c.action); };
+        b.append(x);
+      });
+      if (opts.choixApresVoix) {   // the buttons come once the question has been heard (4 s at most)
+        b.style.visibility = "hidden";
+        const moi = DLG.fermer;
+        Promise.race([Promise.resolve(voix), wait(4000)]).then(() => { if (DLG.fermer === moi) b.style.visibility = ""; });
+      }
+    } else {
       const x = markOk(el("button", "rond suite" + (derniere ? " fin" : "")));
       x.setAttribute("aria-label", derniere ? "Fermer" : "Suite"); x.append(iconeDom(derniere ? "coche" : "lecture"));
       b.append(x);

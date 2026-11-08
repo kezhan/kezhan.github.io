@@ -538,3 +538,49 @@ button:focus-visible{outline:4px solid var(--or); outline-offset:3px}
 .fiche-corps .origine-nom b{font:700 17px var(--titre); color:#7A2E8E; white-space:nowrap}
 .fiche-corps .mots-element{font:700 15px var(--titre); color:#7A2E8E}
 @media (max-height:500px){ .fiche-corps .origine-nom{font-size:14px} .fiche-corps .origine-nom b{font-size:15px} }
+
+/* the album's picture book (js/mots_appris.js): a word's picture in silhouette until it is found, its house as a
+   little flag, a star from three times; one language at a time */
+.langues-mots{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 8px}
+.langue-mot{display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:3px 10px 3px 6px; border-radius:14px; background:#fff;
+  font:700 15px var(--titre); color:#6b6390; box-shadow:0 2px 0 rgba(29,22,64,.12)}
+.langue-mot .icone{width:30px; height:30px; vertical-align:0}
+.langue-mot[aria-pressed="true"]{background:#E6DEFF; color:var(--encre); box-shadow:inset 0 0 0 3px var(--nuit2)}
+.feuille-album.mots .grille-album, .album-vide .places:has(.case-mot){grid-template-columns:repeat(auto-fill, minmax(118px, 1fr))}
+.case-mot{position:relative; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 6px 8px; border-radius:18px; background:#fff;
+  box-shadow:0 3px 0 rgba(29,22,64,.12); min-width:0}
+.case-mot .cadre{display:flex; align-items:center; justify-content:center; height:62px; width:100%}
+.case-mot .image-mot{font-size:46px}
+.case-mot:not(.trouve) .image-mot{filter:brightness(0) opacity(.3)}
+/* the word whole, on two lines when long (three, in small, for the longest phrase): a leaf of taller cases holds fewer
+   (js/album.js, paginer) */
+.case-mot b{font:700 16px/1.1 var(--titre); max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:center}
+.case-mot b.long{font-size:14px} .case-mot b.tres-long{font-size:11px}
+.case-mot:not(.trouve) b{color:#9a93b8}
+.case-mot .sens-mot{font-size:13px; line-height:1.1; max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:center}
+.case-mot .langue-case{position:absolute; top:5px; left:5px; width:24px; height:24px}
+.case-mot .etoile-case{position:absolute; top:4px; right:4px; width:28px; height:28px; filter:drop-shadow(0 0 3px #FFE58A)}
+.case-mot.etoile{box-shadow:0 0 0 3px #FFD45C, 0 3px 0 rgba(29,22,64,.12)}
+.case-mot.attend{background:rgba(255,255,255,.5); box-shadow:none; outline:3px dashed #C9B8FF; outline-offset:-3px; min-height:96px}
+.case-mot.attend .icone{width:46px; height:46px; opacity:.35; filter:grayscale(1)}
+@media (max-width:560px){
+  .feuille-album.mots .grille-album{grid-template-columns:repeat(3, minmax(0, 1fr))}
+  .case-mot .cadre{height:48px} .case-mot .image-mot{font-size:38px} .case-mot b{font-size:14px}
+  .case-mot b.long{font-size:12px} .case-mot b.tres-long{font-size:10px} .case-mot .sens-mot{font-size:12px}
+  .langue-mot .nom-langue{display:none}
+}
+@media (max-height:500px){
+  .langues-mots{margin-bottom:4px} .langue-mot{min-height:40px} .langue-mot .nom-langue{display:none}
+  .case-mot{padding:4px 4px 6px} .case-mot .cadre{height:40px} .case-mot .image-mot{font-size:32px}
+}
+
+/* a little talk with Hugo or Paco (js/jeu/conversations.js): answers alike, each a picture and its sentence (the
+   picture alone for the little one); a cake carries the age it says */
+.dlg-choix .moyen.reponse-conv{background:#fff; color:var(--encre); box-shadow:0 0 0 3px #E2D9FF, var(--ombre); gap:8px; padding:6px 14px; min-height:64px}
+.reponse-conv .image-conv{position:relative; font-size:36px; line-height:1}
+.reponse-conv .image-conv i{position:absolute; right:-8px; bottom:-6px; font:700 18px/1 var(--titre); font-style:normal; background:var(--nuit2); color:#fff;
+  border:2px solid #fff; border-radius:999px; padding:2px 6px}
+.reponse-conv b{font:700 19px var(--titre)}
+@media (max-width:560px), (max-height:500px){
+  .dlg-choix .moyen.reponse-conv{min-height:54px; padding:4px 10px} .reponse-conv .image-conv{font-size:30px} .reponse-conv b{font-size:16px}
+}

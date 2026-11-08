@@ -1,11 +1,12 @@
 /* Académia : les onglets Badges et Album du sac (js/equipe.js ouvre le sac et dessine l'onglet Équipe).
    1. Badges : la médaille de chaque maison (assets/hd/icones/medaille_*.png), grisée tant que son chef n'est pas battu,
       avec ses étoiles (une à trois, js/progression.js) ; toucher une médaille dit son nom et sa maison.
-   2. Album, en quatre pages : les Ombres consolées (P().album.ombres : silhouette avant, couleur et compteur après),
+   2. Album, en cinq pages : les Ombres consolées (P().album.ombres : silhouette avant, couleur et compteur après),
       les Ombres brillantes (P().album.brillantes), les autocollants des missions du Sage (P().album.autocollants), le
-      carnet des erreurs réparées (P().album.reparees : un tampon par erreur, la question et sa bonne réponse). Le
-      combat et les missions remplissent ces champs ; un album vide montre les places qui attendent. Un autocollant
-      dont le nom est enregistré dans les trois langues l'écrit dessous, et chaque toucher le dit dans la suivante.
+      carnet des erreurs réparées (P().album.reparees : un tampon par erreur, la question et sa bonne réponse), les
+      mots rencontrés dans les questions de langue (P().mots : l'imagier, js/mots_appris.js). Le combat et les
+      missions remplissent ces champs ; un album vide montre les places qui attendent. Un autocollant dont le nom est
+      enregistré dans les trois langues l'écrit dessous, et chaque toucher le dit dans la suivante.
    Rien ne défile : une page trop pleine pour l'écran se tourne avec deux flèches. Toucher un dessin le fait dire. */
 const regionLue = id => (P().regions || {})[id] || {niveau: 1, etape: 0, badges: 0};   // read only: nothing written
 // a badge's stars: the best kept by the region (js/progression.js), or the best of its boss fights (older games)
@@ -71,16 +72,19 @@ const PAGES_ALBUM = [
   {id: "ombres", titre: "Ombres", dit: "Les Ombres que tu as consolées !"},
   {id: "brillantes", titre: "Brillantes", dit: "Les Ombres brillantes : elles sont très rares !", icone: "etincelle"},
   {id: "autocollants", titre: "Autocollants", dit: "Tes autocollants des missions !", icone: "autocollant"},
-  {id: "carnet", titre: "Carnet", dit: "Ton carnet des erreurs réparées !", icone: "tampon"}];
+  {id: "carnet", titre: "Carnet", dit: "Ton carnet des erreurs réparées !", icone: "tampon"},
+  {id: "mots", titre: "Mots", dit: "Tes mots ! Touche un mot pour l'entendre.", icone: "haut_parleur"}];
 let pageAlbum = "ombres";
 const feuillets = {};   // album page -> the leaf open (a page too full for the screen has several)
+const debutsFeuillets = {};   // album page -> {sig, debuts}: where each leaf seen starts (paginer)
 
 function dessinerAlbum(v){
   const a = P().album || {}, consolees = parEspece(a.ombres, true), brillantes = parEspece(a.brillantes, false);
   const liste = l => (Array.isArray(l) ? l : []).filter(Boolean).reverse();   // the latest first; a damaged entry left out
   const autocollants = liste(a.autocollants), reparees = liste(a.reparees).filter(r => typeof r === "object");
   const comptes = {ombres: `${Object.keys(consolees).length}/${ESPECES.length}`, brillantes: `${Object.keys(brillantes).length}/${ESPECES.length}`,
-    autocollants: String(autocollants.length), carnet: String(reparees.length)};
+    autocollants: String(autocollants.length), carnet: String(reparees.length),
+    mots: typeof comptesMots === "function" ? (m => `${m.trouves}/${m.total}`)(comptesMots()) : "0"};
   v.replaceChildren();
   const tete = el("div", "tete-album"), nav = el("div", "pages-album");
   nav.setAttribute("role", "tablist");
@@ -90,7 +94,7 @@ function dessinerAlbum(v){
     ico.append(pg.icone ? iconeDom(pg.icone) : imageHD("grisouille", "face", 30));
     t.textContent = pg.titre;
     b.append(ico, t, el("span", "compte-page", comptes[pg.id]));
-    b.onclick = () => { sfx.tap(); pageAlbum = pg.id; dire(pg.dit); dessinerAlbum(v); };
+    b.onclick = () => { sfx.tap(); pageAlbum = pg.id; if (pg.id === "mots") feuillets.mots = 0; dire(pg.dit); dessinerAlbum(v); };   // the new words first
     nav.append(b);
   });
   const fleches = el("div", "fleches-album");
@@ -100,6 +104,7 @@ function dessinerAlbum(v){
   if (pageAlbum === "ombres") paginer(feuille, fleches, v, ESPECES, e => caseOmbre(e, consolees[e.cle] || 0, false));
   else if (pageAlbum === "brillantes") paginer(feuille, fleches, v, ESPECES, e => caseOmbre(e, brillantes[e.cle] || 0, true));
   else if (pageAlbum === "autocollants") paginer(feuille, fleches, v, autocollants, caseAutocollant, videAutocollants);
+  else if (pageAlbum === "mots" && typeof pageMots === "function") pageMots(feuille, fleches, v);
   else paginer(feuille, fleches, v, reparees, caseReparee, videCarnet);
 }
 // the items of the open leaf that fit whole in the page (measured on the screen), and two arrows when there are more
@@ -111,16 +116,28 @@ function paginer(feuille, fleches, v, items, dessiner, vide){
   if (!items.length) { fleches.hidden = true; feuille.append(vide()); return; }
   const grille = el("div", "grille-album");
   feuille.append(grille);
-  grille.append(...items.map(dessiner));
-  const bas = feuille.getBoundingClientRect().bottom + 1, droite = feuille.getBoundingClientRect().right + 1;
-  const par = Math.max(1, [...grille.children].filter(c => { const r = c.getBoundingClientRect(); return r.bottom <= bas && r.right <= droite; }).length);
-  const nb = Math.ceil(items.length / par), k = Math.max(0, Math.min(feuillets[pageAlbum] || 0, nb - 1));
+  // each leaf starts where the one before it ended (a leaf whose cases are taller, a long word on two lines, holds
+  // fewer): the starts already known, kept while the list and the screen stay the same
+  const sig = `${items.length}|${innerWidth}x${innerHeight}|${pageAlbum === "mots" && typeof langueImagier !== "undefined" ? langueImagier : ""}`;
+  let d = debutsFeuillets[pageAlbum];
+  if (!d || d.sig !== sig) d = debutsFeuillets[pageAlbum] = {sig, debuts: [0]};
+  const k = Math.max(0, Math.min(feuillets[pageAlbum] || 0, d.debuts.length - 1)), debut = d.debuts[k];
   feuillets[pageAlbum] = k;
-  if (nb <= 1) { fleches.hidden = true; return; }   // measured with the arrows in place: without them, more room still
-  grille.replaceChildren(...items.slice(k * par, k * par + par).map(dessiner));
-  num.textContent = `${k + 1}/${nb}`;
-  avant.disabled = k === 0; apres.disabled = k === nb - 1;
-  const tourner = d => { sfx.tap(); if (typeof jouerSon === "function") jouerSon("bouton"); feuillets[pageAlbum] = k + d; dessinerAlbum(v); };
+  // the items that fit whole, measured a dozen at a time until one does not (never all of a long page: 150 words)
+  const mesurer = () => { const f = feuille.getBoundingClientRect();
+    return [...grille.children].filter(c => { const r = c.getBoundingClientRect(); return r.bottom <= f.bottom + 1 && r.right <= f.right + 1; }).length; };
+  let dessines = 0, tiennent = 0;
+  do {
+    grille.append(...items.slice(debut + dessines, debut + dessines + 12).map(dessiner));
+    dessines = Math.min(items.length - debut, dessines + 12); tiennent = mesurer();
+  } while (tiennent === dessines && debut + dessines < items.length);
+  const par = Math.max(1, tiennent), fin = debut + par;
+  [...grille.children].slice(par).forEach(c => c.remove());   // those that do not fit open the next leaf
+  if (fin < items.length) d.debuts[k + 1] = fin;
+  if (k === 0 && fin >= items.length) { fleches.hidden = true; return; }   // measured with the arrows in place: without them, more room still
+  num.textContent = `${k + 1}/${k + 1 + Math.ceil((items.length - fin) / par)}`;   // the leaves to come, as full as this one
+  avant.disabled = k === 0; apres.disabled = fin >= items.length;
+  const tourner = n => { sfx.tap(); if (typeof jouerSon === "function") jouerSon("bouton"); feuillets[pageAlbum] = k + n; dessinerAlbum(v); };
   avant.onclick = () => tourner(-1); apres.onclick = () => tourner(1);
 }
 

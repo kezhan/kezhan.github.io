@@ -339,3 +339,27 @@
 @media (max-width:640px){ .mission-dessin .mission-portraits img{width:30px; height:30px; margin:0 -6px} .carte-missions .titre3 .missions-jour{font-size:14px} }
 @media (max-height:500px){ .mission-dessin .mission-portraits img{width:28px; height:28px} }
 @media (prefers-reduced-motion: reduce){ .bulle-mot{animation:none} }
+
+/* the words found in a language fight, on the end card (js/mots_appris.js, js/bilan.js): small cards to touch */
+.mots-bilan{display:flex; justify-content:center; align-items:stretch; gap:10px; margin:10px 0 0; animation:mots-bilan .4s .9s ease-out both}
+.mots-bilan:not(.prete){pointer-events:none}   /* a card answers once it has come in */
+@keyframes mots-bilan{from{opacity:0; transform:translateY(6px)}}
+.carte-mot{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-width:86px; max-width:150px; min-height:84px;
+  padding:6px 10px; border-radius:16px; background:#fff; box-shadow:0 0 0 3px #E2D9FF, 0 4px 0 rgba(29,22,64,.16)}
+.carte-mot .image-mot{font-size:34px}
+.carte-mot b{font:700 17px/1.1 var(--titre); max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:center}
+.carte-mot b.long{font-size:14px} .carte-mot b.tres-long{font-size:12px}
+.carte-mot:has(b.long), .carte-mot:has(b.tres-long){max-width:170px}
+/* a word whole: a long one on two lines, smaller, never cut (js/mots_appris.js, motEcrit) */
+.image-mot{display:flex; align-items:center; justify-content:center; gap:1px; line-height:1; min-height:1.1em}
+.image-mot.deux > *{font-size:.82em} .image-mot.groupe{flex-wrap:wrap; max-width:3.4em} .image-mot.groupe > *{font-size:.6em}
+.image-mot.nombre{font:700 1em/1 var(--titre); color:var(--nuit2)}
+.image-mot.sans-image .icone{width:.9em; height:.9em; vertical-align:0; opacity:.55}
+.image-mot .q-pastille{width:.8em; height:.8em}
+@media (max-height:680px) and (min-width:560px){ .mots-bilan{margin-top:6px} }
+@media (max-height:440px){ .carte-mot{min-height:62px; min-width:70px; padding:3px 8px} .carte-mot .image-mot{font-size:26px} .carte-mot b{font-size:15px}
+  .carte-mot b.long{font-size:13px} .carte-mot b.tres-long{font-size:11px} }
+/* little room (js/bilan.js, caser): smaller cards before fewer */
+.mots-bilan.serree{gap:6px; margin-top:4px} .mots-bilan.serree .carte-mot{min-height:48px; min-width:60px; padding:2px 6px; border-radius:12px}
+.mots-bilan.serree .carte-mot .image-mot{font-size:22px} .mots-bilan.serree .carte-mot b{font-size:13px} .mots-bilan.serree .carte-mot b.tres-long{font-size:11px}
+@media (prefers-reduced-motion: reduce){ .mots-bilan{animation:none} }

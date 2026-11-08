@@ -2,7 +2,7 @@
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». Une copie de secours est gardée ; une partie abîmée ou
    d'une version plus ancienne est réparée ; deux onglets ouverts ne s'effacent pas la partie l'un de l'autre. */
-const VERSION = "0.16";
+const VERSION = "0.17";
 const CLE = "academia.v1", CLE_COPIE = "academia.v1.copie";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;
@@ -22,6 +22,10 @@ function nouveauProfil(nom, age){
     // the village's story: moments already seen (id -> ISO date; visite_<villager>, a visit of the day); mots: the
     // foreign words whose meaning the little one heard ("de:merci" -> times, js/mots_du_jeu.js)
     histoire: {mots: {}},
+    // the foreign words met in the questions, for the album's picture book (js/mots_appris.js): "en:cat" -> {mot, sens,
+    // image, vu, ok, jour, t}, vu the times asked, ok the times found (silhouette before, a star from three), t when
+    // last met (ms)
+    mots: {},
     accessoires: {possedes: [], porte: {}},   // bought from the merchant; porte: famille -> accessory worn
     temps: {}};                           // time really played, per day ("2026-10-12" -> ms)
 }
@@ -50,6 +54,15 @@ function reparer(p){
   forme("accessoires", ["porte"], ["possedes"]);
   // the words' meanings heard (js/mots_du_jeu.js): an older story has none, a damaged one starts again
   if (!objet(q.histoire.mots)) q.histoire = {...q.histoire, mots: {}};
+  // the words met (the album's picture book): a damaged word is left out, its counts back to whole numbers, a damaged
+  // meaning or picture dropped (a picture is six drawings at most, a number or a colour #RRGGBB)
+  const image = v => typeof v === "string" && (/^#[0-9a-f]{6}$/i.test(v) || /^\d{1,3}$/.test(v)
+    || (/^[\p{Extended_Pictographic}\p{Emoji_Modifier}‍️]+$/u.test(v) && (v.match(/\p{Extended_Pictographic}/gu) || []).length <= 6));
+  q.mots = Object.fromEntries(Object.entries(objet(q.mots) ? q.mots : {}).filter(([, v]) => objet(v) && typeof v.mot === "string" && v.mot)
+    .map(([k, v]) => { const w = {...v, vu: Math.max(0, Math.floor(Number(v.vu) || 0)), ok: Math.max(0, Math.floor(Number(v.ok) || 0))};
+      if (!image(w.image)) delete w.image;
+      if (typeof w.sens !== "string") delete w.sens;
+      return [k, w]; }));
   q.jokers = {...base.jokers, ...(q.jokers && typeof q.jokers === "object" ? q.jokers : {})};
   q.compagnons = q.compagnons.filter(c => c && c.id && FAMILLES[c.famille]);
   if (!q.compagnons.some(c => c.id === q.actif)) q.actif = q.compagnons[0] ? q.compagnons[0].id : null;

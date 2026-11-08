@@ -86,6 +86,8 @@ async function lancerCombat(regionId, boss, vue0 = null){
     const attente = poserQuestion(panneau, q, {titre: affiche(titre), ...opts});
     const astucePot = apresErreur && opts.jokers !== false ? astucePotion(panneau) : null;
     const r = await attente;
+    // its word on the end card (js/mots_appris.js), guarded: never in the way of the fight
+    if (r.juste && typeof retenirMot === "function") try { retenirMot(bilan, q); } catch (x) { console.warn("retenirMot :", x); }
     if (astucePot) astucePot.fermer();
     if (opts.jokers !== false) apresErreur = false;   // the potion was offered: the next mistake shows it again
     if (!r.juste) apresErreur = true;

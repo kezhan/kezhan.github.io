@@ -3,7 +3,8 @@
    une maison mène à sa porte (js/jeu/portes_village.js) ; dans les hautes herbes, des Ombres aux couleurs de leur maison
    (js/jeu/ombres_village.js) : en toucher une, ou juste à côté, lance le combat (jamais en passant). Une main et une flèche guident l'enfant
    qui ne sait plus quoi faire (js/jeu/guide_village.js). Au milieu de la place, l'Arbre-Monde, les cadeaux des chefs et le
-   panneau des missions (js/jeu/arbre_monde.js) ; ce que le village raconte (js/jeu/histoire_village.js). */
+   panneau des missions (js/jeu/arbre_monde.js) ; ce que le village raconte (js/jeu/histoire_village.js). Les petites bêtes
+   et les cadeaux de la place se nomment dans une langue quand on les touche (js/jeu/betes_village.js). */
 const PAS_MS = 170;
 
 class Monde extends Phaser.Scene {
@@ -55,6 +56,7 @@ class Monde extends Phaser.Scene {
     this.place = new ArbreMonde(this);            // the Arbre-Monde, the chiefs' gifts, the board of the missions
     this.histoire = new HistoireVillage(this);    // the goal, the gifts given back, the villagers' words, the evening
     this.marchand = new MarchandVillage(this);    // the merchant's stall opens his shop (js/jeu/marchand_village.js)
+    this.betes = new BetesVillage(this);          // the little animals and the square's gifts name themselves (js/jeu/betes_village.js)
     window.__calme = performance.now() + 300;
     // touch: walk where the child taps (a villager: go and talk; a house, its roof or its sign: go to its door; an Ombre
     // or right next to it: go and fight; the companion: it jumps for joy)
@@ -74,18 +76,23 @@ class Monde extends Phaser.Scene {
   }
   toucher(ptr){
     // what each touch did, for the game journal (js/journal.js): « rien » is a drawing the child did not understand
-    const note = q => { if (typeof noterJournal === "function") noterJournal("village", {x: Math.floor(ptr.worldX / CASE), y: Math.floor(ptr.worldY / CASE), q}); };
+    const note = (q, plus) => { if (typeof noterJournal === "function") noterJournal("village", {x: Math.floor(ptr.worldX / CASE), y: Math.floor(ptr.worldY / CASE), q, ...plus}); };
     if (dialogueFermable()) fermerDialogue(true);   // the last line of a dialogue: the touch closes it and goes on
     else if ((!ptr.upElement || ptr.upElement === this.game.canvas) && avancerDialogue()) return note("dialogue");   // another line: the next one
     if (this.occupe()) return note("occupe");
     const wx = ptr.worldX, wy = ptr.worldY;
     if (this.vie.toucherCompagnon(wx, wy)) return note("compagnon");
+    const vises = [this.jardin.vise, this.place.vise, this.marchand.vise];   // where the walk going on was headed
     this.jardin.vise = false; this.place.vise = null;
     this.marchand.vise = false;   // the shop is opened only by the walk the stall itself started
     const o = this.ombres.touchee(wx, wy);
     if (o) { note("ombre"); return this.allerVers(o.x, o.y); }
     if (this.marchand.touche(wx, wy)) return note("marchand");   // the merchant or his stall (js/jeu/marchand_village.js)
     if (this.jardin.touche(wx, wy)) return note("jardin");
+    // a butterfly, the duckling, a bird, the fountain, a star: it answers, and the walk going on keeps where it was
+    // headed (the vegetable garden, the stall, the tree or the board still open on arrival)
+    const bete = this.betes.touche(wx, wy);
+    if (bete) { [this.jardin.vise, this.place.vise, this.marchand.vise] = vises; return note("bete", {b: bete.quoi, dit: bete.dit ? 1 : 0}); }
     if (this.place.touche(wx, wy)) return note("place");   // the Arbre-Monde, the board of the missions
     let x = Math.floor(wx / CASE), y = Math.floor(wy / CASE);
     const r = maisonToucheeHD(this, wx, wy), m = this.carte.maison;
@@ -227,7 +234,7 @@ class Monde extends Phaser.Scene {
   parler(n){
     this.vie.parler(n.s);
     const h = this.histoire.lignes(n);   // what they say depends on the game (js/jeu/histoire_village.js)
-    dialogue(n.nom, n.cle, h.lignes, h.choix || null, {quitter: !!h.choix, langue: h.langue, ligne: (i, voix) => { this.vie.mains(n.s, voix); if (h.ligne) h.ligne(i); },
+    dialogue(n.nom, n.cle, h.lignes, h.choix || null, {quitter: !!h.choix, langue: h.langue, choixApresVoix: !!h.choixApresVoix, ligne: (i, voix) => { this.vie.mains(n.s, voix); if (h.ligne) h.ligne(i); },
       fin: () => { this.vie.repos(n.s); if (h.fin) h.fin(); }});
   }
   devantPorte(regionId){ this.chemin = []; this.pnjVise = null; entrerMaison(regionId); }

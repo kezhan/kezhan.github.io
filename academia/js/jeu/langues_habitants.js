@@ -7,11 +7,12 @@
    liste du jeu (js/mots_du_jeu.js), que les outils des voix relisent.
    Chaque visite du jour est notée dans P().histoire (visite_sage, visite_hugo, visite_paco : la mission « Dis bonjour »,
    js/missions.js). Juste après un éternuement du compagnon, l'habitant qui a dit « Gesundheit! » le redit quand on le
-   touche, avec son sens (js/jeu/vie_village.js). */
+   touche, avec son sens (js/jeu/vie_village.js). « How are you? » et « Wie geht's? » ne sont plus des mots de
+   bienvenue de Hugo et de Paco : ils posent la question pour de bon, une visite sur deux (js/jeu/conversations.js). */
 const LANGUES_HABITANTS = {
   sage: {langue: "lb", nom: "luxembourgeois", mots: ["bonjour", "bonjour_matin", "merci", "au_revoir"]},
-  hugo: {langue: "en", nom: "anglais", mots: ["bonjour", "comment_vas_tu", "bonne_journee", "bravo", "merci", "au_revoir"]},
-  paco: {langue: "de", nom: "allemand", mots: ["bonjour", "comment_vas_tu", "bonne_journee", "bravo", "merci", "au_revoir"]}
+  hugo: {langue: "en", nom: "anglais", mots: ["bonjour", "bonne_journee", "bravo", "merci", "au_revoir"]},
+  paco: {langue: "de", nom: "allemand", mots: ["bonjour", "bonne_journee", "bravo", "merci", "au_revoir"]}
 };
 const VISITES_HABITANTS = {};   // in this sitting: the next word of each villager
 const MOT_EN_ATTENTE = {};      // a word just said by a villager (« Gesundheit! » after a sneeze): said again at the visit

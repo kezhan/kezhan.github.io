@@ -24,20 +24,20 @@ const MOTS_DU_JEU = {
   merci: {fr: "merci", en: "Thank you!", de: "Danke!", lb: "Merci"},
   au_revoir: {fr: "au revoir", en: "Goodbye!", de: "Tschüss!", lb: "Äddi"},
   bienvenue: {fr: "bienvenue", en: "Welcome!", de: "Willkommen!", lb: "Wëllkomm"},
-  bonne_nuit: {fr: "bonne nuit", lb: "Gutt Nuecht"},
+  bonne_nuit: {fr: "bonne nuit", en: "Good night!", de: "Gute Nacht!", lb: "Gutt Nuecht"},
   a_tes_souhaits: {fr: "à tes souhaits", en: "Bless you!", de: "Gesundheit!", lb: "Gesondheet!"},
-  bon_appetit: {fr: "bon appétit", de: "Guten Appetit!"},
+  bon_appetit: {fr: "bon appétit", en: "Enjoy your meal!", de: "Guten Appetit!"},
   // what a companion says
   je_t_aime: {fr: "je t'aime", en: "I love you!", de: "Ich hab dich lieb!", lb: "Ech hunn dech gär!"},
   faim: {fr: "j'ai faim", en: "I'm hungry!", de: "Ich habe Hunger!", lb: "Ech sinn hongereg!"},
   fatigue: {fr: "je suis fatigué", en: "I'm tired…", de: "Ich bin müde…"},
-  // counting: the badge's stars, the harvest of the garden (German)
+  // counting: the badge's stars, the harvest of the garden (German), the Observatoire's stars on the square
   un: {fr: "un", en: "one", de: "eins", lb: "eent"},
   deux: {fr: "deux", en: "two", de: "zwei", lb: "zwee"},
   trois: {fr: "trois", en: "three", de: "drei", lb: "dräi"},
-  quatre: {fr: "quatre", de: "vier"},
-  cinq: {fr: "cinq", de: "fünf"},
-  six: {fr: "six", de: "sechs"},
+  quatre: {fr: "quatre", en: "four", de: "vier", lb: "véier"},
+  cinq: {fr: "cinq", en: "five", de: "fünf", lb: "fënnef"},
+  six: {fr: "six", en: "six", de: "sechs", lb: "sechs"},
   // the days, Monday first (the Sage's missions)
   lundi: {fr: "lundi", en: "Monday", de: "Montag", lb: "Méindeg"},
   mardi: {fr: "mardi", en: "Tuesday", de: "Dienstag", lb: "Dënschdeg"},
@@ -57,7 +57,22 @@ const MOTS_DU_JEU = {
   // where the companions' names and elements come from (js/equipe.js)
   ours: {fr: "l'ours", de: "der Bär"},
   lion: {fr: "le lion", lb: "de Léiw"},
-  vent: {fr: "le vent", en: "wind", de: "der Wind", lb: "de Wand"}
+  vent: {fr: "le vent", en: "wind", de: "der Wind", lb: "de Wand"},
+  // the little animals of the village and the gifts of the square, touched (js/jeu/betes_village.js): the butterflies
+  // above, the duckling of the pond by the port, the birds of the Grand-Duché, the fountain of Albion
+  canard: {fr: "le canard", en: "duck"},
+  oiseau: {fr: "l'oiseau", lb: "de Vull"},
+  eau: {fr: "l'eau", en: "water"},
+  // the little talks with Hugo and Paco (js/jeu/conversations.js): « How are you? », « How old are you? » and the
+  // child's answers; their replies are above (bonne_journee, fatigue, faim, bon_appetit, bonne_nuit, bravo)
+  je_vais_bien: {fr: "je vais bien", en: "I'm fine!", de: "Mir geht's gut!"},
+  quel_age: {fr: "quel âge as-tu ?", en: "How old are you?", de: "Wie alt bist du?"},
+  age_5: {fr: "j'ai cinq ans", en: "I am five!", de: "Ich bin fünf!"},
+  age_6: {fr: "j'ai six ans", en: "I am six!", de: "Ich bin sechs!"},
+  age_7: {fr: "j'ai sept ans", en: "I am seven!", de: "Ich bin sieben!"},
+  age_8: {fr: "j'ai huit ans", en: "I am eight!", de: "Ich bin acht!"},
+  age_9: {fr: "j'ai neuf ans", en: "I am nine!", de: "Ich bin neun!"},
+  age_10: {fr: "j'ai dix ans", en: "I am ten!", de: "Ich bin zehn!"}
 };
 // </mots>
 const NOMS_LANGUES = {en: "anglais", de: "allemand", lb: "luxembourgeois"};

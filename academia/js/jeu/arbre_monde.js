@@ -8,7 +8,8 @@
    3. Le panneau des missions du Sage (js/missions.js) : ses trois ronds montrent les missions du jour, cochées une à
       une, et un point d'exclamation tant que l'enfant ne les a pas regardées.
    Toucher l'arbre ou le panneau : le héros y va, puis l'arbre parle ou les missions s'ouvrent. La place montre ce que
-   l'enfant a déjà vu (P().histoire) : js/jeu/histoire_village.js met en scène le reste (grandir, rendre).
+   l'enfant a déjà vu (P().histoire) : js/jeu/histoire_village.js met en scène le reste (grandir, rendre). Les cadeaux
+   rendus parlent quand on les touche (la fontaine, les oiseaux, les étoiles : js/jeu/betes_village.js).
    Images : assets/hd/place (8 pixels par unité du monde) et assets/leger/place (4), posées par leur ancre. */
 const PLACE_IMAGES = ["lanterne_eteinte", "fontaine", "fontaine_seche", "goutte_eau", "horloge", "horloge_arretee", "aiguille_heures",
   "aiguille_minutes", "oiseau", "oiseau_bleu", "bac_fleurs", "bac_fleurs_vide", "panneau_missions"];
@@ -253,6 +254,7 @@ class ArbreMonde {
       if (!this.anim) return;
       const vivre = () => s.time.delayedCall(1200 + Math.random() * 2600, () => {
         if (!o.active) return;
+        if (o.envol) return vivre();   // touched, it flies off and back (js/jeu/betes_village.js): it pecks again once landed
         if (Math.random() < .35) { o.setFlipX(!o.flipX); return vivre(); }
         if (Math.random() < .5) return s.tweens.add({targets: o, angle: o.flipX ? -28 : 28, duration: 110, yoyo: true, repeat: 1, onComplete: () => { o.setAngle(0); vivre(); }});
         const nx = x + (Math.random() - .5) * 14, ny = y + (Math.random() - .5) * 5;

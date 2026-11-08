@@ -1,7 +1,8 @@
 /* Académia : ce qui vit dans le village en haute définition (js/jeu/decor_village_hd.js) : lanternes du Dojo, lanternes
    de la place et phare qui luisent, fumée des cheminées, drapeau dans le vent, éclats du Jardin, étoile de
    l'Observatoire, caneton et reflets sur la mare, un ou deux papillons près de chaque maison, vent dans les hautes
-   herbes. Quand l'enfant demande le calme (ou pendant les tests automatiques), seul ce qui ne bouge pas reste. */
+   herbes. Quand l'enfant demande le calme (ou pendant les tests automatiques), seul ce qui ne bouge pas reste. Les
+   papillons sont gardés dans rendu.papillons avec leur maison (on les touche : js/jeu/betes_village.js). */
 
 // a character steps into the tall grass of tile (x, y): its two tufts sway (Monde.apresPas, Monde.pas for the
 // companion, OmbresVillage.promener for an Ombre)
@@ -60,8 +61,10 @@ const VIVANT_HD = (() => {
     });
   }
 
-  // one or two butterflies by each house, over the flowers nearest to it (or beside the house)
+  // one or two butterflies by each house, over the flowers nearest to it (or beside the house); kept with their house
+  // (rendu.papillons: {im, region}), their flight restarted by b.voler after a touch
   function papillons(scene, carte, rendu, anim){
+    rendu.papillons = [];
     const fleurs = carte.elements.filter(e => e.type === "fleur");
     rendu.maisons.filter(m => m.nom.startsWith("maison_")).forEach((m, i) => {
       const cx = m.x / CASE, cy = m.y / CASE;
@@ -69,10 +72,13 @@ const VIVANT_HD = (() => {
       const lieux = proches.length ? proches.map(o => [o.e.x * CASE + 8, o.e.y * CASE + 4]) : [[m.x + 44, m.y - 20]];
       lieux.forEach(([x, y], k) => {
         const b = VILLAGE_HD.poser(scene, (i + k) % 2 ? "papillon_bleu" : "papillon", x, y, 9000);
-        if (!b || !anim) return;
+        if (!b) return;
+        rendu.papillons.push({im: b, region: m.region});
+        if (!anim) return;
         scene.tweens.add({targets: b, scaleX: b.scaleX * .3, duration: 130, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
-        const voler = () => scene.tweens.add({targets: b, x: x + entre(-26, 26), y: y + entre(-20, 8), duration: entre(1400, 2400),
-          ease: "Sine.easeInOut", onComplete: voler});
+        const voler = () => { b.vol = scene.tweens.add({targets: b, x: x + entre(-26, 26), y: y + entre(-20, 8), duration: entre(1400, 2400),
+          ease: "Sine.easeInOut", onComplete: voler}); };
+        b.voler = voler;
         voler();
       });
     });

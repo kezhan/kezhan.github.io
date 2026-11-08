@@ -93,6 +93,9 @@ function noter(q, juste){
     p.erreurs.push({...q, revanche: undefined, defi: undefined});
     if (p.erreurs.length > 40) p.erreurs.shift();
   }
+  // its foreign word, for the album's picture book (js/mots_appris.js): last, and guarded, so that it never changes
+  // what the engine keeps
+  try { if (typeof noterMot === "function") noterMot(q, juste); } catch (x) { console.warn("noterMot :", x); }
   sauver();
 }
 
