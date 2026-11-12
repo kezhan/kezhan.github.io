@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bc-favicon-fond" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2957C8"/>
+      <stop offset="1" stop-color="#173888"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#bc-favicon-fond)"/>
+  <!-- Calé sur la grille de 4 : les jambages tombent sur des pixels entiers à 16 et 32 px ; le
+       jambage clair plus soutenu que dans la marque, pour rester net à 16 px. -->
+  <path d="M16 12h12v40H16z" fill="#FFFFFF"/>
+  <path d="M36 12h12v40H36z" fill="#A7BEF2"/>
+  <path d="M22 18l20 28" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" fill="none"/>
+</svg>
