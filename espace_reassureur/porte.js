@@ -374,7 +374,8 @@ async function demarrer(){
   if(APERCU){ brancher(); return montrer(location.hash === "#fin" ? "fin" : "entree"); }
   if(!window.crypto || !crypto.subtle || !window.DecompressionStream){
     $("porte").hidden = false;
-    $("porteForm").innerHTML = `<h1>Navigateur trop ancien</h1><p class="porte-texte">L'espace demande un navigateur récent : Chrome, Edge, Firefox ou Safari à jour.</p>`;
+    const manque = [!window.crypto || !crypto.subtle ? "crypto.subtle" + (window.isSecureContext === false ? " (page non sécurisée : ouvrir l'adresse en https)" : "") : "", !window.DecompressionStream ? "DecompressionStream" : ""].filter(Boolean).join(", ");
+    $("porteForm").innerHTML = `<h1>Navigateur trop ancien</h1><p class="porte-texte">L'espace demande un navigateur récent : Chrome, Edge, Firefox ou Safari à jour, ouvert dans une vraie fenêtre (pas l'aperçu d'un éditeur).</p><p class="porte-texte">Il manque : ${manque}.</p>`;
     return;
   }
   brancher();
