@@ -1,13 +1,9 @@
 /* Académia : ce qui se passe sur l'Île des Bâtisseurs (js/jeu/monde.js, quand la partie est sur l'île).
-   1. Les terrains : toucher un terrain ou son panneau de chantier, le héros va devant le panneau, le panneau frémit, la
-      cheffe de chantier lève les bras et dit, dans la bulle qui ne bloque rien, ce qui s'y construira bientôt
-      (CHANTIERS, js/jeu/carte_ile.js) : « Ici, nous construirons bientôt la boulangerie ! On y comptera les pains… ».
-      Chaque terrain vu est noté dans P().histoire (terrain_<id>), pour les chantiers à venir (ticket
-      construire-et-collectionner).
+   1. Les terrains et leurs bâtiments à construire sont dans js/jeu/chantiers_ile.js (ChantiersIle).
    2. Ce que disent les deux habitants (Monde.parler) : un mot de leur langue d'abord (la cheffe l'anglais, le passeur
-      le luxembourgeois, js/jeu/langues_habitants.js), puis leurs phrases ; le passeur propose le retour (js/jeu/voyage.js).
-      Pour la petite, le sens du mot suit sensADire (js/mots_du_jeu.js) : les premières fois, jamais deux fois dans la
-      minute ; ensuite le mot seul.
+      le luxembourgeois, js/jeu/langues_habitants.js), puis leurs phrases ; la cheffe dit où en sont les chantiers, le
+      passeur propose le retour (js/jeu/voyage.js). Pour la petite, le sens du mot suit sensADire (js/mots_du_jeu.js) :
+      les premières fois, jamais deux fois dans la minute ; ensuite le mot seul.
    3. Ce que l'île raconte d'elle-même (HistoireIle, comme HistoireVillage au village, une chose à la fois, quand rien ne
       se passe) : les missions du jour tenues sur l'île y sont comptées et annoncées, l'autocollant gagné le jour même ;
       le soir vient sur l'île comme au village (le crépuscule, le compagnon qui bâille), et c'est le passeur qui dit au
@@ -35,55 +31,6 @@ function salutIle(n){
   if (typeof noterHistoire === "function") noterHistoire("visite_" + n.cle);   // the day's visit (the « Dis bonjour » mission)
   const petit = P() && P().age <= 5, sens = !petit || sensADire(m);
   return {langue: L.langue, ligne: sens ? `« ${m.mot} » : c'est « ${m.sens} », en ${L.nom} !` : `« ${m.mot} » !`};
-}
-
-class ChantiersIle {
-  constructor(scene){ this.s = scene; this.vise = null; this.terrains = scene.carte.terrains || []; }
-  // the lot under a touch: its tiles (and the stakes standing over its first row) or its sign
-  terrainSous(wx, wy){
-    const x = wx / CASE, y = wy / CASE;
-    return this.terrains.find(t => (x >= t.x && x < t.x + t.w && y >= t.y - .4 && y < t.y + t.h)
-      || (Math.floor(x) === t.panneau.x && y >= t.panneau.y - .9 && y < t.panneau.y + 1)) || null;
-  }
-  touche(wx, wy){
-    const t = this.terrainSous(wx, wy), s = this.s;
-    this.vise = null;
-    if (!t) return false;
-    s.marquer(t.devant.x, t.devant.y);
-    this.fremir(t);
-    if (s.case.x === t.devant.x && s.case.y === t.devant.y) { this.expliquer(t); return true; }
-    s.allerVers(t.devant.x, t.devant.y);
-    this.vise = t;
-    return true;
-  }
-  // the hero has walked there (Monde.arrive)
-  arrive(){
-    const t = this.vise, s = this.s;
-    this.vise = null;
-    if (!t) return false;
-    if (s.case.x === t.devant.x && s.case.y === t.devant.y) this.expliquer(t);
-    return true;
-  }
-  // the sign shivers, a few sparkles over the lot
-  fremir(t){
-    const s = this.s, r = s.villageHD && s.villageHD.ileHD && s.villageHD.ileHD.terrains[t.id], p = r && r.panneau;
-    if (!p || calme() || p.tremble) return;
-    p.tremble = s.tweens.add({targets: p, angle: {from: -4, to: 4}, duration: 90, yoyo: true, repeat: 2, ease: "Sine.easeInOut",
-      onComplete: () => { p.setAngle(0); p.tremble = null; }});
-    for (let i = 0; i < 4; i++) effetHD(s, "toucher", (t.x + .5 + Math.random() * (t.w - 1)) * CASE, (t.y + .5 + Math.random() * (t.h - 1)) * CASE, 10, profondeur(t.y + t.h, 9));
-  }
-  // the cheffe tells what will be built there
-  expliquer(t){
-    const s = this.s, c = CHANTIERS[t.id];
-    if (!c) return;
-    s.chemin = []; s.pnjVise = null; s.arreter();
-    reposHumain(s.heros, t.panneau.x > s.case.x ? "droite" : t.panneau.x < s.case.x ? "gauche" : t.panneau.y < s.case.y ? "haut" : "bas");
-    const n = s.pnj.find(q => q.cle === "cheffe");
-    if (n && n.s) { s.vie.saluer(n.s, 1600); }
-    if (typeof jouerSon === "function") jouerSon("scintille");
-    if (typeof noterHistoire === "function") noterHistoire("terrain_" + t.id);
-    bulleVillage("cheffe", "La cheffe de chantier", `Ici, nous construirons bientôt ${c.nom} ! ${c.dit}`);
-  }
 }
 
 // what the island tells by itself: the day's missions, the evening; what its two islanders say. The first village's
@@ -125,11 +72,14 @@ class HistoireIle extends HistoireVillage {
   lignesHistoire(n){
     if (n.cle !== "cheffe") return {lignes: n.dit};
     if (!histoireDe().cheffe) noterHistoire("cheffe");   // the guide's hand stops showing her
+    const finis = batimentsFinis().length, tout = finis >= Object.keys(SUJETS_CHANTIER).length;
+    const ou = tout ? "Tu as tout construit : bravo ! Touche tes bâtiments, ils ont des choses à t'apprendre."
+      : finis ? `Tu as déjà fini ${finis > 1 ? finis + " bâtiments" : "un bâtiment"} : bravo ! Touche un panneau pour construire encore.` : "";
     return {lignes: P().age <= 5
-      ? ["Je suis la cheffe de chantier !", "Bientôt, nous construirons des maisons sur les terrains. Touche un panneau pour voir !"]
+      ? ["Je suis la cheffe de chantier !", ou || "Ici, on construit des maisons ! Touche un panneau : on construit ensemble."]
       : ["Je suis la cheffe de chantier de l'Île des Bâtisseurs !",
-         "Sur chaque terrain, nous construirons bientôt un bâtiment : une boulangerie, un phare, un moulin, une bibliothèque, une serre et un kiosque à musique.",
-         "Touche un panneau de chantier pour savoir ce qui s'y construira !"]};
+         ou || "Sur chaque terrain, tu peux construire un bâtiment : une boulangerie, un phare, un moulin, une bibliothèque, une serre et un kiosque à musique.",
+         "Chaque étape demande des étincelles et une bonne réponse. Touche un panneau de chantier pour construire !"]};
   }
   // what the guide's hand shows here before the Ombres: the cheffe, until the child has talked to her
   cibleGuide(){

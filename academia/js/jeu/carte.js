@@ -104,6 +104,7 @@ function construireCarte(){
     {x: 22, y: 18, cle: "paco", nom: "Paco", dir: 1, dit: ["Touche l'endroit où tu veux aller, ton héros y marche tout seul. Touche une maison pour aller à sa porte.", "Ton équipe est dans le sac 🎒, en haut de l'écran.", "Le potager, à côté de la Montagne de Germania, est ton jardin : touche-le pour planter, arroser et récolter !"]},
     {x: 32, y: 14, cle: "marchand", nom: "Le marchand", dir: 0, boutique: true, dit: ["Bonjour ! Touche mon étal : mes jokers et mes accessoires t'attendent."]}   // his shop: js/marchand.js
   ];
+  if (typeof habitantsDeFete === "function") pnj.push(...habitantsDeFete());   // the Kleeschen and the Houseker, in December (js/jeu/fetes_village.js)
   pnj.forEach(n => { bloque[n.y][n.x] = true; });
   portes.forEach(p => { bloque[p.y][p.x] = false; });
   // a sign above each house: the subject's icon and name

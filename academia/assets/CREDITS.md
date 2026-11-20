@@ -24,3 +24,9 @@ Musique et bruitages (`audio/musique/`, `audio/sons/`), tous sous licence **CC0 
 ## Moteur
 
 Phaser 3.90 (https://phaser.io), licence MIT, copie dans `vendor/phaser/` avec sa licence.
+
+three.js r160 (https://threejs.org), licence MIT, copie dans `vendor/three/` avec sa licence : la coupole de l'Observatoire en 3D.
+
+## Carte de la Terre
+
+Les terres de la coupole (`assets/<qualité>/coupole/terre.png`) sont dessinées par `outils/coupole/scripts/terre.py` depuis Natural Earth 1:110m (https://www.naturalearthdata.com), domaine public.

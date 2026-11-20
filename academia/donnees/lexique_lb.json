@@ -155,6 +155,17 @@
    "dit": "Bopi",
    "coupe": true
   },
+  "boxemännchen": {
+   "forme": "Boxemännchen",
+   "lod": "BOXEMANNCHEN1",
+   "lemme": "Boxemännchen",
+   "categorie": "SUBST+M",
+   "sens": "bonhomme de (la) Saint-Nicolas",
+   "audio": "assets/audio/lb/boxemannchen1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/boxemannchen1.m4a",
+   "dit": "Boxemännchen",
+   "coupe": true
+  },
   "bravo": {
    "forme": "Bravo",
    "lod": "BRAVO1",
@@ -718,6 +729,17 @@
    "dit": "hongereg",
    "coupe": false
   },
+  "houseker": {
+   "forme": "Houseker",
+   "lod": "HOUSEKER1",
+   "lemme": "Houseker",
+   "categorie": "SUBST+M",
+   "sens": "père Fouettard",
+   "audio": "assets/audio/lb/houseker1.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/houseker1.m4a",
+   "dit": "Houseker",
+   "coupe": false
+  },
   "hunn": {
    "forme": "hunn",
    "lod": "HUNN1",
@@ -793,6 +815,17 @@
    "audio": "assets/audio/lb/kaz1.m4a",
    "audio_lod": "https://lod.lu/uploads/AAC/kaz1.m4a",
    "dit": "Kaz",
+   "coupe": true
+  },
+  "kleeschen": {
+   "forme": "Kleeschen",
+   "lod": "KLEESCHEN2",
+   "lemme": "Kleeschen",
+   "categorie": "SUBST+M",
+   "sens": "Saint Nicolas",
+   "audio": "assets/audio/lb/kleeschen2.m4a",
+   "audio_lod": "https://lod.lu/uploads/AAC/kleeschen2.m4a",
+   "dit": "Kleeschen",
    "coupe": true
   },
   "kou": {

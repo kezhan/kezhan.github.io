@@ -19,7 +19,9 @@ const ICONES = [
   "medaille_dojo", "medaille_albion", "medaille_germania", "medaille_duche", "medaille_jardin", "medaille_observatoire",
   // the bag: the album, the stamp of a mistake repaired, a sticker, and one symbol per companions' element
   "album", "tampon", "autocollant", "element_geometrie", "element_vent", "element_pierre", "element_lumiere",
-  "element_strategie", "element_nature"
+  "element_strategie", "element_nature",
+  // the feasts of the calendar: the slipper put out for the Kleeschen, empty and filled (js/kleeschen.js)
+  "chausson", "chausson_plein"
 ];
 // the system emojis the interface wrote, and the drawn icon shown in their place (without the emoji variation sign)
 const EMOJI_ICONES = {

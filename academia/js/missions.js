@@ -26,8 +26,9 @@ const AUTOCOLLANTS = {};
  ["pomme", "La pomme", "de la pomme"], ["papillon", "Le papillon", "du papillon"], ["lune", "La lune", "de la lune"],
  ["fleur", "La fleur", "de la fleur"], ["glace", "La glace", "de la glace"], ["baleine", "La baleine", "de la baleine"],
  ["chat", "Le chat", "du chat"], ["trefle", "Le trèfle", "du trèfle"], ["cadeau", "Le cadeau", "du cadeau"],
- ["dino", "Le dinosaure", "du dinosaure"], ["hibou", "Le hibou", "du hibou"]
-].forEach(([id, titre, nom]) => { AUTOCOLLANTS[id] = {nom, titre}; Object.defineProperty(AUTOCOLLANTS[id], "image", {enumerable: true, get: () => srcAutocollant(id)}); });
+ ["dino", "Le dinosaure", "du dinosaure"], ["hibou", "Le hibou", "du hibou"],
+ ["kleeschen", "Le Kleeschen", "du Kleeschen", true]   // the gift of the 6th of December (js/fetes.js): never drawn by a mission
+].forEach(([id, titre, nom, fete]) => { AUTOCOLLANTS[id] = {nom, titre, fete: !!fete}; Object.defineProperty(AUTOCOLLANTS[id], "image", {enumerable: true, get: () => srcAutocollant(id)}); });
 // a sticker's name in a language, when it is recorded (js/mots_du_jeu.js: the same key), else null; the languages
 // come in turn (`tour`: a number that grows)
 function nomEtranger(id, tour){
@@ -125,8 +126,8 @@ function tirerMissions(p){
   const combat = de("combat"), choisis = [combat.shift(), ...de("jardin").slice(0, 1)];
   const pareil = id => { const q = TYPES_MISSIONS[id].pareil; return !!q && choisis.some(c => c && TYPES_MISSIONS[c].pareil === q); };   // one chief a day
   [...de("exploit", "compagnon"), ...combat].forEach(id => { if (choisis.length < MISSIONS_PAR_JOUR && !pareil(id)) choisis.push(id); });
-  const a = new Set((p.album.autocollants || []).map(x => x.id)), libres = melanger(Object.keys(AUTOCOLLANTS), hasardDe(p.id)).filter(id => !a.has(id));
-  const ordre = [...libres, ...melanger(Object.keys(AUTOCOLLANTS), r).filter(id => !libres.includes(id))];   // the album full: again, never twice a day
+  const a = new Set((p.album.autocollants || []).map(x => x.id)), tous = Object.keys(AUTOCOLLANTS).filter(id => !AUTOCOLLANTS[id].fete), libres = melanger(tous, hasardDe(p.id)).filter(id => !a.has(id));
+  const ordre = [...libres, ...melanger(tous, r).filter(id => !libres.includes(id))];   // the album full: again, never twice a day
   return choisis.filter(Boolean).map((id, i) => {
     const m = {id, ...TYPES_MISSIONS[id].creer(p, petit), fait: false, autocollant: ordre[i]};
     m.texte = TYPES_MISSIONS[id].texte(m);

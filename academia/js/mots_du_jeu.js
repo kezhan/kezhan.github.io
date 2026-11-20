@@ -74,7 +74,11 @@ const MOTS_DU_JEU = {
   age_7: {fr: "j'ai sept ans", en: "I am seven!", de: "Ich bin sieben!"},
   age_8: {fr: "j'ai huit ans", en: "I am eight!", de: "Ich bin acht!"},
   age_9: {fr: "j'ai neuf ans", en: "I am nine!", de: "Ich bin neun!"},
-  age_10: {fr: "j'ai dix ans", en: "I am ten!", de: "Ich bin zehn!"}
+  age_10: {fr: "j'ai dix ans", en: "I am ten!", de: "Ich bin zehn!"},
+  // the feasts of the calendar: saint Nicolas at the village, from the 1st to the 6th of December (js/fetes.js)
+  kleeschen: {fr: "saint Nicolas", lb: "Kleeschen"},
+  housecker: {fr: "le père Fouettard", lb: "Houseker"},
+  boxemannchen: {fr: "le bonhomme en brioche", lb: "Boxemännchen"}
 };
 // </mots>
 const NOMS_LANGUES = {en: "anglais", de: "allemand", lb: "luxembourgeois"};

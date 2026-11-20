@@ -85,6 +85,7 @@ const son = nom => { if (typeof jouerSon === "function") jouerSon(nom); };
 const typo = t => String(t || "").replace(/ ([?!;])/g, " $1").replace(/ :/g, " :").replace(/« /g, "« ").replace(/ »/g, " »");
 
 function poserQuestion(panneau, q, {titre = "", limite = 0, jokers = true} = {}){
+  if (estForme(q)) return poserForme(panneau, q, {titre});   // to order, to link, to sort: no buttons, no timer (js/question_formes.js)
   return new Promise(fin => {
     const vf = estVraiFaux(q), lang = q.langue || "fr", t0 = Date.now(), p = P(), petit = !!p && p.age <= 5;
     const mot = motEtranger(q), langueReponses = q.oreille || "fr";

@@ -9,7 +9,7 @@
    plus : ile (vrai), terrains [{id, x, y, w, h, panneau: {x, y}, devant: {x, y}}], ponton {x, y, w, h}, barque {x, y, w,
    h} (la barque à quai), arrivee (la case du ponton où l'on débarque). Le sol d'une case : eau, plage, herbe, sable
    (sentiers, clairière) ou ponton. Dessin : js/jeu/decor_ile_hd.js. */
-// the six buildings to come (ticket construire-et-collectionner), each on its lot: what the cheffe says of it
+// the six buildings the child builds (js/chantiers.js), each on its lot: what the cheffe says of it
 const CHANTIERS = {
   boulangerie: {nom: "la boulangerie", matiere: "maths", dit: "On y comptera les pains et on y partagera les gâteaux."},
   phare: {nom: "le phare", matiere: "sciences", dit: "Sa lumière guidera les bateaux, la nuit."},

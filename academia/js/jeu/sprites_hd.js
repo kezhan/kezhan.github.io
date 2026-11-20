@@ -3,6 +3,8 @@
    Créatures : dessin de face qui sautille, se balance et se retourne vers où il va ; au repos, il respire.
    Un dessin pas encore arrivé (réseau lent) : le personnage attend, invisible, et le prend dès qu'il arrive. */
 const HAUTEUR_HUMAIN = 26, HAUTEUR_CREATURE = 17;
+// a tall hat makes a taller drawing: the same body as the others under it (js/jeu/fetes_village.js)
+const HAUTEURS_HUMAINS = {kleeschen: 34, houseker: 30};
 
 function poserSprite(s, x, y){ s.setPosition(x * CASE + 8, y * CASE + s.dy); return s; }
 const dessine = s => s.texture.key !== "__DEFAULT";   // false while the character waits for its drawing
@@ -26,7 +28,7 @@ function spriteHumain(scene, cle, x, y, vivant = false){
   quandAtlas(scene, cle, () => {
     if (!s.active) return;
     s.setTexture("hd_" + cle, "face").setScale(1);
-    s.base = HAUTEUR_HUMAIN / s.height; s.setScale(s.base);
+    s.base = (HAUTEURS_HUMAINS[cle] || HAUTEUR_HUMAIN) / s.height; s.setScale(s.base);
     animsHumain(scene, cle);
     reposHumain(s, s.dir);
     if (vivant) respirer(s, .012);

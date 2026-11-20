@@ -61,7 +61,7 @@ function prechargerVoyage(scene, vers){
     const a = actif(), l = scene.load;
     chargerAtlas(scene, ["passeur", herosHD(P()), a && cleDe(a), ...(vers === "ile" ? ["cheffe"] : [])]);
     chargerTraverseeHD(l, QUALITE);
-    if (vers === "ile") chargerIleHD(l, QUALITE);
+    if (vers === "ile") { chargerIleHD(l, QUALITE); if (typeof chargerChantiersHD === "function") chargerChantiersHD(l); }   // and the child's buildings
     if (!l.isLoading() && !l.list.size) return ok(voyagePret(scene, vers));
     l.once("complete", () => ok(voyagePret(scene, vers)));
     if (!l.isLoading()) l.start();

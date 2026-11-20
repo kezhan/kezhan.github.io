@@ -1,0 +1,42 @@
+/* Académia : l'écran du Kleeschen (js/kleeschen.js). Une nuit d'hiver ; en haut le titre, les étincelles et la croix
+   (la tête du jardin, style_jardin.css) ; au milieu les cinq chaussons et leur jour ; en bas la bulle du Kleeschen et
+   le gros bouton (ceux du chantier, style_chantier.css). Tout tient sans défiler ; sur un écran bas, les chaussons à
+   gauche, la bulle et le bouton à droite. */
+#kleeschen{overflow:hidden; background:
+  radial-gradient(circle at 12% 18%, #FFF 0 2px, transparent 3px), radial-gradient(circle at 31% 9%, #FFF 0 1.5px, transparent 2.5px),
+  radial-gradient(circle at 58% 16%, #FFF 0 2px, transparent 3px), radial-gradient(circle at 79% 8%, #FFF 0 1.5px, transparent 2.5px),
+  radial-gradient(circle at 91% 24%, #FFF 0 2px, transparent 3px), radial-gradient(circle at 45% 28%, #FFF 0 1.5px, transparent 2.5px),
+  linear-gradient(180deg, #1F2A6B 0, #3B4FA8 58%, #EEF3FF 58%, #D5DFF7 100%)}
+.kleeschen-corps{position:absolute; inset:64px 0 0 0; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly; gap:8px;
+  padding:0 max(14px, env(safe-area-inset-right)) 12px max(14px, env(safe-area-inset-left))}
+.kleeschen-scene{position:relative; display:flex; flex-direction:column; align-items:center; gap:10px}
+.kleeschen-chaussons{display:flex; gap:clamp(6px, 1.6vw, 16px); justify-content:center}
+.chausson{position:relative; display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 8px 4px; width:clamp(64px, 13vw, 124px);
+  border:4px solid var(--encre); border-radius:20px; background:rgba(255,248,236,.94); box-shadow:0 4px 0 rgba(29,22,64,.3)}
+.chausson .icone{width:100%; height:auto; aspect-ratio:1}
+.chausson b{font:700 22px/1 var(--titre); color:var(--encre)}
+.chausson[data-etat="avenir"], .chausson[data-etat="passe"]{background:rgba(255,248,236,.6)}
+.chausson[data-etat="avenir"] .icone, .chausson[data-etat="passe"] .icone{opacity:.45}
+.chausson[data-etat="jour"]{border-color:#E08A00; box-shadow:0 0 0 4px var(--or); animation:chausson-jour 1.2s ease-in-out infinite}
+.chausson[data-etat="plein"]{background:#FFF3C4}
+@keyframes chausson-jour{50%{transform:scale(1.07)}}
+.kleeschen-cadeau{display:flex; align-items:center; gap:14px; padding:6px 22px 6px 8px; border:4px solid var(--encre); border-radius:22px; background:var(--papier);
+  box-shadow:0 4px 0 rgba(29,22,64,.3)}
+.kleeschen-cadeau img:not(.icone){width:clamp(72px, 14vh, 120px); height:auto}
+.kleeschen-cadeau b{display:inline-flex; align-items:center; gap:6px; font:700 30px/1 var(--titre); color:var(--encre)}
+.kleeschen-cadeau b .icone{width:34px; height:34px}
+#btnKleeschen{min-height:72px; padding:6px 28px; font-size:26px; white-space:nowrap}
+#btnKleeschen .icone{width:52px; height:52px; vertical-align:middle}
+#btnKleeschen.attente{filter:saturate(.5); opacity:.85}
+#kleeschen .panneau{--scene:26vh; z-index:6}
+@media (orientation:landscape) and (max-height:560px){
+  .kleeschen-corps{inset:58px 0 0 0; flex-direction:row; gap:14px}
+  .kleeschen-scene{width:50%}
+  .chausson{width:clamp(48px, 8.4vw, 84px); padding:5px 5px 3px; border-width:3px; border-radius:14px}
+  .chausson b{font-size:17px}
+  .kleeschen-corps .chantier-bas{width:46%}
+  #btnKleeschen{min-height:58px; font-size:22px} #btnKleeschen .icone{width:40px; height:40px}
+  .kleeschen-cadeau b{font-size:24px}
+}
+@media (max-width:440px){ #btnKleeschen{font-size:22px; padding:6px 16px} }
+@media (prefers-reduced-motion:reduce){ .chausson[data-etat="jour"]{animation:none} }

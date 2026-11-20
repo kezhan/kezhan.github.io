@@ -17,11 +17,11 @@ class Monde extends Phaser.Scene {
   preload(){
     reessayerImages(this);
     const a = actif(), ile = lieuDe(P()) === "ile";
-    chargerAtlas(this, [herosHD(P()), ...(ile ? ["passeur", "cheffe"] : ["sage", "hugo", "paco"]), a && cleDe(a), ...Object.values(CLES_OMBRES)]);
+    chargerAtlas(this, [herosHD(P()), ...(ile ? ["passeur", "cheffe"] : ["sage", "hugo", "paco", ...(typeof habitantsDeFete === "function" ? habitantsDeFete().map(n => n.cle) : [])]), a && cleDe(a), ...Object.values(CLES_OMBRES)]);
     chargerEffetsHD(this.load, QUALITE);
     chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
-    if (ile) chargerIleHD(this.load, QUALITE);   // the island's ground and pieces (js/jeu/decor_ile_hd.js)
+    if (ile) { chargerIleHD(this.load, QUALITE); chargerChantiersHD(this.load); }   // the island's ground and pieces, the child's buildings (js/jeu/chantiers_ile.js)
     else chargerPlaceHD(this.load);   // the square of the Arbre-Monde (js/jeu/arbre_monde.js)
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
@@ -80,6 +80,7 @@ class Monde extends Phaser.Scene {
     // arrows only, without capturing them for the whole page (the first-name field keeps its space and arrows)
     this.touches = this.input.keyboard.addKeys({up: "UP", down: "DOWN", left: "LEFT", right: "RIGHT"}, false);
     if (typeof jouerAmbiance === "function") jouerAmbiance("village");
+    if (typeof annoncerFete === "function") annoncerFete(this);   // the Kleeschen calls the child, in December (js/jeu/fetes_village.js)
   }
   // the village answers unless another screen, a dialogue, a fight starting or a door opening is in front of it
   occupe(){ return ecranCourant !== "monde" || dialogueOuvert() || this.verrou || this.moment || performance.now() < (window.__calme || 0); }
@@ -105,7 +106,7 @@ class Monde extends Phaser.Scene {
     if (o) { note("ombre"); return this.allerVers(o.x, o.y); }
     if (this.marchand.touche(wx, wy)) return note("marchand");   // the merchant or his stall (js/jeu/marchand_village.js)
     if (this.passage.touche(wx, wy)) return note("barque");      // the ferryman's boat (js/jeu/voyage.js)
-    if (this.chantiers.touche(wx, wy)) return note("chantier");  // a lot of the island or its sign (js/jeu/ile_village.js)
+    if (this.chantiers.touche(wx, wy)) return note("chantier");  // a lot of the island, its building or its sign (js/jeu/chantiers_ile.js)
     if (this.jardin.touche(wx, wy)) return note("jardin");
     // a butterfly, the duckling, a bird, the fountain, a star: it answers, and the walk going on keeps where it was
     // headed (the vegetable garden, the stall, the tree or the board still open on arrival)
@@ -252,7 +253,7 @@ class Monde extends Phaser.Scene {
   parler(n){
     this.vie.parler(n.s);
     // what they say depends on the game (js/jeu/histoire_village.js, js/jeu/ile_village.js); the ferryman, the trip
-    const h = n.passeur ? lignesPasseur(this, n) : this.histoire.lignes(n);
+    const h = n.passeur ? lignesPasseur(this, n) : n.fete ? lignesFete(this, n) : this.histoire.lignes(n);
     dialogue(n.nom, n.cle, h.lignes, h.choix || null, {quitter: !!h.choix, langue: h.langue, choixApresVoix: !!h.choixApresVoix, ligne: (i, voix) => { this.vie.mains(n.s, voix); if (h.ligne) h.ligne(i); },
       fin: () => { this.vie.repos(n.s); if (h.fin) h.fin(); }});
   }

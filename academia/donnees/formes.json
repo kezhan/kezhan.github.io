@@ -1,0 +1,3721 @@
+[
+ {
+  "id": "F_sc_animaux_petits_01",
+  "matiere": "sciences",
+  "notion": "sc_animaux_petits",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Comment grandit la poule ? Remets dans l'ordre.",
+  "dire": "Comment grandit la poule ? Remets dans l'ordre.",
+  "langue": "fr",
+  "explication": "D'abord l'œuf, puis le poussin sort de sa coquille, et il devient une poule.",
+  "reponse": "l'œuf ➜ le poussin ➜ la poule",
+  "distracteurs": [],
+  "lecture": false,
+  "suite": [
+   "🥚",
+   "🐣",
+   "🐔"
+  ],
+  "legendes": {
+   "🥚": "l'œuf",
+   "🐣": "le poussin",
+   "🐔": "la poule"
+  }
+ },
+ {
+  "id": "F_sc_animaux_petits_02",
+  "matiere": "sciences",
+  "notion": "sc_animaux_petits",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque maman à son petit.",
+  "dire": "Relie chaque maman à son petit.",
+  "langue": "fr",
+  "explication": "Le petit de la poule est le poussin, celui de la chatte le chaton, celui de la chienne le chiot.",
+  "reponse": "la poule ➜ le poussin ; la chatte ➜ le chaton ; la chienne ➜ le chiot",
+  "distracteurs": [],
+  "lecture": false,
+  "paires": [
+   [
+    "🐔",
+    "🐥"
+   ],
+   [
+    "🐈",
+    "🐱"
+   ],
+   [
+    "🐕",
+    "🐶"
+   ]
+  ],
+  "legendes": {
+   "🐔": "la poule",
+   "🐥": "le poussin",
+   "🐈": "la chatte",
+   "🐱": "le chaton",
+   "🐕": "la chienne",
+   "🐶": "le chiot"
+  }
+ },
+ {
+  "id": "F_sc_ferme_01",
+  "matiere": "sciences",
+  "notion": "sc_ferme",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Qui vit à la ferme, qui vit dans la forêt ?",
+  "dire": "Qui vit à la ferme, qui vit dans la forêt ?",
+  "langue": "fr",
+  "explication": "La vache, le cochon, la poule et le mouton vivent à la ferme. Le renard, le cerf, le loup et la chouette vivent dans la forêt.",
+  "reponse": "🚜 Ferme : la vache, le cochon, la poule, le mouton ; 🌲 Forêt : le renard, le cerf, le loup, la chouette",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🚜 Ferme",
+    "items": [
+     "🐄",
+     "🐖",
+     "🐔",
+     "🐑"
+    ]
+   },
+   {
+    "nom": "🌲 Forêt",
+    "items": [
+     "🦊",
+     "🦌",
+     "🐺",
+     "🦉"
+    ]
+   }
+  ],
+  "legendes": {
+   "🐄": "la vache",
+   "🐖": "le cochon",
+   "🐔": "la poule",
+   "🐑": "le mouton",
+   "🦊": "le renard",
+   "🦌": "le cerf",
+   "🐺": "le loup",
+   "🦉": "la chouette"
+  }
+ },
+ {
+  "id": "F_sc_ferme_02",
+  "matiere": "sciences",
+  "notion": "sc_ferme",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque animal à ce qu'il nous donne.",
+  "dire": "Relie chaque animal à ce qu'il nous donne.",
+  "langue": "fr",
+  "explication": "La vache donne le lait, la poule l'œuf, le mouton la laine, et l'abeille le miel.",
+  "reponse": "la vache ➜ le lait ; la poule ➜ l'œuf ; le mouton ➜ la laine ; l'abeille ➜ le miel",
+  "distracteurs": [],
+  "lecture": false,
+  "paires": [
+   [
+    "🐄",
+    "🥛"
+   ],
+   [
+    "🐔",
+    "🥚"
+   ],
+   [
+    "🐑",
+    "🧶"
+   ],
+   [
+    "🐝",
+    "🍯"
+   ]
+  ],
+  "legendes": {
+   "🐄": "la vache",
+   "🥛": "le lait",
+   "🐔": "la poule",
+   "🥚": "l'œuf",
+   "🐑": "le mouton",
+   "🧶": "la laine",
+   "🐝": "l'abeille",
+   "🍯": "le miel"
+  }
+ },
+ {
+  "id": "F_sc_meteo_01",
+  "matiere": "sciences",
+  "notion": "sc_meteo",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Que prend-on quand il fait ce temps ?",
+  "dire": "Que prend-on quand il fait ce temps ?",
+  "langue": "fr",
+  "explication": "Au soleil, les lunettes de soleil. Sous la pluie, le parapluie. Dans la neige, les gants.",
+  "reponse": "le soleil ➜ les lunettes de soleil ; la pluie ➜ le parapluie ; la neige ➜ les gants",
+  "distracteurs": [],
+  "lecture": false,
+  "paires": [
+   [
+    "☀️",
+    "🕶️"
+   ],
+   [
+    "🌧️",
+    "☂️"
+   ],
+   [
+    "❄️",
+    "🧤"
+   ]
+  ],
+  "legendes": {
+   "☀️": "le soleil",
+   "🕶️": "les lunettes de soleil",
+   "🌧️": "la pluie",
+   "☂️": "le parapluie",
+   "❄️": "la neige",
+   "🧤": "les gants"
+  }
+ },
+ {
+  "id": "F_sc_meteo_02",
+  "matiere": "sciences",
+  "notion": "sc_meteo",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "C'est pour quand il fait chaud, ou pour quand il fait froid ?",
+  "dire": "C'est pour quand il fait chaud, ou pour quand il fait froid ?",
+  "langue": "fr",
+  "explication": "Le short, les lunettes de soleil et la glace, c'est pour le chaud. L'écharpe, les gants et le bonhomme de neige, c'est pour le froid.",
+  "reponse": "☀️ Chaud : le short, les lunettes de soleil, la glace ; ❄️ Froid : l'écharpe, les gants, le bonhomme de neige",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "☀️ Chaud",
+    "items": [
+     "🩳",
+     "🕶️",
+     "🍦"
+    ]
+   },
+   {
+    "nom": "❄️ Froid",
+    "items": [
+     "🧣",
+     "🧤",
+     "⛄"
+    ]
+   }
+  ],
+  "legendes": {
+   "🩳": "le short",
+   "🕶️": "les lunettes de soleil",
+   "🍦": "la glace",
+   "🧣": "l'écharpe",
+   "🧤": "les gants",
+   "⛄": "le bonhomme de neige"
+  }
+ },
+ {
+  "id": "F_sc_vivant_01",
+  "matiere": "sciences",
+  "notion": "sc_vivant",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Vivant ou pas vivant ?",
+  "dire": "Vivant ou pas vivant ?",
+  "langue": "fr",
+  "explication": "Le chien, l'arbre, l'oiseau et la fleur naissent, grandissent et meurent : ils sont vivants. La voiture, le ballon, le téléphone et la clé ne sont pas vivants.",
+  "reponse": "🌱 Vivant : le chien, l'arbre, l'oiseau, la fleur ; 🪑 Pas vivant : la voiture, le ballon, le téléphone, la clé",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🌱 Vivant",
+    "items": [
+     "🐶",
+     "🌳",
+     "🐦",
+     "🌷"
+    ]
+   },
+   {
+    "nom": "🪑 Pas vivant",
+    "items": [
+     "🚗",
+     "⚽",
+     "📱",
+     "🔑"
+    ]
+   }
+  ],
+  "legendes": {
+   "🐶": "le chien",
+   "🌳": "l'arbre",
+   "🐦": "l'oiseau",
+   "🌷": "la fleur",
+   "🚗": "la voiture",
+   "⚽": "le ballon",
+   "📱": "le téléphone",
+   "🔑": "la clé"
+  }
+ },
+ {
+  "id": "F_sc_saisons_01",
+  "matiere": "sciences",
+  "notion": "sc_saisons",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets les saisons dans l'ordre, en commençant par le printemps.",
+  "dire": "Remets les saisons dans l'ordre, en commençant par le printemps.",
+  "langue": "fr",
+  "explication": "Le printemps, puis l'été, puis l'automne, puis l'hiver. Et ça recommence !",
+  "reponse": "le printemps ➜ l'été ➜ l'automne ➜ l'hiver",
+  "distracteurs": [],
+  "lecture": false,
+  "suite": [
+   "🌸",
+   "☀️",
+   "🍂",
+   "❄️"
+  ],
+  "legendes": {
+   "🌸": "le printemps",
+   "☀️": "l'été",
+   "🍂": "l'automne",
+   "❄️": "l'hiver"
+  }
+ },
+ {
+  "id": "F_sc_saisons_02",
+  "matiere": "sciences",
+  "notion": "sc_saisons",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque saison à ce qu'on y voit.",
+  "dire": "Relie chaque saison à ce qu'on y voit.",
+  "langue": "fr",
+  "explication": "Au printemps naissent les poussins. L'été, on va à la plage. En automne poussent les champignons. L'hiver, on fait un bonhomme de neige.",
+  "reponse": "le printemps ➜ le poussin ; l'été ➜ la plage ; l'automne ➜ le champignon ; l'hiver ➜ le bonhomme de neige",
+  "distracteurs": [],
+  "lecture": false,
+  "paires": [
+   [
+    "🌸",
+    "🐣"
+   ],
+   [
+    "☀️",
+    "🏖️"
+   ],
+   [
+    "🍂",
+    "🍄"
+   ],
+   [
+    "❄️",
+    "⛄"
+   ]
+  ],
+  "legendes": {
+   "🌸": "le printemps",
+   "🐣": "le poussin",
+   "☀️": "l'été",
+   "🏖️": "la plage",
+   "🍂": "l'automne",
+   "🍄": "le champignon",
+   "❄️": "l'hiver",
+   "⛄": "le bonhomme de neige"
+  }
+ },
+ {
+  "id": "F_sc_sens_01",
+  "matiere": "sciences",
+  "notion": "sc_sens",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Avec quoi ? Relie chaque partie du corps à ce qu'elle découvre.",
+  "dire": "Avec quoi ? Relie chaque partie du corps à ce qu'elle découvre.",
+  "langue": "fr",
+  "explication": "Avec les yeux on voit l'arc-en-ciel, avec les oreilles on entend la musique, avec le nez on sent la rose, avec la langue on goûte la sucette.",
+  "reponse": "l'œil ➜ l'arc-en-ciel ; l'oreille ➜ la musique ; le nez ➜ la rose ; la langue ➜ la sucette",
+  "distracteurs": [],
+  "lecture": false,
+  "paires": [
+   [
+    "👁️",
+    "🌈"
+   ],
+   [
+    "👂",
+    "🎵"
+   ],
+   [
+    "👃",
+    "🌹"
+   ],
+   [
+    "👅",
+    "🍭"
+   ]
+  ],
+  "legendes": {
+   "👁️": "l'œil",
+   "🌈": "l'arc-en-ciel",
+   "👂": "l'oreille",
+   "🎵": "la musique",
+   "👃": "le nez",
+   "🌹": "la rose",
+   "👅": "la langue",
+   "🍭": "la sucette"
+  }
+ },
+ {
+  "id": "F_sc_animaux_etonnants_01",
+  "matiere": "sciences",
+  "notion": "sc_animaux_etonnants",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque animal à son record.",
+  "dire": "Relie chaque animal à son record.",
+  "langue": "fr",
+  "explication": "Le guépard est le plus rapide à la course, la girafe la plus haute, la baleine bleue la plus lourde, et l'éléphant le plus gros des animaux terrestres.",
+  "reponse": "le guépard ➜ le plus rapide à la course ; la girafe ➜ le plus haut ; la baleine bleue ➜ le plus lourd ; l'éléphant ➜ le plus gros sur la terre",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🐆",
+    "le plus rapide à la course"
+   ],
+   [
+    "🦒",
+    "le plus haut"
+   ],
+   [
+    "🐳",
+    "le plus lourd"
+   ],
+   [
+    "🐘",
+    "le plus gros sur la terre"
+   ]
+  ],
+  "legendes": {
+   "🐆": "le guépard",
+   "🦒": "la girafe",
+   "🐳": "la baleine bleue",
+   "🐘": "l'éléphant"
+  }
+ },
+ {
+  "id": "F_sc_dinosaures_01",
+  "matiere": "sciences",
+  "notion": "sc_dinosaures",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Que mangeait ce dinosaure ?",
+  "dire": "Que mangeait ce dinosaure ?",
+  "langue": "fr",
+  "explication": "Le tyrannosaure et le vélociraptor chassaient : ils mangeaient de la viande. Le diplodocus, le tricératops et le stégosaure mangeaient des plantes.",
+  "reponse": "🍖 Viande : Tyrannosaure, Vélociraptor ; 🌿 Plantes : Diplodocus, Tricératops, Stégosaure",
+  "distracteurs": [],
+  "lecture": true,
+  "paniers": [
+   {
+    "nom": "🍖 Viande",
+    "items": [
+     "Tyrannosaure",
+     "Vélociraptor"
+    ]
+   },
+   {
+    "nom": "🌿 Plantes",
+    "items": [
+     "Diplodocus",
+     "Tricératops",
+     "Stégosaure"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "F_sc_ocean_01",
+  "matiere": "sciences",
+  "notion": "sc_ocean",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque animal de la mer à ce qui le rend spécial.",
+  "dire": "Relie chaque animal de la mer à ce qui le rend spécial.",
+  "langue": "fr",
+  "explication": "La pieuvre a huit bras, le crabe marche de côté, le poisson-globe se gonfle, et le dauphin remonte respirer à la surface.",
+  "reponse": "la pieuvre ➜ huit bras ; le crabe ➜ marche de côté ; le poisson-globe ➜ se gonfle comme un ballon ; le dauphin ➜ respire à la surface",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🐙",
+    "huit bras"
+   ],
+   [
+    "🦀",
+    "marche de côté"
+   ],
+   [
+    "🐡",
+    "se gonfle comme un ballon"
+   ],
+   [
+    "🐬",
+    "respire à la surface"
+   ]
+  ],
+  "legendes": {
+   "🐙": "la pieuvre",
+   "🦀": "le crabe",
+   "🐡": "le poisson-globe",
+   "🐬": "le dauphin"
+  }
+ },
+ {
+  "id": "F_sc_insectes_01",
+  "matiere": "sciences",
+  "notion": "sc_insectes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Comment grandit le papillon ? Remets dans l'ordre.",
+  "dire": "Comment grandit le papillon ? Remets dans l'ordre.",
+  "langue": "fr",
+  "explication": "D'abord l'œuf, puis la chenille, puis la chrysalide, et enfin le papillon.",
+  "reponse": "Œuf ➜ Chenille ➜ Chrysalide ➜ Papillon",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Œuf",
+   "Chenille",
+   "Chrysalide",
+   "Papillon"
+  ]
+ },
+ {
+  "id": "F_sc_insectes_02",
+  "matiere": "sciences",
+  "notion": "sc_insectes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Insecte ou pas ? Un insecte a six pattes.",
+  "dire": "Insecte ou pas ? Un insecte a six pattes.",
+  "langue": "fr",
+  "explication": "L'abeille, le papillon, la coccinelle et le criquet ont six pattes : ce sont des insectes. L'araignée et le scorpion en ont huit, et l'escargot n'en a pas.",
+  "reponse": "🐜 Insecte : l'abeille, le papillon, la coccinelle, le criquet ; ✋ Pas un insecte : l'araignée, l'escargot, le scorpion",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🐜 Insecte",
+    "items": [
+     "🐝",
+     "🦋",
+     "🐞",
+     "🦗"
+    ]
+   },
+   {
+    "nom": "✋ Pas un insecte",
+    "items": [
+     "🕷️",
+     "🐌",
+     "🦂"
+    ]
+   }
+  ],
+  "legendes": {
+   "🐝": "l'abeille",
+   "🦋": "le papillon",
+   "🐞": "la coccinelle",
+   "🦗": "le criquet",
+   "🕷️": "l'araignée",
+   "🐌": "l'escargot",
+   "🦂": "le scorpion"
+  }
+ },
+ {
+  "id": "F_sc_alimentation_01",
+  "matiere": "sciences",
+  "notion": "sc_alimentation",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Fruit ou légume ?",
+  "dire": "Fruit ou légume ?",
+  "langue": "fr",
+  "explication": "La banane, la fraise, le raisin et la poire sont des fruits. Le brocoli, la salade, la pomme de terre et l'oignon sont des légumes.",
+  "reponse": "🍎 Fruit : la banane, la fraise, le raisin, la poire ; 🥕 Légume : le brocoli, la salade, la pomme de terre, l'oignon",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🍎 Fruit",
+    "items": [
+     "🍌",
+     "🍓",
+     "🍇",
+     "🍐"
+    ]
+   },
+   {
+    "nom": "🥕 Légume",
+    "items": [
+     "🥦",
+     "🥬",
+     "🥔",
+     "🧅"
+    ]
+   }
+  ],
+  "legendes": {
+   "🍌": "la banane",
+   "🍓": "la fraise",
+   "🍇": "le raisin",
+   "🍐": "la poire",
+   "🥦": "le brocoli",
+   "🥬": "la salade",
+   "🥔": "la pomme de terre",
+   "🧅": "l'oignon"
+  }
+ },
+ {
+  "id": "F_sc_alimentation_02",
+  "matiere": "sciences",
+  "notion": "sc_alimentation",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Tous les jours, ou seulement de temps en temps ?",
+  "dire": "Tous les jours, ou seulement de temps en temps ?",
+  "langue": "fr",
+  "explication": "L'eau, les légumes, les fruits et le pain, c'est pour tous les jours. Les bonbons, les frites, le soda et les beignets, c'est pour de temps en temps.",
+  "reponse": "👍 Tous les jours : l'eau, la carotte, la pomme, le pain ; 🎉 De temps en temps : le bonbon, les frites, le soda, le beignet",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "👍 Tous les jours",
+    "items": [
+     "💧",
+     "🥕",
+     "🍎",
+     "🍞"
+    ]
+   },
+   {
+    "nom": "🎉 De temps en temps",
+    "items": [
+     "🍬",
+     "🍟",
+     "🥤",
+     "🍩"
+    ]
+   }
+  ],
+  "legendes": {
+   "💧": "l'eau",
+   "🥕": "la carotte",
+   "🍎": "la pomme",
+   "🍞": "le pain",
+   "🍬": "le bonbon",
+   "🍟": "les frites",
+   "🥤": "le soda",
+   "🍩": "le beignet"
+  }
+ },
+ {
+  "id": "F_sc_corps_01",
+  "matiere": "sciences",
+  "notion": "sc_corps",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque organe à son travail.",
+  "dire": "Relie chaque organe à son travail.",
+  "langue": "fr",
+  "explication": "Le cœur pompe le sang, les poumons respirent, l'estomac digère, et le cerveau commande tout le corps.",
+  "reponse": "Cœur ➜ pompe le sang ; Poumons ➜ respirent ; Estomac ➜ digère ; Cerveau ➜ commande le corps",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "Cœur",
+    "pompe le sang"
+   ],
+   [
+    "Poumons",
+    "respirent"
+   ],
+   [
+    "Estomac",
+    "digère"
+   ],
+   [
+    "Cerveau",
+    "commande le corps"
+   ]
+  ]
+ },
+ {
+  "id": "F_sc_plantes_01",
+  "matiere": "sciences",
+  "notion": "sc_plantes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Comment pousse la plante ? Remets dans l'ordre.",
+  "dire": "Comment pousse la plante ? Remets dans l'ordre.",
+  "langue": "fr",
+  "explication": "La graine germe : la racine sort d'abord, puis la tige et les feuilles, et enfin la fleur.",
+  "reponse": "Graine ➜ Racine ➜ Tige et feuilles ➜ Fleur",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Graine",
+   "Racine",
+   "Tige et feuilles",
+   "Fleur"
+  ]
+ },
+ {
+  "id": "F_sc_plantes_02",
+  "matiere": "sciences",
+  "notion": "sc_plantes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque partie de la plante à son rôle.",
+  "dire": "Relie chaque partie de la plante à son rôle.",
+  "langue": "fr",
+  "explication": "Les racines boivent l'eau du sol, les feuilles captent la lumière, la fleur fait les graines, et la tige porte le tout.",
+  "reponse": "Racines ➜ boivent l'eau ; Feuilles ➜ captent la lumière ; Fleur ➜ fait les graines ; Tige ➜ porte la plante",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "Racines",
+    "boivent l'eau"
+   ],
+   [
+    "Feuilles",
+    "captent la lumière"
+   ],
+   [
+    "Fleur",
+    "fait les graines"
+   ],
+   [
+    "Tige",
+    "porte la plante"
+   ]
+  ]
+ },
+ {
+  "id": "F_sc_milieux_01",
+  "matiere": "sciences",
+  "notion": "sc_milieux",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Où vit cet animal ?",
+  "dire": "Où vit cet animal ?",
+  "langue": "fr",
+  "explication": "Le dauphin, la pieuvre et le requin vivent dans la mer. Le renard, le cerf et l'écureuil dans la forêt. Le chameau et le scorpion dans le désert.",
+  "reponse": "🌊 Mer : le dauphin, la pieuvre, le requin ; 🌲 Forêt : le renard, le cerf, l'écureuil ; 🏜️ Désert : le chameau, le scorpion",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🌊 Mer",
+    "items": [
+     "🐬",
+     "🐙",
+     "🦈"
+    ]
+   },
+   {
+    "nom": "🌲 Forêt",
+    "items": [
+     "🦊",
+     "🦌",
+     "🐿️"
+    ]
+   },
+   {
+    "nom": "🏜️ Désert",
+    "items": [
+     "🐫",
+     "🦂"
+    ]
+   }
+  ],
+  "legendes": {
+   "🐬": "le dauphin",
+   "🐙": "la pieuvre",
+   "🦈": "le requin",
+   "🦊": "le renard",
+   "🦌": "le cerf",
+   "🐿️": "l'écureuil",
+   "🐫": "le chameau",
+   "🦂": "le scorpion"
+  }
+ },
+ {
+  "id": "F_sc_eau_01",
+  "matiere": "sciences",
+  "notion": "sc_eau",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie l'eau à son état.",
+  "dire": "Relie l'eau à son état.",
+  "langue": "fr",
+  "explication": "Le glaçon est de l'eau solide, l'eau du robinet est liquide, et la vapeur est un gaz.",
+  "reponse": "Glaçon ➜ solide ; Eau du robinet ➜ liquide ; Vapeur ➜ gaz",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "Glaçon",
+    "solide"
+   ],
+   [
+    "Eau du robinet",
+    "liquide"
+   ],
+   [
+    "Vapeur",
+    "gaz"
+   ]
+  ]
+ },
+ {
+  "id": "F_sc_eau_02",
+  "matiere": "sciences",
+  "notion": "sc_eau",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Le voyage de l'eau : remets dans l'ordre, en partant de la mer.",
+  "dire": "Le voyage de l'eau : remets dans l'ordre, en partant de la mer.",
+  "langue": "fr",
+  "explication": "Le soleil chauffe la mer, l'eau s'évapore, elle forme un nuage, puis elle retombe en pluie.",
+  "reponse": "la mer ➜ la vapeur ➜ le nuage ➜ la pluie",
+  "distracteurs": [],
+  "lecture": false,
+  "suite": [
+   "🌊",
+   "♨️",
+   "☁️",
+   "🌧️"
+  ],
+  "legendes": {
+   "🌊": "la mer",
+   "♨️": "la vapeur",
+   "☁️": "le nuage",
+   "🌧️": "la pluie"
+  }
+ },
+ {
+  "id": "F_sc_jour_nuit_01",
+  "matiere": "sciences",
+  "notion": "sc_jour_nuit",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets les moments de la journée dans l'ordre.",
+  "dire": "Remets les moments de la journée dans l'ordre.",
+  "langue": "fr",
+  "explication": "Le matin le soleil se lève, à midi il est haut, le soir il se couche, puis vient la nuit.",
+  "reponse": "le matin ➜ le midi ➜ le soir ➜ la nuit",
+  "distracteurs": [],
+  "lecture": false,
+  "suite": [
+   "🌅",
+   "☀️",
+   "🌇",
+   "🌙"
+  ],
+  "legendes": {
+   "🌅": "le matin",
+   "☀️": "le midi",
+   "🌇": "le soir",
+   "🌙": "la nuit"
+  }
+ },
+ {
+  "id": "F_sc_jour_nuit_02",
+  "matiere": "sciences",
+  "notion": "sc_jour_nuit",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Qui est réveillé le jour, qui est réveillé la nuit ?",
+  "dire": "Qui est réveillé le jour, qui est réveillé la nuit ?",
+  "langue": "fr",
+  "explication": "L'abeille, le papillon et le coq vivent le jour. La chouette, la chauve-souris et le hérisson sortent la nuit.",
+  "reponse": "☀️ Jour : l'abeille, le papillon, le coq ; 🌙 Nuit : la chouette, la chauve-souris, le hérisson",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "☀️ Jour",
+    "items": [
+     "🐝",
+     "🦋",
+     "🐓"
+    ]
+   },
+   {
+    "nom": "🌙 Nuit",
+    "items": [
+     "🦉",
+     "🦇",
+     "🦔"
+    ]
+   }
+  ],
+  "legendes": {
+   "🐝": "l'abeille",
+   "🦋": "le papillon",
+   "🐓": "le coq",
+   "🦉": "la chouette",
+   "🦇": "la chauve-souris",
+   "🦔": "le hérisson"
+  }
+ },
+ {
+  "id": "F_sc_espace_01",
+  "matiere": "sciences",
+  "notion": "sc_espace",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets ces planètes dans l'ordre, de la plus proche du Soleil à la plus loin.",
+  "dire": "Remets ces planètes dans l'ordre, de la plus proche du Soleil à la plus loin.",
+  "langue": "fr",
+  "explication": "En partant du Soleil : Mercure, Vénus, la Terre, puis Mars.",
+  "reponse": "Mercure ➜ Vénus ➜ Terre ➜ Mars",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Mercure",
+   "Vénus",
+   "Terre",
+   "Mars"
+  ]
+ },
+ {
+  "id": "F_sc_espace_02",
+  "matiere": "sciences",
+  "notion": "sc_espace",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque planète à ce qui la rend spéciale.",
+  "dire": "Relie chaque planète à ce qui la rend spéciale.",
+  "langue": "fr",
+  "explication": "Jupiter est la plus grosse, Saturne a de grands anneaux, Mars est la planète rouge, et Mercure est la plus proche du Soleil.",
+  "reponse": "Jupiter ➜ la plus grosse ; Saturne ➜ de grands anneaux ; Mars ➜ la planète rouge ; Mercure ➜ la plus proche du Soleil",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "Jupiter",
+    "la plus grosse"
+   ],
+   [
+    "Saturne",
+    "de grands anneaux"
+   ],
+   [
+    "Mars",
+    "la planète rouge"
+   ],
+   [
+    "Mercure",
+    "la plus proche du Soleil"
+   ]
+  ]
+ },
+ {
+  "id": "F_sc_luxembourg_01",
+  "matiere": "sciences",
+  "notion": "sc_luxembourg",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Ce pays touche-t-il le Luxembourg ?",
+  "dire": "Ce pays touche-t-il le Luxembourg ?",
+  "langue": "fr",
+  "explication": "Le Luxembourg a trois voisins : la France, la Belgique et l'Allemagne.",
+  "reponse": "🤝 Voisin : France, Belgique, Allemagne ; ✈️ Plus loin : Espagne, Italie, Portugal",
+  "distracteurs": [],
+  "lecture": true,
+  "paniers": [
+   {
+    "nom": "🤝 Voisin",
+    "items": [
+     "France",
+     "Belgique",
+     "Allemagne"
+    ]
+   },
+   {
+    "nom": "✈️ Plus loin",
+    "items": [
+     "Espagne",
+     "Italie",
+     "Portugal"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "F_sc_monde_01",
+  "matiere": "sciences",
+  "notion": "sc_monde",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Sur quel continent est ce pays ?",
+  "dire": "Sur quel continent est ce pays ?",
+  "langue": "fr",
+  "explication": "La France, l'Italie et l'Allemagne sont en Europe. La Chine, le Japon et l'Inde en Asie. L'Égypte, le Maroc et le Sénégal en Afrique.",
+  "reponse": "Europe : France, Italie, Allemagne ; Asie : Chine, Japon, Inde ; Afrique : Égypte, Maroc, Sénégal",
+  "distracteurs": [],
+  "lecture": true,
+  "paniers": [
+   {
+    "nom": "Europe",
+    "items": [
+     "France",
+     "Italie",
+     "Allemagne"
+    ]
+   },
+   {
+    "nom": "Asie",
+    "items": [
+     "Chine",
+     "Japon",
+     "Inde"
+    ]
+   },
+   {
+    "nom": "Afrique",
+    "items": [
+     "Égypte",
+     "Maroc",
+     "Sénégal"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "F_sc_monde_02",
+  "matiere": "sciences",
+  "notion": "sc_monde",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque animal au continent où il vit en liberté.",
+  "dire": "Relie chaque animal au continent où il vit en liberté.",
+  "langue": "fr",
+  "explication": "Le panda vit en Asie, le kangourou en Océanie, le lion en Afrique, et le manchot en Antarctique.",
+  "reponse": "le panda ➜ Asie ; le kangourou ➜ Océanie ; le lion ➜ Afrique ; le manchot ➜ Antarctique",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🐼",
+    "Asie"
+   ],
+   [
+    "🦘",
+    "Océanie"
+   ],
+   [
+    "🦁",
+    "Afrique"
+   ],
+   [
+    "🐧",
+    "Antarctique"
+   ]
+  ],
+  "legendes": {
+   "🐼": "le panda",
+   "🦘": "le kangourou",
+   "🦁": "le lion",
+   "🐧": "le manchot"
+  }
+ },
+ {
+  "id": "F_sc_matiere_01",
+  "matiere": "sciences",
+  "notion": "sc_matiere",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "L'aimant l'attire-t-il ?",
+  "dire": "L'aimant l'attire-t-il ?",
+  "langue": "fr",
+  "explication": "L'aimant attire le fer et l'acier : le clou, le trombone, l'aiguille. Il n'attire ni le bois, ni le verre, ni le plastique, ni le papier.",
+  "reponse": "🧲 Attiré : Clou en fer, Trombone, Aiguille ; ✋ Pas attiré : Bois, Verre, Plastique, Papier",
+  "distracteurs": [],
+  "lecture": true,
+  "paniers": [
+   {
+    "nom": "🧲 Attiré",
+    "items": [
+     "Clou en fer",
+     "Trombone",
+     "Aiguille"
+    ]
+   },
+   {
+    "nom": "✋ Pas attiré",
+    "items": [
+     "Bois",
+     "Verre",
+     "Plastique",
+     "Papier"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "F_sc_matiere_02",
+  "matiere": "sciences",
+  "notion": "sc_matiere",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Dans l'eau, ça flotte ou ça coule ?",
+  "dire": "Dans l'eau, ça flotte ou ça coule ?",
+  "langue": "fr",
+  "explication": "Le liège, le bois et le ballon plein d'air flottent. Le caillou, le clou et la pièce coulent.",
+  "reponse": "🛟 Flotte : Bouchon de liège, Bout de bois, Ballon ; ⚓ Coule : Caillou, Clou, Pièce",
+  "distracteurs": [],
+  "lecture": true,
+  "paniers": [
+   {
+    "nom": "🛟 Flotte",
+    "items": [
+     "Bouchon de liège",
+     "Bout de bois",
+     "Ballon"
+    ]
+   },
+   {
+    "nom": "⚓ Coule",
+    "items": [
+     "Caillou",
+     "Clou",
+     "Pièce"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "F_lo_couleurs_01",
+  "matiere": "logique",
+  "notion": "lo_couleurs",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Rouge ou jaune ?",
+  "dire": "Rouge ou jaune ?",
+  "langue": "fr",
+  "explication": "La pomme, la fraise et la cerise sont rouges. La banane, le citron et le tournesol sont jaunes.",
+  "reponse": "🔴 Rouge : la pomme, la fraise, la cerise ; 🟡 Jaune : la banane, le citron, le tournesol",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🔴 Rouge",
+    "items": [
+     "🍎",
+     "🍓",
+     "🍒"
+    ]
+   },
+   {
+    "nom": "🟡 Jaune",
+    "items": [
+     "🍌",
+     "🍋",
+     "🌻"
+    ]
+   }
+  ],
+  "legendes": {
+   "🍎": "la pomme",
+   "🍓": "la fraise",
+   "🍒": "la cerise",
+   "🍌": "la banane",
+   "🍋": "le citron",
+   "🌻": "le tournesol"
+  }
+ },
+ {
+  "id": "F_lo_couleurs_02",
+  "matiere": "logique",
+  "notion": "lo_couleurs",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Vert ou orange ?",
+  "dire": "Vert ou orange ?",
+  "langue": "fr",
+  "explication": "La grenouille, le concombre et le cactus sont verts. La carotte, l'orange et le renard sont orange.",
+  "reponse": "🟢 Vert : la grenouille, le concombre, le cactus ; 🟠 Orange : la carotte, l'orange, le renard",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🟢 Vert",
+    "items": [
+     "🐸",
+     "🥒",
+     "🌵"
+    ]
+   },
+   {
+    "nom": "🟠 Orange",
+    "items": [
+     "🥕",
+     "🍊",
+     "🦊"
+    ]
+   }
+  ],
+  "legendes": {
+   "🐸": "la grenouille",
+   "🥒": "le concombre",
+   "🌵": "le cactus",
+   "🥕": "la carotte",
+   "🍊": "l'orange",
+   "🦊": "le renard"
+  }
+ },
+ {
+  "id": "F_lo_formes_01",
+  "matiere": "logique",
+  "notion": "lo_formes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque objet à sa forme.",
+  "dire": "Relie chaque objet à sa forme.",
+  "langue": "fr",
+  "explication": "Le ballon est rond, le cadeau est carré, et la tente est un triangle.",
+  "reponse": "le ballon ➜ le rond ; le cadeau ➜ le carré ; la tente ➜ le triangle",
+  "distracteurs": [],
+  "lecture": false,
+  "paires": [
+   [
+    "⚽",
+    "⚪"
+   ],
+   [
+    "🎁",
+    "⬛"
+   ],
+   [
+    "⛺",
+    "🔺"
+   ]
+  ],
+  "legendes": {
+   "⚽": "le ballon",
+   "⚪": "le rond",
+   "🎁": "le cadeau",
+   "⬛": "le carré",
+   "⛺": "la tente",
+   "🔺": "le triangle"
+  }
+ },
+ {
+  "id": "F_lo_formes_02",
+  "matiere": "logique",
+  "notion": "lo_formes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Ça roule ou ça ne roule pas ? Ce qui est rond roule.",
+  "dire": "Ça roule ou ça ne roule pas ? Ce qui est rond roule.",
+  "langue": "fr",
+  "explication": "Le ballon, l'orange et le ballon de basket sont ronds : ils roulent. Le cadeau, le carton et le livre ont des coins : ils ne roulent pas.",
+  "reponse": "⚪ Rond : le ballon, l'orange, le ballon de basket ; ⬛ Pas rond : le cadeau, le carton, le livre",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "⚪ Rond",
+    "items": [
+     "⚽",
+     "🍊",
+     "🏀"
+    ]
+   },
+   {
+    "nom": "⬛ Pas rond",
+    "items": [
+     "🎁",
+     "📦",
+     "📕"
+    ]
+   }
+  ],
+  "legendes": {
+   "⚽": "le ballon",
+   "🍊": "l'orange",
+   "🏀": "le ballon de basket",
+   "🎁": "le cadeau",
+   "📦": "le carton",
+   "📕": "le livre"
+  }
+ },
+ {
+  "id": "F_lo_intrus_01",
+  "matiere": "logique",
+  "notion": "lo_intrus",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Qui va avec qui ?",
+  "dire": "Qui va avec qui ?",
+  "langue": "fr",
+  "explication": "La banane, le raisin et la fraise sont des fruits. Le chien, le chat et le lapin sont des animaux.",
+  "reponse": "🍎 Fruits : la banane, le raisin, la fraise ; 🐾 Animaux : le chien, le chat, le lapin",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🍎 Fruits",
+    "items": [
+     "🍌",
+     "🍇",
+     "🍓"
+    ]
+   },
+   {
+    "nom": "🐾 Animaux",
+    "items": [
+     "🐶",
+     "🐱",
+     "🐰"
+    ]
+   }
+  ],
+  "legendes": {
+   "🍌": "la banane",
+   "🍇": "le raisin",
+   "🍓": "la fraise",
+   "🐶": "le chien",
+   "🐱": "le chat",
+   "🐰": "le lapin"
+  }
+ },
+ {
+  "id": "F_lo_intrus_02",
+  "matiere": "logique",
+  "notion": "lo_intrus",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "tri",
+  "question": "Ça roule ou ça vole ?",
+  "dire": "Ça roule ou ça vole ?",
+  "langue": "fr",
+  "explication": "La voiture, le vélo et le bus roulent. L'avion, l'hélicoptère et l'oiseau volent.",
+  "reponse": "🛞 Roule : la voiture, le vélo, le bus ; ☁️ Vole : l'avion, l'hélicoptère, l'oiseau",
+  "distracteurs": [],
+  "lecture": false,
+  "paniers": [
+   {
+    "nom": "🛞 Roule",
+    "items": [
+     "🚗",
+     "🚲",
+     "🚌"
+    ]
+   },
+   {
+    "nom": "☁️ Vole",
+    "items": [
+     "✈️",
+     "🚁",
+     "🐦"
+    ]
+   }
+  ],
+  "legendes": {
+   "🚗": "la voiture",
+   "🚲": "le vélo",
+   "🚌": "le bus",
+   "✈️": "l'avion",
+   "🚁": "l'hélicoptère",
+   "🐦": "l'oiseau"
+  }
+ },
+ {
+  "id": "F_lo_ordre_01",
+  "matiere": "logique",
+  "notion": "lo_ordre",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Comment pousse l'arbre ? Remets dans l'ordre.",
+  "dire": "Comment pousse l'arbre ? Remets dans l'ordre.",
+  "langue": "fr",
+  "explication": "D'abord la graine, puis la petite pousse, et enfin le grand arbre.",
+  "reponse": "la graine ➜ la pousse ➜ l'arbre",
+  "distracteurs": [],
+  "lecture": false,
+  "suite": [
+   "🌰",
+   "🌱",
+   "🌳"
+  ],
+  "legendes": {
+   "🌰": "la graine",
+   "🌱": "la pousse",
+   "🌳": "l'arbre"
+  }
+ },
+ {
+  "id": "F_lo_ordre_02",
+  "matiere": "logique",
+  "notion": "lo_ordre",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Que met-on en premier ? Remets dans l'ordre.",
+  "dire": "Que met-on en premier ? Remets dans l'ordre.",
+  "langue": "fr",
+  "explication": "D'abord les chaussettes, puis les chaussures, et le manteau pour sortir.",
+  "reponse": "les chaussettes ➜ les chaussures ➜ le manteau",
+  "distracteurs": [],
+  "lecture": false,
+  "suite": [
+   "🧦",
+   "👟",
+   "🧥"
+  ],
+  "legendes": {
+   "🧦": "les chaussettes",
+   "👟": "les chaussures",
+   "🧥": "le manteau"
+  }
+ },
+ {
+  "id": "F_lo_suites_nombres_01",
+  "matiere": "logique",
+  "notion": "lo_suites_nombres",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Range du plus petit au plus grand.",
+  "dire": "Range du plus petit au plus grand.",
+  "langue": "fr",
+  "explication": "Du plus petit au plus grand : 3, 8, 12, 20.",
+  "reponse": "3 ➜ 8 ➜ 12 ➜ 20",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "3",
+   "8",
+   "12",
+   "20"
+  ]
+ },
+ {
+  "id": "F_lo_suites_nombres_02",
+  "matiere": "logique",
+  "notion": "lo_suites_nombres",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Compte de 2 en 2.",
+  "dire": "Compte de 2 en 2.",
+  "langue": "fr",
+  "explication": "De 2 en 2 : 2, 4, 6, 8. On ajoute 2 à chaque fois.",
+  "reponse": "2 ➜ 4 ➜ 6 ➜ 8",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "2",
+   "4",
+   "6",
+   "8"
+  ]
+ },
+ {
+  "id": "F_lo_suites_nombres_03",
+  "matiere": "logique",
+  "notion": "lo_suites_nombres",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Compte de 5 en 5.",
+  "dire": "Compte de 5 en 5.",
+  "langue": "fr",
+  "explication": "De 5 en 5 : 5, 10, 15, 20. On ajoute 5 à chaque fois.",
+  "reponse": "5 ➜ 10 ➜ 15 ➜ 20",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "5",
+   "10",
+   "15",
+   "20"
+  ]
+ },
+ {
+  "id": "F_lo_suites_nombres_04",
+  "matiere": "logique",
+  "notion": "lo_suites_nombres",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Range du plus grand au plus petit.",
+  "dire": "Range du plus grand au plus petit.",
+  "langue": "fr",
+  "explication": "Du plus grand au plus petit : 19, 14, 9, 4.",
+  "reponse": "19 ➜ 14 ➜ 9 ➜ 4",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "19",
+   "14",
+   "9",
+   "4"
+  ]
+ },
+ {
+  "id": "F_lo_formes_cotes_01",
+  "matiere": "logique",
+  "notion": "lo_formes_cotes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque forme à son nombre de côtés.",
+  "dire": "Relie chaque forme à son nombre de côtés.",
+  "langue": "fr",
+  "explication": "Le triangle a 3 côtés, le carré 4, le pentagone 5 et l'hexagone 6.",
+  "reponse": "Triangle ➜ 3 côtés ; Carré ➜ 4 côtés ; Pentagone ➜ 5 côtés ; Hexagone ➜ 6 côtés",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "Triangle",
+    "3 côtés"
+   ],
+   [
+    "Carré",
+    "4 côtés"
+   ],
+   [
+    "Pentagone",
+    "5 côtés"
+   ],
+   [
+    "Hexagone",
+    "6 côtés"
+   ]
+  ]
+ },
+ {
+  "id": "F_lo_suites_longues_01",
+  "matiere": "logique",
+  "notion": "lo_suites_longues",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Compte de 10 en 10.",
+  "dire": "Compte de 10 en 10.",
+  "langue": "fr",
+  "explication": "De 10 en 10 : 10, 20, 30, 40, 50.",
+  "reponse": "10 ➜ 20 ➜ 30 ➜ 40 ➜ 50",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "10",
+   "20",
+   "30",
+   "40",
+   "50"
+  ]
+ },
+ {
+  "id": "F_lo_suites_longues_02",
+  "matiere": "logique",
+  "notion": "lo_suites_longues",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Compte de 3 en 3.",
+  "dire": "Compte de 3 en 3.",
+  "langue": "fr",
+  "explication": "De 3 en 3 : 3, 6, 9, 12, 15. On ajoute 3 à chaque fois.",
+  "reponse": "3 ➜ 6 ➜ 9 ➜ 12 ➜ 15",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "3",
+   "6",
+   "9",
+   "12",
+   "15"
+  ]
+ },
+ {
+  "id": "F_lo_solides_01",
+  "matiere": "logique",
+  "notion": "lo_solides",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque objet à sa forme.",
+  "dire": "Relie chaque objet à sa forme.",
+  "langue": "fr",
+  "explication": "Le ballon est une sphère, le dé un cube, la boîte de conserve un cylindre, et le cornet de glace un cône.",
+  "reponse": "le ballon ➜ sphère ; le dé ➜ cube ; la boîte de conserve ➜ cylindre ; le cornet de glace ➜ cône",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "⚽",
+    "sphère"
+   ],
+   [
+    "🎲",
+    "cube"
+   ],
+   [
+    "🥫",
+    "cylindre"
+   ],
+   [
+    "🍦",
+    "cône"
+   ]
+  ],
+  "legendes": {
+   "⚽": "le ballon",
+   "🎲": "le dé",
+   "🥫": "la boîte de conserve",
+   "🍦": "le cornet de glace"
+  }
+ },
+ {
+  "id": "F_denombrer_10_01",
+  "matiere": "maths",
+  "notion": "denombrer_10",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Compte : remets les nombres dans l'ordre.",
+  "dire": "Compte : remets les nombres dans l'ordre.",
+  "langue": "fr",
+  "explication": "On compte : 1, 2, 3, 4, 5.",
+  "reponse": "1 ➜ 2 ➜ 3 ➜ 4 ➜ 5",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ]
+ },
+ {
+  "id": "F_add_10_01",
+  "matiere": "maths",
+  "notion": "add_10",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque addition à son résultat.",
+  "dire": "Relie chaque addition à son résultat.",
+  "langue": "fr",
+  "explication": "2 + 3 = 5, 4 + 4 = 8, 6 + 1 = 7 et 5 + 5 = 10.",
+  "reponse": "2 + 3 ➜ 5 ; 4 + 4 ➜ 8 ; 6 + 1 ➜ 7 ; 5 + 5 ➜ 10",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "2 + 3",
+    "5"
+   ],
+   [
+    "4 + 4",
+    "8"
+   ],
+   [
+    "6 + 1",
+    "7"
+   ],
+   [
+    "5 + 5",
+    "10"
+   ]
+  ]
+ },
+ {
+  "id": "F_sous_10_01",
+  "matiere": "maths",
+  "notion": "sous_10",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque soustraction à son résultat.",
+  "dire": "Relie chaque soustraction à son résultat.",
+  "langue": "fr",
+  "explication": "9 − 3 = 6, 7 − 5 = 2, 8 − 4 = 4 et 10 − 1 = 9.",
+  "reponse": "9 − 3 ➜ 6 ; 7 − 5 ➜ 2 ; 8 − 4 ➜ 4 ; 10 − 1 ➜ 9",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "9 − 3",
+    "6"
+   ],
+   [
+    "7 − 5",
+    "2"
+   ],
+   [
+    "8 − 4",
+    "4"
+   ],
+   [
+    "10 − 1",
+    "9"
+   ]
+  ]
+ },
+ {
+  "id": "F_complements_10_01",
+  "matiere": "maths",
+  "notion": "complements_10",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie les amis de 10 : ensemble, ils font 10.",
+  "dire": "Relie les amis de 10 : ensemble, ils font 10.",
+  "langue": "fr",
+  "explication": "1 + 9 = 10, 2 + 8 = 10, 3 + 7 = 10 et 4 + 6 = 10.",
+  "reponse": "1 ➜ 9 ; 2 ➜ 8 ; 3 ➜ 7 ; 4 ➜ 6",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "1",
+    "9"
+   ],
+   [
+    "2",
+    "8"
+   ],
+   [
+    "3",
+    "7"
+   ],
+   [
+    "4",
+    "6"
+   ]
+  ]
+ },
+ {
+  "id": "F_denombrer_20_01",
+  "matiere": "maths",
+  "notion": "denombrer_20",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets les nombres dans l'ordre.",
+  "dire": "Remets les nombres dans l'ordre.",
+  "langue": "fr",
+  "explication": "On compte : 11, 12, 13, 14, 15.",
+  "reponse": "11 ➜ 12 ➜ 13 ➜ 14 ➜ 15",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "11",
+   "12",
+   "13",
+   "14",
+   "15"
+  ]
+ },
+ {
+  "id": "F_comparer_20_01",
+  "matiere": "maths",
+  "notion": "comparer_20",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Range du plus petit au plus grand.",
+  "dire": "Range du plus petit au plus grand.",
+  "langue": "fr",
+  "explication": "Du plus petit au plus grand : 7, 11, 15, 19.",
+  "reponse": "7 ➜ 11 ➜ 15 ➜ 19",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "7",
+   "11",
+   "15",
+   "19"
+  ]
+ },
+ {
+  "id": "F_comparer_20_02",
+  "matiere": "maths",
+  "notion": "comparer_20",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Range du plus grand au plus petit.",
+  "dire": "Range du plus grand au plus petit.",
+  "langue": "fr",
+  "explication": "Du plus grand au plus petit : 18, 13, 9, 6.",
+  "reponse": "18 ➜ 13 ➜ 9 ➜ 6",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "18",
+   "13",
+   "9",
+   "6"
+  ]
+ },
+ {
+  "id": "F_doubles_moities_01",
+  "matiere": "maths",
+  "notion": "doubles_moities",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque nombre à son double.",
+  "dire": "Relie chaque nombre à son double.",
+  "langue": "fr",
+  "explication": "Le double de 3 est 6, celui de 5 est 10, celui de 7 est 14 et celui de 9 est 18.",
+  "reponse": "3 ➜ 6 ; 5 ➜ 10 ; 7 ➜ 14 ; 9 ➜ 18",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "3",
+    "6"
+   ],
+   [
+    "5",
+    "10"
+   ],
+   [
+    "7",
+    "14"
+   ],
+   [
+    "9",
+    "18"
+   ]
+  ]
+ },
+ {
+  "id": "F_add_20_01",
+  "matiere": "maths",
+  "notion": "add_20",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque addition à son résultat.",
+  "dire": "Relie chaque addition à son résultat.",
+  "langue": "fr",
+  "explication": "8 + 7 = 15, 9 + 9 = 18, 6 + 5 = 11 et 7 + 6 = 13.",
+  "reponse": "8 + 7 ➜ 15 ; 9 + 9 ➜ 18 ; 6 + 5 ➜ 11 ; 7 + 6 ➜ 13",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "8 + 7",
+    "15"
+   ],
+   [
+    "9 + 9",
+    "18"
+   ],
+   [
+    "6 + 5",
+    "11"
+   ],
+   [
+    "7 + 6",
+    "13"
+   ]
+  ]
+ },
+ {
+  "id": "F_sous_20_01",
+  "matiere": "maths",
+  "notion": "sous_20",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque soustraction à son résultat.",
+  "dire": "Relie chaque soustraction à son résultat.",
+  "langue": "fr",
+  "explication": "15 − 7 = 8, 12 − 5 = 7, 17 − 8 = 9 et 20 − 6 = 14.",
+  "reponse": "15 − 7 ➜ 8 ; 12 − 5 ➜ 7 ; 17 − 8 ➜ 9 ; 20 − 6 ➜ 14",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "15 − 7",
+    "8"
+   ],
+   [
+    "12 − 5",
+    "7"
+   ],
+   [
+    "17 − 8",
+    "9"
+   ],
+   [
+    "20 − 6",
+    "14"
+   ]
+  ]
+ },
+ {
+  "id": "F_tables_2_5_10_01",
+  "matiere": "maths",
+  "notion": "tables_2_5_10",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque multiplication à son résultat.",
+  "dire": "Relie chaque multiplication à son résultat.",
+  "langue": "fr",
+  "explication": "3 × 5 = 15, 4 × 2 = 8, 6 × 10 = 60 et 7 × 5 = 35.",
+  "reponse": "3 × 5 ➜ 15 ; 4 × 2 ➜ 8 ; 6 × 10 ➜ 60 ; 7 × 5 ➜ 35",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "3 × 5",
+    "15"
+   ],
+   [
+    "4 × 2",
+    "8"
+   ],
+   [
+    "6 × 10",
+    "60"
+   ],
+   [
+    "7 × 5",
+    "35"
+   ]
+  ]
+ },
+ {
+  "id": "F_tables_2_5_10_02",
+  "matiere": "maths",
+  "notion": "tables_2_5_10",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "La table de 5 : remets dans l'ordre.",
+  "dire": "La table de 5 : remets dans l'ordre.",
+  "langue": "fr",
+  "explication": "La table de 5 : 5, 10, 15, 20, 25.",
+  "reponse": "5 ➜ 10 ➜ 15 ➜ 20 ➜ 25",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "5",
+   "10",
+   "15",
+   "20",
+   "25"
+  ]
+ },
+ {
+  "id": "F_comparer_100_01",
+  "matiere": "maths",
+  "notion": "comparer_100",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Range du plus petit au plus grand.",
+  "dire": "Range du plus petit au plus grand.",
+  "langue": "fr",
+  "explication": "Du plus petit au plus grand : 28, 45, 54, 82.",
+  "reponse": "28 ➜ 45 ➜ 54 ➜ 82",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "28",
+   "45",
+   "54",
+   "82"
+  ]
+ },
+ {
+  "id": "F_comparer_100_02",
+  "matiere": "maths",
+  "notion": "comparer_100",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Range du plus grand au plus petit.",
+  "dire": "Range du plus grand au plus petit.",
+  "langue": "fr",
+  "explication": "Du plus grand au plus petit : 91, 67, 39, 19.",
+  "reponse": "91 ➜ 67 ➜ 39 ➜ 19",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "91",
+   "67",
+   "39",
+   "19"
+  ]
+ },
+ {
+  "id": "F_add_100_01",
+  "matiere": "maths",
+  "notion": "add_100",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque addition à son résultat.",
+  "dire": "Relie chaque addition à son résultat.",
+  "langue": "fr",
+  "explication": "30 + 40 = 70, 25 + 25 = 50, 48 + 12 = 60 et 65 + 20 = 85.",
+  "reponse": "30 + 40 ➜ 70 ; 25 + 25 ➜ 50 ; 48 + 12 ➜ 60 ; 65 + 20 ➜ 85",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "30 + 40",
+    "70"
+   ],
+   [
+    "25 + 25",
+    "50"
+   ],
+   [
+    "48 + 12",
+    "60"
+   ],
+   [
+    "65 + 20",
+    "85"
+   ]
+  ]
+ },
+ {
+  "id": "F_sous_100_01",
+  "matiere": "maths",
+  "notion": "sous_100",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque soustraction à son résultat.",
+  "dire": "Relie chaque soustraction à son résultat.",
+  "langue": "fr",
+  "explication": "80 − 30 = 50, 45 − 5 = 40, 72 − 12 = 60 et 100 − 25 = 75.",
+  "reponse": "80 − 30 ➜ 50 ; 45 − 5 ➜ 40 ; 72 − 12 ➜ 60 ; 100 − 25 ➜ 75",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "80 − 30",
+    "50"
+   ],
+   [
+    "45 − 5",
+    "40"
+   ],
+   [
+    "72 − 12",
+    "60"
+   ],
+   [
+    "100 − 25",
+    "75"
+   ]
+  ]
+ },
+ {
+  "id": "F_tables_toutes_01",
+  "matiere": "maths",
+  "notion": "tables_toutes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque multiplication à son résultat.",
+  "dire": "Relie chaque multiplication à son résultat.",
+  "langue": "fr",
+  "explication": "6 × 7 = 42, 8 × 8 = 64, 9 × 6 = 54 et 7 × 8 = 56.",
+  "reponse": "6 × 7 ➜ 42 ; 8 × 8 ➜ 64 ; 9 × 6 ➜ 54 ; 7 × 8 ➜ 56",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "6 × 7",
+    "42"
+   ],
+   [
+    "8 × 8",
+    "64"
+   ],
+   [
+    "9 × 6",
+    "54"
+   ],
+   [
+    "7 × 8",
+    "56"
+   ]
+  ]
+ },
+ {
+  "id": "F_tables_toutes_02",
+  "matiere": "maths",
+  "notion": "tables_toutes",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque multiplication à son résultat.",
+  "dire": "Relie chaque multiplication à son résultat.",
+  "langue": "fr",
+  "explication": "3 × 9 = 27, 4 × 7 = 28, 6 × 6 = 36 et 9 × 9 = 81.",
+  "reponse": "3 × 9 ➜ 27 ; 4 × 7 ➜ 28 ; 6 × 6 ➜ 36 ; 9 × 9 ➜ 81",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "3 × 9",
+    "27"
+   ],
+   [
+    "4 × 7",
+    "28"
+   ],
+   [
+    "6 × 6",
+    "36"
+   ],
+   [
+    "9 × 9",
+    "81"
+   ]
+  ]
+ },
+ {
+  "id": "F_division_01",
+  "matiere": "maths",
+  "notion": "division",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque division à son résultat.",
+  "dire": "Relie chaque division à son résultat.",
+  "langue": "fr",
+  "explication": "24 : 6 = 4, 35 : 5 = 7, 27 : 3 = 9 et 16 : 8 = 2.",
+  "reponse": "24 : 6 ➜ 4 ; 35 : 5 ➜ 7 ; 27 : 3 ➜ 9 ; 16 : 8 ➜ 2",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "24 : 6",
+    "4"
+   ],
+   [
+    "35 : 5",
+    "7"
+   ],
+   [
+    "27 : 3",
+    "9"
+   ],
+   [
+    "16 : 8",
+    "2"
+   ]
+  ]
+ },
+ {
+  "id": "F_ranger_10000_01",
+  "matiere": "maths",
+  "notion": "ranger_10000",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Range du plus petit au plus grand.",
+  "dire": "Range du plus petit au plus grand.",
+  "langue": "fr",
+  "explication": "Du plus petit au plus grand : 987, 1 204, 4 020, 4 200.",
+  "reponse": "987 ➜ 1 204 ➜ 4 020 ➜ 4 200",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "987",
+   "1 204",
+   "4 020",
+   "4 200"
+  ]
+ },
+ {
+  "id": "F_en_famille_01",
+  "matiere": "anglais",
+  "notion": "en_famille",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "La mamie : « grandma ». Le bébé : « baby ». Le papi : « grandpa ». La maman : « mum ».",
+  "reponse": "la mamie ➜ grandma ; le bébé ➜ baby ; le papi ➜ grandpa ; la maman ➜ mum",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "👵",
+    "grandma"
+   ],
+   [
+    "👶",
+    "baby"
+   ],
+   [
+    "👴",
+    "grandpa"
+   ],
+   [
+    "👩",
+    "mum"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "👵": "la mamie",
+   "👶": "le bébé",
+   "👴": "le papi",
+   "👩": "la maman"
+  }
+ },
+ {
+  "id": "F_en_corps_01",
+  "matiere": "anglais",
+  "notion": "en_corps",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "L'oreille : « ear ». L'œil : « eye ». La jambe : « leg ». Le bras : « arm ».",
+  "reponse": "l'oreille ➜ ear ; l'œil ➜ eye ; la jambe ➜ leg ; le bras ➜ arm",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "👂",
+    "ear"
+   ],
+   [
+    "👁️",
+    "eye"
+   ],
+   [
+    "🦵",
+    "leg"
+   ],
+   [
+    "💪",
+    "arm"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "👂": "l'oreille",
+   "👁️": "l'œil",
+   "🦵": "la jambe",
+   "💪": "le bras"
+  }
+ },
+ {
+  "id": "F_en_corps_02",
+  "matiere": "anglais",
+  "notion": "en_corps",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "La langue : « tongue ». La bouche : « mouth ». Le pied : « foot ». La main : « hand ».",
+  "reponse": "la langue ➜ tongue ; la bouche ➜ mouth ; le pied ➜ foot ; la main ➜ hand",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "👅",
+    "tongue"
+   ],
+   [
+    "👄",
+    "mouth"
+   ],
+   [
+    "🦶",
+    "foot"
+   ],
+   [
+    "✋",
+    "hand"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "👅": "la langue",
+   "👄": "la bouche",
+   "🦶": "le pied",
+   "✋": "la main"
+  }
+ },
+ {
+  "id": "F_en_nourriture_01",
+  "matiere": "anglais",
+  "notion": "en_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "Le chocolat : « chocolate ». L'œuf : « egg ». La pomme de terre : « potato ». La pomme : « apple ».",
+  "reponse": "le chocolat ➜ chocolate ; l'œuf ➜ egg ; la pomme de terre ➜ potato ; la pomme ➜ apple",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🍫",
+    "chocolate"
+   ],
+   [
+    "🥚",
+    "egg"
+   ],
+   [
+    "🥔",
+    "potato"
+   ],
+   [
+    "🍎",
+    "apple"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "🍫": "le chocolat",
+   "🥚": "l'œuf",
+   "🥔": "la pomme de terre",
+   "🍎": "la pomme"
+  }
+ },
+ {
+  "id": "F_en_nourriture_02",
+  "matiere": "anglais",
+  "notion": "en_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "La carotte : « carrot ». La banane : « banana ». La fraise : « strawberry ». Le lait : « milk ».",
+  "reponse": "la carotte ➜ carrot ; la banane ➜ banana ; la fraise ➜ strawberry ; le lait ➜ milk",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🥕",
+    "carrot"
+   ],
+   [
+    "🍌",
+    "banana"
+   ],
+   [
+    "🍓",
+    "strawberry"
+   ],
+   [
+    "🥛",
+    "milk"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "🥕": "la carotte",
+   "🍌": "la banane",
+   "🍓": "la fraise",
+   "🥛": "le lait"
+  }
+ },
+ {
+  "id": "F_en_nourriture_03",
+  "matiere": "anglais",
+  "notion": "en_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "Le pain : « bread ». L'eau : « water ». La glace : « ice cream ». Le fromage : « cheese ».",
+  "reponse": "le pain ➜ bread ; l'eau ➜ water ; la glace ➜ ice cream ; le fromage ➜ cheese",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🍞",
+    "bread"
+   ],
+   [
+    "💧",
+    "water"
+   ],
+   [
+    "🍦",
+    "ice cream"
+   ],
+   [
+    "🧀",
+    "cheese"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "🍞": "le pain",
+   "💧": "l'eau",
+   "🍦": "la glace",
+   "🧀": "le fromage"
+  }
+ },
+ {
+  "id": "F_en_ecole_01",
+  "matiere": "anglais",
+  "notion": "en_ecole",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "L'ordinateur : « computer ». Le crayon : « pencil ». Le livre : « book ». La maîtresse : « teacher ».",
+  "reponse": "l'ordinateur ➜ computer ; le crayon ➜ pencil ; le livre ➜ book ; la maîtresse ➜ teacher",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "💻",
+    "computer"
+   ],
+   [
+    "✏️",
+    "pencil"
+   ],
+   [
+    "📖",
+    "book"
+   ],
+   [
+    "👩‍🏫",
+    "teacher"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "💻": "l'ordinateur",
+   "✏️": "le crayon",
+   "📖": "le livre",
+   "👩‍🏫": "la maîtresse"
+  }
+ },
+ {
+  "id": "F_en_ecole_02",
+  "matiere": "anglais",
+  "notion": "en_ecole",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "L'école : « school ». Les ciseaux : « scissors ». Le cartable : « school bag ». La règle : « ruler ».",
+  "reponse": "l'école ➜ school ; les ciseaux ➜ scissors ; le cartable ➜ school bag ; la règle ➜ ruler",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🏫",
+    "school"
+   ],
+   [
+    "✂️",
+    "scissors"
+   ],
+   [
+    "🎒",
+    "school bag"
+   ],
+   [
+    "📏",
+    "ruler"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "🏫": "l'école",
+   "✂️": "les ciseaux",
+   "🎒": "le cartable",
+   "📏": "la règle"
+  }
+ },
+ {
+  "id": "F_en_meteo_01",
+  "matiere": "anglais",
+  "notion": "en_meteo",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en anglais.",
+  "dire": "Relie chaque image à son mot en anglais.",
+  "langue": "en",
+  "explication": "Le nuage : « cloud ». La pluie : « rain ». La neige : « snow ». L'orage : « storm ».",
+  "reponse": "le nuage ➜ cloud ; la pluie ➜ rain ; la neige ➜ snow ; l'orage ➜ storm",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "☁️",
+    "cloud"
+   ],
+   [
+    "🌧️",
+    "rain"
+   ],
+   [
+    "❄️",
+    "snow"
+   ],
+   [
+    "⛈️",
+    "storm"
+   ]
+  ],
+  "langueTuiles": "en",
+  "legendes": {
+   "☁️": "le nuage",
+   "🌧️": "la pluie",
+   "❄️": "la neige",
+   "⛈️": "l'orage"
+  }
+ },
+ {
+  "id": "F_en_jours_01",
+  "matiere": "anglais",
+  "notion": "en_jours",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets ces jours dans l'ordre de la semaine.",
+  "dire": "Remets ces jours dans l'ordre de la semaine.",
+  "langue": "en",
+  "explication": "Dans l'ordre : « Monday », « Tuesday », « Wednesday », « Thursday ».",
+  "reponse": "Monday ➜ Tuesday ➜ Wednesday ➜ Thursday",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Monday",
+   "Tuesday",
+   "Wednesday",
+   "Thursday"
+  ],
+  "langueTuiles": "en"
+ },
+ {
+  "id": "F_en_jours_02",
+  "matiere": "anglais",
+  "notion": "en_jours",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets ces jours dans l'ordre de la semaine.",
+  "dire": "Remets ces jours dans l'ordre de la semaine.",
+  "langue": "en",
+  "explication": "Dans l'ordre : « Thursday », « Friday », « Saturday », « Sunday ».",
+  "reponse": "Thursday ➜ Friday ➜ Saturday ➜ Sunday",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Thursday",
+   "Friday",
+   "Saturday",
+   "Sunday"
+  ],
+  "langueTuiles": "en"
+ },
+ {
+  "id": "F_de_famille_01",
+  "matiere": "allemand",
+  "notion": "de_famille",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "Le bébé : « das Baby ». Le frère : « der Bruder ». Le papa : « der Vater ». La sœur : « die Schwester ».",
+  "reponse": "le bébé ➜ das Baby ; le frère ➜ der Bruder ; le papa ➜ der Vater ; la sœur ➜ die Schwester",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "👶",
+    "das Baby"
+   ],
+   [
+    "👦",
+    "der Bruder"
+   ],
+   [
+    "👨",
+    "der Vater"
+   ],
+   [
+    "👧",
+    "die Schwester"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "👶": "le bébé",
+   "👦": "le frère",
+   "👨": "le papa",
+   "👧": "la sœur"
+  }
+ },
+ {
+  "id": "F_de_corps_01",
+  "matiere": "allemand",
+  "notion": "de_corps",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "Le pied : « der Fuß ». L'œil : « das Auge ». La main : « die Hand ». Le nez : « die Nase ».",
+  "reponse": "le pied ➜ der Fuß ; l'œil ➜ das Auge ; la main ➜ die Hand ; le nez ➜ die Nase",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🦶",
+    "der Fuß"
+   ],
+   [
+    "👁️",
+    "das Auge"
+   ],
+   [
+    "✋",
+    "die Hand"
+   ],
+   [
+    "👃",
+    "die Nase"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "🦶": "le pied",
+   "👁️": "l'œil",
+   "✋": "la main",
+   "👃": "le nez"
+  }
+ },
+ {
+  "id": "F_de_corps_02",
+  "matiere": "allemand",
+  "notion": "de_corps",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "La langue : « die Zunge ». La jambe : « das Bein ». Le bras : « der Arm ». La bouche : « der Mund ».",
+  "reponse": "la langue ➜ die Zunge ; la jambe ➜ das Bein ; le bras ➜ der Arm ; la bouche ➜ der Mund",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "👅",
+    "die Zunge"
+   ],
+   [
+    "🦵",
+    "das Bein"
+   ],
+   [
+    "💪",
+    "der Arm"
+   ],
+   [
+    "👄",
+    "der Mund"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "👅": "la langue",
+   "🦵": "la jambe",
+   "💪": "le bras",
+   "👄": "la bouche"
+  }
+ },
+ {
+  "id": "F_de_nourriture_01",
+  "matiere": "allemand",
+  "notion": "de_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "Le fromage : « der Käse ». La carotte : « die Karotte ». Le gâteau : « der Kuchen ». La glace : « das Eis ».",
+  "reponse": "le fromage ➜ der Käse ; la carotte ➜ die Karotte ; le gâteau ➜ der Kuchen ; la glace ➜ das Eis",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🧀",
+    "der Käse"
+   ],
+   [
+    "🥕",
+    "die Karotte"
+   ],
+   [
+    "🍰",
+    "der Kuchen"
+   ],
+   [
+    "🍦",
+    "das Eis"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "🧀": "le fromage",
+   "🥕": "la carotte",
+   "🍰": "le gâteau",
+   "🍦": "la glace"
+  }
+ },
+ {
+  "id": "F_de_nourriture_02",
+  "matiere": "allemand",
+  "notion": "de_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "L'œuf : « das Ei ». La pomme : « der Apfel ». L'eau : « das Wasser ». La banane : « die Banane ».",
+  "reponse": "l'œuf ➜ das Ei ; la pomme ➜ der Apfel ; l'eau ➜ das Wasser ; la banane ➜ die Banane",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🥚",
+    "das Ei"
+   ],
+   [
+    "🍎",
+    "der Apfel"
+   ],
+   [
+    "💧",
+    "das Wasser"
+   ],
+   [
+    "🍌",
+    "die Banane"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "🥚": "l'œuf",
+   "🍎": "la pomme",
+   "💧": "l'eau",
+   "🍌": "la banane"
+  }
+ },
+ {
+  "id": "F_de_nourriture_03",
+  "matiere": "allemand",
+  "notion": "de_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "La pomme de terre : « die Kartoffel ». La fraise : « die Erdbeere ». Le chocolat : « die Schokolade ». Le pain : « das Brot ».",
+  "reponse": "la pomme de terre ➜ die Kartoffel ; la fraise ➜ die Erdbeere ; le chocolat ➜ die Schokolade ; le pain ➜ das Brot",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🥔",
+    "die Kartoffel"
+   ],
+   [
+    "🍓",
+    "die Erdbeere"
+   ],
+   [
+    "🍫",
+    "die Schokolade"
+   ],
+   [
+    "🍞",
+    "das Brot"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "🥔": "la pomme de terre",
+   "🍓": "la fraise",
+   "🍫": "le chocolat",
+   "🍞": "le pain"
+  }
+ },
+ {
+  "id": "F_de_ecole_01",
+  "matiere": "allemand",
+  "notion": "de_ecole",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "La maîtresse : « die Lehrerin ». Le crayon : « der Bleistift ». L'école : « die Schule ». L'ordinateur : « der Computer ».",
+  "reponse": "la maîtresse ➜ die Lehrerin ; le crayon ➜ der Bleistift ; l'école ➜ die Schule ; l'ordinateur ➜ der Computer",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "👩‍🏫",
+    "die Lehrerin"
+   ],
+   [
+    "✏️",
+    "der Bleistift"
+   ],
+   [
+    "🏫",
+    "die Schule"
+   ],
+   [
+    "💻",
+    "der Computer"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "👩‍🏫": "la maîtresse",
+   "✏️": "le crayon",
+   "🏫": "l'école",
+   "💻": "l'ordinateur"
+  }
+ },
+ {
+  "id": "F_de_ecole_02",
+  "matiere": "allemand",
+  "notion": "de_ecole",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "Les ciseaux : « die Schere ». La règle : « das Lineal ». Le cartable : « der Schulranzen ». Le livre : « das Buch ».",
+  "reponse": "les ciseaux ➜ die Schere ; la règle ➜ das Lineal ; le cartable ➜ der Schulranzen ; le livre ➜ das Buch",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "✂️",
+    "die Schere"
+   ],
+   [
+    "📏",
+    "das Lineal"
+   ],
+   [
+    "🎒",
+    "der Schulranzen"
+   ],
+   [
+    "📖",
+    "das Buch"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "✂️": "les ciseaux",
+   "📏": "la règle",
+   "🎒": "le cartable",
+   "📖": "le livre"
+  }
+ },
+ {
+  "id": "F_de_meteo_01",
+  "matiere": "allemand",
+  "notion": "de_meteo",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en allemand.",
+  "dire": "Relie chaque image à son mot en allemand.",
+  "langue": "de",
+  "explication": "L'arc-en-ciel : « der Regenbogen ». La neige : « der Schnee ». Le vent : « der Wind ». La pluie : « der Regen ».",
+  "reponse": "l'arc-en-ciel ➜ der Regenbogen ; la neige ➜ der Schnee ; le vent ➜ der Wind ; la pluie ➜ der Regen",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🌈",
+    "der Regenbogen"
+   ],
+   [
+    "❄️",
+    "der Schnee"
+   ],
+   [
+    "🌬️",
+    "der Wind"
+   ],
+   [
+    "🌧️",
+    "der Regen"
+   ]
+  ],
+  "langueTuiles": "de",
+  "legendes": {
+   "🌈": "l'arc-en-ciel",
+   "❄️": "la neige",
+   "🌬️": "le vent",
+   "🌧️": "la pluie"
+  }
+ },
+ {
+  "id": "F_de_jours_01",
+  "matiere": "allemand",
+  "notion": "de_jours",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets ces jours dans l'ordre de la semaine.",
+  "dire": "Remets ces jours dans l'ordre de la semaine.",
+  "langue": "de",
+  "explication": "Dans l'ordre : « Montag », « Dienstag », « Mittwoch », « Donnerstag ».",
+  "reponse": "Montag ➜ Dienstag ➜ Mittwoch ➜ Donnerstag",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Montag",
+   "Dienstag",
+   "Mittwoch",
+   "Donnerstag"
+  ],
+  "langueTuiles": "de"
+ },
+ {
+  "id": "F_de_jours_02",
+  "matiere": "allemand",
+  "notion": "de_jours",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets ces jours dans l'ordre de la semaine.",
+  "dire": "Remets ces jours dans l'ordre de la semaine.",
+  "langue": "de",
+  "explication": "Dans l'ordre : « Donnerstag », « Freitag », « Samstag », « Sonntag ».",
+  "reponse": "Donnerstag ➜ Freitag ➜ Samstag ➜ Sonntag",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Donnerstag",
+   "Freitag",
+   "Samstag",
+   "Sonntag"
+  ],
+  "langueTuiles": "de"
+ },
+ {
+  "id": "F_lb_famille_01",
+  "matiere": "luxembourgeois",
+  "notion": "lb_famille",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "Le papa : « de Papp ». Le bébé : « de Bëbee ». La mamie : « d'Bomi ». La maman : « d'Mamm ».",
+  "reponse": "le papa ➜ de Papp ; le bébé ➜ de Bëbee ; la mamie ➜ d'Bomi ; la maman ➜ d'Mamm",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "👨",
+    "de Papp"
+   ],
+   [
+    "👶",
+    "de Bëbee"
+   ],
+   [
+    "👵",
+    "d'Bomi"
+   ],
+   [
+    "👩",
+    "d'Mamm"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "👨": "le papa",
+   "👶": "le bébé",
+   "👵": "la mamie",
+   "👩": "la maman"
+  }
+ },
+ {
+  "id": "F_lb_corps_01",
+  "matiere": "luxembourgeois",
+  "notion": "lb_corps",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "La main : « d'Hand ». L'œil : « d'A ». L'oreille : « d'Ouer ». La bouche : « de Mond ».",
+  "reponse": "la main ➜ d'Hand ; l'œil ➜ d'A ; l'oreille ➜ d'Ouer ; la bouche ➜ de Mond",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "✋",
+    "d'Hand"
+   ],
+   [
+    "👁️",
+    "d'A"
+   ],
+   [
+    "👂",
+    "d'Ouer"
+   ],
+   [
+    "👄",
+    "de Mond"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "✋": "la main",
+   "👁️": "l'œil",
+   "👂": "l'oreille",
+   "👄": "la bouche"
+  }
+ },
+ {
+  "id": "F_lb_corps_02",
+  "matiere": "luxembourgeois",
+  "notion": "lb_corps",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "La dent : « den Zant ». La langue : « d'Zong ». La jambe : « d'Been ». Le nez : « d'Nues ».",
+  "reponse": "la dent ➜ den Zant ; la langue ➜ d'Zong ; la jambe ➜ d'Been ; le nez ➜ d'Nues",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🦷",
+    "den Zant"
+   ],
+   [
+    "👅",
+    "d'Zong"
+   ],
+   [
+    "🦵",
+    "d'Been"
+   ],
+   [
+    "👃",
+    "d'Nues"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "🦷": "la dent",
+   "👅": "la langue",
+   "🦵": "la jambe",
+   "👃": "le nez"
+  }
+ },
+ {
+  "id": "F_lb_nourriture_01",
+  "matiere": "luxembourgeois",
+  "notion": "lb_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "Le chocolat : « de Schockela ». La glace : « d'Glace ». Le fromage : « de Kéis ». La pomme : « den Apel ».",
+  "reponse": "le chocolat ➜ de Schockela ; la glace ➜ d'Glace ; le fromage ➜ de Kéis ; la pomme ➜ den Apel",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🍫",
+    "de Schockela"
+   ],
+   [
+    "🍦",
+    "d'Glace"
+   ],
+   [
+    "🧀",
+    "de Kéis"
+   ],
+   [
+    "🍎",
+    "den Apel"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "🍫": "le chocolat",
+   "🍦": "la glace",
+   "🧀": "le fromage",
+   "🍎": "la pomme"
+  }
+ },
+ {
+  "id": "F_lb_nourriture_02",
+  "matiere": "luxembourgeois",
+  "notion": "lb_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "La carotte : « d'Muert ». La banane : « d'Banann ». La pomme de terre : « d'Gromper ». La fraise : « d'Äerdbier ».",
+  "reponse": "la carotte ➜ d'Muert ; la banane ➜ d'Banann ; la pomme de terre ➜ d'Gromper ; la fraise ➜ d'Äerdbier",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🥕",
+    "d'Muert"
+   ],
+   [
+    "🍌",
+    "d'Banann"
+   ],
+   [
+    "🥔",
+    "d'Gromper"
+   ],
+   [
+    "🍓",
+    "d'Äerdbier"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "🥕": "la carotte",
+   "🍌": "la banane",
+   "🥔": "la pomme de terre",
+   "🍓": "la fraise"
+  }
+ },
+ {
+  "id": "F_lb_nourriture_03",
+  "matiere": "luxembourgeois",
+  "notion": "lb_nourriture",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "Le lait : « d'Mëllech ». L'eau : « d'Waasser ». Le pain : « d'Brout ». Le gâteau : « de Kuch ».",
+  "reponse": "le lait ➜ d'Mëllech ; l'eau ➜ d'Waasser ; le pain ➜ d'Brout ; le gâteau ➜ de Kuch",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🥛",
+    "d'Mëllech"
+   ],
+   [
+    "💧",
+    "d'Waasser"
+   ],
+   [
+    "🍞",
+    "d'Brout"
+   ],
+   [
+    "🍰",
+    "de Kuch"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "🥛": "le lait",
+   "💧": "l'eau",
+   "🍞": "le pain",
+   "🍰": "le gâteau"
+  }
+ },
+ {
+  "id": "F_lb_ecole_01",
+  "matiere": "luxembourgeois",
+  "notion": "lb_ecole",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "Le cartable : « de Schoulsak ». Le livre : « d'Buch ». Le crayon : « de Bläistëft ». L'ordinateur : « de Computer ».",
+  "reponse": "le cartable ➜ de Schoulsak ; le livre ➜ d'Buch ; le crayon ➜ de Bläistëft ; l'ordinateur ➜ de Computer",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "🎒",
+    "de Schoulsak"
+   ],
+   [
+    "📖",
+    "d'Buch"
+   ],
+   [
+    "✏️",
+    "de Bläistëft"
+   ],
+   [
+    "💻",
+    "de Computer"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "🎒": "le cartable",
+   "📖": "le livre",
+   "✏️": "le crayon",
+   "💻": "l'ordinateur"
+  }
+ },
+ {
+  "id": "F_lb_ecole_02",
+  "matiere": "luxembourgeois",
+  "notion": "lb_ecole",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "La règle : « de Lineal ». Les ciseaux : « d'Schéier ». La maîtresse : « d'Joffer ». L'école : « d'Schoul ».",
+  "reponse": "la règle ➜ de Lineal ; les ciseaux ➜ d'Schéier ; la maîtresse ➜ d'Joffer ; l'école ➜ d'Schoul",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "📏",
+    "de Lineal"
+   ],
+   [
+    "✂️",
+    "d'Schéier"
+   ],
+   [
+    "👩‍🏫",
+    "d'Joffer"
+   ],
+   [
+    "🏫",
+    "d'Schoul"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "📏": "la règle",
+   "✂️": "les ciseaux",
+   "👩‍🏫": "la maîtresse",
+   "🏫": "l'école"
+  }
+ },
+ {
+  "id": "F_lb_meteo_01",
+  "matiere": "luxembourgeois",
+  "notion": "lb_meteo",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "paires",
+  "question": "Relie chaque image à son mot en luxembourgeois.",
+  "dire": "Relie chaque image à son mot en luxembourgeois.",
+  "langue": "lb",
+  "explication": "L'orage : « d'Donnerwieder ». L'arc-en-ciel : « de Reebou ». Le nuage : « d'Wollek ». La pluie : « de Reen ».",
+  "reponse": "l'orage ➜ d'Donnerwieder ; l'arc-en-ciel ➜ de Reebou ; le nuage ➜ d'Wollek ; la pluie ➜ de Reen",
+  "distracteurs": [],
+  "lecture": true,
+  "paires": [
+   [
+    "⛈️",
+    "d'Donnerwieder"
+   ],
+   [
+    "🌈",
+    "de Reebou"
+   ],
+   [
+    "☁️",
+    "d'Wollek"
+   ],
+   [
+    "🌧️",
+    "de Reen"
+   ]
+  ],
+  "langueTuiles": "lb",
+  "legendes": {
+   "⛈️": "l'orage",
+   "🌈": "l'arc-en-ciel",
+   "☁️": "le nuage",
+   "🌧️": "la pluie"
+  }
+ },
+ {
+  "id": "F_lb_jours_01",
+  "matiere": "luxembourgeois",
+  "notion": "lb_jours",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets ces jours dans l'ordre de la semaine.",
+  "dire": "Remets ces jours dans l'ordre de la semaine.",
+  "langue": "lb",
+  "explication": "Dans l'ordre : « Méindeg », « Dënschdeg », « Mëttwoch », « Donneschdeg ».",
+  "reponse": "Méindeg ➜ Dënschdeg ➜ Mëttwoch ➜ Donneschdeg",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Méindeg",
+   "Dënschdeg",
+   "Mëttwoch",
+   "Donneschdeg"
+  ],
+  "langueTuiles": "lb"
+ },
+ {
+  "id": "F_lb_jours_02",
+  "matiere": "luxembourgeois",
+  "notion": "lb_jours",
+  "niveau": 2,
+  "mecaniques": [
+   "rapide",
+   "massive"
+  ],
+  "forme": "ordre",
+  "question": "Remets ces jours dans l'ordre de la semaine.",
+  "dire": "Remets ces jours dans l'ordre de la semaine.",
+  "langue": "lb",
+  "explication": "Dans l'ordre : « Donneschdeg », « Freideg », « Samschdeg », « Sonndeg ».",
+  "reponse": "Donneschdeg ➜ Freideg ➜ Samschdeg ➜ Sonndeg",
+  "distracteurs": [],
+  "lecture": true,
+  "suite": [
+   "Donneschdeg",
+   "Freideg",
+   "Samschdeg",
+   "Sonndeg"
+  ],
+  "langueTuiles": "lb"
+ }
+]

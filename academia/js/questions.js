@@ -24,6 +24,7 @@ async function lireDonnees(){
     if (Array.isArray(l) && !Q.charges.has(m)) { l.forEach(ajouterQuestion); Q.charges.add(m); }
   }));
   Q.pret = Q.notions.length > 0 && Q.charges.size === FICHIERS.length;
+  if (typeof chargerFormes === "function") await chargerFormes();   // the exercises without buttons (js/formes.js)
   if (Q.notions.length && typeof placerLesParties === "function") placerLesParties();
   if (!Q.pret) reessayerPlusTard();
 }
@@ -55,6 +56,8 @@ const ageMin = x => x && x.age_min != null ? x.age_min : 4;
 // one question for a notion and an attack: the generator when there is one, else a written question
 function questionPour(notion, mecanique){
   if (!notion) return null;
+  const f = typeof formePour === "function" && formePour(notion, mecanique);   // now and then: to order, to link, to sort
+  if (f) return f;
   const g = notion.generateur && typeof GENERATEURS !== "undefined" && GENERATEURS[notion.generateur];
   if (g) {
     try {

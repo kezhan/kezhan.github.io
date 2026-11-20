@@ -81,13 +81,17 @@ function entrerMaison(regionId){
     `Touche encore ${reste} Ombre${reste > 1 ? "s" : ""} dans les hautes herbes ${r.herbes}, et la porte s'ouvrira !`]);
   if (typeof jouerSon === "function") jouerSon("porte");
   const entrer = () => entrerChezLeChef(regionId), boss = CLES_BOSS[regionId];
+  // the Observatoire has a second room: its dome, in 3D (js/coupole.js)
+  const coupole = regionId === "observatoire" && typeof ouvrirCoupole === "function" ? () => ouvrirCoupole() : null;
   // a language house: the chief welcomes the child in its language first, written and said by its own recording
   // (« Welcome! », « Willkommen! », « Wëllkomm »; its meaning for the little one, the first times)
   const w = LANGUE_MAISON[regionId] && typeof motDuJeu === "function" ? motDuJeu("bienvenue", LANGUE_MAISON[regionId]) : null;
   const accueil = w ? `« ${w.mot} »${sensADire(w) ? ` : c'est « ${w.sens} », en ${w.nom} !` : ""} ` : "", langue = w ? {langue: w.langue} : {};
   if (P().age <= 5) return dialogue(nom, boss, [`${accueil}🔓 La porte est ouverte : le ${r.boss} t'attend !`],
-    [{texte: "⚔️", classe: "epees", aide: "Entrer", dit: "Touche les épées pour entrer !", action: entrer}], {quitter: true, ...langue});
+    [{texte: "⚔️", classe: "epees", aide: "Entrer", dit: "Touche les épées pour entrer !", action: entrer},
+     ...(coupole ? [{texte: "🔭", classe: "coupole", aide: "Coupole", dit: "Ou la lunette, pour voir les planètes !", action: coupole}] : [])], {quitter: true, ...langue});
   dialogue(nom, boss, [`${accueil}🔓 La porte s'ouvre… Le ${r.boss} t'attend à l'intérieur !`], [
     {texte: "⚔️ Entrer", dit: "Touche Entrer pour le combattre,", action: entrer},
-    {texte: "↩️ Pas maintenant", dit: "ou Pas maintenant pour rester dehors.", action: () => {}}], {quitter: true, ...langue});
+    {texte: "↩️ Pas maintenant", dit: "ou Pas maintenant pour rester dehors.", action: () => {}},
+    ...(coupole ? [{texte: "🔭 Coupole", classe: "coupole", dit: "Ou monte sous la coupole voir les planètes !", action: coupole}] : [])], {quitter: true, ...langue});
 }

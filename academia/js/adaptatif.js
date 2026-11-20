@@ -124,10 +124,24 @@ function placer(p){
   const age = p.age = ageDuJour(p);
   p.maitrise = p.maitrise || {};
   Q.notions.forEach(n => {   // arriving in Luxembourg at 7 does not make one speak Luxembourgish: no language is given
-    if (LANGUES_ETRANGERES.includes(n.matiere) || ageMin(n) > age - 1 || p.maitrise[n.id]) return;
+    if (!aPlacer(n, age) || p.maitrise[n.id]) return;
     p.maitrise[n.id] = {ok: 0, ko: 0, hist: "", acquis: true};
   });
-  p.place = PLACEMENT;
+  p.place = PLACEMENT; p.vues = Q.notions.map(n => n.id);
+  return true;
+}
+// supposed known at this age: never a foreign language, never a discovery (n.decouverte: met in play, whatever the age)
+const aPlacer = (n, age) => !LANGUES_ETRANGERES.includes(n.matiere) && !n.decouverte && ageMin(n) <= age - 1;
+// the notions added to the game since this child was placed (p.vues: those it has seen), placed in their turn: an
+// older child is not asked the little ones' new notions. true when something changed
+function placerNouvelles(p){
+  const vues = new Set(p.vues || []), ids = Q.notions.map(n => n.id);
+  if (p.vues && ids.every(i => vues.has(i))) return false;
+  Q.notions.forEach(n => {
+    if (vues.has(n.id) || !aPlacer(n, p.age) || p.maitrise[n.id]) return;
+    p.maitrise[n.id] = {ok: 0, ko: 0, hist: "", acquis: true};
+  });
+  p.vues = ids;
   return true;
 }
 // once the map of notions is there: the age of the day for every child; the games not placed yet (a network too slow
@@ -137,7 +151,7 @@ function placerLesParties(){
   Object.values(E.profils || {}).forEach(p => {
     const age = ageDuJour(p);
     if (p.age !== age) { p.age = age; change = true; }
-    if (p.place === PLACEMENT) return;
+    if (p.place === PLACEMENT) { if (placerNouvelles(p)) change = true; return; }
     Object.keys(p.maitrise = p.maitrise || {}).forEach(id => {
       const n = notionDe(id), e = p.maitrise[id];
       if (n && LANGUES_ETRANGERES.includes(n.matiere) && e.acquis && !e.ok && !e.ko) delete p.maitrise[id];
