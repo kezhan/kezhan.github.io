@@ -80,6 +80,7 @@ class Monde extends Phaser.Scene {
     // arrows only, without capturing them for the whole page (the first-name field keeps its space and arrows)
     this.touches = this.input.keyboard.addKeys({up: "UP", down: "DOWN", left: "LEFT", right: "RIGHT"}, false);
     if (typeof jouerAmbiance === "function") jouerAmbiance("village");
+    if (typeof annoncerRecoltes === "function") annoncerRecoltes(this);   // things wait on the island: a bubble over the boat (js/jeu/recoltes_ile.js)
     if (typeof annoncerFete === "function") annoncerFete(this);   // the Kleeschen calls the child, in December (js/jeu/fetes_village.js)
   }
   // the village answers unless another screen, a dialogue, a fight starting or a door opening is in front of it

@@ -4,8 +4,10 @@
    5 ans) et une bonne réponse à une question de la matière du bâtiment, à la hauteur de l'enfant (js/adaptatif.js).
    Les étincelles ne partent qu'après la bonne réponse : une erreur ne coûte rien, et une étape bâtie le reste.
    Un bâtiment fini a toujours quelque chose à apprendre à l'enfant (SAVOIRS_CHANTIER, une phrase vraie à chaque
-   visite) et son petit plaisir (js/jeu/chantiers_ile.js) ; la boulangerie cuit chaque jour une brioche pour le
-   compagnon (de l'XP).
+   visite), son petit plaisir (js/jeu/chantiers_ile.js), et fabrique sa chose à lui, à venir récupérer : prête au bout
+   de quelques heures de l'horloge (RECOLTES_CHANTIER ; la brioche de la boulangerie nourrit le compagnon, les autres
+   donnent quelques étincelles), puis le temps repart. P().chantiers.cadeaux garde le moment de la dernière récolte
+   de chaque bâtiment (« 2026-11-21T14:05:00 », heure de l'appareil ; une ancienne partie y a le jour de sa brioche).
    L'écran est dans js/chantier_vue.js, les bâtiments dessinés sur l'île dans js/jeu/chantiers_ile.js. */
 const ETAPES_CHANTIER = [
   {id: "fondations", nom: "les fondations", verbe: "posé"},
@@ -16,6 +18,17 @@ const ETAPES_CHANTIER = [
 const CHANTIER_FINI = ETAPES_CHANTIER.length;
 const PRIX_CHANTIER = {petit: [3, 6, 9, 12], grand: [10, 20, 30, 40]};   // per step, in étincelles (petit: up to 5 years)
 const XP_BRIOCHE = 12;
+// what each finished building makes, to come back for: its drawing (assets/<qualité>/chantiers/<chose>.png), how long
+// it takes (hours of the clock), what it gives (étincelles, or XP for the companion), how the cheffe says it
+const RECOLTES_CHANTIER = {
+  moulin: {chose: "farine", heures: 2, etincelles: 2, nom: "le sac de farine", dit: "Le moulin a moulu un sac de farine"},
+  boulangerie: {chose: "brioche", heures: 3, xp: XP_BRIOCHE, nom: "la brioche", dit: "La boulangerie a cuit une brioche"},
+  kiosque: {chose: "note", heures: 3, etincelles: 2, nom: "la note de musique", dit: "Le kiosque t'offre une note de musique"},
+  serre: {chose: "tomate", heures: 4, etincelles: 3, nom: "la tomate", dit: "Une tomate a mûri dans la serre"},
+  bibliotheque: {chose: "livre", heures: 5, etincelles: 4, nom: "le livre", dit: "Un nouveau livre est arrivé à la bibliothèque"},
+  phare: {chose: "coquillage", heures: 6, etincelles: 5, nom: "le coquillage", dit: "La mer a posé un coquillage au pied du phare"}
+};
+const HEURE_MS = 3600000;
 // each building: the subjects of its questions (each in turn), the notions of its own theme (asked two times out of
 // three when the child has them: known, of the moment, or a discovery of their age), and the names of its own steps
 const SUJETS_CHANTIER = {
@@ -49,23 +62,24 @@ const SAVOIRS_CHANTIER = {
 };
 // what the cheffe promises when a building is finished
 const PROMESSES_CHANTIER = {
-  boulangerie: "Chaque jour, elle cuira une brioche pour ton compagnon. Touche-la sur l'île !",
-  phare: "Sa lampe s'allumera chaque soir. Touche-le sur l'île pour l'allumer !",
-  moulin: "Ses ailes tournent dans le vent. Va le voir sur l'île !",
-  bibliotheque: "Touche-la sur l'île : elle a toujours quelque chose à t'apprendre.",
-  serre: "Les plantes y poussent au chaud. Touche-la sur l'île !",
-  kiosque: "Touche-le sur l'île pour entendre sa musique !"
+  boulangerie: "Elle cuira des brioches pour ton compagnon. Reviens souvent les chercher sur l'île !",
+  phare: "Sa lampe s'allumera chaque soir, et la mer y posera des coquillages. Reviens souvent les chercher !",
+  moulin: "Ses ailes tournent dans le vent, et il moudra de la farine. Reviens souvent la chercher !",
+  bibliotheque: "Elle a toujours quelque chose à t'apprendre, et de nouveaux livres y arriveront. Reviens souvent les chercher !",
+  serre: "Les plantes y poussent au chaud : des tomates y mûriront. Reviens souvent les chercher !",
+  kiosque: "Touche-le sur l'île pour entendre sa musique : il t'offrira des notes. Reviens souvent les chercher !"
 };
 
 // the chantiers as they should be, whatever the save holds (an old game has none; js/etat.js, reparer)
 function reparerChantiers(c){
   const objet = v => !!v && typeof v === "object" && !Array.isArray(v), ok = objet(c);
   const date = v => typeof v === "string" && /^\d{4}-\d\d-\d\d$/.test(v) ? v : null;
+  const moment = v => typeof v === "string" && /^\d{4}-\d\d-\d\d(T\d\d:\d\d:\d\d)?$/.test(v) ? v : null;   // a harvest: its day (old games), or day and hour
   const lus = ok && objet(c.batiments) ? c.batiments : {}, batiments = {}, cadeaux = {}, savoirs = {};
   Object.keys(SUJETS_CHANTIER).forEach(id => {
     const b = objet(lus[id]) ? lus[id] : {}, etape = Math.max(0, Math.min(CHANTIER_FINI, Math.floor(Number(b.etape) || 0)));
     batiments[id] = {etape, fini: etape >= CHANTIER_FINI ? date(b.fini) || jour() : null};
-    if (ok && objet(c.cadeaux) && date(c.cadeaux[id])) cadeaux[id] = c.cadeaux[id];
+    if (ok && objet(c.cadeaux) && moment(c.cadeaux[id])) cadeaux[id] = c.cadeaux[id];
     if (ok && objet(c.savoirs) && c.savoirs[id] > 0) savoirs[id] = Math.floor(c.savoirs[id]);
   });
   return {batiments, cadeaux, savoirs, tour: Math.max(0, Math.floor(ok && Number(c.tour) || 0))};
@@ -124,13 +138,28 @@ function savoirChantier(id){
   c.savoirs[id] = k + 1; sauver();
   return l[k % l.length];
 }
-// the bakery's brioche of the day for the companion: XP (twice as much for one far behind the team, as in the fights);
-// null when it was already given today, or without a companion
-function briocheDuJour(){
-  const p = P(), c = chantiersDe(p), a = actif();
-  if (!a || !chantierFini("boulangerie", p) || c.cadeaux.boulangerie === jour()) return null;
-  c.cadeaux.boulangerie = jour();
-  const xp = XP_BRIOCHE * rattrapage(a), gain = gagnerXP(a, xp);
+// ---- the harvests: what a finished building has made since the last visit
+const maintenantRecolte = () => typeof maintenantJeu === "function" ? maintenantJeu() : Date.now();
+const momentRecolte = (t = maintenantRecolte()) => { const d = new Date(t), z = n => String(n).padStart(2, "0"); return `${jour(t)}T${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`; };
+// how long before the building's thing is ready, in milliseconds (0: ready ; null: not finished, or nothing to give)
+function attenteRecolte(id, p = P()){
+  const r = RECOLTES_CHANTIER[id], c = chantiersDe(p);
+  if (!r || !c || !chantierFini(id, p)) return null;
+  const dernier = c.cadeaux[id] ? new Date(c.cadeaux[id]).getTime() : 0;
+  return Math.max(0, (dernier || 0) + r.heures * HEURE_MS - maintenantRecolte());
+}
+const recoltePrete = (id, p = P()) => attenteRecolte(id, p) === 0;
+const recoltesPretes = (p = P()) => p && typeof p.chantiers === "object" ? Object.keys(RECOLTES_CHANTIER).filter(id => recoltePrete(id, p)) : [];
+// the thing is taken, the time starts again: {chose, nom, etincelles} or, for the brioche, {xp, compagnon, ...gain}.
+// null when nothing is ready (the brioche needs a companion to eat it)
+function recolterChantier(id){
+  const p = P(), c = chantiersDe(p), r = RECOLTES_CHANTIER[id], a = actif();
+  if (!recoltePrete(id, p) || (r.xp && !a)) return null;
+  c.cadeaux[id] = momentRecolte();
+  let fait = {id, chose: r.chose, nom: r.nom, dit: r.dit};
+  if (r.xp) { const xp = r.xp * rattrapage(a); fait = {...fait, ...gagnerXP(a, xp), xp, compagnon: a}; }
+  else { p.etincelles += r.etincelles; fait.etincelles = r.etincelles; }
+  if (typeof noterJournal === "function") noterJournal("recolte", {b: id});
   sauver();
-  return {...gain, xp, compagnon: a};
+  return fait;
 }

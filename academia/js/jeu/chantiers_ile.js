@@ -6,7 +6,9 @@
    2. Toucher un terrain, son bâtiment ou son panneau : le héros va devant le panneau, le panneau frémit. Un bâtiment
       à construire : l'écran du chantier s'ouvre (la cheffe y dit l'étape suivante et son prix). Un bâtiment fini : son
       petit plaisir sur l'île, et la cheffe dit une chose vraie à apprendre (js/chantiers.js, SAVOIRS_CHANTIER).
-   3. Les plaisirs : la boulangerie cuit chaque jour une brioche pour le compagnon (de l'XP) ; la lampe du phare
+   3. Ce qu'un bâtiment fini a fabriqué flotte dans une bulle au-dessus de lui (js/jeu/recoltes_ile.js) : le toucher
+      le récupère (js/chantiers.js, recolterChantier : la brioche nourrit le compagnon, les autres donnent des étincelles), et
+      la cheffe dit de revenir en chercher. Les plaisirs, à chaque visite : la lampe du phare
       s'allume quand on le touche, et toute seule quand le soir tombe sur l'île ; les ailes du moulin tournent, et plus
       vite quand on le touche ; le kiosque joue son air, des notes s'envolent ; la serre et la bibliothèque brillent.
    4. Au retour de l'écran du chantier, l'étape bâtie apparaît sur l'île, et la cheffe lève les bras.
@@ -14,7 +16,8 @@
    js/jeu/chantiers_ile_pieces.js). Chaque terrain vu est noté dans P().histoire (terrain_<id>). */
 const uniteChantier = () => (QUALITE === "leger" ? 2 : 1) / 8;   // world units per pixel of the buildings' drawings
 // what a finished building needs besides its own drawing
-const PLUS_CHANTIER = {moulin: ["moulin_ailes"], phare: ["phare_lumiere"], kiosque: ["note"], boulangerie: ["brioche"]};
+const PLUS_CHANTIER = {moulin: ["moulin_ailes", "farine"], phare: ["phare_lumiere", "coquillage"], kiosque: ["note"], boulangerie: ["brioche"],
+  serre: ["tomate"], bibliotheque: ["livre"]};
 const AIR_KIOSQUE = [523, 659, 784, 659, 880, 784, 1047, 784, 659, 784, 523];   // the bandstand's own little tune
 // the drawings the island shows for this child: each building at its step, and what the finished ones need
 function imagesChantiers(p = P()){
@@ -32,6 +35,7 @@ class ChantiersIle {
   constructor(scene){
     this.s = scene; this.vise = null; this.terrains = scene.carte.terrains || []; this.batiments = {};
     this.terrains.forEach(t => this.maj(t.id));
+    this.recoltes = new RecoltesIle(this);   // what the finished buildings have made, in a bubble over them
     // the lighthouse lights up by itself when the evening falls on the island (js/jeu/histoire_village.js)
     scene.time.addEvent({delay: 1500, loop: true, callback: () => { if (scene.histoire && scene.histoire.voile && !this.allume) this.allumer(0); }});
   }
@@ -111,7 +115,7 @@ class ChantiersIle {
       || (this.batiments[t.id] && typeof sousLeDoigt === "function" && sousLeDoigt(this.s, this.batiments[t.id].im, wx, wy))) || null;
   }
   touche(wx, wy){
-    const t = this.terrainSous(wx, wy), s = this.s;
+    const bulle = this.recoltes.sous(wx, wy), t = bulle ? this.terrain(bulle) : this.terrainSous(wx, wy), s = this.s;
     this.vise = null;
     if (!t) return false;
     s.marquer(t.devant.x, t.devant.y);
@@ -154,16 +158,16 @@ class ChantiersIle {
     const s = this.s, id = t.id, b = this.batiments[id], p = this.pied(t), n = s.pnj.find(q => q.cle === "cheffe");
     if (n && n.s) s.vie.saluer(n.s, 1200);
     if (b && b.im && !calme()) for (let i = 0; i < 5; i++) effetHD(s, "toucher", p.x + (Math.random() - .5) * 50, p.y - 8 - Math.random() * 36, 10, b.im.depth + 1);
-    if (id === "boulangerie") {
-      const g = briocheDuJour();
-      if (g) return this.brioche(g);
-    }
+    const fait = recolterChantier(id), r = RECOLTES_CHANTIER[id];   // what it has made is taken, when it is ready
+    if (fait) { this.recoltes.prendre(id); if (typeof majBarre === "function") majBarre(); }
+    if (fait && fait.xp) return this.brioche(fait);
     if (id === "phare") this.allumer(8000);
     if (id === "moulin" && b && b.tourne) { b.tourne.timeScale = 4; s.time.delayedCall(4000, () => { if (b.tourne) b.tourne.timeScale = 1; }); }
     if (id === "kiosque") this.jouer(p);
     else if (typeof jouerSon === "function") jouerSon("scintille");
     const debut = {phare: "Clic ! La lampe du phare s'allume. ", kiosque: "Écoute la musique du kiosque ! ", moulin: "Regarde les ailes tourner ! "}[id] || "";
-    return this.dire(debut + savoirChantier(id));
+    if (fait) return this.dire(`${debut}${fait.dit} : ${etincellesDites(fait.etincelles)} pour toi ! ${savoirChantier(id)} Reviens plus tard : il y en aura encore !`);
+    return this.dire(debut + savoirChantier(id) + (r ? ` Reviens plus tard chercher ${r.nom} !` : ""));
   }
   // the bandstand plays its tune, notes fly up
   jouer(p){
@@ -178,7 +182,7 @@ class ChantiersIle {
         duration: 1500, ease: "Sine.easeOut", onComplete: () => im.destroy()});
     });
   }
-  // the day's brioche: it pops over the companion, who eats it (XP, its evolution when it wins it)
+  // the bakery's brioche: it pops over the companion, who eats it (XP, its evolution when it wins it)
   async brioche(g){
     const s = this.s, c = s.compagnon, nom = nomCompagnon(g.compagnon);
     sfx.niveau();
@@ -186,7 +190,7 @@ class ChantiersIle {
       const im = this.poser("brioche", c.x, c.y - 22, 9000);
       if (im) { im.setScale(0); s.tweens.add({targets: im, scale: uniteChantier() * .6, y: c.y - 16, duration: 500, ease: "Back.easeOut", hold: 900, yoyo: true, onComplete: () => im.destroy()}); }
     }
-    await this.dire(`La boulangerie a cuit une brioche pour ${nom} ! Miam : ${g.xp} points d'expérience !`);
+    await this.dire(`La boulangerie a cuit une brioche pour ${nom} ! Miam : ${g.xp} points d'expérience ! Reviens plus tard : elle en cuira une autre !`);
     if (g.evolue && s.sys.isActive() && ecranCourant === "monde") { await sceneEvolution(g.compagnon, g.stadeAvant); montrer("monde"); }
     if (s.sys.isActive()) s.majCompagnon();
   }

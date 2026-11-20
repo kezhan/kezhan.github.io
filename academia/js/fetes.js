@@ -17,6 +17,13 @@ function jourFete(){
   try { return localStorage.getItem("academia.jourTest") || ""; } catch (e) { return ""; }
 }
 const moisJourFete = () => jourFete().slice(5);
+// the clock of what takes time to be ready (the harvests of the island's buildings, js/chantiers.js): the device's. In a
+// piloted browser or in TEST mode, « academia.avanceTest » (milliseconds) is added: a recette makes the hours pass
+function maintenantJeu(){
+  let plus = 0;
+  if (TEST || navigator.webdriver) { try { plus = Number(localStorage.getItem("academia.avanceTest")) || 0; } catch (e) {} }
+  return Date.now() + plus;
+}
 
 // this year's Kleeschen in the child's game (a new year starts again, empty)
 function etatKleeschen(p = P()){
