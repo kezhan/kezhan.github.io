@@ -1,0 +1,25 @@
+/* Académia : l'écran d'une chose touchée dans une maison (js/maison_chose.js). En haut son nom, les étincelles et la
+   croix (la tête du jardin, style_jardin.css) ; au milieu la chose vue de près, sur le mur et le plancher aux couleurs
+   de sa maison ; en bas sa bulle et le gros bouton de l'exercice (ceux du chantier, style_chantier.css). Tout tient
+   sans défiler ; sur un écran bas, la chose à gauche, la bulle et le bouton à droite. */
+#chose{overflow:hidden; --mur:#F3D9A4; --mur2:#E9C98A; --plinthe:#8A5A3A; --sol:#C99A62; --sol2:#B98850;
+  background:linear-gradient(180deg, var(--mur) 0, var(--mur2) 54%, var(--plinthe) 54%, var(--plinthe) 56.5%, var(--sol) 56.5%, var(--sol2) 100%)}
+#chose[data-region="dojo"]{--mur:#F6C9B8; --mur2:#EDB09C; --plinthe:#8E3B34; --sol:#D9A066; --sol2:#C58B52}
+#chose[data-region="albion"]{--mur:#BFE3F2; --mur2:#A2D2E8; --plinthe:#2F4C8C; --sol:#C99A62; --sol2:#B98850}
+#chose[data-region="germania"]{--mur:#CFE6C2; --mur2:#B6D6A6; --plinthe:#4E6B3C; --sol:#B98A5E; --sol2:#A5774C}
+#chose[data-region="duche"]{--mur:#F7E3B0; --mur2:#EFD08C; --plinthe:#A8452F; --sol:#C79862; --sol2:#B5854F}
+#chose[data-region="jardin"]{--mur:#E3D2F3; --mur2:#D2BCEA; --plinthe:#6C4C9C; --sol:#C9A06E; --sol2:#B88D5A}
+#chose[data-region="observatoire"]{--mur:#3B3A7A; --mur2:#2F2E68; --plinthe:#1D1640; --sol:#6A5C8E; --sol2:#584B7A}
+.chose-dessin{height:min(46dvh, 72vw); aspect-ratio:1; display:grid; place-items:center}
+.chose-dessin img{display:block; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 8px 0 rgba(29,22,64,.18))}
+#btnExerciceChose{min-height:76px; padding:6px 30px; font-size:26px; white-space:nowrap}
+#btnExerciceChose .icone{width:44px; height:44px}
+#btnExerciceChose.image{min-width:132px} #btnExerciceChose.image .icone{width:58px; height:58px}
+#chose .panneau{--scene:26vh; z-index:6}
+
+@media (orientation:landscape) and (max-height:560px){
+  .chose-dessin{height:min(calc(100dvh - 96px), 40vw)}
+  #btnExerciceChose{min-height:60px; font-size:22px} #btnExerciceChose .icone{width:36px; height:36px}
+  #btnExerciceChose.image .icone{width:46px; height:46px}
+}
+@media (max-width:440px){ #btnExerciceChose{font-size:22px; padding:6px 18px} }

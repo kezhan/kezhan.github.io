@@ -1,4 +1,4 @@
-/* Académia : la coupole de l'Observatoire, une salle en 3D derrière la porte ouverte (js/jeu/lanceur.js, entrerMaison).
+/* Académia : la coupole de l'Observatoire, une salle en 3D que la lunette de la maison ouvre (js/maison_chose.js, ouvrirChose).
    Le Sage y montre le ciel : les planètes autour du Soleil (on en touche une, il dit son nom et ce qu'elle a de
    spécial), puis la Terre qui tourne (le jour et la nuit au Luxembourg). Le bouton « Exercice » pose une question de
    sciences sur ce qu'on vient de voir ; une bonne réponse donne une étincelle. La scène est dans js/coupole_3d.js ;

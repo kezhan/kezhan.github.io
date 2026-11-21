@@ -43,10 +43,11 @@ function commencerCombat(regionId, boss){
   JEU.scene.sleep("monde");
   lancerCombat(regionId, boss, o && o.region === regionId ? {cle: o.cle, brillante: o.brillante} : null);
 }
-// through the open door to the boss: the village holds still and the screen closes in a star on the door
-// (js/transition.js, when the fights have it)
+// to the boss, through the open door of his room: the scene holds still and the screen closes in a star on the door
+// (js/transition.js, when the fights have it); the door is the one at the back of the house's room
+// (js/jeu/interieur_maison.js), or the house's own when the fight is asked from the village
 function entrerChezLeChef(regionId){
-  const m = JEU.scene.getScene("monde"), p = m && m.portes && m.portes.portes[regionId];
+  const m = JEU.scene.getScene("monde"), p = m && (m.interieur ? m.maison.centre : m.portes && m.portes.portes[regionId]);
   if (typeof fermerEtoile !== "function" || !p || !m.sys.isActive()) return commencerCombat(regionId, true);
   m.verrou = true; m.chemin = [];
   const [x, y] = m.ecranDe(p.x, p.y);
@@ -72,26 +73,49 @@ function majBarre(){
   imageReessayee($("gPortrait"), `${DOSSIER_HD}/portraits/${herosHD(p)}.png`);
 }
 
-// a house: its boss waits once four Ombres of the tall grass nearby are beaten. The buttons are said aloud; up to
-// 5 years old, one big button with the swords, named by the voice; walking away (a touch on the village) is « not now »
+// through a house's door, one way or the other: the place changes (P().lieu, js/etat.js) and the scene starts again
+// there, after a short fade
+const PORTE = {franchie: false};
+function franchirPorte(lieu){
+  const p = P(), m = JEU.scene.getScene("monde"); if (!p) return;
+  if (typeof jouerSon === "function") jouerSon("porte");
+  p.lieu = lieu; sauver();
+  PORTE.franchie = true;
+  if (TEST || !m || !m.sys.isActive()) return entrerMonde();
+  m.verrou = true; m.chemin = [];
+  m.cameras.main.fadeOut(180, 29, 22, 64);
+  m.time.delayedCall(190, () => entrerMonde());
+}
+// a house of the village: its door opens at once, from the first visit, on its room (js/jeu/carte_maison.js), where
+// the hero walks with his companion. He comes in on the doormat every time, and will come back in front of the house
 function entrerMaison(regionId){
+  const p = P(), m = JEU.scene.getScene("monde");
+  if (typeof MAISONS !== "object" || !MAISONS[regionId]) return porteDuChef(regionId);
+  if (m && m.case && !m.interieur) garderPosition(p, m.lieu, m.case);
+  if (p.positions) delete p.positions[lieuMaison(regionId)];
+  if (typeof noterJournal === "function") noterJournal("maison", {m: regionId});
+  franchirPorte(lieuMaison(regionId));
+}
+// out by the doormat: back in the village, in front of the house
+function sortirMaison(){ franchirPorte("village"); }
+
+// the door at the back of a house's room: the chief's. He waits once four Ombres of the tall grass nearby are beaten;
+// until then the door says how many are left. The buttons are said aloud; up to 5 years old, one big button with the
+// swords, named by the voice; walking away (a touch on the room) is « not now »
+function porteDuChef(regionId){
   const r = regionDe(regionId), st = regionEtat(regionId), reste = ETAPES - st.etape;
   const nom = `${r.icone} ${r.nom}`;   // the house's drawn symbol before its name (js/icones.js), a padlock in the line
-  if (reste > 0) return dialogue(nom, CLES_OMBRES["Néantik"], [`🔒 ${r.nom}. Une Ombre garde la porte fermée.`,
+  if (reste > 0) return dialogue(nom, CLES_OMBRES["Néantik"], [`🔒 La salle du ${r.boss} est fermée : une Ombre garde sa porte.`,
     `Touche encore ${reste} Ombre${reste > 1 ? "s" : ""} dans les hautes herbes ${r.herbes}, et la porte s'ouvrira !`]);
   if (typeof jouerSon === "function") jouerSon("porte");
   const entrer = () => entrerChezLeChef(regionId), boss = CLES_BOSS[regionId];
-  // the Observatoire has a second room: its dome, in 3D (js/coupole.js)
-  const coupole = regionId === "observatoire" && typeof ouvrirCoupole === "function" ? () => ouvrirCoupole() : null;
   // a language house: the chief welcomes the child in its language first, written and said by its own recording
   // (« Welcome! », « Willkommen! », « Wëllkomm »; its meaning for the little one, the first times)
   const w = LANGUE_MAISON[regionId] && typeof motDuJeu === "function" ? motDuJeu("bienvenue", LANGUE_MAISON[regionId]) : null;
   const accueil = w ? `« ${w.mot} »${sensADire(w) ? ` : c'est « ${w.sens} », en ${w.nom} !` : ""} ` : "", langue = w ? {langue: w.langue} : {};
   if (P().age <= 5) return dialogue(nom, boss, [`${accueil}🔓 La porte est ouverte : le ${r.boss} t'attend !`],
-    [{texte: "⚔️", classe: "epees", aide: "Entrer", dit: "Touche les épées pour entrer !", action: entrer},
-     ...(coupole ? [{texte: "🔭", classe: "coupole", aide: "Coupole", dit: "Ou la lunette, pour voir les planètes !", action: coupole}] : [])], {quitter: true, ...langue});
-  dialogue(nom, boss, [`${accueil}🔓 La porte s'ouvre… Le ${r.boss} t'attend à l'intérieur !`], [
+    [{texte: "⚔️", classe: "epees", aide: "Entrer", dit: "Touche les épées pour entrer !", action: entrer}], {quitter: true, ...langue});
+  dialogue(nom, boss, [`${accueil}🔓 La porte s'ouvre… Le ${r.boss} t'attend derrière !`], [
     {texte: "⚔️ Entrer", dit: "Touche Entrer pour le combattre,", action: entrer},
-    {texte: "↩️ Pas maintenant", dit: "ou Pas maintenant pour rester dehors.", action: () => {}},
-    ...(coupole ? [{texte: "🔭 Coupole", classe: "coupole", dit: "Ou monte sous la coupole voir les planètes !", action: coupole}] : [])], {quitter: true, ...langue});
+    {texte: "↩️ Pas maintenant", dit: "ou Pas maintenant pour rester ici.", action: () => {}}], {quitter: true, ...langue});
 }

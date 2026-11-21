@@ -99,9 +99,9 @@ function construireCarte(){
     }
   // villagers on the square
   const pnj = [
-    {x: 19, y: 14, cle: "sage", nom: "Le Sage", dir: 0, dit: ["Bienvenue à Académia, Gardien !", "Des Ombres se cachent dans les hautes herbes, chacune aux couleurs de sa maison. Touche-en une : ton compagnon la combat avec ce que tu sais !", "Quand tu as vaincu quatre Ombres près d'une maison, sa porte s'ouvre : le chef des Ombres t'y attend."]},
+    {x: 19, y: 14, cle: "sage", nom: "Le Sage", dir: 0, dit: ["Bienvenue à Académia, Gardien !", "Des Ombres se cachent dans les hautes herbes, chacune aux couleurs de sa maison. Touche-en une : ton compagnon la combat avec ce que tu sais !", "Entre dans les maisons : tout s'y touche ! Quand tu as vaincu quatre Ombres près d'une maison, la porte du fond s'ouvre : le chef des Ombres t'y attend."]},
     {x: 25, y: 15, cle: "hugo", nom: "Hugo", dir: 2, dit: ["Chaque bonne réponse rend ton compagnon plus fort.", "Au niveau 15, il évolue !"]},
-    {x: 22, y: 18, cle: "paco", nom: "Paco", dir: 1, dit: ["Touche l'endroit où tu veux aller, ton héros y marche tout seul. Touche une maison pour aller à sa porte.", "Ton équipe est dans le sac 🎒, en haut de l'écran.", "Le potager, à côté de la Montagne de Germania, est ton jardin : touche-le pour planter, arroser et récolter !"]},
+    {x: 22, y: 18, cle: "paco", nom: "Paco", dir: 1, dit: ["Touche l'endroit où tu veux aller, ton héros y marche tout seul. Touche une maison pour y entrer.", "Ton équipe est dans le sac 🎒, en haut de l'écran.", "Le potager, à côté de la Montagne de Germania, est ton jardin : touche-le pour planter, arroser et récolter !"]},
     {x: 32, y: 14, cle: "marchand", nom: "Le marchand", dir: 0, boutique: true, dit: ["Bonjour ! Touche mon étal : mes jokers et mes accessoires t'attendent."]}   // his shop: js/marchand.js
   ];
   if (typeof habitantsDeFete === "function") pnj.push(...habitantsDeFete());   // the Kleeschen and the Houseker, in December (js/jeu/fetes_village.js)

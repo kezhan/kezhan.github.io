@@ -8,7 +8,9 @@
    La même scène montre l'Île des Bâtisseurs quand la partie y est (P().lieu, js/etat.js) : sa carte (js/jeu/carte_ile.js),
    ses terrains et sa cheffe de chantier (js/jeu/ile_village.js) ; ce que l'île n'a pas (la place, le jardin, le
    marchand, les portes des maisons) y est absent. La barque et son passeur mènent d'un village à l'autre
-   (js/jeu/voyage.js) ; le héros revient, dans chaque village, sur la case où il s'était arrêté. */
+   (js/jeu/voyage.js) ; le héros revient, dans chaque village, sur la case où il s'était arrêté.
+   Et l'intérieur d'une maison (P().lieu = "maison_<région>") : sa salle (js/jeu/carte_maison.js), ses choses à toucher,
+   la porte de la salle du chef et la sortie (js/jeu/interieur_maison.js) ; la vue y reste fixe, sur toute la salle. */
 const PAS_MS = 170;
 
 class Monde extends Phaser.Scene {
@@ -16,20 +18,23 @@ class Monde extends Phaser.Scene {
   // the high-definition drawings this village needs: hero, villagers, companion, every Ombre, the effects
   preload(){
     reessayerImages(this);
-    const a = actif(), ile = lieuDe(P()) === "ile";
-    chargerAtlas(this, [herosHD(P()), ...(ile ? ["passeur", "cheffe"] : ["sage", "hugo", "paco", ...(typeof habitantsDeFete === "function" ? habitantsDeFete().map(n => n.cle) : [])]), a && cleDe(a), ...Object.values(CLES_OMBRES)]);
+    const a = actif(), ile = lieuDe(P()) === "ile", dedans = maisonDuLieu(lieuDe(P())), h = dedans && MAISONS[dedans].habitant;
+    chargerAtlas(this, [herosHD(P()), ...(dedans ? (h ? [h.cle] : []) : ile ? ["passeur", "cheffe"] : ["sage", "hugo", "paco", ...(typeof habitantsDeFete === "function" ? habitantsDeFete().map(n => n.cle) : [])]), a && cleDe(a), ...Object.values(CLES_OMBRES)]);
     chargerEffetsHD(this.load, QUALITE);
     chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
-    if (ile) { chargerIleHD(this.load, QUALITE); chargerChantiersHD(this.load); }   // the island's ground and pieces, the child's buildings (js/jeu/chantiers_ile.js)
+    if (dedans) chargerMaisonHD(this.load, dedans);   // the room and its things (js/jeu/interieur_maison.js)
+    else if (ile) { chargerIleHD(this.load, QUALITE); chargerChantiersHD(this.load); }   // the island's ground and pieces, the child's buildings (js/jeu/chantiers_ile.js)
     else chargerPlaceHD(this.load);   // the square of the Arbre-Monde (js/jeu/arbre_monde.js)
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
   }
   create(){
-    this.lieu = lieuDe(P()); this.ile = this.lieu === "ile";
-    this.carte = this.ile ? construireCarteIle() : construireCarte();
-    dessinerVillageHD(this, this.carte);   // js/jeu/decor_village_hd.js
+    this.lieu = lieuDe(P()); this.ile = this.lieu === "ile"; this.interieur = maisonDuLieu(this.lieu);   // a house's room: its region
+    const dedans = !!this.interieur, absent = this.ile || dedans;   // what only the first village has is absent elsewhere
+    this.carte = dedans ? construireCarteMaison(this.interieur) : this.ile ? construireCarteIle() : construireCarte();
+    if (dedans) dessinerMaisonHD(this, this.carte);   // js/jeu/interieur_maison.js
+    else dessinerVillageHD(this, this.carte);   // js/jeu/decor_village_hd.js
     this.cameras.main.setBounds(0, 0, LARG * CASE, HAUT * CASE).setRoundPixels(true);
     // each house's name, crisp at any zoom on a rounded pill, over the sign planted in front of it: it shows when the
     // hero comes near; the sign's stars count the Ombres beaten before the door opens (js/jeu/decor_village_hd_jeu.js)
@@ -61,12 +66,13 @@ class Monde extends Phaser.Scene {
     this.guide = new GuideVillage(this);     // the arrow before the first fight, the hand when nothing happens
     this.silhouettes = new SilhouettesHD(this);   // the hero and the companion seen through what hides them
     // the first village's places; on the island they are absent and answer nothing (js/jeu/ile_village.js)
-    this.jardin = this.ile ? lieuAbsent() : new JardinVillage(this);   // the vegetable garden opens the child's garden
-    this.place = this.ile ? lieuAbsent() : new ArbreMonde(this);       // the Arbre-Monde, the chiefs' gifts, the missions' board
-    this.histoire = this.ile ? new HistoireIle(this) : new HistoireVillage(this);   // the goal, the gifts, the words, the evening
-    this.marchand = this.ile ? lieuAbsent() : new MarchandVillage(this);   // the merchant's stall opens his shop
-    this.betes = new BetesVillage(this);          // the little animals and the square's gifts name themselves (js/jeu/betes_village.js)
-    this.passage = new Passage(this);             // the boat and its ferryman, to the other village (js/jeu/voyage.js)
+    this.jardin = absent ? lieuAbsent() : new JardinVillage(this);   // the vegetable garden opens the child's garden
+    this.place = absent ? lieuAbsent() : new ArbreMonde(this);       // the Arbre-Monde, the chiefs' gifts, the missions' board
+    this.maison = dedans ? new InterieurMaison(this) : lieuAbsent();   // a room's things, its chief's door, its way out
+    this.histoire = dedans ? new HistoireMaison(this) : this.ile ? new HistoireIle(this) : new HistoireVillage(this);   // the goal, the gifts, the words, the evening
+    this.marchand = absent ? lieuAbsent() : new MarchandVillage(this);   // the merchant's stall opens his shop
+    this.betes = dedans ? {touche: () => null, cible: () => null} : new BetesVillage(this);   // the little animals and the square's gifts name themselves (js/jeu/betes_village.js)
+    this.passage = dedans ? lieuAbsent() : new Passage(this);   // the boat and its ferryman, to the other village (js/jeu/voyage.js)
     this.chantiers = this.ile ? new ChantiersIle(this) : lieuAbsent();   // the island's lots and their signs
     if (VOYAGE.arrivee === this.lieu) {   // just landed: the ferryman greets the child
       VOYAGE.arrivee = null;
@@ -80,14 +86,21 @@ class Monde extends Phaser.Scene {
     // arrows only, without capturing them for the whole page (the first-name field keeps its space and arrows)
     this.touches = this.input.keyboard.addKeys({up: "UP", down: "DOWN", left: "LEFT", right: "RIGHT"}, false);
     if (typeof jouerAmbiance === "function") jouerAmbiance("village");
+    if (PORTE.franchie) { PORTE.franchie = false; if (!TEST) this.cameras.main.fadeIn(220, 29, 22, 64); }   // through a house's door (js/jeu/lanceur.js)
+    if (dedans) return;
     if (typeof annoncerRecoltes === "function") annoncerRecoltes(this);   // things wait on the island: a bubble over the boat (js/jeu/recoltes_ile.js)
     if (typeof annoncerFete === "function") annoncerFete(this);   // the Kleeschen calls the child, in December (js/jeu/fetes_village.js)
   }
   // the village answers unless another screen, a dialogue, a fight starting or a door opening is in front of it
   occupe(){ return ecranCourant !== "monde" || dialogueOuvert() || this.verrou || this.moment || performance.now() < (window.__calme || 0); }
-  suivreHeros(){ this.cameras.main.startFollow(this.heros, true, .2, .2, 0, this.heros.dy - 8); }   // centred on the hero's tile
+  suivreHeros(){
+    const S = this.carte.salle;   // a room: the whole of it in view, the camera still
+    if (S) return this.cameras.main.stopFollow().centerOn((S.x + S.w / 2) * CASE, (S.y + S.h / 2) * CASE);
+    this.cameras.main.startFollow(this.heros, true, .2, .2, 0, this.heros.dy - 8);   // centred on the hero's tile
+  }
   ajusterZoom(){
-    const w = this.scale.width / RATIO, h = this.scale.height / RATIO;   // in CSS pixels
+    const w = this.scale.width / RATIO, h = this.scale.height / RATIO, S = this.carte.salle;   // in CSS pixels
+    if (S) { this.cameras.main.setZoom(Math.min(6, w / (S.w * CASE), h / (S.h * CASE)) * RATIO); return this.suivreHeros(); }
     const z = Math.min(6, Math.max(2, Math.round(Math.min(w / (20 * CASE), h / (14 * CASE)))));   // whole pixels only
     this.cameras.main.setZoom(z * RATIO);
   }
@@ -98,9 +111,12 @@ class Monde extends Phaser.Scene {
     else if ((!ptr.upElement || ptr.upElement === this.game.canvas) && avancerDialogue()) return note("dialogue");   // another line: the next one
     if (this.occupe()) return note("occupe");
     const wx = ptr.worldX, wy = ptr.worldY;
-    if (this.vie.toucherCompagnon(wx, wy)) return note("compagnon");
+    // in a room the companion often sits on the doormat: the way out goes before the cuddle
+    const sortie = !!this.interieur && this.carte.portes.some(p => p.region === "sortie" && p.x === Math.floor(wx / CASE) && p.y === Math.floor(wy / CASE));
+    if (!sortie && this.vie.toucherCompagnon(wx, wy)) return note("compagnon");
     const vises = [this.jardin.vise, this.place.vise, this.marchand.vise, this.passage.vise, this.chantiers.vise];   // where the walk going on was headed
     this.jardin.vise = false; this.place.vise = null;
+    if (this.maison.touche(wx, wy)) return note("chose");   // a thing of a house's room (js/jeu/interieur_maison.js)
     this.marchand.vise = false;   // the shop is opened only by the walk the stall itself started
     this.passage.vise = false; this.chantiers.vise = null;
     const o = this.ombres.touchee(wx, wy);
@@ -239,7 +255,7 @@ class Monde extends Phaser.Scene {
   arrive(){
     const p = P(); garderPosition(p, this.lieu, this.case); sauver();   // a reloaded page comes back here (js/etat.js)
     if (this.jardin.arrive() || this.place.arrive()) return;
-    if (this.marchand.arrive() || this.passage.arrive() || this.chantiers.arrive()) return;
+    if (this.marchand.arrive() || this.passage.arrive() || this.chantiers.arrive() || this.maison.arrive()) return;
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
   }
   update(time){
@@ -258,7 +274,8 @@ class Monde extends Phaser.Scene {
     dialogue(n.nom, n.cle, h.lignes, h.choix || null, {quitter: !!h.choix, langue: h.langue, choixApresVoix: !!h.choixApresVoix, ligne: (i, voix) => { this.vie.mains(n.s, voix); if (h.ligne) h.ligne(i); },
       fin: () => { this.vie.repos(n.s); if (h.fin) h.fin(); }});
   }
-  devantPorte(regionId){ this.chemin = []; this.pnjVise = null; entrerMaison(regionId); }
+  // in front of a door: a house of the village (its room opens), or a door of the room (the chief's, the way out)
+  devantPorte(regionId){ this.chemin = []; this.pnjVise = null; if (this.interieur) this.maison.porte(regionId); else entrerMaison(regionId); }
   // a point of the world on the screen, in CSS pixels (the camera's view as it is drawn at this frame)
   ecranDe(wx, wy){
     const c = this.cameras.main, k = c.zoom / RATIO;
@@ -288,11 +305,12 @@ class Monde extends Phaser.Scene {
     const o = this.ombreEnCombat, region = o && o.region;
     const ouvre = !!region && this.etapeAvant < ETAPES && regionEtat(region).etape >= ETAPES;
     this.ombres.apres(o, gagne); this.ombreEnCombat = null;
-    this.majCompagnon(); this.majPanneaux(); this.portes.maj(ouvre ? region : null); this.jardin.maj();
+    this.majCompagnon(); this.majPanneaux(); this.portes.maj(ouvre ? region : null); this.jardin.maj(); this.maison.maj();
     cadrerPanneauxHD(this, this.panneaux, true);   // the bar is back, its pill a little wider: the signs at once
     if (ouvre) this.portes.ouvrir(region);
     if (ouvre && this.ile) this.histoire.porteOuverte(region);   // its door is in the first village: the ferryman says it
     this.guide.retour();
     if (typeof jouerAmbiance === "function") jouerAmbiance("village");
+    if (this.interieur && gagne) sortirMaison();   // the chief consoled: out in front of the house, where the village celebrates
   }
 }
