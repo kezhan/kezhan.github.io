@@ -155,5 +155,19 @@ window.QUESTIONS.push(
   { c: "vis", q: "Dans un tableau de bord, un utilisateur passe des ventes annuelles aux ventes par trimestre, puis par mois. Comment s'appelle cette opération ?",
     r: ["Un forage (drill-down)", "Une agrégation (roll-up)", "Un découpage (slice)", "Une rotation (pivot)"],
     e: "Le forage descend dans la hiérarchie d'une dimension ; l'agrégation remonte. Le découpage fixe une valeur d'une dimension, et le « dice » en restreint plusieurs à la fois.",
-    s: ["Wikipédia, Cube OLAP", "https://fr.wikipedia.org/wiki/Cube_OLAP"] }
+    s: ["Wikipédia, Cube OLAP", "https://fr.wikipedia.org/wiki/Cube_OLAP"] },
+  { c: "vis", q: "Dans un outil de BI, un responsable ajoute d'un clic une prévision sur 12 mois à une courbe de 18 mois de ventes, et la présente comme un objectif. Qu'en dire ?",
+    r: ["L'historique est trop court : montrer l'incertitude et la méthode",
+        "C'est correct, puisque la prévision est calculée par l'outil lui-même",
+        "C'est correct, à condition d'afficher un intervalle de confiance à 99 %",
+        "Il faut remplacer la prévision par une droite de tendance linéaire"],
+    e: "Les prévisions intégrées aux outils de BI (lissage exponentiel dans Power BI) s'obtiennent en un clic, mais 18 mois ne couvrent qu'une fois et demie le cycle annuel : la saison est mal estimée. Une prévision n'est pas un objectif ; on montre sa bande d'incertitude et l'on dit comment elle est faite.",
+    s: ["Microsoft, Power BI, Volet Analytique", "https://learn.microsoft.com/fr-fr/power-bi/transform-model/desktop-analytics-pane"] },
+  { c: "vis", q: "Au chargement d'un script Qlik, deux tables partagent les champs « Année » et « Agence ». Que crée Qlik, et que faire ?",
+    r: ["Une clé synthétique : renommer un champ ou créer une clé composée",
+        "Une jointure interne : rien à faire, c'est le comportement voulu",
+        "Des doublons de lignes : ajouter DISTINCT à chaque instruction LOAD",
+        "Une erreur de chargement : fusionner les deux tables en une seule"],
+    e: "Qlik associe les tables par le nom des champs. Quand deux tables en partagent plusieurs, il crée une clé synthétique, souvent signe d'un modèle mal pensé, lent et source de chiffres faux. On renomme ou qualifie les champs qui ne doivent pas lier, ou l'on construit une clé composée explicite.",
+    s: ["Qlik Cloud Analytics, Clés synthétiques", "https://help.qlik.com/fr-FR/cloud-services/Subsystems/Hub/Content/Sense_Hub/Scripting/synthetic-keys.htm"] }
 );

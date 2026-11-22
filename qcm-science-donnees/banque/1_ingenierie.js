@@ -150,5 +150,19 @@ window.QUESTIONS.push(
         "Convertir chaque événement en une ligne CSV avec une colonne par champ vu",
         "Stocker les événements dans une seule colonne texte de l'entrepôt"],
     e: "Le brut garde tout, y compris les champs qu'on ne sait pas encore exploiter ; les tables dérivées offrent des colonnes typées et documentées. Rejeter perd des données ; un CSV aux colonnes mouvantes est fragile ; une colonne texte reporte tout le travail sur chaque requête.",
-    s: ["Wikipédia, Lac de données", "https://fr.wikipedia.org/wiki/Lac_de_donn%C3%A9es"] }
+    s: ["Wikipédia, Lac de données", "https://fr.wikipedia.org/wiki/Lac_de_donn%C3%A9es"] },
+  { c: "ing", q: "Une source livre chaque mois 2 millions de courriers scannés en PDF image, à intégrer au lac avec leur date et leur expéditeur. Quelle chaîne convient ?",
+    r: ["Garder le PDF brut, puis OCR et extraction vers une table liée",
+        "Convertir les PDF en CSV à l'arrivée, puis supprimer les originaux",
+        "Ranger chaque PDF dans une colonne binaire d'une base relationnelle",
+        "Indexer les noms de fichiers, qui portent la date et l'expéditeur"],
+    e: "Un document non structuré garde son original dans la couche brute, pour pouvoir retraiter si l'extraction change. Une étape de reconnaissance de caractères et d'extraction produit ensuite des champs structurés, reliés au fichier. Supprimer l'original empêche de corriger une extraction ratée ; des millions de binaires alourdissent une base relationnelle.",
+    s: ["Databricks, Medallion architecture", "https://www.databricks.com/glossary/medallion-architecture"] },
+  { c: "ing", q: "Un lac de 3 Po reçoit 20 To par jour. Les requêtes portent surtout sur les 30 derniers jours ; l'historique n'est relu qu'une fois par an, pour un audit. Comment ranger les données ?",
+    r: ["Par paliers : le récent en stockage chaud, l'ancien en classe froide",
+        "Tout en stockage chaud, pour garder partout les mêmes temps de réponse",
+        "Tout en archive froide, et restaurer les fichiers avant chaque requête",
+        "Supprimer au-delà de 30 jours : l'audit relira les sauvegardes"],
+    e: "À l'échelle du pétaoctet, le coût du stockage domine. Des règles de cycle de vie déplacent les données selon leur âge vers des classes moins chères et plus lentes ; un audit annuel tolère un délai de restauration. Tout garder en chaud coûte des millions, tout archiver rend les requêtes quotidiennes impossibles.",
+    s: ["AWS, Amazon S3 storage classes", "https://aws.amazon.com/s3/storage-classes/"] }
 );

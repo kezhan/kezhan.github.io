@@ -168,5 +168,19 @@ window.QUESTIONS.push(
         "Une interdiction d'utiliser les données sans une demande écrite préalable",
         "Un tableau de bord de suivi, publié chaque mois sans explication pour chacune des équipes"],
     e: "L'acculturation passe par des exemples du métier, des formats courts répétés et un relais identifié (intendant, référent). Une politique à signer informe peu, et une interdiction pousse aux contournements.",
-    s: ["data.europa.eu Academy", "https://data.europa.eu/en/academy"] }
+    s: ["data.europa.eu Academy", "https://data.europa.eu/en/academy"] },
+  { c: "gou", q: "Deux institutions veulent croiser leurs données sur les mêmes entreprises pour une étude commune. Que rédiger avant le premier échange ?",
+    r: ["Un accord de partage : finalité, champs, durée, sécurité, rôles",
+        "Un dictionnaire de données commun, le reste se réglera ensuite",
+        "Une note qui chiffre les bénéfices attendus de l'étude commune",
+        "Un cahier des charges pour un entrepôt de données partagé"],
+    e: "Un accord de partage fixe ce qui est échangé, pour quoi, combien de temps, avec quelles mesures de sécurité et qui répond de quoi. Avec des données personnelles, ses clauses découlent du RGPD ou, pour une institution de l'Union, du règlement 2018/1725. Le dictionnaire et l'infrastructure viennent après.",
+    s: ["Règlement (UE) 2018/1725", "https://eur-lex.europa.eu/eli/reg/2018/1725/oj"] },
+  { c: "gou", q: "Le lignage d'une plateforme est tracé au niveau des tables. Un auditeur demande d'où vient la colonne « prime nette » d'un rapport, calculée à partir de trois colonnes de deux tables. Que manque-t-il ?",
+    r: ["Le lignage par colonne, avec la règle de calcul",
+        "Un catalogue des tables, avec leur propriétaire",
+        "Une sauvegarde quotidienne des deux tables sources",
+        "Un suivi de la qualité des deux tables sources"],
+    e: "Un lignage par table dit seulement que le rapport lit ces deux tables. Pour expliquer un chiffre, il faut savoir quelles colonnes l'alimentent et par quelle transformation : c'est le lignage par colonne, que décrit par exemple la norme OpenLineage.",
+    s: ["OpenLineage, Column lineage dataset facet", "https://openlineage.io/docs/spec/facets/dataset-facets/column_lineage_facet"] }
 );

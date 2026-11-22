@@ -168,5 +168,19 @@ window.QUESTIONS.push(
         "Chaque équipe qui consomme ce jeu de données",
         "Le délégué à la protection des données"],
     e: "Le data mesh confie les données aux domaines, qui les publient comme des produits, avec une qualité et une documentation dont ils répondent. La plateforme fournit les outils ; la gouvernance, fédérée, fixe les règles communes.",
-    s: ["Martin Fowler, Data Mesh Principles and Logical Architecture", "https://martinfowler.com/articles/data-mesh-principles.html"] }
+    s: ["Martin Fowler, Data Mesh Principles and Logical Architecture", "https://martinfowler.com/articles/data-mesh-principles.html"] },
+  { c: "sem", q: "Un graphe de connaissances doit relier les projets, partenaires et publications de cinq bases. Les mêmes partenaires y figurent sous des noms différents. Quelle étape est indispensable avant de l'ouvrir aux usagers ?",
+    r: ["Résoudre les entités et les relier à un identifiant de référence",
+        "Charger les cinq bases telles quelles : le raisonneur fera le lien",
+        "Choisir une base graphe plus rapide que la base relationnelle",
+        "Traduire toutes les étiquettes dans les 24 langues officielles"],
+    e: "Un graphe de connaissances vaut par ses liens : si un partenaire existe en trois nœuds, parcours et comptages sont faux. On rapproche les mentions (résolution d'entités), puis on les relie à un identifiant de référence, par exemple un registre d'organisations. Un raisonneur ne devine pas que deux noms désignent la même entité sans une règle ou un lien explicite.",
+    s: ["Hogan et al., Knowledge Graphs (ACM Computing Surveys, 2021)", "https://arxiv.org/abs/2003.02320"] },
+  { c: "sem", q: "Un assistant répond aux questions sur les marchés publics. Pour « quels fournisseurs ont un marché avec au moins deux directions générales ? », qu'apporte un graphe de connaissances par rapport à une recherche de passages dans les documents ?",
+    r: ["Il suit les liens entre entités et compte sur toutes les données",
+        "Il comprend mieux le langage naturel qu'un grand modèle de langue",
+        "Il dispense de tenir à jour la liste officielle des fournisseurs",
+        "Il retrouve plus vite les passages qui citent chaque fournisseur"],
+    e: "La question demande un parcours (fournisseur, marché, direction générale) et un comptage sur l'ensemble des données. Une recherche de passages ne ramène que quelques extraits et ne garantit pas l'exhaustivité ; le graphe répond par une requête (SPARQL ou Cypher). Le graphe, lui, doit être tenu à jour.",
+    s: ["W3C, SPARQL 1.1 Query Language", "https://www.w3.org/TR/sparql11-query/"] }
 );
