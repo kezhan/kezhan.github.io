@@ -20,6 +20,8 @@ async function demarrer(){
   $("btnFermerJardin").onclick = () => { sfx.tap(); fermerJardin(); };   // the garden (js/jardin_vue.js)
   $("btnFermerChantier").onclick = () => { sfx.tap(); fermerChantier(); };   // a building site of the island (js/chantier_vue.js)
   $("btnConstruire").onclick = () => construireEtape();
+  $("btnFermerReserve").onclick = () => { sfx.tap(); fermerLieu(); };   // a place kept for a companion (js/lieu_vue.js)
+  $("btnReserve").onclick = () => boutonLieu();
   $("btnFermerCoupole").onclick = () => { sfx.tap(); fermerCoupole(); };   // the dome of the Observatoire (js/coupole.js)
   $("btnVue_planetes").onclick = () => { sfx.tap(); vueCoupole("planetes"); };
   $("btnVue_terre").onclick = () => { sfx.tap(); vueCoupole("terre"); };

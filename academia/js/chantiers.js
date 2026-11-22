@@ -141,12 +141,14 @@ function savoirChantier(id){
 // ---- the harvests: what a finished building has made since the last visit
 const maintenantRecolte = () => typeof maintenantJeu === "function" ? maintenantJeu() : Date.now();
 const momentRecolte = (t = maintenantRecolte()) => { const d = new Date(t), z = n => String(n).padStart(2, "0"); return `${jour(t)}T${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`; };
+// the one rule of what takes time to be ready: `heures` after `moment` (a momentRecolte(), or nothing: ready at once),
+// how long is left in milliseconds. The buildings below and the companions' places (js/lieux.js) both ask it
+const attenteDepuis = (moment, heures) => Math.max(0, ((moment && new Date(moment).getTime()) || 0) + heures * HEURE_MS - maintenantRecolte());
 // how long before the building's thing is ready, in milliseconds (0: ready ; null: not finished, or nothing to give)
 function attenteRecolte(id, p = P()){
   const r = RECOLTES_CHANTIER[id], c = chantiersDe(p);
   if (!r || !c || !chantierFini(id, p)) return null;
-  const dernier = c.cadeaux[id] ? new Date(c.cadeaux[id]).getTime() : 0;
-  return Math.max(0, (dernier || 0) + r.heures * HEURE_MS - maintenantRecolte());
+  return attenteDepuis(c.cadeaux[id], r.heures);
 }
 const recoltePrete = (id, p = P()) => attenteRecolte(id, p) === 0;
 const recoltesPretes = (p = P()) => p && typeof p.chantiers === "object" ? Object.keys(RECOLTES_CHANTIER).filter(id => recoltePrete(id, p)) : [];

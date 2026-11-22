@@ -98,7 +98,7 @@ function direCompagnon(f){
   if (!c) return dire(`Un compagnon à libérer, ${A_REGION[r.id] || "à "}${r.nom} ! Son élément : ${e.dit}.`);
   const st = stade(c), [a, b, k] = attaquesDe(c), o = origineNom(c);
   const debut = `${nomCompagnon(c)}, niveau ${c.niveau} ! `, reste = `Son élément : ${e.dit}. Ses attaques : ${a}, ${b} et ${k}.`
-    + (st < 3 ? ` Il évolue au niveau ${PALIERS[st]}.` : " C'est sa forme ultime !");
+    + (st < 3 ? ` Il évolue au niveau ${PALIERS[st]}.` : " C'est sa forme ultime !") + ` Il apprend deux fois plus vite ${DANS_REGION[r.id]} !`;
   if (!o) return dire(debut + reste);
   suiteDeVoix(voixOrigine(o, debut, " " + reste));
 }
@@ -137,6 +137,15 @@ function elementFiche(f, complete){
   };
   return d;
 }
+// the house where a companion learns twice as fast (js/progression.js, bonusMaison): its drawn symbol and « ×2 », on
+// a corner of the drawing, or with the house's name (the full card); touched, the voice says where to go
+function maisonFiche(f, complete){
+  const r = maisonCompagnon(f), c = compagnonDe(f), d = el(complete ? "button" : "span", complete ? "element-fiche maison-fiche" : "maison-coin");
+  d.append(iconeDom(`maison_${r.id}`), complete ? `×${XP_MAISON} XP : ${r.nom}` : `×${XP_MAISON}`);
+  d.title = `XP ×${XP_MAISON} : ${r.nom}`;
+  if (complete) d.onclick = () => { sfx.tap(); sauterDessin(d); dire(`${nomCompagnon(c)} apprend deux fois plus vite ${DANS_REGION[r.id]} : console les Ombres là-bas pour le faire grandir !`); };
+  return d;
+}
 // a companion's card: drawing and level, name, XP, stars, combo charge, attacks, element, one button; `complete`:
 // the card opened alone (attacks written out, its three forms, back button)
 function ficheCompagnon(f, complete = false){
@@ -147,6 +156,7 @@ function ficheCompagnon(f, complete = false){
   dessin.append(fig);
   if (c) dessin.append(el("span", "niv", `Niv. ${c.niveau}`));
   if (!complete) dessin.append(elementFiche(f, false));
+  if (!complete && c) dessin.append(maisonFiche(f, false));
   dessin.onclick = () => { sfx.tap(); sauterDessin(fig); direCompagnon(f); if (c && !complete) ouvrirFiche(f); };
   gauche.append(dessin);
   if (!complete) gauche.append(attaquesFiche(f, false));
@@ -160,7 +170,7 @@ function ficheCompagnon(f, complete = false){
     l.onclick = () => { sfx.tap(); suiteDeVoix(voixOrigine(o)); };
     corps.append(l);
   }
-  if (complete) corps.append(elementFiche(f, true));
+  if (complete) { const puces = el("div", "puces-fiche"); puces.append(elementFiche(f, true)); if (c) puces.append(maisonFiche(f, true)); corps.append(puces); }
   const mots = complete ? motsElement(f) : [];
   if (mots.length) { const m = el("small", "mots-element"); m.textContent = mots.map(x => x.mot).join(" · "); corps.append(m); }
   if (!c) corps.append(ecrireIcones(el("small"), `À libérer : ${r.icone} ${r.nom}`));   // the house's drawn symbol (js/icones.js)
@@ -219,6 +229,7 @@ function vignetteCompagnon(f){
   b.prepend(fig); b.querySelector("b").textContent = c ? nomCompagnon(c) : "???";
   if (c) b.append(el("span", "niv", String(c.niveau)));
   b.append(elementFiche(f, false));
+  if (c) b.append(maisonFiche(f, false));
   b.onclick = () => { sfx.tap(); direCompagnon(f); if (c) ouvrirFiche(f); else sauterDessin(fig); };
   return b;
 }

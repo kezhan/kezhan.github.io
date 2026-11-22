@@ -51,7 +51,12 @@ function carteBilan(b, c, region, gain, xpAvant, fin){
     // a line never starts with « · », and « +n » stays with its unit
     ligne(`${b.bonnes} bonne${s(b.bonnes)} réponse${s(b.bonnes)} sur ${b.total}` + (b.xp ? ` · +${b.xp} XP` : "")
       + (b.etincelles ? ` · +${b.etincelles} ✨` : ""), "fort");
-    if (fin.rattrapage > 1 && b.xp) ligne(`🚀 ${gain.evolue ? nomAvant : nomCompagnon(c)} rattrape les autres : XP doublée !`);
+    // in its own house a companion learns twice as fast (js/progression.js, bonusMaison): shown and said; with the
+    // catching up of a companion behind the others, one line for both (the card stays short)
+    const quiXP = gain.evolue ? nomAvant : nomCompagnon(c);
+    if (fin.maison > 1 && fin.rattrapage > 1 && b.xp) ligne(`${region.icone} ${quiXP} rattrape les autres dans sa maison : XP quadruplée !`, "maison-xp");
+    else if (fin.maison > 1 && b.xp) ligne(`${region.icone} ${quiXP} apprend dans sa maison : XP doublée !`, "maison-xp");
+    else if (fin.rattrapage > 1 && b.xp) ligne(`🚀 ${quiXP} rattrape les autres : XP doublée !`);
     if (b.revanches) ligne(`🔁 ${b.revanches} erreur${s(b.revanches)} réparée${s(b.revanches)} : XP triplée !`);
     // the album (js/progression.js): a shining Ombre, or a kind consoled for the first time
     if (b.gagne && !b.boss && b.brillante) ligne("✨ Une Ombre brillante consolée : elle brille dans ton album !", "brillante");

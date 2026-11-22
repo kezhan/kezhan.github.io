@@ -18,6 +18,12 @@ function rattrapage(c){
   const max = Math.max(...P().compagnons.map(x => x.niveau));
   return c.niveau <= max - 4 ? 2 : 1;
 }
+// to raise a companion is to learn its subject: in the fights of its own house (the region of its family) it learns
+// twice as fast; elsewhere, the usual XP. The only place of this rule: the fight's card (js/bilan.js), the bag
+// (js/equipe.js) and the reserved places of the island (js/lieux.js) read it here
+const XP_MAISON = 2;
+const maisonCompagnon = f => REGIONS.find(r => r.famille === f) || null;
+const bonusMaison = (c, regionId) => { const r = maisonCompagnon(c.famille); return r && r.id === regionId ? XP_MAISON : 1; };
 // a boss badge: one to three stars by the share of right answers (always three before 6 years)
 function etoilesDe(b){
   if (P().age <= 5) return 3;
@@ -53,13 +59,13 @@ async function terminerCombat(b){
     }
   } else if (b.fuite) b.xp = Math.max(4, Math.round(b.xp * .5));   // the Ombre ran away: a little XP, no door step, no joker
   else b.xp = Math.round(b.xp * .6);
-  fin.rattrapage = rattrapage(c);
-  b.xp *= fin.rattrapage;
+  fin.rattrapage = rattrapage(c); fin.maison = bonusMaison(c, b.region);
+  b.xp *= fin.rattrapage * fin.maison;
   const xpAvant = {niveau: c.niveau, xp: c.xp};
   const gain = gagnerXP(c, b.xp);
   noterCombat({region: b.region, boss: b.boss, gagne: b.gagne, fuite: !!b.fuite, xp: b.xp, bonnes: b.bonnes, total: b.total,
     revanches: b.revanches, compagnon: c.famille, niveau: c.niveau, etoiles: fin.etoiles || undefined,
-    ombre: b.espece, brillante: b.brillante || undefined, etincelles: b.etincelles});
+    ombre: b.espece, brillante: b.brillante || undefined, etincelles: b.etincelles, maison: fin.maison > 1 || undefined});
   sauver();
   prechargerMoments([fin.libere && cleDe(fin.libere), gain.evolue && cleDe(c), b.boss && CLES_BOSS[region.id]].filter(Boolean),
     fin.badge ? ["badge_" + region.id, "etoile"] : []);

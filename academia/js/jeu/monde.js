@@ -24,7 +24,7 @@ class Monde extends Phaser.Scene {
     chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
     if (dedans) chargerMaisonHD(this.load, dedans);   // the room and its things (js/jeu/interieur_maison.js)
-    else if (ile) { chargerIleHD(this.load, QUALITE); chargerChantiersHD(this.load); }   // the island's ground and pieces, the child's buildings (js/jeu/chantiers_ile.js)
+    else if (ile) { chargerIleHD(this.load, QUALITE); chargerChantiersHD(this.load); chargerLieuxHD(this.load); }   // the island's ground and pieces, the child's buildings (js/jeu/chantiers_ile.js)
     else chargerPlaceHD(this.load);   // the square of the Arbre-Monde (js/jeu/arbre_monde.js)
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));

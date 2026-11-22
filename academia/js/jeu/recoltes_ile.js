@@ -62,11 +62,13 @@ const POINTS_BULLE = {phare: .5, moulin: .62};
 function annoncerRecoltes(scene){
   const p = P();
   if (!p || scene.ile || typeof recoltesPretes !== "function" || !barqueOuverte(p)) return;
-  const pretes = recoltesPretes(p);
+  // what waits on the island: the buildings' things, then the companions' places' (js/lieux.js)
+  const attendent = () => [...recoltesPretes(p).map(id => RECOLTES_CHANTIER[id]), ...(typeof recoltesLieux === "function" ? recoltesLieux(p) : [])];
+  const pretes = attendent();
   if (!pretes.length) return;
-  const r = RECOLTES_CHANTIER[pretes[0]], pa = scene.passage, centre = pa && pa.centre && pa.centre();
+  const r = pretes[0], pa = scene.passage, centre = pa && pa.centre && pa.centre();
   if (centre) {
-    chargerChantiersHD(scene.load, [r.chose]);
+    (r.lieu ? chargerLieuxHD : chargerChantiersHD)(scene.load, [r.chose]);
     const poser = () => { if (scene.sys.isActive() && !scene.signeRecolte) scene.signeRecolte = bulleRecolte(scene, r.chose, centre.x, centre.y - 22, 9000); };
     if (scene.textures.exists("ch_" + r.chose)) poser();
     else { scene.load.once("complete", poser); if (!scene.load.isLoading()) scene.load.start(); }
@@ -76,7 +78,7 @@ function annoncerRecoltes(scene){
   const dire = essais => scene.time.delayedCall(TEST ? 900 : 5000, () => {
     if (!scene.sys.isActive() || RECOLTES_SEANCE.annonce) return;
     if (scene.occupe() || scene.enMarche || bulleVillageOuverte()) { if (essais) dire(essais - 1); return; }
-    if (!recoltesPretes(p).length) return;
+    if (!attendent().length) return;
     RECOLTES_SEANCE.annonce = true;
     bulleVillage("passeur", "Le passeur", pretes.length > 1 ? "Des choses t'attendent sur l'Île des Bâtisseurs ! Monte dans ma barque pour aller les chercher."
       : `${r.dit} ! Monte dans ma barque pour aller chercher ${r.nom}.`);

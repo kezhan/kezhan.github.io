@@ -1,10 +1,11 @@
 /* Académia : les onglets Badges et Album du sac (js/equipe.js ouvre le sac et dessine l'onglet Équipe).
    1. Badges : la médaille de chaque maison (assets/hd/icones/medaille_*.png), grisée tant que son chef n'est pas battu,
       avec ses étoiles (une à trois, js/progression.js) ; toucher une médaille dit son nom et sa maison.
-   2. Album, en cinq pages : les Ombres consolées (P().album.ombres : silhouette avant, couleur et compteur après),
+   2. Album, en pages : les Ombres consolées (P().album.ombres : silhouette avant, couleur et compteur après),
       les Ombres brillantes (P().album.brillantes), les autocollants des missions du Sage (P().album.autocollants), le
       carnet des erreurs réparées (P().album.reparees : un tampon par erreur, la question et sa bonne réponse), les
-      mots rencontrés dans les questions de langue (P().mots : l'imagier, js/mots_appris.js). Le combat et les
+      mots rencontrés dans les questions de langue (P().mots : l'imagier, js/mots_appris.js), les trouvailles des
+      lieux réservés aux compagnons (P().reserves, js/lieux.js ; sa case : js/lieu_vue.js). Le combat et les
       missions remplissent ces champs ; un album vide montre les places qui attendent. Un autocollant dont le nom est
       enregistré dans les trois langues l'écrit dessous, et chaque toucher le dit dans la suivante.
    Rien ne défile : une page trop pleine pour l'écran se tourne avec deux flèches. Toucher un dessin le fait dire. */
@@ -73,7 +74,8 @@ const PAGES_ALBUM = [
   {id: "brillantes", titre: "Brillantes", dit: "Les Ombres brillantes : elles sont très rares !", icone: "etincelle"},
   {id: "autocollants", titre: "Autocollants", dit: "Tes autocollants des missions !", icone: "autocollant"},
   {id: "carnet", titre: "Carnet", dit: "Ton carnet des erreurs réparées !", icone: "tampon"},
-  {id: "mots", titre: "Mots", dit: "Tes mots ! Touche un mot pour l'entendre.", icone: "haut_parleur"}];
+  {id: "mots", titre: "Mots", dit: "Tes mots ! Touche un mot pour l'entendre.", icone: "haut_parleur"},
+  {id: "trouvailles", titre: "Trouvailles", dit: "Tes trouvailles des lieux secrets de l'île !", dessin: () => imgLieu("tr_carriere_3")}];
 let pageAlbum = "ombres";
 const feuillets = {};   // album page -> the leaf open (a page too full for the screen has several)
 const debutsFeuillets = {};   // album page -> {sig, debuts}: where each leaf seen starts (paginer)
@@ -84,14 +86,15 @@ function dessinerAlbum(v){
   const autocollants = liste(a.autocollants), reparees = liste(a.reparees).filter(r => typeof r === "object");
   const comptes = {ombres: `${Object.keys(consolees).length}/${ESPECES.length}`, brillantes: `${Object.keys(brillantes).length}/${ESPECES.length}`,
     autocollants: String(autocollants.length), carnet: String(reparees.length),
-    mots: typeof comptesMots === "function" ? (m => `${m.trouves}/${m.total}`)(comptesMots()) : "0"};
+    mots: typeof comptesMots === "function" ? (m => `${m.trouves}/${m.total}`)(comptesMots()) : "0",
+    trouvailles: (t => `${t.filter(x => x.gagnee).length}/${t.length}`)(trouvaillesAlbum())};
   v.replaceChildren();
   const tete = el("div", "tete-album"), nav = el("div", "pages-album");
   nav.setAttribute("role", "tablist");
   PAGES_ALBUM.forEach(pg => {
     const b = el("button", "page-album"), ico = el("span", "ico-page"), t = el("span", "titre-page");
     b.dataset.page = pg.id; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(pg.id === pageAlbum));
-    ico.append(pg.icone ? iconeDom(pg.icone) : imageHD("grisouille", "face", 30));
+    ico.append(pg.dessin ? pg.dessin() : pg.icone ? iconeDom(pg.icone) : imageHD("grisouille", "face", 30));
     t.textContent = pg.titre;
     b.append(ico, t, el("span", "compte-page", comptes[pg.id]));
     b.onclick = () => { sfx.tap(); pageAlbum = pg.id; if (pg.id === "mots") feuillets.mots = 0; dire(pg.dit); dessinerAlbum(v); };   // the new words first
@@ -105,6 +108,7 @@ function dessinerAlbum(v){
   else if (pageAlbum === "brillantes") paginer(feuille, fleches, v, ESPECES, e => caseOmbre(e, brillantes[e.cle] || 0, true));
   else if (pageAlbum === "autocollants") paginer(feuille, fleches, v, autocollants, caseAutocollant, videAutocollants);
   else if (pageAlbum === "mots" && typeof pageMots === "function") pageMots(feuille, fleches, v);
+  else if (pageAlbum === "trouvailles") paginer(feuille, fleches, v, trouvaillesAlbum(), caseTrouvaille);   // js/lieu_vue.js
   else paginer(feuille, fleches, v, reparees, caseReparee, videCarnet);
 }
 // the items of the open leaf that fit whole in the page (measured on the screen), and two arrows when there are more

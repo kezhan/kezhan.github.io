@@ -7,7 +7,8 @@
    bâtiments du ticket construire-et-collectionner.
    Même contrat que construireCarte() (sol, bloque, herbe, maison, portes, pnj, etiquettes, elements, depart), avec en
    plus : ile (vrai), terrains [{id, x, y, w, h, panneau: {x, y}, devant: {x, y}}], ponton {x, y, w, h}, barque {x, y, w,
-   h} (la barque à quai), arrivee (la case du ponton où l'on débarque). Le sol d'une case : eau, plage, herbe, sable
+   h} (la barque à quai), arrivee (la case du ponton où l'on débarque), reserves [{id, x, y, w, h, devant: {x, y}}] (les
+   lieux réservés aux compagnons, js/lieux.js). Le sol d'une case : eau, plage, herbe, sable
    (sentiers, clairière) ou ponton. Dessin : js/jeu/decor_ile_hd.js. */
 // the six buildings the child builds (js/chantiers.js), each on its lot: what the cheffe says of it
 const CHANTIERS = {
@@ -85,6 +86,15 @@ function construireCarteIle(){
     for (let b = y; b < y + h; b++) for (let a = x; a < x + w; a++) if (dans(a, b)) { pris[b][a] = true; bloque[b][a] = true; }
   };
   const libre = (x, y, w = 1, h = 1) => { for (let b = y; b < y + h; b++) for (let a = x; a < x + w; a++) if (!dans(a, b) || bloque[b][a] || pris[b][a] || sol[b][a] === "eau") return false; return true; };
+  // the places kept for the companions (js/lieux.js, LIEUX_RESERVES): 2 x 2, blocked like a rock, out of the lots, the
+  // paths and the tall grass, each with the tile where the hero stands to hear its sentinel
+  const reserves = [];
+  [["carriere", 16, 12, 17, 14], ["falaise", 31, 9, 30, 10], ["grotte", 9, 10, 11, 11], ["source", 31, 23, 30, 23], ["damier", 16, 17, 16, 19],
+    ["bosquet", 25, 13, 25, 15], ["belvedere", 20, 5, 22, 6]].forEach(([id, x, y, dx, dy]) => {
+    if (!libre(x, y, 2, 2) || !libre(dx, dy)) return;
+    poser("lieu_reserve", id, x, y, 2, 2); pris[dy][dx] = true;
+    reserves.push({id, x, y, w: 2, h: 2, devant: {x: dx, y: dy}});
+  });
   // the cheffe's materials on the clearing, palm trees on the beach, trees in the meadow, rocks on the sand
   poser("lieu_ile", "tas_planches", 18, 12, 2, 1); poser("lieu_ile", "brouette", 24, 12, 1, 1);
   [[10, 7, "palmier"], [9, 19, "palmier_penche"], [11, 23, "palmier"], [30, 24, "palmier_penche"], [30, 5, "palmier_penche"], [37, 11, "palmier_penche"]]
@@ -105,5 +115,5 @@ function construireCarteIle(){
   ];
   pnj.forEach(n => { bloque[n.y][n.x] = true; });
   const arrivee = {x: 5, y: 16};   // on the pier, beside the moored boat
-  return {sol, bloque, herbe, maison, portes: [], pnj, etiquettes: [], elements, depart: arrivee, arrivee, ile: true, terrains, ponton, barque};
+  return {sol, bloque, herbe, maison, portes: [], pnj, etiquettes: [], elements, depart: arrivee, arrivee, ile: true, terrains, reserves, ponton, barque};
 }

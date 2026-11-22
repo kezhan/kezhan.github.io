@@ -36,6 +36,7 @@ class ChantiersIle {
     this.s = scene; this.vise = null; this.terrains = scene.carte.terrains || []; this.batiments = {};
     this.terrains.forEach(t => this.maj(t.id));
     this.recoltes = new RecoltesIle(this);   // what the finished buildings have made, in a bubble over them
+    this.reserves = new ReservesIle(this);   // the places kept for the companions: touched and reached like a lot (js/jeu/lieux_ile.js)
     // the lighthouse lights up by itself when the evening falls on the island (js/jeu/histoire_village.js)
     scene.time.addEvent({delay: 1500, loop: true, callback: () => { if (scene.histoire && scene.histoire.voile && !this.allume) this.allumer(0); }});
   }
@@ -115,11 +116,11 @@ class ChantiersIle {
       || (this.batiments[t.id] && typeof sousLeDoigt === "function" && sousLeDoigt(this.s, this.batiments[t.id].im, wx, wy))) || null;
   }
   touche(wx, wy){
-    const bulle = this.recoltes.sous(wx, wy), t = bulle ? this.terrain(bulle) : this.terrainSous(wx, wy), s = this.s;
+    const bulle = this.recoltes.sous(wx, wy), t = bulle ? this.terrain(bulle) : this.terrainSous(wx, wy) || this.reserves.sous(wx, wy), s = this.s;
     this.vise = null;
     if (!t) return false;
     s.marquer(t.devant.x, t.devant.y);
-    this.fremir(t);
+    (t.reserve ? this.reserves : this).fremir(t);
     if (s.case.x === t.devant.x && s.case.y === t.devant.y) { this.ouvrir(t); return true; }
     s.allerVers(t.devant.x, t.devant.y);
     this.vise = t;
@@ -144,6 +145,7 @@ class ChantiersIle {
   // in front of the sign: the building site opens, or the finished building gives its little pleasure
   ouvrir(t){
     const s = this.s;
+    if (t.reserve) return this.reserves.ouvrir(t);
     if (!CHANTIERS[t.id]) return;
     s.chemin = []; s.pnjVise = null; s.arreter();
     reposHumain(s.heros, t.panneau.x > s.case.x ? "droite" : t.panneau.x < s.case.x ? "gauche" : t.panneau.y < s.case.y ? "haut" : "bas");
