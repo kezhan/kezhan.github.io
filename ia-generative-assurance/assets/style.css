@@ -464,6 +464,8 @@ figcaption { font-size: .86rem; color: var(--ink-mute); margin-top: 12px; }
   .scrolly-figure { position: static; }
   .scrolly-step { min-height: 0; opacity: 1 !important; display: block; break-inside: avoid; padding: 10px 0 0; }
   .scrolly-ticks { display: none !important; }
+  .scrolly figure.figure-frame { break-inside: auto; }
+  .scrolly svg.vignette-imprimee { display: block; break-inside: avoid; }
 }
 
 .exo-mark { display: flex; align-items: center; gap: 14px; margin: 30px 0 4px; font-size: .8rem; color: var(--steel); }
