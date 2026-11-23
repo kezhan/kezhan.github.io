@@ -19,7 +19,13 @@ const LANGUES_HABITANTS = {
   // the residents of the three language houses (js/jeu/carte_maison.js): each greets in the house's language
   marin: {langue: "en", nom: "anglais", mots: ["bienvenue", "bonjour", "bonne_journee", "bonne_chance", "bravo", "merci"]},
   horlogere: {langue: "de", nom: "allemand", mots: ["bienvenue", "bonjour", "bonne_journee", "bonne_chance", "bravo", "merci"]},
-  boulangere: {langue: "lb", nom: "luxembourgeois", mots: ["bienvenue", "bonjour", "bonjour_matin", "bonne_journee", "bonne_chance", "merci"]}
+  boulangere: {langue: "lb", nom: "luxembourgeois", mots: ["bienvenue", "bonjour", "bonjour_matin", "bonne_journee", "bonne_chance", "merci"]},
+  // the residents of the quarters of the village (js/quartiers.js): each greets in the quarter's language
+  maitresse: {langue: "lb", nom: "luxembourgeois", mots: ["bonjour", "bienvenue", "bonjour_matin", "bonne_journee", "merci", "au_revoir"]},
+  maraicher: {langue: "de", nom: "allemand", mots: ["bonjour", "bienvenue", "bon_appetit", "bonne_journee", "merci", "au_revoir"]},
+  fermiere: {langue: "en", nom: "anglais", mots: ["bonjour", "bienvenue", "bonne_journee", "bravo", "merci", "au_revoir"]},
+  forestier: {langue: "lb", nom: "luxembourgeois", mots: ["bonjour", "bienvenue", "bonne_journee", "bonne_chance", "merci", "au_revoir"]},
+  pecheur: {langue: "en", nom: "anglais", mots: ["bonjour", "bienvenue", "bonne_journee", "bonne_chance", "merci", "au_revoir"]}
 };
 const VISITES_HABITANTS = {};   // in this sitting: the next word of each villager
 const MOT_EN_ATTENTE = {};      // a word just said by a villager (« Gesundheit! » after a sneeze): said again at the visit

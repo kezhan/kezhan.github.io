@@ -318,5 +318,5 @@ const VILLAGE_HD = (() => {
     if (ile) ILE_HD.animer(scene, carte, rendu);   // the waves, the glints on the sea, a gull, the boat bobbing
     return rendu;
   }
-  return {dessiner, poser, point, hasard, pieceDe, cadre};
+  return {dessiner, poser, point, hasard, pieceDe, cadre, herbes};   // herbes: the quarters' tall grass (js/jeu/quartier_village.js)
 })();

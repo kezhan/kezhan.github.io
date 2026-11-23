@@ -10,7 +10,9 @@
    marchand, les portes des maisons) y est absent. La barque et son passeur mènent d'un village à l'autre
    (js/jeu/voyage.js) ; le héros revient, dans chaque village, sur la case où il s'était arrêté.
    Et l'intérieur d'une maison (P().lieu = "maison_<région>") : sa salle (js/jeu/carte_maison.js), ses choses à toucher,
-   la porte de la salle du chef et la sortie (js/jeu/interieur_maison.js) ; la vue y reste fixe, sur toute la salle. */
+   la porte de la salle du chef et la sortie (js/jeu/interieur_maison.js) ; la vue y reste fixe, sur toute la salle.
+   Et un quartier du village (P().lieu = "quartier_<id>", js/quartiers.js) : sa carte (js/jeu/carte_quartier.js), ses
+   choses, son habitant, ses hautes herbes et le chemin du retour (js/jeu/quartier_village.js), tenu entier à l'écran. */
 const PAS_MS = 170;
 
 class Monde extends Phaser.Scene {
@@ -18,22 +20,26 @@ class Monde extends Phaser.Scene {
   // the high-definition drawings this village needs: hero, villagers, companion, every Ombre, the effects
   preload(){
     reessayerImages(this);
-    const a = actif(), ile = lieuDe(P()) === "ile", dedans = maisonDuLieu(lieuDe(P())), h = dedans && MAISONS[dedans].habitant;
-    chargerAtlas(this, [herosHD(P()), ...(dedans ? (h ? [h.cle] : []) : ile ? ["passeur", "cheffe"] : ["sage", "hugo", "paco", ...(typeof habitantsDeFete === "function" ? habitantsDeFete().map(n => n.cle) : [])]), a && cleDe(a), ...Object.values(CLES_OMBRES)]);
+    const a = actif(), ile = lieuDe(P()) === "ile", dedans = maisonDuLieu(lieuDe(P())), quartier = quartierDuLieu(lieuDe(P()));
+    const h = dedans ? MAISONS[dedans].habitant : quartier ? QUARTIERS[quartier].habitant : null;
+    chargerAtlas(this, [herosHD(P()), ...(dedans || quartier ? (h ? [h.cle] : []) : ile ? ["passeur", "cheffe"] : ["sage", "hugo", "paco", ...(typeof habitantsDeFete === "function" ? habitantsDeFete().map(n => n.cle) : [])]), a && cleDe(a), ...Object.values(CLES_OMBRES)]);
     chargerEffetsHD(this.load, QUALITE);
     chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
     if (dedans) chargerMaisonHD(this.load, dedans);   // the room and its things (js/jeu/interieur_maison.js)
+    else if (quartier) chargerQuartierHD(this.load, quartier);   // a quarter of the village and its things (js/jeu/quartier_village.js)
     else if (ile) { chargerIleHD(this.load, QUALITE); chargerChantiersHD(this.load); chargerLieuxHD(this.load); }   // the island's ground and pieces, the child's buildings (js/jeu/chantiers_ile.js)
-    else chargerPlaceHD(this.load);   // the square of the Arbre-Monde (js/jeu/arbre_monde.js)
+    else { chargerPlaceHD(this.load); chargerSortiesHD(this.load); }   // the square of the Arbre-Monde (js/jeu/arbre_monde.js), the signs of the quarters
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
   }
   create(){
     this.lieu = lieuDe(P()); this.ile = this.lieu === "ile"; this.interieur = maisonDuLieu(this.lieu);   // a house's room: its region
-    const dedans = !!this.interieur, absent = this.ile || dedans;   // what only the first village has is absent elsewhere
-    this.carte = dedans ? construireCarteMaison(this.interieur) : this.ile ? construireCarteIle() : construireCarte();
-    if (dedans) dessinerMaisonHD(this, this.carte);   // js/jeu/interieur_maison.js
+    this.quartier = quartierDuLieu(this.lieu);   // a quarter of the village (js/quartiers.js): held whole on screen, like a room
+    const dedans = !!this.interieur || !!this.quartier, absent = this.ile || dedans;   // what only the first village has is absent elsewhere
+    this.carte = this.quartier ? construireCarteQuartier(this.quartier) : dedans ? construireCarteMaison(this.interieur) : this.ile ? construireCarteIle() : construireCarte();
+    if (this.quartier) dessinerQuartierHD(this, this.carte);   // js/jeu/quartier_village.js
+    else if (dedans) dessinerMaisonHD(this, this.carte);   // js/jeu/interieur_maison.js
     else dessinerVillageHD(this, this.carte);   // js/jeu/decor_village_hd.js
     this.cameras.main.setBounds(0, 0, LARG * CASE, HAUT * CASE).setRoundPixels(true);
     // each house's name, crisp at any zoom on a rounded pill, over the sign planted in front of it: it shows when the
@@ -69,7 +75,8 @@ class Monde extends Phaser.Scene {
     this.jardin = absent ? lieuAbsent() : new JardinVillage(this);   // the vegetable garden opens the child's garden
     this.place = absent ? lieuAbsent() : new ArbreMonde(this);       // the Arbre-Monde, the chiefs' gifts, the missions' board
     this.maison = dedans ? new InterieurMaison(this) : lieuAbsent();   // a room's things, its chief's door, its way out
-    this.histoire = dedans ? new HistoireMaison(this) : this.ile ? new HistoireIle(this) : new HistoireVillage(this);   // the goal, the gifts, the words, the evening
+    this.sorties = absent ? lieuAbsent() : new SortiesVillage(this);   // the paths to the quarters, the map of the village (js/jeu/sorties_village.js)
+    this.histoire = this.quartier ? new HistoireQuartier(this) : dedans ? new HistoireMaison(this) : this.ile ? new HistoireIle(this) : new HistoireVillage(this);   // the goal, the gifts, the words, the evening
     this.marchand = absent ? lieuAbsent() : new MarchandVillage(this);   // the merchant's stall opens his shop
     this.betes = dedans ? {touche: () => null, cible: () => null} : new BetesVillage(this);   // the little animals and the square's gifts name themselves (js/jeu/betes_village.js)
     this.passage = dedans ? lieuAbsent() : new Passage(this);   // the boat and its ferryman, to the other village (js/jeu/voyage.js)
@@ -112,7 +119,7 @@ class Monde extends Phaser.Scene {
     if (this.occupe()) return note("occupe");
     const wx = ptr.worldX, wy = ptr.worldY;
     // in a room the companion often sits on the doormat: the way out goes before the cuddle
-    const sortie = !!this.interieur && this.carte.portes.some(p => p.region === "sortie" && p.x === Math.floor(wx / CASE) && p.y === Math.floor(wy / CASE));
+    const sortie = (!!this.interieur || !!this.quartier) && this.carte.portes.some(p => p.region === "sortie" && p.x === Math.floor(wx / CASE) && p.y === Math.floor(wy / CASE));
     if (!sortie && this.vie.toucherCompagnon(wx, wy)) return note("compagnon");
     const vises = [this.jardin.vise, this.place.vise, this.marchand.vise, this.passage.vise, this.chantiers.vise];   // where the walk going on was headed
     this.jardin.vise = false; this.place.vise = null;
@@ -124,6 +131,7 @@ class Monde extends Phaser.Scene {
     if (this.marchand.touche(wx, wy)) return note("marchand");   // the merchant or his stall (js/jeu/marchand_village.js)
     if (this.passage.touche(wx, wy)) return note("barque");      // the ferryman's boat (js/jeu/voyage.js)
     if (this.chantiers.touche(wx, wy)) return note("chantier");  // a lot of the island, its building or its sign (js/jeu/chantiers_ile.js)
+    if (this.sorties.touche(wx, wy)) return note("quartier");    // a quarter's sign, the map of the village (js/jeu/sorties_village.js)
     if (this.jardin.touche(wx, wy)) return note("jardin");
     // a butterfly, the duckling, a bird, the fountain, a star: it answers, and the walk going on keeps where it was
     // headed (the vegetable garden, the stall, the tree or the board still open on arrival)
@@ -255,7 +263,7 @@ class Monde extends Phaser.Scene {
   arrive(){
     const p = P(); garderPosition(p, this.lieu, this.case); sauver();   // a reloaded page comes back here (js/etat.js)
     if (this.jardin.arrive() || this.place.arrive()) return;
-    if (this.marchand.arrive() || this.passage.arrive() || this.chantiers.arrive() || this.maison.arrive()) return;
+    if (this.marchand.arrive() || this.passage.arrive() || this.chantiers.arrive() || this.maison.arrive() || this.sorties.arrive()) return;
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
   }
   update(time){
@@ -275,7 +283,7 @@ class Monde extends Phaser.Scene {
       fin: () => { this.vie.repos(n.s); if (h.fin) h.fin(); }});
   }
   // in front of a door: a house of the village (its room opens), or a door of the room (the chief's, the way out)
-  devantPorte(regionId){ this.chemin = []; this.pnjVise = null; if (this.interieur) this.maison.porte(regionId); else entrerMaison(regionId); }
+  devantPorte(regionId){ this.chemin = []; this.pnjVise = null; if (this.interieur || this.quartier) this.maison.porte(regionId); else entrerMaison(regionId); }
   // a point of the world on the screen, in CSS pixels (the camera's view as it is drawn at this frame)
   ecranDe(wx, wy){
     const c = this.cameras.main, k = c.zoom / RATIO;

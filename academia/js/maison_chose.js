@@ -1,4 +1,5 @@
-/* Académia : une chose touchée dans une maison (js/jeu/carte_maison.js, MAISONS ; js/jeu/interieur_maison.js). L'écran
+/* Académia : une chose touchée dans une maison (js/jeu/carte_maison.js, MAISONS ; js/jeu/interieur_maison.js) ou dans
+   un quartier du village (js/quartiers.js, QUARTIERS : la chose porte alors sa matière et sa langue). L'écran
    la montre de près ; elle se nomme et dit une chose vraie à voix haute (dans une maison de langue, d'abord son nom
    dans la langue de la maison, par son enregistrement, puis ce qu'il veut dire), et le gros bouton propose un exercice
    de la matière de la maison, au niveau de l'enfant (les notions de la chose deux fois sur trois quand l'enfant les a,
@@ -11,7 +12,10 @@
    La lunette de l'Observatoire n'a pas cet écran : elle ouvre la coupole (js/coupole.js). */
 if (!ECRANS.includes("chose")) ECRANS.push("chose");   // one more screen for montrer() (js/outils.js)
 const CHOSE = {c: null, occupe: false, tour: 0};
-const srcChose = c => `${DOSSIER_HD}/interieurs/chose_${c.region}_${c.id}.png`;
+const srcChose = c => `${DOSSIER_HD}/${c.dossier || "interieurs"}/chose_${c.region}_${c.id}.png`;
+// a thing of a quarter of the village (js/quartiers.js) says its own subject, language and resident; a house's thing has the house's
+const matiereChose = c => c.matiere || regionDe(c.region).matiere;
+const habitantChose = c => c.habitant || (MAISONS[c.region] && MAISONS[c.region].habitant) || null;
 const jourMaison = () => jour(typeof maintenantJeu === "function" ? maintenantJeu() : Date.now());
 
 function maisonsDe(p = P()){
@@ -34,7 +38,7 @@ const cleChose = c => `${c.region}:${c.id}`;
 const etincelleChose = (c, p = P()) => !c.lunette && maisonsDe(p).recompenses[cleChose(c)] !== jourMaison();
 // its name in the house's language, when it has its recording: {mot, sens, langue, nom}
 function motChose(c){
-  const langue = LANGUE_MAISON[c.region];
+  const langue = c.langue || LANGUE_MAISON[c.region];
   return langue && c.mot && typeof motEnregistre === "function" && motEnregistre(c.mot, langue) ? {mot: c.mot, sens: c.sens, langue, nom: NOMS_LANGUES[langue]} : null;
 }
 // a line of the thing, written in its bubble and said by the voice (the « word » of the house by its recording)
@@ -51,7 +55,7 @@ function ouvrirChose(c){
   $("chose").dataset.region = c.region;
   $("choseTitre").textContent = majuscule(c.nom);
   $("choseEtincelles").textContent = p.etincelles;
-  const h = MAISONS[c.region].habitant;
+  const h = habitantChose(c);
   imageReessayee($("chosePortrait"), `${DOSSIER_HD}/portraits/${h ? h.cle : "sage"}.png`);
   const i = document.createElement("img");
   i.alt = ""; i.draggable = false; imageReessayee(i, srcChose(c));
@@ -95,7 +99,7 @@ function dessinerBoutonChose(){
 // the question of a thing: the house's subject, the thing's own notions two times out of three when the child has
 // them (mastered, being learnt, or a discovery of its age), else what the engine chooses for this child
 function questionChose(c){
-  const p = P(), m = regionDe(c.region).matiere, age = ageDuJour(p), courante = toutSu(m) ? null : notionCourante(m);
+  const p = P(), m = matiereChose(c), age = ageDuJour(p), courante = toutSu(m) ? null : notionCourante(m);
   if (!notionsDe(m).length) return null;
   const siennes = (c.notions || []).map(notionDe).filter(n => n && n.matiere === m && (maitrisee(n) || n === courante || (n.decouverte && ageMin(n) <= age)));
   if (siennes.length && CHOSE.tour++ % 3 !== 2) {

@@ -2,7 +2,7 @@
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». Une copie de secours est gardée ; une partie abîmée ou
    d'une version plus ancienne est réparée ; deux onglets ouverts ne s'effacent pas la partie l'un de l'autre. */
-const VERSION = "0.25";
+const VERSION = "0.26";
 const CLE = "academia.v1", CLE_COPIE = "academia.v1.copie";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;
@@ -33,7 +33,9 @@ function nouveauProfil(nom, age){
     lieu: "village", positions: {}};
 }
 // the two villages, then the room of each house of the first one (js/jeu/carte_maison.js: "maison_<région>")
-const LIEUX = ["village", "ile", ...["dojo", "albion", "germania", "duche", "jardin", "observatoire"].map(r => "maison_" + r)];
+// and the quarters around the first village (js/quartiers.js: "quartier_<id>")
+const LIEUX = ["village", "ile", ...["dojo", "albion", "germania", "duche", "jardin", "observatoire"].map(r => "maison_" + r),
+  ...["ecole", "marche", "ferme", "foret", "plage"].map(q => "quartier_" + q)];
 const lieuDe = p => p && LIEUX.includes(p.lieu) ? p.lieu : "village";
 const positionValide = c => !!c && typeof c === "object" && Number.isInteger(c.x) && Number.isInteger(c.y) && c.x >= 0 && c.y >= 0 && c.x < 200 && c.y < 200;
 // where the hero stood in this village (null: never been there, the map's start then)
@@ -88,6 +90,7 @@ function reparer(p){
   if (typeof reparerJardin === "function") q.jardin = reparerJardin(q.jardin);   // the child's garden (js/jardin.js)
   if (typeof reparerMaisons === "function") q.maisons = reparerMaisons(q.maisons);   // the things seen in the houses (js/maison_chose.js)
   if (typeof reparerChantiers === "function") q.chantiers = reparerChantiers(q.chantiers);   // the island's buildings (js/chantiers.js)
+  if (typeof reparerQuartiers === "function") q.quartiers = reparerQuartiers(q.quartiers);   // the visits to the quarters (js/quartiers.js)
   if (typeof reparerReserves === "function") q.reserves = reparerReserves(q.reserves);   // the places kept for the companions (js/lieux.js)
   // the village where the child is and the hero's tile in each one (the Île des Bâtisseurs): an older game is in the
   // first village, where its old `position` is; a damaged one starts again where each map starts

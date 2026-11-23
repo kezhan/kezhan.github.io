@@ -7,6 +7,8 @@
    3. Une porte vient de s'ouvrir (js/jeu/portes_village.js) : sans toucher pendant 10 s, la voix le redit.
    Sur l'Île des Bâtisseurs, la main montre d'abord la cheffe de chantier, tant que l'enfant ne lui a pas parlé
    (js/jeu/ile_village.js, cibleGuide).
+   Un quartier choisi sur le plan du village (js/plan_village.js) : la flèche puis la main montrent son chemin
+   (montrerChemin), jusqu'au prochain toucher.
    La voix ne coupe jamais un habitant qui parle dans sa bulle (js/jeu/histoire_village.js) : la main montre seule.
    Pièces dessinées : outils/effets/scripts/guide.py (guide_main, guide_fleche). */
 const GUIDE_ATTENTE_PETIT = 9000, GUIDE_ATTENTE = 15000, GUIDE_VOIX_ESPACE = 25000, GUIDE_RAPPEL_PORTE = 10000;
@@ -86,6 +88,9 @@ class GuideVillage {
       dire(c.dit || (c.porte ? phrasePorte(regionDe(c.porte)) : "Touche une Ombre dans les hautes herbes !"));
     }
   }
+  // the way to a place the child chose (a quarter, js/jeu/sorties_village.js): the arrow at the edge of the screen
+  // until it is in sight, then the hand on it; no voice (the map has just named the place)
+  montrerChemin(c){ this.dernier = performance.now(); this.mainLa = true; this.cibleMain = c; }
   cacherMain(){
     this.mainLa = false; this.cibleMain = null;
     if (this.main) this.main.setVisible(false);

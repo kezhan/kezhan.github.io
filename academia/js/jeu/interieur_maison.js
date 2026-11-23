@@ -4,7 +4,7 @@
       grille ; par-dessus, les quatre choses à toucher (triées par ligne comme les personnages) et la porte de la salle
       du chef, fermée dans sa brume violette ou ouverte sur sa lumière dorée. Dessins : outils/village/scripts/
       interieurs.py et interieurs_choses.py (à nous), dans assets/<qualité>/interieurs.
-   2. InterieurMaison : une chose touchée, le héros va devant elle, et son écran s'ouvre (js/maison_chose.js) ; la
+   2. InterieurMaison (aussi pour les choses d'un quartier du village, js/jeu/quartier_village.js) : une chose touchée, le héros va devant elle, et son écran s'ouvre (js/maison_chose.js) ; la
       lunette de l'Observatoire ouvre la coupole. Une petite étincelle flotte sur chaque chose qui en a une à donner
       aujourd'hui. Devant la porte du fond : la salle du chef (js/jeu/lanceur.js, porteDuChef) ; sur le paillasson :
       la sortie, devant la maison (sortirMaison).
@@ -54,14 +54,15 @@ class InterieurMaison {
       return {c, im, bulle};
     });
     // the door of the chief's room, in the back wall
-    const p = scene.carte.porteChef, px = (p.x + p.w / 2) * CASE, py = (p.y + p.h) * CASE;
+    // (a quarter of the village has none: js/jeu/carte_quartier.js)
+    const p = scene.carte.porteChef, px = p ? (p.x + p.w / 2) * CASE : 0, py = p ? (p.y + p.h) * CASE : 0;
     this.centre = {x: px, y: py - 16};
-    this.porteFermee = image("mi_porte_chef_fermee", px, py, 40, 40, 2);
-    this.porteOuverte = image("mi_porte_chef_ouverte", px, py, 40, 40, 2);
+    this.porteFermee = p ? image("mi_porte_chef_fermee", px, py, 40, 40, 2) : null;
+    this.porteOuverte = p ? image("mi_porte_chef_ouverte", px, py, 40, 40, 2) : null;
     if (this.porteOuverte && !calme()) scene.tweens.add({targets: this.porteOuverte, alpha: {from: 1, to: .82}, duration: 1300, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
     this.maj();
   }
-  ouverte(){ return regionEtat(this.region).etape >= ETAPES; }
+  ouverte(){ return !!this.region && regionEtat(this.region).etape >= ETAPES; }
   // the room as the game stands: the étincelles still to win today, the chief's door
   maj(){
     this.choses.forEach(q => { if (q.bulle) q.bulle.setVisible(etincelleChose(q.c)); });
@@ -99,7 +100,8 @@ class InterieurMaison {
     ouvrirChose(q.c);
   }
   // in front of a door of the room (Monde.devantPorte): the chief's room, or the way out
-  porte(quoi){ return quoi === "sortie" ? sortirMaison() : porteDuChef(this.region); }
+  // (a quarter's way out is its path back to the village, js/quartiers.js)
+  porte(quoi){ return quoi !== "sortie" ? porteDuChef(this.region) : this.s.quartier ? sortirQuartier() : sortirMaison(); }
 }
 
 class HistoireMaison extends HistoireVillage {

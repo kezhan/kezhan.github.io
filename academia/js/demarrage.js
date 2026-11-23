@@ -28,6 +28,7 @@ async function demarrer(){
   $("btnExerciceCoupole").onclick = () => exerciceCoupole();
   $("btnFermerChose").onclick = () => { sfx.tap(); fermerChose(); };   // a thing of a house's room (js/maison_chose.js)
   $("btnExerciceChose").onclick = () => exerciceChose();
+  $("btnFermerPlan").onclick = () => { sfx.tap(); fermerPlan(); };
   $("btnFermerKleeschen").onclick = () => { sfx.tap(); fermerKleeschen(); };   // the Kleeschen's slippers (js/kleeschen.js)
   $("btnKleeschen").onclick = () => boutonKleeschen();
   $("btnFermerBoutique").onclick = () => { sfx.tap(); fermerBoutique(); };   // the merchant's shop (js/marchand.js)
