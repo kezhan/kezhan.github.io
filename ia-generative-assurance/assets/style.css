@@ -276,7 +276,8 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); text-d
 .feat .ico.crimson { background: var(--crimson-w); color: var(--crimson); }
 .feat .ico.teal { background: var(--teal-w); color: var(--teal); }
 .feat .ico.amber { background: var(--amber-w); color: var(--amber); }
-.feat strong { display: block; margin-bottom: 2px; }
+/* le titre de la puce seulement : un mot en gras dans la phrase reste dans la ligne */
+.feat > div > div > strong { display: block; margin-bottom: 2px; }
 .feat p { margin: 0; font-size: .93rem; color: var(--ink-soft); }
 .card.navy .feat .ico { background: rgba(255,255,255,.1); color: #fff; }
 .card.navy .feat p { color: #c6d1e2; }
@@ -354,7 +355,7 @@ table.compact th.num { font-family: var(--display); font-size: .74rem; }
 .steps { counter-reset: st; display: grid; gap: 14px; padding: 0; margin: 0 0 1em; }
 .steps > li { list-style: none; position: relative; padding: 17px 22px 17px 58px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); }
 .steps > li::before { counter-increment: st; content: counter(st); position: absolute; left: 17px; top: 16px; width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: #fff; font-family: var(--display); font-size: .84rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
-.steps > li strong { display: block; margin-bottom: 3px; }
+.steps > li > strong { display: block; margin-bottom: 3px; }
 .steps > li p { margin: 0; font-size: .93rem; color: var(--ink-soft); }
 .steps.crimson > li::before { background: var(--crimson); }
 .steps > li .pill { margin-left: 8px; vertical-align: 2px; }
@@ -468,10 +469,15 @@ figcaption { font-size: .86rem; color: var(--ink-mute); margin-top: 12px; }
   .scrolly svg.vignette-imprimee { display: block; break-inside: avoid; }
 }
 
+/* une phrase qui demande un geste a l'ecran, et ce qui la remplace sur papier */
+.papier { display: none; }
+@media print { .ecran { display: none; } .papier { display: inline; } }
 .exo-mark { display: flex; align-items: center; gap: 14px; margin: 30px 0 4px; font-size: .8rem; color: var(--steel); }
 .exo-mark::before, .exo-mark::after { content: ""; flex: 1; border-top: 1px dashed var(--steel-l); }
 .exo-mark span { display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 20px; background: #eef2f7; }
 .exo-mark svg { width: 14px; height: 14px; flex: none; }
+/* le repere d'exercices sert pendant la seance ; sur papier il ne precede que le recapitulatif */
+@media print { .exo-mark { display: none; } }
 
 /* Reponses fermees par un code : le contenu reste dans la page, il n'est pas
    montre tant que le formateur n'a pas donne le code. A l'impression, tout
@@ -677,6 +683,10 @@ ul.clean li::before { content: "\203A"; position: absolute; left: 4px; top: -1px
      raccourci a 0 horizontal collerait le texte au bord du bloc navy */
   .hero-inner, .page-head-inner { grid-template-columns: 1fr; padding: 34px 30px 36px; }
   .hero-art, .page-head-art { display: none; }
+  /* « Ouvrir en plein ecran » ne mene nulle part sur papier */
+  .demo-head a { display: none; }
+  /* un titre de carte qui est un lien externe imprime son adresse */
+  .card h4 a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .72em; font-weight: 400; color: var(--ink-mute); word-break: break-all; }
   .hero h1 { font-size: 2.4rem; } .page-head h1 { font-size: 2.1rem; }
   .with-toc { grid-template-columns: 1fr; }
   .path { grid-template-columns: repeat(4, 1fr); } .path::before { display: block; }

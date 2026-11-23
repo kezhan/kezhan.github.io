@@ -337,7 +337,7 @@ response_format={"type": "json_object"},</div>
   <h3 style="margin:34px 0 6px">3.2 Ce que ça gère, sans que personne l'ait codé</h3>
   <p>C'est ce qui frappe à la première démonstration : le lecteur n'a pas besoin de deviner le vocabulaire du document, la machine fait le pont toute seule. Personne n'a écrit de table de synonymes.</p>
 <!-- exemples-embeddings -->
-  <p class="reveal">Les exemples des articles, un par fiche : la question telle qu'elle arrive, le passage que la recherche par le sens retrouve, et ce que la recherche exacte aurait donné. Passez de l'une à l'autre avec les flèches ou les numéros ; la dernière est le piège.</p>
+  <p class="reveal">Les exemples des articles, un par fiche : la question telle qu'elle arrive, le passage que la recherche par le sens retrouve, et ce que la recherche exacte aurait donné.<span class="ecran"> Passez de l'une à l'autre avec les flèches ou les numéros ;</span><span class="papier"> La</span><span class="ecran"> la</span> dernière est le piège.</p>
   <div class="catalogue reveal">
     <article class="fiche" data-fam="vecteur" data-nom="La date d'effet">
       <div class="fiche-haut">
@@ -557,7 +557,7 @@ response_format={"type": "json_object"},</div>
         <rect x="15" y="30" width="245" height="150" rx="14" fill="#fff" stroke="#1F6F6B" stroke-width="2.5"/>
         <text x="137" y="58" text-anchor="middle" font-weight="800" fill="#1F6F6B" font-size="15">1 · Règles et dictionnaire</text>
         <text x="137" y="82" text-anchor="middle" fill="#4a5567">format fixe, mots-clés du service :</text>
-        <text x="137" y="100" text-anchor="middle" fill="#4a5567">« attestation », « changement d'adresse »</text>
+        <text x="137" y="100" text-anchor="middle" fill="#4a5567" font-size="11.5">« attestation », « changement d'adresse »</text>
         <text x="137" y="128" text-anchor="middle" fill="#1F6F6B" font-weight="700">gratuit · instantané · explicable</text>
         <text x="137" y="160" text-anchor="middle" fill="#78828f" font-size="12">tranche déjà une large part des mails</text>
         <path d="M265 105 L290 105" stroke="#BA1C3A" stroke-width="3" marker-end="url(#cm)"/>
@@ -565,7 +565,7 @@ response_format={"type": "json_object"},</div>
         <text x="417" y="58" text-anchor="middle" font-weight="800" fill="#13264A" font-size="15">2 · TF-IDF + modèle classique</text>
         <text x="417" y="82" text-anchor="middle" fill="#4a5567">entraîné sur l'historique de mails</text>
         <text x="417" y="100" text-anchor="middle" fill="#4a5567">déjà classés par les gestionnaires</text>
-        <text x="417" y="128" text-anchor="middle" fill="#3B547D" font-weight="700">quelques ms · mots déclencheurs visibles</text>
+        <text x="417" y="122" text-anchor="middle" fill="#3B547D" font-weight="700">quelques ms</text><text x="417" y="139" text-anchor="middle" fill="#3B547D" font-weight="700">mots déclencheurs visibles</text>
         <text x="417" y="160" text-anchor="middle" fill="#78828f" font-size="12">pour les formulations variées</text>
         <path d="M545 105 L570 105" stroke="#BA1C3A" stroke-width="3" marker-end="url(#cm)"/>
         <rect x="575" y="30" width="245" height="150" rx="14" fill="#fff" stroke="#9A6B1E" stroke-width="2.5"/>
@@ -611,7 +611,7 @@ response_format={"type": "json_object"},</div>
 
 
   <h3 style="margin:36px 0 10px">La démonstration : le premier étage, à essayer</h3>
-  <p>Six mails fictifs, le dictionnaire d'un service, un seuil de confiance réglable. Cliquez sur « Classer la file » : les mots reconnus sont surlignés, chaque mail reçoit une famille et une confiance, ceux sous le seuil passent en revue humaine. Corrigez-en un : la correction est comptée comme un retour pour la boucle d'apprentissage. Le mail du voisin montre ce qu'un étage doit savoir faire : dire « je ne sais pas » et passer la main.</p>
+  <p>Six mails fictifs, le dictionnaire d'un service, un seuil de confiance réglable. <span class="ecran">Cliquez sur « Classer la file » : l</span><span class="papier">Sur le site, une fois la file classée, l</span>es mots reconnus sont surlignés, chaque mail reçoit une famille et une confiance, ceux sous le seuil passent en revue humaine. <span class="ecran">Corrigez-en un : la</span><span class="papier">Un mail corrigé à la main :</span> la correction est comptée comme un retour pour la boucle d'apprentissage. Le mail du voisin montre ce qu'un étage doit savoir faire : dire « je ne sais pas » et passer la main.</p>
 
   <div class="demo reveal" id="demo-mails">
     <div class="demo-bar">
@@ -659,7 +659,7 @@ response_format={"type": "json_object"},</div>
     </div>
   </div>
 
-  <p class="reveal">Ces six repères se disent en une minute et se comprennent en les touchant. La console ci-dessous tient dix familles inventées, chacune avec son volume, sa criticité et sa qualité de modèle. Déplacez un seuil, et regardez les deux nombres qui comptent : ce qui part tout seul, et ce qui part au mauvais destinataire.</p>
+  <p class="reveal">Ces six repères se disent en une minute et se comprennent en les touchant. La console ci-dessous tient dix familles inventées, chacune avec son volume, sa criticité et sa qualité de modèle. <span class="ecran">Déplacez un seuil, et regardez</span><span class="papier">Quand un seuil bouge, on regarde</span> les deux nombres qui comptent : ce qui part tout seul, et ce qui part au mauvais destinataire.</p>
 
   <div class="demo-embed demo-shot reveal">
     <div class="demo-head"><span><b>La console de tri</b> · un seuil par famille, et ce qu'il coûte : essayez de monter la part automatisée sans faire monter les erreurs qui partent vers le client</span><a href="demos/seuil-par-famille.html" target="_blank" rel="noopener">Ouvrir en plein écran</a></div>
@@ -1458,7 +1458,7 @@ response_format={"type": "json_object"},</div>
 
   <div class="callout">
     <span class="label">Les quatre briques sur un contrat entier</span>
-    <p>La démonstration de cette section déroule les quatre briques sur un contrat habitation de huit pages : à chaque tour, ce que l'agent décide de chercher, ce que l'outil lui rend, puis la réponse et la vérification de chaque citation. <a href="demos/mrh-agentic.html" target="_blank" rel="noopener">L'ouvrir en plein écran</a>. Des cas du même genre sur d'autres corpus, dont une police américaine, sont dans <a href="https://doc-intel.github.io/fr/cas/index.html" target="_blank" rel="noopener">le catalogue Document Intelligence</a>.</p>
+    <p>La démonstration de cette section déroule les quatre briques sur un contrat habitation de huit pages : à chaque tour, ce que l'agent décide de chercher, ce que l'outil lui rend, puis la réponse et la vérification de chaque citation. <span class="ecran"><a href="demos/mrh-agentic.html" target="_blank" rel="noopener">L'ouvrir en plein écran</a>. </span>Des cas du même genre sur d'autres corpus, dont une police américaine, sont dans <a href="https://doc-intel.github.io/fr/cas/index.html" target="_blank" rel="noopener">le catalogue Document Intelligence</a>.</p>
   </div>
 </section>
 
