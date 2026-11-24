@@ -17,7 +17,7 @@ function ouvrirPlan(){
   montrer("plan");
   if (!histoireDe().plan) noterHistoire("plan");   // the little bubble over the board goes
   if (typeof noterJournal === "function") noterJournal("plan", {});
-  const petit = p.age <= 5, vus = quartiersDe(p).visites;
+  const petit = p.age <= 5, vus = quartiersDe(p).visites, visiteur = typeof visiteurDuJour === "function" ? visiteurDuJour(p) : null;
   imageReessayee($("planFond"), `${dossierQuartiers()}plan_fond.png`);
   imageReessayee($("planPortrait"), `${DOSSIER_HD}/portraits/sage.png`);
   $("planLieux").replaceChildren(...Object.keys(PLAN_LIEUX).map(id => {
@@ -29,6 +29,9 @@ function ouvrirPlan(){
     b.append(i);
     if (!petit) b.append(el("span", "plan-nom", majuscule(Q.nom)));
     if (vus[id]) b.append(iconeDom("coche", "plan-vu"));
+    // today: something shines there, the visitor is there (js/surprises.js)
+    if (typeof trouvailleDuJour === "function" && trouvailleDuJour(id)) b.append(iconeDom("etincelle", "plan-brille"));
+    if (visiteur && visiteur.lieu === id && !visiteur.vu) b.append(iconeDom("pattes", "plan-visiteur"));
     b.onclick = () => choisirQuartier(id);
     return b;
   }));

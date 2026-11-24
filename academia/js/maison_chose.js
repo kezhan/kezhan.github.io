@@ -9,10 +9,12 @@
    2. recompenses : "région:chose" -> le jour de sa dernière étincelle. Une bonne réponse donne une étincelle, une
       seule par chose et par jour ; ensuite la chose dit de revenir demain, et l'exercice reste ouvert pour apprendre.
    Pour la petite (5 ans et moins) : tout est dit, le bouton est une image (l'étincelle), rien n'est à lire.
+   Une trouvaille ou le visiteur du jour (js/surprises.js) passent par le même écran : leur dessin (image) et leur
+   première phrase (intro) sont les leurs.
    La lunette de l'Observatoire n'a pas cet écran : elle ouvre la coupole (js/coupole.js). */
 if (!ECRANS.includes("chose")) ECRANS.push("chose");   // one more screen for montrer() (js/outils.js)
 const CHOSE = {c: null, occupe: false, tour: 0};
-const srcChose = c => `${DOSSIER_HD}/${c.dossier || "interieurs"}/chose_${c.region}_${c.id}.png`;
+const srcChose = c => c.image || `${DOSSIER_HD}/${c.dossier || "interieurs"}/chose_${c.region}_${c.id}.png`;
 // a thing of a quarter of the village (js/quartiers.js) says its own subject, language and resident; a house's thing has the house's
 const matiereChose = c => c.matiere || regionDe(c.region).matiere;
 const habitantChose = c => c.habitant || (MAISONS[c.region] && MAISONS[c.region].habitant) || null;
@@ -70,7 +72,7 @@ function ouvrirChose(c){
   const nom = m ? `« ${m.mot} » : c'est « ${m.sens} », en ${m.nom} ! ` : "";
   const suite = !etincelleChose(c) ? " Reviens demain : j'aurai une nouvelle étincelle pour toi !"
     : petit ? " Touche le gros bouton pour jouer !" : " Un exercice, pour gagner une étincelle ?";
-  return annoncerChose(nom + dit + suite, m && m.langue);
+  return annoncerChose((c.intro || "") + nom + dit + suite, m && m.langue);   // intro: a find, a visitor (js/surprises.js)
 }
 // one more look at it: how many times it has been touched
 function voirChose(c){
@@ -86,6 +88,7 @@ function fermerChose(){
   if (typeof majBarre === "function") majBarre();
   const m = JEU.scene.getScene("monde");
   if (m && m.maison && m.maison.maj) m.maison.maj();   // its étincelle won: the room no longer shows it
+  if (m && m.surprises && m.surprises.maj) m.surprises.maj();   // the day's visitor too (js/jeu/surprises_village.js)
 }
 // the big button: the étincelle to win (or already won today, pale); the little one has the picture only
 function dessinerBoutonChose(){

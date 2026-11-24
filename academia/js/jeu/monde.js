@@ -27,9 +27,9 @@ class Monde extends Phaser.Scene {
     chargerGuideHD(this.load, QUALITE);
     chargerVillageHD(this.load, QUALITE);
     if (dedans) chargerMaisonHD(this.load, dedans);   // the room and its things (js/jeu/interieur_maison.js)
-    else if (quartier) chargerQuartierHD(this.load, quartier);   // a quarter of the village and its things (js/jeu/quartier_village.js)
+    else if (quartier) { chargerQuartierHD(this.load, quartier); chargerSurprisesHD(this.load, quartier); }   // a quarter of the village and its things (js/jeu/quartier_village.js)
     else if (ile) { chargerIleHD(this.load, QUALITE); chargerChantiersHD(this.load); chargerLieuxHD(this.load); }   // the island's ground and pieces, the child's buildings (js/jeu/chantiers_ile.js)
-    else { chargerPlaceHD(this.load); chargerSortiesHD(this.load); }   // the square of the Arbre-Monde (js/jeu/arbre_monde.js), the signs of the quarters
+    else { chargerPlaceHD(this.load); chargerSortiesHD(this.load); chargerSurprisesHD(this.load, "village"); }   // the square of the Arbre-Monde (js/jeu/arbre_monde.js), the signs of the quarters
     // the medals and the open padlock drawn after a house's name (js/icones.js)
     ["cadenas_ouvert", ...REGIONS.map(r => "medaille_" + r.id)].forEach(n => this.load.image("ico_" + n, iconeSrc(n)));
   }
@@ -78,7 +78,8 @@ class Monde extends Phaser.Scene {
     this.sorties = absent ? lieuAbsent() : new SortiesVillage(this);   // the paths to the quarters, the map of the village (js/jeu/sorties_village.js)
     this.histoire = this.quartier ? new HistoireQuartier(this) : dedans ? new HistoireMaison(this) : this.ile ? new HistoireIle(this) : new HistoireVillage(this);   // the goal, the gifts, the words, the evening
     this.marchand = absent ? lieuAbsent() : new MarchandVillage(this);   // the merchant's stall opens his shop
-    this.betes = dedans ? {touche: () => null, cible: () => null} : new BetesVillage(this);   // the little animals and the square's gifts name themselves (js/jeu/betes_village.js)
+    this.betes = this.interieur ? {touche: () => null, cible: () => null} : new BetesVillage(this);   // the little animals and the square's gifts name themselves (js/jeu/betes_village.js)
+    this.surprises = this.ile || this.interieur ? lieuAbsent() : new SurprisesVillage(this);   // the day's treasure and visitor, at the village and in its quarters (js/jeu/surprises_village.js)
     this.passage = dedans ? lieuAbsent() : new Passage(this);   // the boat and its ferryman, to the other village (js/jeu/voyage.js)
     this.chantiers = this.ile ? new ChantiersIle(this) : lieuAbsent();   // the island's lots and their signs
     if (VOYAGE.arrivee === this.lieu) {   // just landed: the ferryman greets the child
@@ -124,6 +125,7 @@ class Monde extends Phaser.Scene {
     const vises = [this.jardin.vise, this.place.vise, this.marchand.vise, this.passage.vise, this.chantiers.vise];   // where the walk going on was headed
     this.jardin.vise = false; this.place.vise = null;
     if (this.maison.touche(wx, wy)) return note("chose");   // a thing of a house's room (js/jeu/interieur_maison.js)
+    if (this.surprises.touche(wx, wy)) return note("surprise");   // what shines in the grass, the day's visitor (js/jeu/surprises_village.js)
     this.marchand.vise = false;   // the shop is opened only by the walk the stall itself started
     this.passage.vise = false; this.chantiers.vise = null;
     const o = this.ombres.touchee(wx, wy);
@@ -263,7 +265,7 @@ class Monde extends Phaser.Scene {
   arrive(){
     const p = P(); garderPosition(p, this.lieu, this.case); sauver();   // a reloaded page comes back here (js/etat.js)
     if (this.jardin.arrive() || this.place.arrive()) return;
-    if (this.marchand.arrive() || this.passage.arrive() || this.chantiers.arrive() || this.maison.arrive() || this.sorties.arrive()) return;
+    if (this.marchand.arrive() || this.passage.arrive() || this.chantiers.arrive() || this.maison.arrive() || this.sorties.arrive() || this.surprises.arrive()) return;
     if (this.pnjVise) { const n = this.pnjVise; this.pnjVise = null; this.parler(n); }
   }
   update(time){

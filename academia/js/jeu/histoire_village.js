@@ -124,6 +124,7 @@ class HistoireVillage {
     if (!p.hist.length) return;
     if (!histoireDe().but) return this.raconter(() => this.but());
     if (!vuAujourdhui("missions")) return this.raconter(() => this.annoncerMissions());
+    if (s.surprises && s.surprises.aDire && s.surprises.aDire()) return this.raconter(() => s.surprises.dire(this));   // the day's visitor, what shines (js/jeu/surprises_village.js)
     if (!vuAujourdhui("soir") && tempsJoue() >= SOIR_MS) return this.raconter(() => this.coucher());
     if (this.voile && now > this.baille) { this.baille = now + BAILLE_MS; this.bailler(); }
   }

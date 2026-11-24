@@ -70,18 +70,21 @@ const VIVANT_HD = (() => {
       const cx = m.x / CASE, cy = m.y / CASE;
       const proches = fleurs.map(e => ({e, d: Math.hypot(e.x + .5 - cx, e.y - cy)})).filter(o => o.d < 9).sort((a, b) => a.d - b.d).slice(0, 2);
       const lieux = proches.length ? proches.map(o => [o.e.x * CASE + 8, o.e.y * CASE + 4]) : [[m.x + 44, m.y - 20]];
-      lieux.forEach(([x, y], k) => {
-        const b = VILLAGE_HD.poser(scene, (i + k) % 2 ? "papillon_bleu" : "papillon", x, y, 9000);
-        if (!b) return;
-        rendu.papillons.push({im: b, region: m.region});
-        if (!anim) return;
-        scene.tweens.add({targets: b, scaleX: b.scaleX * .3, duration: 130, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
-        const voler = () => { b.vol = scene.tweens.add({targets: b, x: x + entre(-26, 26), y: y + entre(-20, 8), duration: entre(1400, 2400),
-          ease: "Sine.easeInOut", onComplete: voler}); };
-        b.voler = voler;
-        voler();
-      });
+      lieux.forEach(([x, y], k) => papillon(scene, rendu, x, y, (i + k) % 2, m.region, anim));
     });
+  }
+  // one butterfly fluttering about (x, y), kept with the house whose language names it (a quarter's too: js/jeu/quartier_village.js)
+  function papillon(scene, rendu, x, y, bleu, region, anim = !immobile()){
+    const b = VILLAGE_HD.poser(scene, bleu ? "papillon_bleu" : "papillon", x, y, 9000);
+    if (!b) return null;
+    (rendu.papillons = rendu.papillons || []).push({im: b, region});
+    if (!anim) return b;
+    scene.tweens.add({targets: b, scaleX: b.scaleX * .3, duration: 130, yoyo: true, repeat: -1, ease: "Sine.easeInOut"});
+    const voler = () => { b.vol = scene.tweens.add({targets: b, x: x + entre(-26, 26), y: y + entre(-20, 8), duration: entre(1400, 2400),
+      ease: "Sine.easeInOut", onComplete: voler}); };
+    b.voler = voler;
+    voler();
+    return b;
   }
 
   // the wind in the tall grass, and a tuft that a character steps into sways harder
@@ -98,5 +101,5 @@ const VIVANT_HD = (() => {
     const r = scene.villageHD, l = r && r.touffes[x + "," + y];
     if (l && !immobile()) l.forEach((t, k) => { t.choc = scene.time.now - k * 60; });
   }
-  return {animer, secouer};
+  return {animer, secouer, papillon};
 })();

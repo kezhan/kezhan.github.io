@@ -75,7 +75,7 @@ const PAGES_ALBUM = [
   {id: "autocollants", titre: "Autocollants", dit: "Tes autocollants des missions !", icone: "autocollant"},
   {id: "carnet", titre: "Carnet", dit: "Ton carnet des erreurs réparées !", icone: "tampon"},
   {id: "mots", titre: "Mots", dit: "Tes mots ! Touche un mot pour l'entendre.", icone: "haut_parleur"},
-  {id: "trouvailles", titre: "Trouvailles", dit: "Tes trouvailles des lieux secrets de l'île !", dessin: () => imgLieu("tr_carriere_3")}];
+  {id: "trouvailles", titre: "Trouvailles", dit: "Tes trouvailles : les trésors du village, les animaux de passage et les lieux secrets de l'île !", dessin: () => imgLieu("tr_carriere_3")}];
 let pageAlbum = "ombres";
 const feuillets = {};   // album page -> the leaf open (a page too full for the screen has several)
 const debutsFeuillets = {};   // album page -> {sig, debuts}: where each leaf seen starts (paginer)
@@ -87,7 +87,7 @@ function dessinerAlbum(v){
   const comptes = {ombres: `${Object.keys(consolees).length}/${ESPECES.length}`, brillantes: `${Object.keys(brillantes).length}/${ESPECES.length}`,
     autocollants: String(autocollants.length), carnet: String(reparees.length),
     mots: typeof comptesMots === "function" ? (m => `${m.trouves}/${m.total}`)(comptesMots()) : "0",
-    trouvailles: (t => `${t.filter(x => x.gagnee).length}/${t.length}`)(trouvaillesAlbum())};
+    trouvailles: (t => `${t.filter(x => x.gagnee).length}/${t.length}`)(toutesTrouvaillesAlbum())};
   v.replaceChildren();
   const tete = el("div", "tete-album"), nav = el("div", "pages-album");
   nav.setAttribute("role", "tablist");
@@ -108,7 +108,7 @@ function dessinerAlbum(v){
   else if (pageAlbum === "brillantes") paginer(feuille, fleches, v, ESPECES, e => caseOmbre(e, brillantes[e.cle] || 0, true));
   else if (pageAlbum === "autocollants") paginer(feuille, fleches, v, autocollants, caseAutocollant, videAutocollants);
   else if (pageAlbum === "mots" && typeof pageMots === "function") pageMots(feuille, fleches, v);
-  else if (pageAlbum === "trouvailles") paginer(feuille, fleches, v, trouvaillesAlbum(), caseTrouvaille);   // js/lieu_vue.js
+  else if (pageAlbum === "trouvailles") paginer(feuille, fleches, v, toutesTrouvaillesAlbum(), caseTrouvailleAlbum);   // js/surprises.js, js/lieu_vue.js
   else paginer(feuille, fleches, v, reparees, caseReparee, videCarnet);
 }
 // the items of the open leaf that fit whole in the page (measured on the screen), and two arrows when there are more

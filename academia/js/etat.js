@@ -2,7 +2,7 @@
    dans le navigateur (localStorage, l'équivalent moderne des cookies). Kezhan : « demander au début le nom
    de l'enfant, et save l'historique en fonction du nom ». Une copie de secours est gardée ; une partie abîmée ou
    d'une version plus ancienne est réparée ; deux onglets ouverts ne s'effacent pas la partie l'un de l'autre. */
-const VERSION = "0.26";
+const VERSION = "0.27";
 const CLE = "academia.v1", CLE_COPIE = "academia.v1.copie";
 const E = {profils: {}, courant: null};
 const P = () => E.profils[E.courant] || null;
@@ -91,6 +91,7 @@ function reparer(p){
   if (typeof reparerMaisons === "function") q.maisons = reparerMaisons(q.maisons);   // the things seen in the houses (js/maison_chose.js)
   if (typeof reparerChantiers === "function") q.chantiers = reparerChantiers(q.chantiers);   // the island's buildings (js/chantiers.js)
   if (typeof reparerQuartiers === "function") q.quartiers = reparerQuartiers(q.quartiers);   // the visits to the quarters (js/quartiers.js)
+  if (typeof reparerSurprises === "function") q.surprises = reparerSurprises(q.surprises);   // the finds and the visitors (js/surprises.js)
   if (typeof reparerReserves === "function") q.reserves = reparerReserves(q.reserves);   // the places kept for the companions (js/lieux.js)
   // the village where the child is and the hero's tile in each one (the Île des Bâtisseurs): an older game is in the
   // first village, where its old `position` is; a damaged one starts again where each map starts

@@ -11,8 +11,10 @@
       faire. Les missions du jour tenues ici y sont annoncées. La main du guide montre une chose qui a encore son
       étincelle, puis les Ombres des hautes herbes.
    Le chemin du bas ramène au village (sortirQuartier, js/quartiers.js). Ce que le village a et que le quartier n'a
-   pas (la place, le jardin, le marchand, la barque, les petites bêtes) est absent, comme dans une salle. */
+   pas (la place, le jardin, le marchand, la barque) est absent, comme dans une salle ; deux papillons y volent, et le
+   trésor du jour et le visiteur du jour y passent aussi (js/jeu/surprises_village.js). */
 const BORD_QUARTIER = {x: 6, y: 3};   // tiles of landscape drawn around the zone
+const PAPILLONS_QUARTIER = [[4.5, 9.5], [10, 8.2]];   // tiles from the zone's corner, over the meadow
 const dossierQuartiers = () => `${DOSSIER_HD}/quartiers/`;
 
 function chargerQuartierHD(load, id){
@@ -35,6 +37,9 @@ function dessinerQuartierHD(scene, carte){
     VILLAGE_HD.herbes(scene, carte, rendu);   // the tall grass, as in the village
     VIVANT_HD.animer(scene, carte, rendu);    // its wind
   }
+  // two butterflies over the meadow, named in the quarter's language when touched (js/jeu/betes_village.js)
+  const maison = Object.keys(LANGUE_MAISON).find(r => LANGUE_MAISON[r] === QUARTIERS[carte.quartier].langue);
+  PAPILLONS_QUARTIER.forEach(([x, y], k) => VIVANT_HD.papillon(scene, rendu, (Z.x + x) * CASE, (Z.y + y) * CASE, k % 2, maison));
   return rendu;
 }
 

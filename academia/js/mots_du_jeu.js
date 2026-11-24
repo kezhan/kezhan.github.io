@@ -62,7 +62,7 @@ const MOTS_DU_JEU = {
   // the little animals of the village and the gifts of the square, touched (js/jeu/betes_village.js): the butterflies
   // above, the duckling of the pond by the port, the birds of the Grand-Duché, the fountain of Albion
   canard: {fr: "le canard", en: "duck"},
-  oiseau: {fr: "l'oiseau", lb: "de Vull"},
+  oiseau: {fr: "l'oiseau", en: "bird", de: "der Vogel", lb: "de Vull"},
   // the water: the fountain of Albion, and the ferryman of the island (js/jeu/langues_habitants.js)
   eau: {fr: "l'eau", en: "water", de: "das Wasser", lb: "d'Waasser"},
   // the little talks with Hugo and Paco (js/jeu/conversations.js): « How are you? », « How old are you? » and the
@@ -78,7 +78,21 @@ const MOTS_DU_JEU = {
   // the feasts of the calendar: saint Nicolas at the village, from the 1st to the 6th of December (js/fetes.js)
   kleeschen: {fr: "saint Nicolas", lb: "Kleeschen"},
   housecker: {fr: "le père Fouettard", lb: "Houseker"},
-  boxemannchen: {fr: "le bonhomme en brioche", lb: "Boxemännchen"}
+  boxemannchen: {fr: "le bonhomme en brioche", lb: "Boxemännchen"},
+  // the finds that shine in the grass and the day's visitors (js/surprises_donnees.js)
+  renard: {fr: "le renard", en: "fox", de: "der Fuchs", lb: "de Fuuss"},
+  grenouille: {fr: "la grenouille", en: "frog", de: "der Frosch", lb: "de Fräsch"},
+  escargot: {fr: "l'escargot", en: "snail", de: "die Schnecke", lb: "de Schleek"},
+  souris: {fr: "la souris", en: "mouse", de: "die Maus", lb: "d'Maus"},
+  oeuf: {fr: "l'œuf", en: "egg", de: "das Ei", lb: "d'Ee"},
+  cheval: {fr: "le cheval", en: "horse", de: "das Pferd", lb: "d'Päerd"},
+  pain: {fr: "le pain", en: "bread", de: "das Brot", lb: "d'Brout"},
+  fraise: {fr: "la fraise", en: "strawberry", de: "die Erdbeere", lb: "d'Äerdbier"},
+  citrouille: {fr: "la citrouille", en: "pumpkin", de: "der Kürbis", lb: "de Kürbis"},
+  pomme_de_terre: {fr: "la pomme de terre", en: "potato", de: "die Kartoffel", lb: "d'Gromper"},
+  regle: {fr: "la règle", en: "ruler", de: "das Lineal", lb: "de Lineal"},
+  ciseaux: {fr: "les ciseaux", en: "scissors", de: "die Schere", lb: "d'Schéier"},
+  livre: {fr: "le livre", en: "book", de: "das Buch", lb: "d'Buch"}
 };
 // </mots>
 const NOMS_LANGUES = {en: "anglais", de: "allemand", lb: "luxembourgeois"};

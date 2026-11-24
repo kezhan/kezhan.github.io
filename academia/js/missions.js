@@ -27,7 +27,8 @@ const AUTOCOLLANTS = {};
  ["fleur", "La fleur", "de la fleur"], ["glace", "La glace", "de la glace"], ["baleine", "La baleine", "de la baleine"],
  ["chat", "Le chat", "du chat"], ["trefle", "Le trèfle", "du trèfle"], ["cadeau", "Le cadeau", "du cadeau"],
  ["dino", "Le dinosaure", "du dinosaure"], ["hibou", "Le hibou", "du hibou"],
- ["kleeschen", "Le Kleeschen", "du Kleeschen", true]   // the gift of the 6th of December (js/fetes.js): never drawn by a mission
+ ["kleeschen", "Le Kleeschen", "du Kleeschen", true],   // the gift of the 6th of December (js/fetes.js): never drawn by a mission
+ ["tresor", "Le trésor", "du trésor", true], ["jumelles", "Les jumelles", "des jumelles", true]   // the three treasures of a place, the five visitors (js/surprises.js)
 ].forEach(([id, titre, nom, fete]) => { AUTOCOLLANTS[id] = {nom, titre, fete: !!fete}; Object.defineProperty(AUTOCOLLANTS[id], "image", {enumerable: true, get: () => srcAutocollant(id)}); });
 // a sticker's name in a language, when it is recorded (js/mots_du_jeu.js: the same key), else null; the languages
 // come in turn (`tour`: a number that grows)
@@ -106,7 +107,15 @@ const TYPES_MISSIONS = {
   // (js/jeu/langues_habitants.js notes the visits in P().histoire)
   bonjour: {groupe: "exploit", possible: () => typeof salutHabitant === "function", creer: () => ({but: 3}),
     texte: () => "Dis bonjour à Hugo, à Paco et au Sage.", dessin: () => ({portraits: ["hugo", "paco", "sage"], icone: "chouette"}),
-    compte: p => ["sage", "hugo", "paco"].filter(n => duJour((p.histoire || {})["visite_" + n])).length}
+    compte: p => ["sage", "hugo", "paco"].filter(n => duJour((p.histoire || {})["visite_" + n])).length},
+  // what shines in a quarter today, the day's visitor (js/surprises.js): they send the child out of the first village
+  tresor: {groupe: "exploit", possible: p => typeof lieuTresorDuJour === "function" && !!lieuTresorDuJour(p), creer: p => ({but: 1, lieu: lieuTresorDuJour(p)}),
+    texte: m => `Trouve le trésor qui brille ${aLieuSurprise(m.lieu)}.`, dessin: () => ({icone: "etincelle"}),
+    compte: (p, m) => surprisesDe(p).pris[m.lieu] === jourMaison() ? 1 : 0},
+  visiteur: {groupe: "exploit", possible: p => typeof visiteurDuJour === "function" && !!visiteurDuJour(p) && !visiteurDuJour(p).vu,
+    creer: p => { const j = visiteurDuJour(p); return {but: 1, lieu: j.lieu, animal: j.v.nom}; },
+    texte: m => `Va voir ${m.animal}, de passage ${aLieuSurprise(m.lieu)}.`, dessin: () => ({icone: "pattes"}),
+    compte: p => surprisesDe(p).vu === jourMaison() ? 1 : 0}
 };
 
 // a little random that gives the same draw for the same child on the same day
