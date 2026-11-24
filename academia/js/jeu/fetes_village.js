@@ -53,10 +53,13 @@ function annoncerFete(scene){
   if (!m || m === "adieu") return;
   const k = etatKleeschen(p);
   if (k.annonce === jourFete()) return;
-  scene.time.delayedCall(TEST ? 400 : 2600, () => {
-    if (!scene.sys.isActive() || scene.occupe() || bulleVillageOuverte() || k.annonce === jourFete()) return;
+  // the Sage's hello may hold the bubble when the village opens: the Kleeschen waits his turn (about half a minute at most)
+  const appeler = (delai, reste) => scene.time.delayedCall(delai, () => {
+    if (!scene.sys.isActive() || k.annonce === jourFete()) return;
+    if (scene.occupe() || bulleVillageOuverte()) { if (reste > 0) appeler(1500, reste - 1); return; }
     k.annonce = jourFete(); sauver();
     bulleVillage("kleeschen", "Kleeschen", m === "cadeau" ? "« Kleeschen » ! Je suis passé cette nuit. Viens me voir sur la place !"
       : "« Kleeschen » ! Je suis sur la place du village. Viens me voir !", "lb");
   });
+  appeler(TEST ? 400 : 2600, 20);
 }
