@@ -1,0 +1,49 @@
+/* Les calendriers de l'avent des enfants : le retour, la carte du mot du jour, et la page qui réunit les calendriers.
+ * Le reste (le ciel, la scène, les boutons du monde) est le style du moteur (`moteur/monde.css`). */
+:root { --cal-ink: #1d2340; --cal-paper: #fff8ec; --cal-gold: #f6c85f; --cal-red: #d8443a; --cal-green: #2f9e6e; }
+
+.cal-retour { position: fixed; z-index: 6; left: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  padding: 10px 16px; border-radius: 999px; background: rgba(8, 12, 30, .72); color: #fff; text-decoration: none;
+  font: 700 15px/1 "Baloo 2", "Space Grotesk", system-ui, sans-serif; }
+.cal-retour:hover, .cal-retour:focus-visible { background: rgba(8, 12, 30, .92); outline: 2px solid var(--cal-gold); }
+
+.cal-carte { width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto; padding: 22px 22px 18px;
+  border: 0; border-radius: 26px; background: var(--cal-paper); color: var(--cal-ink); text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45); font-family: "Baloo 2", "Space Grotesk", system-ui, sans-serif; }
+.cal-carte::backdrop { background: rgba(6, 10, 28, .55); }
+.cal-jour { margin: 0; font: 800 15px/1 "Baloo 2", system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--cal-red); }
+.cal-image { width: 132px; height: 132px; margin: 10px auto 8px; display: grid; place-items: center; border-radius: 28px;
+  font-size: 96px; line-height: 1; background: #fff; box-shadow: inset 0 0 0 4px var(--cal-gold); }
+.cal-langues { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.cal-langues li { display: grid; grid-template-columns: 48px 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center;
+  padding: 6px 12px 6px 6px; border-radius: 16px; background: #fff; text-align: left; }
+.cal-langues li.is-fr { background: #ffe9b8; }
+.cal-langues button { grid-row: 1 / 3; width: 48px; height: 48px; border: 0; border-radius: 50%; background: var(--cal-green); cursor: pointer;
+  display: grid; place-items: center; }
+.cal-langues button:disabled { background: #b9bcc8; cursor: default; }
+.cal-langues button:focus-visible { outline: 3px solid var(--cal-gold); outline-offset: 2px; }
+.cal-langues svg { width: 26px; height: 26px; fill: #fff; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cal-langues b { font: 800 24px/1.1 "Baloo 2", system-ui, sans-serif; overflow-wrap: anywhere; }
+.cal-langues li.is-fr b { font-size: 30px; }
+.cal-langues span { font: 600 13px/1.2 "Baloo 2", system-ui, sans-serif; color: #5b607a; }
+.cal-fermer { margin-top: 14px; padding: 12px 30px; border: 0; border-radius: 999px; background: var(--cal-ink); color: #fff; cursor: pointer;
+  font: 800 17px/1 "Baloo 2", system-ui, sans-serif; }
+.cal-fermer:focus-visible { outline: 3px solid var(--cal-gold); outline-offset: 2px; }
+
+/* la page qui réunit les calendriers */
+body.accueil { margin: 0; min-height: 100vh; background: radial-gradient(120% 80% at 50% 0%, #2a3470 0%, #121735 55%, #0a0d22 100%);
+  color: #f4f1ff; font-family: "Baloo 2", "Space Grotesk", system-ui, sans-serif; }
+body.accueil header { padding: 28px 16px 8px; max-width: 1180px; margin: 0 auto; }
+body.accueil h1 { margin: 0 0 6px; font: 800 clamp(30px, 4.4vw, 46px)/1.05 "Baloo 2", system-ui, sans-serif; color: var(--cal-gold); }
+body.accueil header p { margin: 0; font-size: 17px; line-height: 1.45; color: #d8dcf4; }
+.tuiles { list-style: none; margin: 0 auto; padding: 18px 16px 8px; max-width: 1180px; display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.tuile { display: flex; flex-direction: column; height: 100%; border-radius: 20px; overflow: hidden; background: #1b2150; color: inherit;
+  text-decoration: none; box-shadow: 0 10px 28px rgba(0, 0, 0, .35); transition: transform .15s ease; }
+.tuile:hover, .tuile:focus-visible { transform: translateY(-3px); outline: 3px solid var(--cal-gold); }
+.tuile img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #0e1230; }
+.tuile b { padding: 12px 14px 0; font: 800 22px/1.1 "Baloo 2", system-ui, sans-serif; }
+.tuile span { padding: 4px 14px 14px; font-size: 15px; line-height: 1.35; color: #c7cbe6; }
+body.accueil .note { max-width: 1180px; margin: 0 auto; padding: 8px 16px 28px; font-size: 14px; color: #a9aecb; }
+body.accueil .note a { color: var(--cal-gold); }
+@media (prefers-reduced-motion: reduce) { .tuile { transition: none; } }

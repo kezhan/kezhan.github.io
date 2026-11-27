@@ -1,0 +1,77 @@
+/* The 3D world of a calendar: the canvas, the chips to fly from village to
+ * village, and the sky behind (the canvas is transparent). Used by the
+ * calendar page (appended to advent.css) and by the illustration alone. */
+
+.monde { position: relative; width: 100%; height: min(82vh, 860px); min-height: 520px; touch-action: pan-y; }
+.monde-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
+.monde-bar { position: absolute; left: 16px; right: 16px; bottom: 18px; display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 8px; z-index: 2; pointer-events: none; }
+.monde-bar > button { pointer-events: auto; }
+.monde-chip { --tone: #ffffff; font: 600 13px/1 "Space Grotesk", system-ui, sans-serif; letter-spacing: .01em;
+  color: #eef2ff; background: rgba(8, 12, 30, .62); border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 999px; padding: 10px 14px 10px 12px; cursor: pointer; backdrop-filter: blur(8px);
+  display: inline-flex; align-items: center; gap: 8px; transition: background .2s, border-color .2s, transform .2s; }
+.monde-chip::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--tone);
+  box-shadow: 0 0 10px var(--tone); }
+.monde-chip:hover { transform: translateY(-2px); border-color: var(--tone); }
+.monde-chip[aria-pressed="true"] { background: rgba(255, 255, 255, .94); color: #0b1026; border-color: #fff; }
+.monde-chip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.monde-hint { flex-basis: 100%; margin: 0 0 4px; font: 500 11px/1.3 "JetBrains Mono", monospace; letter-spacing: .08em;
+  text-transform: uppercase; color: rgba(238, 242, 255, .78); text-align: center; pointer-events: none;
+  text-shadow: 0 1px 8px rgba(4, 6, 20, .7); }
+.monde-label { --tone: #fff; position: absolute; left: 0; top: 0; z-index: 1; border: 0; background: none; padding: 0; cursor: pointer;
+  display: grid; justify-items: center; gap: 3px; color: #fff; text-align: center; white-space: nowrap;
+  text-shadow: 0 2px 12px rgba(4, 6, 20, .8), 0 0 2px rgba(4, 6, 20, .9); transition: opacity .3s; will-change: transform; }
+.monde-label small { font: 700 10.5px/1 "JetBrains Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--tone);
+  background: rgba(8, 12, 30, .72); border: 1px solid color-mix(in srgb, var(--tone) 55%, transparent); border-radius: 999px; padding: 5px 9px; text-shadow: none; }
+.monde-label b { font: 600 clamp(17px, 1.7vw, 24px)/1.1 Fraunces, Georgia, serif; }
+.monde-label.off { opacity: 0; pointer-events: none; }
+.monde-label:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 8px; }
+
+/* --- the illustration alone, full window ---------------------------------- */
+
+.monde-page { margin: 0; min-height: 100vh; overflow: hidden; color: #eef2ff;
+  font-family: "Space Grotesk", system-ui, sans-serif; background: #050913; }
+.monde-page .monde { height: 100vh; min-height: 0; }
+.monde-sky { position: fixed; inset: 0; overflow: hidden; }
+.monde-page[data-theme="night"] .monde-sky {
+  background: radial-gradient(120% 80% at 50% 110%, #24407f 0%, #101c44 38%, #070c22 70%, #04060f 100%); }
+.monde-page[data-theme="dawn"] .monde-sky {
+  background: linear-gradient(180deg, #2b2a5c 0%, #6a4a8c 26%, #d9778a 52%, #ffb27a 72%, #ffe1b0 100%); }
+.monde-stars { position: absolute; inset: 0; opacity: .9;
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 28% 42%, #cfe0ff 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 44% 12%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 61% 30%, #fff 50%, transparent 51%),
+    radial-gradient(1.3px 1.3px at 77% 16%, #ffe9b8 50%, transparent 51%), radial-gradient(1px 1px at 90% 38%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 56%, #fff 50%, transparent 51%), radial-gradient(1.2px 1.2px at 36% 66%, #cfe0ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 58%, #fff 50%, transparent 51%), radial-gradient(1.3px 1.3px at 84% 70%, #fff 50%, transparent 51%);
+  background-size: 620px 520px; }
+.monde-page[data-theme="dawn"] .monde-stars { opacity: .35; mask-image: linear-gradient(180deg, #000 0%, transparent 45%); }
+.monde-orb { position: absolute; border-radius: 50%; }
+.monde-page[data-theme="night"] .monde-orb { width: 150px; height: 150px; right: 9%; top: 9%;
+  background: radial-gradient(circle at 35% 35%, #fffbe8, #e9e2c2 60%, #cfc7a2);
+  box-shadow: 0 0 90px 30px rgba(255, 244, 200, .22), 0 0 260px 120px rgba(140, 170, 255, .14); }
+.monde-page[data-theme="dawn"] .monde-orb { width: 260px; height: 260px; left: 50%; bottom: 6%; transform: translateX(-50%);
+  background: radial-gradient(circle, #fff7df 0%, #ffd9a0 45%, rgba(255, 190, 120, 0) 70%);
+  box-shadow: 0 0 220px 120px rgba(255, 214, 160, .45); }
+.monde-haze { position: absolute; inset: auto 0 0 0; height: 34%; }
+.monde-page[data-theme="night"] .monde-haze { background: linear-gradient(180deg, transparent, rgba(60, 110, 220, .22)); }
+.monde-page[data-theme="dawn"] .monde-haze { background: linear-gradient(180deg, transparent, rgba(255, 236, 205, .6)); }
+.monde-head { position: fixed; left: clamp(18px, 4vw, 56px); top: clamp(16px, 4vh, 44px); z-index: 3; max-width: min(380px, 70vw);
+  pointer-events: none; text-shadow: 0 2px 18px rgba(4, 6, 20, .55); }
+.monde-kicker { margin: 0 0 8px; font: 600 12px/1.3 "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+.monde-head { transition: opacity .4s; }
+.monde-page:has(.monde[data-mode="house"]) .monde-head, .monde-page:has(.monde[data-mode="village"]) .monde-head { opacity: 0; }
+.monde-head h1 { margin: 0; font: 700 clamp(22px, 2.6vw, 34px)/1.08 Fraunces, Georgia, serif; letter-spacing: -.01em; }
+.monde-toast { position: fixed; left: 50%; top: 22px; transform: translate(-50%, -20px); opacity: 0; z-index: 5;
+  background: rgba(8, 12, 30, .86); border: 1px solid rgba(255, 255, 255, .2); color: #fff; border-radius: 12px;
+  padding: 12px 16px; font: 500 14px/1.35 "Space Grotesk", sans-serif; transition: opacity .25s, transform .25s; pointer-events: none; }
+.monde-toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 640px) {
+  .monde-label small { display: none; }
+  .monde-label b { font-size: 14px; }
+  .monde { height: min(74vh, 620px); min-height: 440px; }
+  .monde-chip { font-size: 12px; padding: 8px 11px 8px 10px; }
+  .monde-hint { display: none; }
+}
+.monde-page[data-theme="dawn"] .monde-hint { color: rgba(46, 28, 66, .78); text-shadow: none; }

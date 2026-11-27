@@ -1,0 +1,67 @@
+/* Inside a module of the station (`station_interieur.js`): the hatch seen from within, the day playing on its wall. */
+
+.st-in {
+  position: absolute; inset: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(8px, 2.5vh, 22px) 16px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 244, 222, .16) 0%, rgba(10, 14, 28, .82) 62%, rgba(3, 5, 13, .96) 100%);
+  opacity: 0; transition: opacity .25s ease;
+}
+.st-in.on { opacity: 1; }
+.st-in-shell {
+  width: min(1100px, 100%); height: 100%; max-height: 760px;
+  display: flex; flex-direction: column; gap: 8px;
+  /* the room's frame: `--st-*` come from its style (`station_styles.js`), the values here are the plain room */
+  background: var(--st-bg, linear-gradient(180deg, #e9edf3 0%, #dfe4ec 100%));
+  border: 6px solid var(--st-frame, #9aa3b5); border-radius: 28px;
+  box-shadow: 0 0 0 3px var(--st-edge, #4f5668), 0 20px 60px rgba(0, 0, 0, .55), inset 0 0 40px rgba(29, 36, 51, .12);
+  padding: 10px 14px 12px;
+  box-sizing: border-box;
+}
+.st-in-head { display: flex; align-items: center; gap: 14px; min-height: 40px; }
+.st-in-day {
+  font: 800 15px "JetBrains Mono", Consolas, monospace; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--st-chip-ink, #fff); background: var(--st-chip, #1f4fa8); border-radius: 999px; padding: 6px 12px; white-space: nowrap;
+}
+.st-in-title {
+  flex: 1; margin: 0; font: 700 clamp(17px, 2.2vw, 24px)/1.2 var(--st-font, Fraunces, Georgia, serif); color: var(--st-title, #1d2433);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.st-in-shut, .st-in-btn {
+  width: 40px; height: 40px; border-radius: 50%; border: 2px solid #9aa3b5; background: #fff; color: #1d2433;
+  font: 700 22px/1 "Space Grotesk", system-ui, sans-serif; cursor: pointer; flex: none;
+}
+.st-in-shut:hover, .st-in-btn:hover:not(:disabled) { border-color: #1f4fa8; color: #1f4fa8; }
+.st-in-btn:disabled { opacity: .35; cursor: default; }
+.st-in-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.st-in-canvas { display: block; border-radius: 14px; box-shadow: 0 0 0 2px var(--st-edge, #c9d0dc), 0 2px 10px rgba(29, 36, 51, .12); background: var(--st-glass, #f3f5f9); }
+.st-in-foot { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.st-in-steps { flex: 1; display: flex; gap: 8px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.st-in-step {
+  display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px 0 6px;
+  border-radius: 999px; border: 2px solid #c9d0dc; background: #fff; color: #4f5668; cursor: pointer;
+  font: 600 15px "Space Grotesk", system-ui, sans-serif; white-space: nowrap; flex: none;
+}
+.st-in-num {
+  width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: #eef0f4; font: 700 14px "JetBrains Mono", monospace;
+}
+/* a row of stops too long: only the current one and the next keep their name */
+.st-in-steps.many .st-in-step:not(.on):not(.next) .st-in-name { display: none; }
+.st-in-steps.many .st-in-step:not(.on):not(.next) { padding: 0 6px; }
+.st-in-step.seen .st-in-num { background: #e3f6ee; color: #0f7a52; }
+.st-in-step.on { border-color: #1f4fa8; color: #1f4fa8; }
+.st-in-step.on .st-in-num { background: #1f4fa8; color: #fff; }
+.st-in-read {
+  min-height: 40px; padding: 0 16px; border-radius: 999px; border: 0; background: var(--st-go, #0f7a52); color: #fff; cursor: pointer;
+  font: 700 15px "Space Grotesk", system-ui, sans-serif; white-space: nowrap; flex: none;
+}
+.st-in-read:hover { background: #0b5e3f; }
+
+@media (max-width: 720px) {
+  .st-in { padding: 8px; }
+  .st-in-shell { border-width: 4px; border-radius: 18px; padding: 8px; }
+  .st-in-name { display: none; }
+  .st-in-step { padding: 0 6px; }
+  .st-in-title { white-space: normal; font-size: 16px; }
+}
