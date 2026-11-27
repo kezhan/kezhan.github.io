@@ -1,19 +1,23 @@
 /* Un calendrier de l'avent des enfants : la scène 3D du moteur (`moteur/`), et derrière chaque fenêtre le mot du jour.
  *
- * Le jour vient de la date : rien ne s'ouvre avant le 1er décembre 2026, la fenêtre N s'ouvre le N décembre, tout est
- * ouvert après le 24. `?jour=N` joue le N décembre (pour essayer, ou pour un parent). Les fenêtres déjà ouvertes sont
- * gardées par le navigateur, une liste par calendrier. Le mot se lit en cinq langues ; le bouton d'écoute prend la voix
+ * Le jour vient de la date : rien ne s'ouvre avant le 1er décembre, la fenêtre N s'ouvre le N décembre (à minuit, sans
+ * recharger la page, un minuteur la débloque et dit le temps jusqu'à la suivante), tout est ouvert après le 24, et le
+ * calendrier revient chaque année. `?jour=N` joue le N décembre ; ouvert depuis le disque ou depuis ce PC, tout est
+ * ouvert. Les fenêtres déjà ouvertes sont gardées par le navigateur, une liste par calendrier et par année. Le mot se lit en cinq langues ; le bouton d'écoute prend la voix
  * de l'appareil (français, anglais, allemand, chinois) et l'enregistrement de lod.lu pour le luxembourgeois.
  */
 (function () {
   'use strict';
   var data = JSON.parse(document.getElementById('monde-data').textContent);
   var q = new URLSearchParams(location.search);
-  var now = new Date();
-  var today = q.has('jour') ? Number(q.get('jour'))
-    : now.getFullYear() > 2026 || (now.getFullYear() === 2026 && now.getMonth() === 11 && now.getDate() > 24) ? 25
-    : now.getFullYear() === 2026 && now.getMonth() === 11 ? now.getDate() : 0;
-  var KEY = 'calendrier-avent-' + data.id, opened = {};
+  /* opened from the disk or from this computer, everything is open, to check it all (the author, 27-11: « et en
+   * local, tu peux en en sorte que je puisse tout voir ? pour vérifier ? ») */
+  var local = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var forced = q.has('jour') || local;
+  /* the day of December it is, on this device: 0 before the 1st, 25 from the 25th; the calendar comes back each year */
+  function dayOf(now) { return now.getMonth() !== 11 ? 0 : Math.min(now.getDate(), 25); }
+  var today = q.has('jour') ? Number(q.get('jour')) : local ? 25 : dayOf(new Date());
+  var KEY = 'calendrier-avent-' + data.id + '-' + new Date().getFullYear(), opened = {};
   try { (JSON.parse(localStorage.getItem(KEY) || '[]')).forEach(function (d) { opened[d] = true; }); } catch (e) {}
   if (q.has('ouvertes')) q.get('ouvertes').split(',').filter(Boolean).forEach(function (d) { opened[Number(d)] = true; });
   function keep() { try { localStorage.setItem(KEY, JSON.stringify(Object.keys(opened).map(Number))); } catch (e) {} }
@@ -80,6 +84,34 @@
     enter: function (d) { tell(line('open', d)); montrer(d); }
   });
   window.monde = world;
-  window.calendrier = {montrer: montrer, today: today};
+  window.calendrier = {montrer: montrer, today: function () { return today; }};
   if (!world) document.body.classList.add('no-webgl');
+
+  /* the timer: at midnight the new window opens without reloading the page, and a badge says how long until the next
+   * one. Checked every twenty seconds, and again as soon as the page is looked at after a sleep. */
+  var compte = document.createElement('p');
+  compte.className = 'cal-compte'; compte.setAttribute('aria-live', 'polite');
+  document.body.appendChild(compte);
+  function duree(ms) {
+    var min = Math.ceil(ms / 60000), j = Math.floor(min / 1440), h = Math.floor(min % 1440 / 60), m = min % 60;
+    return j >= 2 ? j + ' jours' : j === 1 ? (h ? '1 jour et ' + h + ' h' : '24 h') : h ? h + ' h ' + (m < 10 ? '0' : '') + m : m + ' min';
+  }
+  function tictac() {
+    var now = new Date();
+    if (!forced) {
+      var d = dayOf(now);
+      if (d !== today) {
+        today = d;
+        if (world && world.paint) world.paint();
+        if (d >= 1 && d <= 24) tell('La fenêtre ' + d + ' est ouverte !');
+      }
+    }
+    var next = today >= 24 ? null : today === 0 ? new Date(now.getFullYear(), 11, 1) : new Date(now.getFullYear(), 11, today + 1);
+    if (local) { compte.textContent = 'En local : tout est ouvert, pour vérifier'; return; }
+    compte.hidden = !next || forced;
+    if (next && !forced) compte.textContent = (today === 0 ? 'Le calendrier s\'ouvre dans ' : 'Prochaine fenêtre dans ') + duree(next - now);
+  }
+  tictac();
+  setInterval(tictac, 20000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) tictac(); });
 })();
