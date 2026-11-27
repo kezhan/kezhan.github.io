@@ -10,18 +10,18 @@
 <link rel="apple-touch-icon" href="icones/icone-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800&display=swap">
-<link rel="stylesheet" href="style.css?v=277df025">
-<link rel="stylesheet" href="style_combat.css?v=277df025">
-<link rel="stylesheet" href="style_scenes.css?v=277df025">
-<link rel="stylesheet" href="style_jardin.css?v=277df025">
-<link rel="stylesheet" href="style_chantier.css?v=277df025">
-<link rel="stylesheet" href="style_lieux.css?v=277df025">
-<link rel="stylesheet" href="style_formes.css?v=277df025">
-<link rel="stylesheet" href="style_coupole.css?v=277df025">
-<link rel="stylesheet" href="style_maison.css?v=277df025">
-<link rel="stylesheet" href="style_quartiers.css?v=277df025">
-<link rel="stylesheet" href="style_surprises.css?v=277df025">
-<link rel="stylesheet" href="style_kleeschen.css?v=277df025">
+<link rel="stylesheet" href="style.css?v=cb22e70f">
+<link rel="stylesheet" href="style_combat.css?v=cb22e70f">
+<link rel="stylesheet" href="style_scenes.css?v=cb22e70f">
+<link rel="stylesheet" href="style_jardin.css?v=cb22e70f">
+<link rel="stylesheet" href="style_chantier.css?v=cb22e70f">
+<link rel="stylesheet" href="style_lieux.css?v=cb22e70f">
+<link rel="stylesheet" href="style_formes.css?v=cb22e70f">
+<link rel="stylesheet" href="style_coupole.css?v=cb22e70f">
+<link rel="stylesheet" href="style_maison.css?v=cb22e70f">
+<link rel="stylesheet" href="style_quartiers.css?v=cb22e70f">
+<link rel="stylesheet" href="style_surprises.css?v=cb22e70f">
+<link rel="stylesheet" href="style_kleeschen.css?v=cb22e70f">
 <link rel="prefetch" href="vendor/three/three.min.js" as="script">
 <script>
 /* Before everything. Opened as a file (a double click on index.html), the game cannot read its pictures and
@@ -88,6 +88,12 @@
   <p class="sous">Le monde où l'on apprend en s'amusant</p>
   <div class="profils" id="profils"></div>
   <button class="gros palpite" id="btnNouveau" disabled><img class="icone" data-icone="etincelle" alt=""> Nouveau Gardien</button>
+  <!-- the other games of the site (Kezhan, 27-11: « mettre un bouton pour aller sur le site de calendriers, pareil,
+       pour aller sur l'ile aux mots »); full addresses, so that they also work from the Android app -->
+  <nav class="ligne" aria-label="Nos autres jeux">
+    <a class="moyen gris" style="text-decoration:none" href="https://kezhan.github.io/calendriers-avent/">Calendriers de l'avent</a>
+    <a class="moyen gris" style="text-decoration:none" href="https://kezhan.github.io/ile-aux-mots/">L'Île aux Mots</a>
+  </nav>
   <div class="decor-accueil" id="decorAccueil" aria-hidden="true"></div>
   <p class="version" id="version"></p>
 </main>
@@ -266,110 +272,110 @@
 <div class="toast" id="toast" hidden></div>
 
 <script src="vendor/phaser/phaser.min.js"></script>
-<script src="js/outils.js?v=277df025"></script>
-<script src="js/etat.js?v=277df025"></script>
-<script src="js/journal.js?v=277df025"></script>
-<script src="js/voix.js?v=277df025"></script>
-<script src="js/sons.js?v=277df025"></script>
-<script src="js/compagnons.js?v=277df025"></script>
-<script src="js/questions/maths.js?v=277df025"></script>
-<script src="js/questions/maths_mult.js?v=277df025"></script>
-<script src="js/questions/maths_nombres.js?v=277df025"></script>
-<script src="js/questions/maths_calcul.js?v=277df025"></script>
-<script src="js/questions/maths_fractions.js?v=277df025"></script>
-<script src="js/questions/logique.js?v=277df025"></script>
-<script src="js/questions/echecs.js?v=277df025"></script>
-<script src="js/questions.js?v=277df025"></script>
-<script src="js/formes.js?v=277df025"></script>
-<script src="js/adaptatif.js?v=277df025"></script>
-<script src="js/sprite_dom.js?v=277df025"></script>
-<script src="js/dialogue.js?v=277df025"></script>
-<script src="js/question_figures.js?v=277df025"></script>
-<script src="js/question_dessin.js?v=277df025"></script>
-<script src="js/question_formes.js?v=277df025"></script>
-<script src="js/question_vue.js?v=277df025"></script>
-<script src="js/mots_du_jeu.js?v=277df025"></script>
-<script src="js/mots_appris.js?v=277df025"></script>
-<script src="js/combat.js?v=277df025"></script>
-<script src="js/combat_choix.js?v=277df025"></script>
-<script src="js/astuces.js?v=277df025"></script>
-<script src="js/progression.js?v=277df025"></script>
-<script src="js/bilan.js?v=277df025"></script>
-<script src="js/moments.js?v=277df025"></script>
-<script src="js/effets_dom.js?v=277df025"></script>
-<script src="js/evolution.js?v=277df025"></script>
-<script src="js/liberation.js?v=277df025"></script>
-<script src="js/transition.js?v=277df025"></script>
-<script src="js/equipe.js?v=277df025"></script>
-<script src="js/album.js?v=277df025"></script>
-<script src="js/temps.js?v=277df025"></script>
-<script src="js/parents.js?v=277df025"></script>
-<script src="js/jardin.js?v=277df025"></script>
-<script src="js/jardin_vue.js?v=277df025"></script>
-<script src="js/chantiers.js?v=277df025"></script>
-<script src="js/chantier_vue.js?v=277df025"></script>
-<script src="js/lieux.js?v=277df025"></script>
-<script src="js/lieu_vue.js?v=277df025"></script>
-<script src="js/coupole_3d.js?v=277df025"></script>
-<script src="js/coupole.js?v=277df025"></script>
-<script src="js/maison_chose.js?v=277df025"></script>
-<script src="js/quartiers.js?v=277df025"></script>
-<script src="js/surprises_donnees.js?v=277df025"></script>
-<script src="js/surprises.js?v=277df025"></script>
-<script src="js/plan_village.js?v=277df025"></script>
-<script src="js/fetes.js?v=277df025"></script>
-<script src="js/kleeschen.js?v=277df025"></script>
-<script src="js/missions.js?v=277df025"></script>
-<script src="js/marchand.js?v=277df025"></script>
-<script src="js/accueil.js?v=277df025"></script>
-<script src="js/jeu/carte.js?v=277df025"></script>
-<script src="js/jeu/carte_ile.js?v=277df025"></script>
-<script src="js/jeu/carte_maison.js?v=277df025"></script>
-<script src="js/jeu/carte_quartier.js?v=277df025"></script>
-<script src="js/jeu/qualite.js?v=277df025"></script>
-<script src="js/icones.js?v=277df025"></script>
-<script src="js/jeu/decor_village_hd_pieces.js?v=277df025"></script>
-<script src="js/jeu/decor_village_hd.js?v=277df025"></script>
-<script src="js/jeu/decor_village_hd_vivant.js?v=277df025"></script>
-<script src="js/jeu/decor_village_hd_jeu.js?v=277df025"></script>
-<script src="js/jeu/decor_ile_hd_pieces.js?v=277df025"></script>
-<script src="js/jeu/decor_ile_hd.js?v=277df025"></script>
-<script src="js/jeu/chargement.js?v=277df025"></script>
-<script src="js/jeu/sprites_hd.js?v=277df025"></script>
-<script src="js/jeu/accessoires.js?v=277df025"></script>
-<script src="js/jeu/effets_hd.js?v=277df025"></script>
-<script src="js/jeu/fond_combat_hd.js?v=277df025"></script>
-<script src="js/jeu/silhouettes_hd.js?v=277df025"></script>
-<script src="js/jeu/vie_village.js?v=277df025"></script>
-<script src="js/jeu/portes_village.js?v=277df025"></script>
-<script src="js/jeu/guide_village.js?v=277df025"></script>
-<script src="js/jeu/jardin_village.js?v=277df025"></script>
-<script src="js/jeu/arbre_monde.js?v=277df025"></script>
-<script src="js/jeu/histoire_village.js?v=277df025"></script>
-<script src="js/jeu/langues_habitants.js?v=277df025"></script>
-<script src="js/jeu/marchand_village.js?v=277df025"></script>
-<script src="js/jeu/betes_village.js?v=277df025"></script>
-<script src="js/jeu/conversations.js?v=277df025"></script>
-<script src="js/jeu/voyage.js?v=277df025"></script>
-<script src="js/jeu/ile_village.js?v=277df025"></script>
-<script src="js/jeu/interieur_maison.js?v=277df025"></script>
-<script src="js/jeu/quartier_village.js?v=277df025"></script>
-<script src="js/jeu/sorties_village.js?v=277df025"></script>
-<script src="js/jeu/chantiers_ile_pieces.js?v=277df025"></script>
-<script src="js/jeu/recoltes_ile.js?v=277df025"></script>
-<script src="js/jeu/lieux_ile.js?v=277df025"></script>
-<script src="js/jeu/chantiers_ile.js?v=277df025"></script>
-<script src="js/jeu/fetes_village.js?v=277df025"></script>
-<script src="js/jeu/surprises_village.js?v=277df025"></script>
-<script src="js/jeu/monde.js?v=277df025"></script>
-<script src="js/jeu/vitrine.js?v=277df025"></script>
-<script src="js/jeu/traversee.js?v=277df025"></script>
-<script src="js/jeu/scene_combat.js?v=277df025"></script>
-<script src="js/jeu/combat_spectacle.js?v=277df025"></script>
-<script src="js/jeu/attaques_hd.js?v=277df025"></script>
-<script src="js/jeu/ombres_regions.js?v=277df025"></script>
-<script src="js/jeu/ombres_village.js?v=277df025"></script>
-<script src="js/jeu/lanceur.js?v=277df025"></script>
-<script src="js/demarrage.js?v=277df025"></script>
+<script src="js/outils.js?v=cb22e70f"></script>
+<script src="js/etat.js?v=cb22e70f"></script>
+<script src="js/journal.js?v=cb22e70f"></script>
+<script src="js/voix.js?v=cb22e70f"></script>
+<script src="js/sons.js?v=cb22e70f"></script>
+<script src="js/compagnons.js?v=cb22e70f"></script>
+<script src="js/questions/maths.js?v=cb22e70f"></script>
+<script src="js/questions/maths_mult.js?v=cb22e70f"></script>
+<script src="js/questions/maths_nombres.js?v=cb22e70f"></script>
+<script src="js/questions/maths_calcul.js?v=cb22e70f"></script>
+<script src="js/questions/maths_fractions.js?v=cb22e70f"></script>
+<script src="js/questions/logique.js?v=cb22e70f"></script>
+<script src="js/questions/echecs.js?v=cb22e70f"></script>
+<script src="js/questions.js?v=cb22e70f"></script>
+<script src="js/formes.js?v=cb22e70f"></script>
+<script src="js/adaptatif.js?v=cb22e70f"></script>
+<script src="js/sprite_dom.js?v=cb22e70f"></script>
+<script src="js/dialogue.js?v=cb22e70f"></script>
+<script src="js/question_figures.js?v=cb22e70f"></script>
+<script src="js/question_dessin.js?v=cb22e70f"></script>
+<script src="js/question_formes.js?v=cb22e70f"></script>
+<script src="js/question_vue.js?v=cb22e70f"></script>
+<script src="js/mots_du_jeu.js?v=cb22e70f"></script>
+<script src="js/mots_appris.js?v=cb22e70f"></script>
+<script src="js/combat.js?v=cb22e70f"></script>
+<script src="js/combat_choix.js?v=cb22e70f"></script>
+<script src="js/astuces.js?v=cb22e70f"></script>
+<script src="js/progression.js?v=cb22e70f"></script>
+<script src="js/bilan.js?v=cb22e70f"></script>
+<script src="js/moments.js?v=cb22e70f"></script>
+<script src="js/effets_dom.js?v=cb22e70f"></script>
+<script src="js/evolution.js?v=cb22e70f"></script>
+<script src="js/liberation.js?v=cb22e70f"></script>
+<script src="js/transition.js?v=cb22e70f"></script>
+<script src="js/equipe.js?v=cb22e70f"></script>
+<script src="js/album.js?v=cb22e70f"></script>
+<script src="js/temps.js?v=cb22e70f"></script>
+<script src="js/parents.js?v=cb22e70f"></script>
+<script src="js/jardin.js?v=cb22e70f"></script>
+<script src="js/jardin_vue.js?v=cb22e70f"></script>
+<script src="js/chantiers.js?v=cb22e70f"></script>
+<script src="js/chantier_vue.js?v=cb22e70f"></script>
+<script src="js/lieux.js?v=cb22e70f"></script>
+<script src="js/lieu_vue.js?v=cb22e70f"></script>
+<script src="js/coupole_3d.js?v=cb22e70f"></script>
+<script src="js/coupole.js?v=cb22e70f"></script>
+<script src="js/maison_chose.js?v=cb22e70f"></script>
+<script src="js/quartiers.js?v=cb22e70f"></script>
+<script src="js/surprises_donnees.js?v=cb22e70f"></script>
+<script src="js/surprises.js?v=cb22e70f"></script>
+<script src="js/plan_village.js?v=cb22e70f"></script>
+<script src="js/fetes.js?v=cb22e70f"></script>
+<script src="js/kleeschen.js?v=cb22e70f"></script>
+<script src="js/missions.js?v=cb22e70f"></script>
+<script src="js/marchand.js?v=cb22e70f"></script>
+<script src="js/accueil.js?v=cb22e70f"></script>
+<script src="js/jeu/carte.js?v=cb22e70f"></script>
+<script src="js/jeu/carte_ile.js?v=cb22e70f"></script>
+<script src="js/jeu/carte_maison.js?v=cb22e70f"></script>
+<script src="js/jeu/carte_quartier.js?v=cb22e70f"></script>
+<script src="js/jeu/qualite.js?v=cb22e70f"></script>
+<script src="js/icones.js?v=cb22e70f"></script>
+<script src="js/jeu/decor_village_hd_pieces.js?v=cb22e70f"></script>
+<script src="js/jeu/decor_village_hd.js?v=cb22e70f"></script>
+<script src="js/jeu/decor_village_hd_vivant.js?v=cb22e70f"></script>
+<script src="js/jeu/decor_village_hd_jeu.js?v=cb22e70f"></script>
+<script src="js/jeu/decor_ile_hd_pieces.js?v=cb22e70f"></script>
+<script src="js/jeu/decor_ile_hd.js?v=cb22e70f"></script>
+<script src="js/jeu/chargement.js?v=cb22e70f"></script>
+<script src="js/jeu/sprites_hd.js?v=cb22e70f"></script>
+<script src="js/jeu/accessoires.js?v=cb22e70f"></script>
+<script src="js/jeu/effets_hd.js?v=cb22e70f"></script>
+<script src="js/jeu/fond_combat_hd.js?v=cb22e70f"></script>
+<script src="js/jeu/silhouettes_hd.js?v=cb22e70f"></script>
+<script src="js/jeu/vie_village.js?v=cb22e70f"></script>
+<script src="js/jeu/portes_village.js?v=cb22e70f"></script>
+<script src="js/jeu/guide_village.js?v=cb22e70f"></script>
+<script src="js/jeu/jardin_village.js?v=cb22e70f"></script>
+<script src="js/jeu/arbre_monde.js?v=cb22e70f"></script>
+<script src="js/jeu/histoire_village.js?v=cb22e70f"></script>
+<script src="js/jeu/langues_habitants.js?v=cb22e70f"></script>
+<script src="js/jeu/marchand_village.js?v=cb22e70f"></script>
+<script src="js/jeu/betes_village.js?v=cb22e70f"></script>
+<script src="js/jeu/conversations.js?v=cb22e70f"></script>
+<script src="js/jeu/voyage.js?v=cb22e70f"></script>
+<script src="js/jeu/ile_village.js?v=cb22e70f"></script>
+<script src="js/jeu/interieur_maison.js?v=cb22e70f"></script>
+<script src="js/jeu/quartier_village.js?v=cb22e70f"></script>
+<script src="js/jeu/sorties_village.js?v=cb22e70f"></script>
+<script src="js/jeu/chantiers_ile_pieces.js?v=cb22e70f"></script>
+<script src="js/jeu/recoltes_ile.js?v=cb22e70f"></script>
+<script src="js/jeu/lieux_ile.js?v=cb22e70f"></script>
+<script src="js/jeu/chantiers_ile.js?v=cb22e70f"></script>
+<script src="js/jeu/fetes_village.js?v=cb22e70f"></script>
+<script src="js/jeu/surprises_village.js?v=cb22e70f"></script>
+<script src="js/jeu/monde.js?v=cb22e70f"></script>
+<script src="js/jeu/vitrine.js?v=cb22e70f"></script>
+<script src="js/jeu/traversee.js?v=cb22e70f"></script>
+<script src="js/jeu/scene_combat.js?v=cb22e70f"></script>
+<script src="js/jeu/combat_spectacle.js?v=cb22e70f"></script>
+<script src="js/jeu/attaques_hd.js?v=cb22e70f"></script>
+<script src="js/jeu/ombres_regions.js?v=cb22e70f"></script>
+<script src="js/jeu/ombres_village.js?v=cb22e70f"></script>
+<script src="js/jeu/lanceur.js?v=cb22e70f"></script>
+<script src="js/demarrage.js?v=cb22e70f"></script>
 </body>
 </html>
